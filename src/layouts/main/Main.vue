@@ -326,5 +326,25 @@ export default {
 .v-nav-menu .vs-sidebar--item .router-link-active {
   box-shadow: 0px 0px 0px 0px rgba(var(--vs-primary), 0.7) !important;
 }
+
+.content-area-reduced {
+  margin-left: 200px !important;
+  margin-right: 300px !important;
+}
+.content-area-lg {
+  margin-left: 80px !important;
+  margin-right: 300px !important;
+}
+.vs-sidebar {
+  max-width: 200px !important;
+}
+
+.v-nav-menu .vs-sidebar.vs-sidebar-reduce {
+  max-width: 80px !important;
+}
+
+.vs-sidebar.vs-sidebar-reduce:hover:not(.vs-sidebar-reduceNotHoverExpand) {
+  max-width: 200px !important;
+}
 </style>
 

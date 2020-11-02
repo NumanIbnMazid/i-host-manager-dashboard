@@ -14,15 +14,23 @@
     >
       <div @mouseenter="mouseEnter" @mouseleave="mouseLeave">
         <!-- Header -->
-        <div class="header-sidebar flex items-end justify-between" slot="header">
+        <div
+          class="header-sidebar flex items-end justify-between"
+          slot="header"
+        >
           <!-- Logo -->
-          <router-link tag="div" class="vx-logo cursor-pointer flex items-center" to="/">
+          <router-link
+            tag="div"
+            class="vx-logo cursor-pointer flex items-center"
+            to="/"
+          >
             <logo class="w-10 mr-4 fill-current text-primary" />
             <span
               class="vx-logo-text text-primary"
               v-show="isMouseEnter || !reduce"
               v-if="title"
-            >I-Host</span>
+              >I-Host</span
+            >
           </router-link>
           <!-- /Logo -->
 
@@ -33,7 +41,9 @@
               <feather-icon
                 icon="XIcon"
                 class="m-0 cursor-pointer"
-                @click="$store.commit('TOGGLE_IS_VERTICAL_NAV_MENU_ACTIVE', false)"
+                @click="
+                  $store.commit('TOGGLE_IS_VERTICAL_NAV_MENU_ACTIVE', false)
+                "
               />
             </template>
 
@@ -71,7 +81,8 @@
               v-if="item.header && !verticalNavMenuItemsMin"
               class="navigation-header truncate"
               :key="`header-${index}`"
-            >{{ item.header }}</span>
+              >{{ item.header }}</span
+            >
             <!-- /Group Header -->
 
             <template v-else-if="!item.header">
@@ -87,12 +98,15 @@
                 :isDisabled="item.isDisabled"
                 :slug="item.slug"
               >
-                <span v-show="!verticalNavMenuItemsMin" class="truncate">{{ item.name }}</span>
+                <span v-show="!verticalNavMenuItemsMin" class="truncate">{{
+                  item.name
+                }}</span>
                 <vs-chip
                   class="ml-auto"
                   :color="item.tagColor"
                   v-if="item.tag && (isMouseEnter || !reduce)"
-                >{{ item.tag }}</vs-chip>
+                  >{{ item.tag }}</vs-chip
+                >
               </v-nav-menu-item>
 
               <!-- Nav-Group -->
