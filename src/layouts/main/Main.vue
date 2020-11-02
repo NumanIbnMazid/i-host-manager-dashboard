@@ -329,11 +329,11 @@ export default {
 
 .content-area-reduced {
   margin-left: 200px !important;
-  margin-right: 300px !important;
+  margin-right: 325px !important;
 }
 .content-area-lg {
   margin-left: 80px !important;
-  margin-right: 300px !important;
+  margin-right: 325px !important;
 }
 .vs-sidebar {
   max-width: 200px !important;
