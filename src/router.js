@@ -17,7 +17,7 @@ const router = new Router({
                     path: '/',
                     name: 'home',
                     component: () =>
-                        import ('./views/Home.vue'),
+                        import ('./views/Dashboard.vue'),
                     beforeEnter: requireAuth
                 },
                 {

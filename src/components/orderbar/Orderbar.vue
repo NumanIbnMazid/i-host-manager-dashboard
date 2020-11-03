@@ -64,7 +64,7 @@
     <vs-sidebar-item index="1">
       <div class="mx-10 py-4 w-full text-center bg-primary rounded shadow-md">
         <h1 class="text-white">88270৳</h1>
-        <p class="text-white">Total Sell Today</p>
+        <p class="text-ihosts"><b> Total Sell Today </b></p>
       </div>
     </vs-sidebar-item>
     <vs-sidebar-item index="2">
@@ -78,7 +78,9 @@
               <th class="text-center text-white">Order&nbsp;No</th>
               <th class="text-center text-white">Table</th>
               <th class="text-center text-white">Amount</th>
-              <th class="text-center text-white">&nbsp;&nbsp; Status &nbsp;&nbsp;</th>
+              <th class="text-center text-white">
+                &nbsp;&nbsp; Status &nbsp;&nbsp;
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -100,7 +102,9 @@
               </td>
               <td class="text-center">
                 <div class="order-box last-box">
-                  <span class="status-chip rounded bg-bl text-white" >{{ order.status }}</span>
+                  <span class="status-chip rounded bg-bl text-white">{{
+                    order.status
+                  }}</span>
                 </div>
               </td>
             </tr>
@@ -126,7 +130,7 @@ export default {
         order_no: "#200001",
         table_no: "1",
         amount: "800৳",
-        status: "Waiter Hand",
+        status: "Waiter Collected",
       },
       {
         order_no: "#200002",
@@ -170,7 +174,7 @@ export default {
   position: fixed;
   height: 100% !important;
   top: 0;
-  z-index: 100000;
+  z-index: 1;
 }
 
 .vs-sidebar--header {
