@@ -1,27 +1,21 @@
 export default [{
         url: "/",
-        name: "Home",
+        name: "Dashboard",
         slug: "home",
         icon: "HomeIcon",
     },
-    // {
-    //     url: "/page2",
-    //     name: "Page 2",
-    //     slug: "page2",
-    //     icon: "FileIcon",
-    // },
     {
         url: "/restaurant",
         name: "Restaurant",
         slug: "resturent",
         icon: "ShoppingCartIcon",
     },
-    {
-        url: "/category",
-        name: "Category",
-        slug: "category",
-        icon: "LayersIcon",
-    },
+    // {
+    //     url: "/category",
+    //     name: "Category",
+    //     slug: "category",
+    //     icon: "LayersIcon",
+    // },
     {
         url: "/food",
         name: "Food",

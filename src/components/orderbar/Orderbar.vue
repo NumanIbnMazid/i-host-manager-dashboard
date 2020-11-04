@@ -11,10 +11,10 @@
       <div class="md:flex bg-white rounded-lg px-6 py-3 w-full">
         <img
           class="h-16 w-16 md:h-12 md:w-12 rounded-full mx-auto md:mx-0 md:mr-6 shadow-md"
-          src="http://i-host.com.bd/assets/team/Mahmudul.jpg"
+          src="http://i-host.com.bd/assets/team/karina.jpeg"
         />
         <div class="text-center md:text-left my-auto w-full">
-          <h6>Sajal Khan</h6>
+          <h6>Tahsin Karina</h6>
           <p class="text-sm">Manager</p>
         </div>
 

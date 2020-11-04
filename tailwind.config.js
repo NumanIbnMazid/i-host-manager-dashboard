@@ -71,6 +71,7 @@ module.exports = {
                 'white': '#ffffff',
                 'grey': '#b8c2cc',
                 'grey-light': '#dae1e7',
+                'grey-dark': '#626262',
                 'ihostm': '#32304e',
                 'ihosts': '#f7b742',
                 'bl': '#5c97f0',
@@ -78,6 +79,7 @@ module.exports = {
                 'rd': '#ff2769',
                 'pl': '#b973ff',
                 'gn': '#02bc77',
+                'hard': '#C4C4C4',
             },
 
             /*
