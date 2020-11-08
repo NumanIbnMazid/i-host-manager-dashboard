@@ -86,21 +86,15 @@ export default {
   methods: {
     getRestaurant() {
       axios
-        .post("dashboard-login/", {
+        .post("account_management/auth/login/", {
           username: this.email,
           password: this.password,
         })
         .then((res) => {
-          if (res.data.data.token) {
-            localStorage.setItem("token", res.data.data.token);
-            localStorage.setItem("resturent_id", res.data.data.restuarant_id);
-
-            axios
-              .get(`restaurant_dashboard_info/${res.data.data.restuarant_id}`)
-              .then((res) => {
-                let resinfo = JSON.stringify(res.data.data);
-                localStorage.setItem("resturent", resinfo);
-              });
+          console.log(res.data.data.auth);
+          if (res.data.data.auth.token) {
+            localStorage.setItem("token", res.data.data.auth.token);
+            // localStorage.setItem("resturent_id", res.data.data.restuarant_id);
 
             this.$router.push("/");
           } else {

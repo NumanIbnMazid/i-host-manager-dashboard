@@ -10,12 +10,6 @@ export default [{
         slug: "resturent",
         icon: "ShoppingCartIcon",
     },
-    // {
-    //     url: "/category",
-    //     name: "Category",
-    //     slug: "category",
-    //     icon: "LayersIcon",
-    // },
     {
         url: "/food",
         name: "Food",
