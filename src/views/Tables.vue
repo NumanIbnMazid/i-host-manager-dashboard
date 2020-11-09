@@ -88,12 +88,14 @@
         <div class="w-full mt-5">
           <label for>Select Waiters</label>
           <v-select
-            label="email"
+            label="id"
             class="w-full"
             v-validate="'required'"
             v-model="waiter"
             :options="waiters"
             :reduce="(waiters) => waiters.id"
+            multiple
+            taggable
           />
         </div>
 
@@ -104,6 +106,26 @@
             class="mt-5 w-full"
             type="text"
             v-validate="'required'"
+          />
+        </div>
+
+        <div class="w-full">
+          <vs-input
+            label="Name"
+            v-model="name"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <div class="w-full">
+          <vs-input
+            label="Restaurant Id"
+            v-model="resturent_id"
+            class="mt-5 w-full"
+            type="text"
+            disabled
           />
         </div>
 
@@ -131,46 +153,57 @@ export default {
     popupActive: false,
     tables: [],
     table_no: "",
+    name: "",
     waiter: "",
     waiters: [],
   }),
 
   methods: {
     getTable() {
-      axios.get(`table_list/${this.resturent_id}`).then((res) => {
+      axios.get(`/restaurant_management/restaurant/${this.resturent_id}/tables/`).then((res) => {
         this.tables = res.data.data;
       });
     },
 
     addTable() {
       axios
-        .post(`resturant/${this.resturent_id}/table/`, {
+        .post("/restaurant_management/table/", {
           table_no: this.table_no,
-          user_id: this.waiter,
+          name: this.name,
+          restaurant: this.resturent_id,
         })
         .then((res) => {
-          this.tables.push(res.data.data);
-          this.popupActive = false;
-          this.$vs.notify({
-            title: "Create Success",
-            text: "New table created successfully",
-            color: "success",
-            position: "top-right",
-          });
+          if (res.data.status) {
+            // globalHelper("New table created successfully", "success")
+            // showActionMessage("New table created successfully", "success");
+            alert("ok");
+            // creating staff based on table id
+            this.tables.push(res.data.data);
+            this.createStaff(res.data.data.id);
+          } else {
+            console.log("res table ", res);
+            // globalHelper("New table created successfully", "success")
+            showActionMessage("New table create failed", "danger");
+          }
+          // showActionMessage("New table create failed", "danger");
+          // this.popupActive = false;
 
           this.table_no = "";
           this.waiter = "";
         })
         .catch((err) => {
-          console.log(err);
-          this.$vs.notify({
-            title: "Create Failed",
-            text: "New table create failed",
-            color: "danger",
-            position: "top-right",
-          });
+          // showActionMessage("New table create failed", "danger");
         });
     },
+
+    // createStaff(tableId) {
+    //   axios
+    //     .post(`/restaurant_management/table/${tableId}/add_staff/`, {
+    //       staff_list: this.waiter,
+    //     })
+    //     .then((res) => showActionMessage("Staff Created Successfully", "success"))
+    //     .catch((err) => showActionMessage("Staff Create Faild", "danger"));
+    // },
 
     printQr(id) {
       const prtHtml = document.querySelector("#table-qr-" + id + ">img").src;
@@ -204,7 +237,7 @@ export default {
       document.getElementById("tempDown").click();
       // console.log(link)
     },
-  
+
     imageRenderFromQr() {
       this.tables.forEach((el) => {
         let can = document.querySelector("#table-qr-" + el.id + ">canvas");
@@ -219,10 +252,12 @@ export default {
 
     getWaiters() {
       axios
-        .get(`resturant/${this.resturent_id}/waiter/`)
+        .get(`/account_management/resturant/${this.resturent_id}/waiter_info/`)
         .then((res) => {
-          console.log(res);
+          console.log("waiters ", res);
           this.waiters = res.data.data;
+
+          console.log(this.waiters);
         })
         .catch((err) => {
           console.log(err);

@@ -8,7 +8,7 @@ export default axios.create({
     baseURL,
     headers: {
         "Content-Type": "application/json",
-        "Authorization": `${authToken ? 'Bearer ' + authToken : ''}`
+        "Authorization": `${authToken ? 'Token ' + authToken : ''}`
     },
     // You can add your headers here
 })

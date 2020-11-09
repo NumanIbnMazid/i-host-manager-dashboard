@@ -36,7 +36,7 @@
                     ? currentPage * itemsPerPage
                     : waiters.length
                 }}
-                of {{ queriedItems }}</span
+                of {{ "queriedItems" }}</span
               >
               <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
             </div>
@@ -73,26 +73,24 @@
                 </p>
               </vs-td>
               <vs-td class="img-container">
-                <img
-                  :src="tr.user_info != null ? tr.user_info.profile_photo : ''"
-                  class="product-img"
-                  style="height: 100px"
-                />
+                <img :src="tr.image" class="product-img" style="height: 60px" />
               </vs-td>
 
               <vs-td>
                 <p class="product-name font-medium truncate">
-                  {{ tr.user_info != null ? tr.user_info.name : "" }}
+                  {{ tr.user.first_name }}
                 </p>
               </vs-td>
 
               <vs-td>
-                <p class="product-name font-medium truncate">{{ tr.email }}</p>
+                <p class="product-name font-medium truncate">
+                  {{ tr.user.email_address }}
+                </p>
               </vs-td>
 
               <vs-td>
                 <p class="product-name font-medium truncate">
-                  {{ tr.user_info != null ? tr.user_info.phone_no : "" }}
+                  {{ tr.user.phone }}
                 </p>
               </vs-td>
 
@@ -121,12 +119,49 @@
       :active.sync="popupActive"
     >
       <vs-row>
+        <div class="vx-col sm:w-8/12 w-full mb-2 mx-auto">
+          <img
+            v-if="!user.logoPreview"
+            :src="user.image"
+            style="width: 100%"
+            class="rounded"
+            alt
+          />
+          <img
+            v-else
+            :src="user.logoPreview"
+            style="width: 100%"
+            class="rounded"
+            alt
+          />
+
+          <input
+            type="file"
+            class="hidden"
+            ref="logoInput"
+            @change="updateCurrImg"
+            accept="image/*"
+          />
+
+          <div class="vx-row mt-4">
+            <div class="vx-col w-full">
+              <vs-button
+                class="mr-5 mb-2 w-full"
+                icon-pack="feather"
+                icon="icon-edit"
+                @click="$refs.logoInput.click()"
+                >Change restaurants logo</vs-button
+              >
+            </div>
+          </div>
+        </div>
+
         <div class="w-full">
           <vs-input
             icon-pack="feather"
             icon="icon-user"
             label="Name"
-            v-model="user.name"
+            v-model="user.first_name"
             class="mt-5 w-full"
             type="email"
             v-validate="'required'"
@@ -137,7 +172,7 @@
             icon-pack="feather"
             icon="icon-phone"
             label="Phone"
-            v-model="user.phone_no"
+            v-model="user.phone"
             class="mt-5 w-full"
             type="email"
             v-validate="'required'"
@@ -148,7 +183,7 @@
             icon-pack="feather"
             icon="icon-mail"
             label="Email"
-            v-model="user.username"
+            v-model="user.email"
             class="mt-5 w-full"
             type="email"
             v-validate="'required'"
@@ -179,15 +214,18 @@
 import axios from "@/axios.js";
 export default {
   data: () => ({
-    resturent_id: localStorage.getItem("resturent_id"),
+    restaurant_id: localStorage.getItem("resturent_id"),
+    selected: "",
     waiters: [],
     itemsPerPage: 5,
     isMounted: false,
     popupActive: false,
     user: {
-      name: "",
-      phone_no: "",
-      username: "",
+      image: "",
+      logoPreview: "",
+      email: "",
+      first_name: "",
+      phone: "",
       password: "",
     },
   }),
@@ -195,7 +233,7 @@ export default {
   methods: {
     getWaiters() {
       axios
-        .get(`resturant/${this.resturent_id}/waiter/`)
+        .get(`/account_management/resturant/${this.restaurant_id}/waiter_info/`)
         .then((res) => {
           console.log(res);
           this.waiters = res.data.data;
@@ -205,20 +243,35 @@ export default {
         });
     },
     addWaiters() {
+      let formData = new FormData();
+      formData.append("restaurant_id", this.restaurant_id);
+
+      formData.append("email", this.user.email);
+      formData.append("first_name", this.user.first_name);
+      formData.append("phone", this.user.phone);
+      formData.append("password", this.user.password);
+
+      if (this.user.logoPreview != "") {
+        formData.append("image", this.user.image);
+      }
+
       axios
-        .post(`resturant/${this.resturent_id}/waiter/`, {
-          name: this.user.name,
-          phone_no: this.user.phone_no,
-          username: this.user.username,
-          password: this.user.password,
+        .post(`/account_management/restaurant/create_waiter/`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         })
         .then((res) => {
-          this.waiters.unshift(res.data.data);
+          this.waiters.push(res.data.data);
+          // this.getWaiters();
+
           this.popupActive = false;
-          console.log(res);
-          this.user.name = "";
-          this.user.phone_no = "";
-          this.user.username = "";
+          console.log("res ", res);
+          this.user.first_name = "";
+          this.user.phone = "";
+          this.user.email = "";
+          this.user.image = "";
+          this.user.logoPreview = "";
           this.user.password = "";
 
           this.$vs.notify({
@@ -231,6 +284,23 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+
+    updateCurrImg(input) {
+      console.log("image fun called");
+      if (input.target.files && input.target.files[0]) {
+        const reader = new FileReader();
+        reader.readAsDataURL(input.target.files[0]);
+
+        reader.onload = (e) => {
+          let img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            this.user.image = input.target.files[0];
+            this.user.logoPreview = e.target.result;
+          };
+        };
+      }
     },
   },
 
