@@ -2,7 +2,7 @@
   <div>
     <vx-card title="Restaurant profile">
       <vs-tabs>
-        <vs-tab label="Account" icon-pack="feather" icon="icon-home">
+        <vs-tab label="Restaurant" icon-pack="feather" icon="icon-home">
           <div class="vx-row mt-5">
             <div class="vx-col sm:w-4/12 w-full mb-2">
               <img
@@ -69,10 +69,10 @@
                   <vs-input
                     class="w-full"
                     icon-pack="feather"
-                    icon="icon-smartphone"
+                    icon="icon-dollar-sign"
                     icon-no-border
-                    label="Mobile no"
-                    v-model="mobile_no"
+                    label="Service Charge Is Percentage"
+                    v-model="service_charge_is_percentage"
                   />
                 </div>
               </div>
@@ -82,81 +82,6 @@
                     type="email"
                     class="w-full"
                     icon-pack="feather"
-                    icon="icon-mail"
-                    icon-no-border
-                    label="Email"
-                    v-model="email"
-                  />
-                </div>
-              </div>
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-archive"
-                    icon-no-border
-                    label="Total table"
-                    v-model="table"
-                  />
-                </div>
-              </div>
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-calendar"
-                    icon-no-border
-                    label="Start Date"
-                    v-model="start_date"
-                  />
-                </div>
-              </div>
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-calendar"
-                    icon-no-border
-                    label="End date"
-                    v-model="end_date"
-                  />
-                </div>
-              </div>
-
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-dollar-sign"
-                    icon-no-border
-                    label="VAT"
-                    v-model="vat"
-                  />
-                </div>
-              </div>
-
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-dollar-sign"
-                    icon-no-border
-                    label="VAT Registration No."
-                    v-model="vat_reg_no"
-                  />
-                </div>
-              </div>
-
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
                     icon="icon-dollar-sign"
                     icon-no-border
                     label="Service Charge"
@@ -164,13 +89,73 @@
                   />
                 </div>
               </div>
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
+                  <vs-input
+                    class="w-full"
+                    icon-pack="feather"
+                    icon="icon-dollar-sign"
+                    icon-no-border
+                    label="Tax Percentage"
+                    v-model="tax_percentage"
+                  />
+                </div>
+              </div>
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
+                  <vs-input
+                    class="w-full"
+                    icon-pack="feather"
+                    icon="icon-calendar"
+                    icon-no-border
+                    label="Created At"
+                    v-model="created_at"
+                  />
+                </div>
+              </div>
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
+                  <vs-input
+                    class="w-full"
+                    icon-pack="feather"
+                    icon="icon-link"
+                    icon-no-border
+                    label="Website"
+                    v-model="website"
+                  />
+                </div>
+              </div>
 
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
+                  <vs-input
+                    class="w-full"
+                    icon-pack="feather"
+                    icon="icon-help-circle"
+                    icon-no-border
+                    label="Status"
+                    v-model="status"
+                  />
+                </div>
+              </div>
+
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
+                  <vs-input
+                    class="w-full"
+                    icon-pack="feather"
+                    icon="icon-calendar"
+                    icon-no-border
+                    label="Subscription Ends"
+                    v-model="subscription_ends"
+                  />
+                </div>
+              </div>
               <div class="vx-row">
                 <div class="vx-col w-full">
                   <vs-button class="mr-3 mb-2" @click="updateRestaurant"
                     >Save Change</vs-button
                   >
-                
                 </div>
               </div>
             </div>
@@ -238,13 +223,21 @@ export default {
     resturent_id: localStorage.getItem("resturent_id"),
     name: "",
     address: "",
+    logo: "",
+    newLogo:"",
+    logoPreview: "",
+    service_charge_is_percentage: "",
+    service_charge: "",
+    tax_percentage: "",
+    created_at: "",
+    website: "",
+    status: "",
+    subscription_ends: "",
     table: 0,
     start_date: "",
     end_date: "",
     is_auto_deactivate: null,
     mobile_no: "",
-    logo: "",
-    logoPreview: "",
     email: "restaurant@dummymail.com",
     service_charge: "",
     vat: "",
@@ -266,32 +259,29 @@ export default {
             if (img.width !== 500 && img.height !== 500) {
               alert("Image size must be 500px*500px");
             } else {
-              this.logo = input.target.files[0];
+              this.newLogo = input.target.files[0];
               this.logoPreview = e.target.result;
             }
           };
         };
       }
     },
-    getRestaurant() {
-      // axios
-      //   .get(`/restaurant_dashboard_info/${this.resturent_id}`)
-      //   .then((res) => {
-      //     console.log(res);
-      //     this.name = res.data.data.name;
-      //     this.address = res.data.data.address;
-      //     this.table = res.data.data.table;
-      //     this.start_date = res.data.data.start_date;
-      //     this.end_date = res.data.data.end_date;
-      //     this.mobile_no = res.data.data.mobile_no;
-      //     this.logo = res.data.data.logo;
-      //     this.vat = res.data.data.vat;
-      //     this.vat_reg_no = res.data.data.vat_registration_number;
-      //     this.service_charge = res.data.data.service_charge;
-      //   });
 
-      // let rest = JSON.parse(localStorage.getItem('res'));
-      // this
+    getRestaurant() {
+      let restaurant = JSON.parse(localStorage.getItem("resturent"));
+      console.log("res ", restaurant);
+      this.name = restaurant.name;
+      this.logo = restaurant.logo;
+      this.logoPreview = restaurant.logoPreview;
+      this.address = restaurant.address;
+      this.service_charge_is_percentage =
+        restaurant.service_charge_is_percentage;
+      this.service_charge = restaurant.service_charge;
+      this.tax_percentage = restaurant.tax_percentage;
+      this.created_at = restaurant.created_at;
+      this.website = restaurant.website;
+      this.status = restaurant.status;
+      this.subscription_ends = restaurant.subscription_ends;
     },
 
     updateRestaurant() {
@@ -299,8 +289,7 @@ export default {
         type: "confirm",
         color: "danger",
         title: `Confirm`,
-        text:
-          "Confirm update",
+        text: "Confirm update",
         accept: this.updateRestaurantGo,
       });
     },
@@ -309,30 +298,49 @@ export default {
       let formData = new FormData();
       formData.append("name", this.name);
       formData.append("address", this.address);
-      formData.append("mobile_no", this.mobile_no);
-      formData.append("start_date", this.start_date);
-      formData.append("end_date", this.end_date);
-      formData.append("vat", this.vat);
-      formData.append("vat_registration_number", this.vat_reg_no);
+      formData.append(
+        "service_charge_is_percentage",
+        this.service_charge_is_percentage
+      );
       formData.append("service_charge", this.service_charge);
-      if (this.logoPreview != "") {
-        formData.append("logo", this.logo);
+      formData.append("tax_percentage", this.tax_percentage);
+      formData.append("website", this.website);
+      formData.append("subscription_ends", this.subscription_ends);
+
+      if (this.logoPreview != "" && this.newLogo !== "") {
+        formData.append("logo", this.newLogo);
       }
 
       axios
-        .patch(`/restaurant_dashboard_info/${this.resturent_id}`, formData, {
+        .patch(`/restaurant_management/restaurant/${this.resturent_id}/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
         .then((res) => {
           console.log(res);
-          this.$vs.notify({
-            title: "Update Success",
-            text: "Resturent updated successfully",
-            color: "success",
-            position: "top-right",
-          });
+          if (res.data.status) {
+            localStorage.setItem(
+                "resturent",
+                JSON.stringify(res.data.data)
+              );
+            this.$vs.notify({
+              title: "Update Success",
+              text: res.data.msg,
+              color: "success",
+              position: "top-right",
+            });
+          } else {
+            console.log(res.data.error.error_details);
+            const errors = res.data.error.error_details;
+            for (const property in errors) {
+              this.$vs.notify({
+                text: errors[property][0],
+                color: "danger",
+                position: "top-right",
+              });
+            }
+          }
           // Window.location.href = "/restaurant"
           // alert('Date has been saved successfully!');
         })

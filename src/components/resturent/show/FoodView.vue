@@ -605,9 +605,9 @@ export default {
     },
     getFood() {
       axios
-        .get(`resturant/${this.resturent_id}/food/`)
+        .get(`/restaurant_management/food/`)
         .then((res) => {
-          console.log(res);
+          console.log('food ', res);
           this.foods = res.data.data;
         })
         .catch((err) => {
