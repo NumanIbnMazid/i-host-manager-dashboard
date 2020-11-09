@@ -274,21 +274,24 @@ export default {
       }
     },
     getRestaurant() {
-      axios
-        .get(`/restaurant_dashboard_info/${this.resturent_id}`)
-        .then((res) => {
-          console.log(res);
-          this.name = res.data.data.name;
-          this.address = res.data.data.address;
-          this.table = res.data.data.table;
-          this.start_date = res.data.data.start_date;
-          this.end_date = res.data.data.end_date;
-          this.mobile_no = res.data.data.mobile_no;
-          this.logo = res.data.data.logo;
-          this.vat = res.data.data.vat;
-          this.vat_reg_no = res.data.data.vat_registration_number;
-          this.service_charge = res.data.data.service_charge;
-        });
+      // axios
+      //   .get(`/restaurant_dashboard_info/${this.resturent_id}`)
+      //   .then((res) => {
+      //     console.log(res);
+      //     this.name = res.data.data.name;
+      //     this.address = res.data.data.address;
+      //     this.table = res.data.data.table;
+      //     this.start_date = res.data.data.start_date;
+      //     this.end_date = res.data.data.end_date;
+      //     this.mobile_no = res.data.data.mobile_no;
+      //     this.logo = res.data.data.logo;
+      //     this.vat = res.data.data.vat;
+      //     this.vat_reg_no = res.data.data.vat_registration_number;
+      //     this.service_charge = res.data.data.service_charge;
+      //   });
+
+      // let rest = JSON.parse(localStorage.getItem('res'));
+      // this
     },
 
     updateRestaurant() {
