@@ -7,7 +7,7 @@
       :subtitle="null"
       finishButtonText="Submit"
     >
-      <!-- <tab-content
+      <tab-content
         title="General Info"
         class="mb-5"
         icon="feather icon-home"
@@ -124,7 +124,7 @@
             </div>
           </div>
         </vs-row>
-      </tab-content> -->
+      </tab-content>
 
       <!-- tab 2 content -->
       <tab-content
