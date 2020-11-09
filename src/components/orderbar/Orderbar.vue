@@ -9,10 +9,23 @@
   >
     <div class="header-sidebar md:flex" slot="header">
       <div class="md:flex bg-white rounded-lg px-6 py-3 w-full">
-        <img
-          class="h-16 w-16 md:h-12 md:w-12 rounded-full mx-auto md:mx-0 md:mr-6 shadow-md"
-          src="http://i-host.com.bd/assets/team/karina.jpeg"
-        />
+        <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
+          <img
+            class="h-16 w-16 md:h-12 md:w-12 rounded-full mx-auto md:mx-0 md:mr-6 shadow-md"
+            src="http://i-host.com.bd/assets/team/karina.jpeg"
+          />
+          <vs-dropdown-menu class="vx-navbar-dropdown">
+            <ul style="min-width: 9rem">
+              <li
+                class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
+                @click="logout"
+              >
+                <feather-icon icon="LogOutIcon" svgClasses="w-4 h-4" />
+                <span class="ml-2">Logout</span>
+              </li>
+            </ul>
+          </vs-dropdown-menu>
+        </vs-dropdown>
         <div class="text-center md:text-left my-auto w-full">
           <h6>Tahsin Karina</h6>
           <p class="text-sm">Manager</p>
@@ -116,6 +129,7 @@
 </template>
 
 <script>
+import axios from "@/axios.js";
 export default {
   data: () => ({
     active: true,
@@ -164,6 +178,26 @@ export default {
       },
     ],
   }),
+
+  methods: {
+    logout() {
+      axios
+        .post("/account_management/auth/logout/")
+        .then((res) => {
+          console.log(res);
+          // localStorage.removeItem("token");
+          // localStorage.removeItem("resturent_id");
+        })
+        .catch((err) => {
+          console.log("log out error ", err);
+        });
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("resturent_id");
+
+      this.$router.push("/login").catch(() => {});
+    },
+  },
 };
 </script>
 

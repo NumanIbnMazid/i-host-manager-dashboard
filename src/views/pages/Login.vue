@@ -91,10 +91,19 @@ export default {
           password: this.password,
         })
         .then((res) => {
-          console.log(res.data.data.auth);
+          // console.log(res.data.data);
           if (res.data.data.auth.token) {
             localStorage.setItem("token", res.data.data.auth.token);
             // localStorage.setItem("resturent_id", res.data.data.restuarant_id);
+            let rstrnt = res.data.data.staff_info;
+            console.log(rstrnt[0].restaurant);
+            if (rstrnt.length == 1) {
+              localStorage.setItem(
+                "resturent",
+                JSON.stringify(rstrnt[0].restaurant)
+              );
+              localStorage.setItem("resturent_id", rstrnt[0].restaurant.id);
+            }
 
             this.$router.push("/");
           } else {
