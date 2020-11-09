@@ -48,6 +48,13 @@ const router = new Router({
                     beforeEnter: requireAuth
                 },
                 {
+                    path: '/food/create',
+                    name: 'food-create',
+                    component: () =>
+                        import ('./components/food/FoodCreate.vue'),
+                    beforeEnter: requireAuth
+                },
+                {
                     path: '/table',
                     name: 'table',
                     component: () =>

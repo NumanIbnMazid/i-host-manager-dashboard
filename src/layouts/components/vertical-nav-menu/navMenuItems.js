@@ -15,6 +15,12 @@ export default [{
         name: "Food",
         slug: "category",
         icon: "CoffeeIcon",
+        // submenu: [{
+        //     url: "/food",
+        //     name: "Food",
+        //     slug: "category",
+        //     icon: "CoffeeIcon",
+        // }],
     },
     {
         url: "/table",
