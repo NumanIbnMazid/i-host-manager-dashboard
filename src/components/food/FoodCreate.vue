@@ -131,25 +131,111 @@
         title="Food Options"
         class="mb-5"
         icon="feather icon-briefcase"
-        :before-change="validateStep2"
+        :before-change="addOption"
       >
+        <vs-row>
+          <h4 class="text-center w-full">Is single food?</h4>
+          <ul class="centerx slect-type mx-auto">
+            <li>
+              <vs-radio v-model="is_single" vs-value="true" checked
+                >Yes</vs-radio
+              >
+            </li>
+            <li>
+              <vs-radio v-model="is_single" vs-value="false">No</vs-radio>
+            </li>
+          </ul>
+        </vs-row>
+
         <div class="md:w-1/2 mx-auto">
-          <vs-row>
-            <div class="md:w-1/2">
+          <vs-row v-if="is_single == 'true'">
+            <div class="md:w-1/2 mx-auto">
+              <vs-input
+                label="Price"
+                v-model="single_price"
+                class="mt-5 w-full"
+                name="item-name"
+                type=""
+              />
+            </div>
+          </vs-row>
+
+          <vs-row v-else>
+            <div class="md:w-4/12 px-2">
               <vs-input
                 label="Name"
                 class="mt-5 w-full"
                 name="item-name"
+                v-model="temp_options.name"
+              />
+            </div>
+            <div class="md:w-3/12 px-2">
+              <vs-input
+                label="Price"
+                v-model="temp_options.price"
+                class="mt-5 w-full"
+                name="item-name"
+                type="number"
+              />
+            </div>
+            <div class="md:w-3/12 pt-5 px-2">
+              <label for=""><small>Option Type</small></label>
+              <v-select
+                label="name"
+                class="w-full"
+                v-model="temp_options.type"
+                :options="optionsTypes"
+                :reduce="(optionsTypes) => optionsTypes.id"
+              />
+            </div>
+            <div class="md:w-2/12 pt-10">
+              <vs-button
+                class="w-full"
+                @click="addFoodOption()"
+                icon-pack="feather"
+                icon="icon-plus"
+                >Add</vs-button
+              >
+            </div>
+          </vs-row>
+
+          <vs-row v-for="(option, i) in options" :key="i">
+            <div class="md:w-4/12 px-2">
+              <vs-input
+                class="mt-5 w-full"
+                name="item-name"
+                :value="option.name"
                 disabled
               />
             </div>
-            <div class="md:w-1/2">
+            <div class="md:w-3/12 px-2">
               <vs-input
-                label="Ingredients"
-                v-model="ingredients"
+                :value="option.price"
                 class="mt-5 w-full"
                 name="item-name"
+                type="number"
               />
+            </div>
+            <div class="md:w-3/12 px-2">
+              <!-- <label for=""><small>Option Type</small></label>
+              <v-select
+                label="name"
+                class="w-full"
+                v-model="selected"
+                :options="optionsTypes"
+                :reduce="(optionsTypes) => optionsTypes.id"
+              /> -->
+              <vs-input
+                :value="option.option_type"
+                class="mt-5 w-full"
+                name="item-name"
+                type="number"
+              />
+            </div>
+            <div class="md:w-2/12 pt-5">
+              <vs-button class="w-full" icon-pack="feather" icon="icon-plus"
+                >Update</vs-button
+              >
             </div>
           </vs-row>
         </div>
@@ -161,7 +247,86 @@
         class="mb-5"
         icon="feather icon-image"
         :before-change="validateStep3"
-      >
+        ><div class="md:w-1/2 mx-auto">
+          <vs-row>
+            <div class="md:w-4/12 px-2">
+              <vs-input
+                label="Name"
+                class="mt-5 w-full"
+                name="item-name"
+                v-model="temp_extra.name"
+              />
+            </div>
+            <div class="md:w-3/12 px-2">
+              <vs-input
+                label="Price"
+                v-model="temp_extra.price"
+                class="mt-5 w-full"
+                name="item-name"
+                type="number"
+              />
+            </div>
+            <div class="md:w-3/12 pt-5 px-2">
+              <label for=""><small>Extra Type</small></label>
+              <v-select
+                label="name"
+                class="w-full"
+                v-model="temp_extra.type"
+                :options="extrasTypes"
+                :reduce="(extrasTypes) => extrasTypes.id"
+              />
+            </div>
+            <div class="md:w-2/12 pt-10">
+              <vs-button
+                class="w-full"
+                @click="addFoodExtra()"
+                icon-pack="feather"
+                icon="icon-plus"
+                >Add</vs-button
+              >
+            </div>
+          </vs-row>
+
+          <vs-row v-for="(extra, i) in extras" :key="i">
+            <div class="md:w-4/12 px-2">
+              <vs-input
+                class="mt-5 w-full"
+                name="item-name"
+                :value="extra.name"
+                disabled
+              />
+            </div>
+            <div class="md:w-3/12 px-2">
+              <vs-input
+                :value="extra.price"
+                class="mt-5 w-full"
+                name="item-name"
+                type="number"
+              />
+            </div>
+            <div class="md:w-3/12 px-2">
+              <!-- <label for=""><small>Option Type</small></label>
+              <v-select
+                label="name"
+                class="w-full"
+                v-model="selected"
+                :options="optionsTypes"
+                :reduce="(optionsTypes) => optionsTypes.id"
+              /> -->
+              <vs-input
+                :value="extra.extra_type"
+                class="mt-5 w-full"
+                name="item-name"
+                type="number"
+              />
+            </div>
+            <div class="md:w-2/12 pt-5">
+              <vs-button class="w-full" icon-pack="feather" icon="icon-plus"
+                >Update</vs-button
+              >
+            </div>
+          </vs-row>
+        </div>
       </tab-content>
     </form-wizard>
   </vx-card>
@@ -189,8 +354,26 @@ export default {
       is_recommended: "false",
       preview: "",
       category: "",
-      allcategorys: [],
       food: "",
+      is_single: "true",
+      single_price: 0,
+      options: [],
+      extras: [],
+      temp_options: {
+        name: "",
+        price: "",
+        type: null,
+      },
+      temp_extra: {
+        name: "",
+        price: "",
+        type: null,
+      },
+
+      /** For dropdown*/
+      optionsTypes: [],
+      extrasTypes: [],
+      allcategorys: [],
     };
   },
   methods: {
@@ -246,16 +429,89 @@ export default {
           });
       });
     },
-    validateStep2() {
-      alert("Second");
-      return true;
+    addOption() {
+      if (this.is_single == "true") {
+        return new Promise((resolve, reject) => {
+          axios
+            .post("restaurant_management/food_option/", {
+              name: "Default",
+              price: this.single_price,
+              food: this.food.id,
+              option_type: 1,
+            })
+            .then((res) => {
+              console.log(res);
+              if (res.data.status) {
+                resolve(true);
+              } else {
+                reject("Something went wrong");
+              }
+            });
+        });
+      } else {
+        return new Promise((resolve, reject) => {
+          if (this.options.length == 0) {
+            reject("Something went wrong");
+          } else {
+            resolve(true);
+          }
+        });
+      }
     },
     validateStep3() {
-      alert("Third");
-      return true;
+      // return true;
+
+      this.$router.push("/food");
     },
 
-    /** Get all categor */
+    addFoodOption() {
+      axios
+        .post("restaurant_management/food_option/", {
+          name: this.temp_options.name,
+          price: this.temp_options.price,
+          food: this.food.id,
+          option_type: this.temp_options.type,
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.options.push(res.data.data);
+
+            this.temp_options.name = "";
+            this.temp_options.price = "";
+            this.temp_options.type = "";
+          } else {
+            alert("Something went worng!");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    addFoodExtra() {
+      axios
+        .post("restaurant_management/food_extra/", {
+          name: this.temp_extra.name,
+          price: this.temp_extra.price,
+          food: this.food.id,
+          extra_type: this.temp_extra.type,
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.extras.push(res.data.data);
+
+            this.temp_extra.name = "";
+            this.temp_extra.price = "";
+            this.temp_extra.type = "";
+          } else {
+            alert("Something went worng!");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+
+    /** Get all category */
     getCatgory() {
       axios
         .get(`restaurant_management/food_category/`)
@@ -267,11 +523,45 @@ export default {
           console.log(err);
         });
     },
+
+    /** Get all option type */
+    getAllOptionsType() {
+      axios
+        .get("restaurant_management/food_option_type/")
+        .then((res) => {
+          console.log(res);
+          this.optionsTypes = res.data.data;
+        })
+        .then((err) => {
+          console.log(err);
+        });
+    },
+
+    /** Get all option type */
+    getAllExtrasType() {
+      axios
+        .get("restaurant_management/food_extra_type/")
+        .then((res) => {
+          console.log(res);
+          this.extrasTypes = res.data.data;
+        })
+        .then((err) => {
+          console.log(err);
+        });
+    },
   },
 
   created() {
     this.getCatgory();
+    this.getAllOptionsType();
+    this.getAllExtrasType();
   },
 };
 </script>
-    
+
+<style scoped>
+.slect-type > li {
+  float: left;
+  margin: 10px;
+}
+</style>

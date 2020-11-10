@@ -85,7 +85,7 @@
 
             <vs-td>
               <p class="product-name font-medium truncate">
-                {{ tr.category ? tr.category.name : ''  }}
+                {{ tr.category ? tr.category.name : "" }}
               </p>
             </vs-td>
 
@@ -118,9 +118,10 @@
             </vs-td>
 
             <vs-td>
-              <vs-chip v-for="(opt, i) in tr.options" :key="i">{{
-                opt.option_name
-              }}</vs-chip>
+              <vs-chip v-for="(opt, i) in tr.food_options" :key="i">
+                <b>{{ opt.option_type.name }}: </b>
+                {{ opt.name }}</vs-chip
+              >
             </vs-td>
 
             <vs-td>
@@ -607,9 +608,9 @@ export default {
     },
     getFood() {
       axios
-        .get(`/restaurant_management/food/`)
+        .get(`restaurant_management/restaurant/${this.resturent_id}/foods/`)
         .then((res) => {
-          console.log('food ', res);
+          console.log("food ", res);
           this.foods = res.data.data;
         })
         .catch((err) => {
