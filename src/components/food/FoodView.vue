@@ -13,17 +13,15 @@
         class="flex flex-wrap-reverse items-center flex-grow justify-between"
       >
         <div class="flex flex-wrap-reverse items-center">
-          <!-- ACTION - DROPDOWN -->
           <div
             class="p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary"
-            @click="popupActive = true"
+            @click="$router.push('/food/create')"
           >
             <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
             <span class="ml-2 text-base text-primary">Add New</span>
           </div>
         </div>
 
-        <!-- ITEMS PER PAGE -->
         <vs-dropdown vs-trigger-click class="cursor-pointer mb-4 mr-4">
           <div
             class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
@@ -39,7 +37,7 @@
             >
             <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
           </div>
-          <!-- <vs-button class="btn-drop" type="line" color="primary" icon-pack="feather" icon="icon-chevron-down"></vs-button> -->
+
           <vs-dropdown-menu>
             <vs-dropdown-item @click="itemsPerPage = 10">
               <span>10</span>
@@ -61,9 +59,11 @@
         <vs-th>Category</vs-th>
         <vs-th>Price</vs-th>
         <vs-th>Discount Price</vs-th>
+        <vs-th>Description</vs-th>
         <vs-th>Ingredients</vs-th>
         <vs-th>Options</vs-th>
-        <vs-th>Featured</vs-th>
+        <vs-th>Recommended</vs-th>
+        <vs-th>Top</vs-th>
         <vs-th>Action</vs-th>
       </template>
 
@@ -85,7 +85,7 @@
 
             <vs-td>
               <p class="product-name font-medium truncate">
-                {{ tr.category.name }}
+                {{ tr.category ? tr.category.name : "" }}
               </p>
             </vs-td>
 
@@ -100,19 +100,39 @@
             </vs-td>
 
             <vs-td>
-              <p class="product-name font-medium truncate" :title="tr.ingredients">
-                {{ tr.ingredients.substr(0,10) }}
+              <p
+                class="product-name font-medium truncate"
+                :title="tr.description"
+              >
+                {{ tr.description }}
               </p>
             </vs-td>
 
             <vs-td>
-              <vs-chip v-for="(opt, i) in tr.options" :key="i">{{
-                opt.option_name
-              }}</vs-chip>
+              <p
+                class="product-name font-medium truncate"
+                :title="tr.ingredients"
+              >
+                {{ tr.ingredients }}
+              </p>
             </vs-td>
 
             <vs-td>
-              <p class="product-name font-medium truncate">{{ tr.featured }}</p>
+              <vs-chip v-for="(opt, i) in tr.food_options" :key="i">
+                <b>{{ opt.option_type.name }}: </b>
+                {{ opt.name }}</vs-chip
+              >
+            </vs-td>
+
+            <vs-td>
+              <p class="product-name font-medium truncate">
+                {{ tr.is_recommended ? "Yes" : "No" }}
+              </p>
+            </vs-td>
+            <vs-td>
+              <p class="product-name font-medium truncate">
+                {{ tr.is_top ? "Yes" : "No" }}
+              </p>
             </vs-td>
 
             <vs-td class="whitespace-no-wrap">
@@ -238,7 +258,7 @@
             />
           </div>
 
-          <div class="flex m-5">
+          <!-- <div class="flex m-5">
             <v-select
               label="option_name"
               taggable
@@ -256,7 +276,7 @@
               "
               :reduce="(options) => options.option_name"
             />
-          </div>
+          </div> -->
 
           <div class="flex m-5">
             <vs-input
@@ -376,7 +396,7 @@
           />
         </div>
 
-        <div class="w-full mt-5">
+        <!-- <div class="w-full mt-5">
           <label for>Options</label>
           <v-select
             taggable
@@ -388,14 +408,7 @@
           />
         </div>
 
-        <!-- <div class="w-full"><vs-input
-            label="Type"
-            v-model="newData.type"
-            class="mt-5 w-full"
-            name="item-name"
-            
-          />
-        </div>-->
+      -->
 
         <vs-button class="mb-2 w-full mt-5" @click="addFood()"
           >Add New</vs-button
@@ -465,16 +478,6 @@ export default {
   },
 
   methods: {
-    shortIngridients(text) {
-      // var ln = 50;
-      // var nt = [];
-      // for (let i = 0; i < ln; i++) {
-      //   nt.push(text[i]);
-      // }
-
-      // return .replace(",", "");
-    },
-
     newImgAdd(input) {
       if (input.target.files && input.target.files[0]) {
         const reader = new FileReader();
@@ -508,17 +511,17 @@ export default {
       this.toggleDataSidebar(true);
     },
 
-    getCatgory() {
-      axios
-        .get(`resturant/${this.resturent_id}/category/`)
-        .then((res) => {
-          console.log(res);
-          this.categorys = res.data.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
+    // getCatgory() {
+    //   axios
+    //     .get(`resturant/${this.resturent_id}/category/`)
+    //     .then((res) => {
+    //       console.log(res);
+    //       this.categorys = res.data.data;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // },
 
     editItem(data) {
       console.log(data);
@@ -605,9 +608,9 @@ export default {
     },
     getFood() {
       axios
-        .get(`/restaurant_management/food/`)
+        .get(`restaurant_management/restaurant/${this.resturent_id}/foods/`)
         .then((res) => {
-          console.log('food ', res);
+          console.log("food ", res);
           this.foods = res.data.data;
         })
         .catch((err) => {
@@ -667,7 +670,7 @@ export default {
   },
   created() {
     this.getFood();
-    this.getCatgory();
+    // this.getCatgory();
   },
   mounted() {
     this.isMounted = true;

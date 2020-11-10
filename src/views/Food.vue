@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import FoodView from "../components/resturent/show/FoodView.vue";
+import FoodView from "../components/food/FoodView.vue";
 export default {
   components: {
     FoodView,
