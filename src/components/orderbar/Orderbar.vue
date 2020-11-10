@@ -180,20 +180,21 @@ export default {
   }),
 
   methods: {
+    // ?
     logout() {
       axios
         .post("/account_management/auth/logout/")
         .then((res) => {
           console.log(res);
-          // localStorage.removeItem("token");
-          // localStorage.removeItem("resturent_id");
+          localStorage.removeItem("token");
+          localStorage.removeItem("resturent_id");
         })
         .catch((err) => {
           console.log("log out error ", err);
         });
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("resturent_id");
+      // localStorage.removeItem("token");
+      // localStorage.removeItem("resturent_id");
 
       this.$router.push("/login").catch(() => {});
     },

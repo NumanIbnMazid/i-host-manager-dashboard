@@ -61,19 +61,21 @@ Array.prototype.sum = function(prop) {
 };
 
 
-
-Vue.mixin({
-  methods: {
-    globalHelper: function(message, type) {
-      this.$vs.notify({
+const plugin = {
+  install() {
+    Vue.prototype.showActionMessage = (message, type) => {
+      console.log("sam called!! ", message, type);
+      $vs.notify({
         title: "Message",
         text: message,
         color: type,
         position: "top-right"
       });
-    }
+    };
   }
-});
+};
+
+Vue.use(plugin);
 
 Vue.config.productionTip = false;
 
