@@ -239,7 +239,8 @@ export default {
           this.waiters = res.data.data;
         })
         .catch((err) => {
-          console.log(err);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
         });
     },
     addWaiters() {
@@ -263,7 +264,6 @@ export default {
         })
         .then((res) => {
           this.waiters.push(res.data.data);
-          // this.getWaiters();
 
           this.popupActive = false;
           console.log("res ", res);
@@ -274,20 +274,16 @@ export default {
           this.user.logoPreview = "";
           this.user.password = "";
 
-          this.$vs.notify({
-            title: "Create Success",
-            text: "Waiter created successfully",
-            color: "success",
-            position: "top-right",
-          });
+          this.showActionMessage("success", "Waiter Created Successfully!");
         })
         .catch((err) => {
           console.log(err);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
         });
     },
 
     updateCurrImg(input) {
-      console.log("image fun called");
       if (input.target.files && input.target.files[0]) {
         const reader = new FileReader();
         reader.readAsDataURL(input.target.files[0]);

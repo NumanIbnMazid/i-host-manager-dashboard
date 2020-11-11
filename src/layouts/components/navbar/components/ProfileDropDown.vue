@@ -69,10 +69,18 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("resturent_id");
-      // This is just for demo Purpose. If user clicks on logout -> redirect
-      this.$router.push("/login").catch(() => {});
+      axios
+        .post("/account_management/auth/logout/")
+        .then((res) => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("resturent_id");
+          window.location.href = "/login";
+        })
+        .catch((err) => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("resturent_id");
+          window.location.href = "/login";
+        });
     },
   },
 };

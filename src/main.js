@@ -41,6 +41,9 @@ import router from "./router";
 // Vuex Store
 import store from "./store/store";
 
+// alert message
+import Swal from "sweetalert2";
+
 // Vuejs - Vue wrapper for hammerjs
 import { VueHammer } from "vue2-hammer";
 Vue.use(VueHammer);
@@ -60,17 +63,33 @@ Array.prototype.sum = function(prop) {
   return total;
 };
 
-
 const plugin = {
   install() {
-    Vue.prototype.showActionMessage = (message, type) => {
-      console.log("sam called!! ", message, type);
-      $vs.notify({
-        title: "Message",
-        text: message,
-        color: type,
-        position: "top-right"
+    Vue.prototype.showActionMessage = (type, msg) => {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        onOpen: toast => {
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        }
       });
+
+      Toast.fire({
+        icon: type,
+        title: msg
+      });
+    };
+
+    // checking error status
+    Vue.prototype.checkError = err => {
+      if (err.response.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("resturent_id");
+        this.$router.push("/login").catch(() => {});
+      }
     };
   }
 };
