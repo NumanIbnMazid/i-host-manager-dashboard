@@ -161,55 +161,6 @@
             </div>
           </div>
         </vs-tab>
-        <vs-tab label="Credential" icon-pack="feather" icon="icon-lock">
-          <vx-row class="mt-5 flex flex-wrap">
-            <div class="vx-col sm:w-1/2 m-auto w-full mb-2">
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-lock"
-                    icon-no-border
-                    label="Old password"
-                    v-model="old_password"
-                  />
-                </div>
-              </div>
-
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-lock"
-                    icon-no-border
-                    label="New password"
-                    v-model="new_password"
-                  />
-                </div>
-              </div>
-
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-lock"
-                    icon-no-border
-                    label="Confirm password"
-                  />
-                </div>
-              </div>
-
-              <div class="vx-row">
-                <div class="vx-col w-full text-center">
-                  <vs-button class="mr-3 mb-2 w-full">Save Change</vs-button>
-                </div>
-              </div>
-            </div>
-          </vx-row>
-        </vs-tab>
       </vs-tabs>
     </vx-card>
   </div>
@@ -224,7 +175,7 @@ export default {
     name: "",
     address: "",
     logo: "",
-    newLogo:"",
+    newLogo: "",
     logoPreview: "",
     service_charge_is_percentage: "",
     service_charge: "",
@@ -312,18 +263,19 @@ export default {
       }
 
       axios
-        .patch(`/restaurant_management/restaurant/${this.resturent_id}/`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .patch(
+          `/restaurant_management/restaurant/${this.resturent_id}/`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then((res) => {
           console.log(res);
           if (res.data.status) {
-            localStorage.setItem(
-                "resturent",
-                JSON.stringify(res.data.data)
-              );
+            localStorage.setItem("resturent", JSON.stringify(res.data.data));
             this.$vs.notify({
               title: "Update Success",
               text: res.data.msg,
@@ -346,12 +298,8 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          this.$vs.notify({
-            title: "Update Failed",
-            text: "Resturent updated failed",
-            color: "danger",
-            position: "top-right",
-          });
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
         });
     },
   },

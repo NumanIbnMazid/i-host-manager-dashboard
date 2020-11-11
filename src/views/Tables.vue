@@ -64,6 +64,15 @@
                         @click="detailsWaiterInfo(waiter, table)"
                       />
                     </vx-tooltip>
+                    <vs-avatar
+                      @click="
+                        assignWaiterPopupActive = true;
+                        table_id = table.id;
+                      "
+                      color="success"
+                      icon-pack="feather"
+                      icon="icon-plus"
+                    />
                   </div>
                   <div class="vx-row w-full m-0" style="width: 98% !important">
                     <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/2">
@@ -171,7 +180,7 @@
         <div class="w-full mt-5">
           <label for>Select Waiters</label>
           <v-select
-            label="id"
+            label="first_name"
             class="w-full"
             v-validate="'required'"
             v-model="waiter"
@@ -217,6 +226,44 @@
         >
       </vs-row>
     </vs-popup>
+
+    <!-- popup form for assign waiter to a table -->
+    <vs-popup
+      class="holamundo"
+      title="Add new table"
+      :active.sync="assignWaiterPopupActive"
+    >
+      <vs-row>
+        <div class="w-full mt-5">
+          <label for>Select Waiters</label>
+          <v-select
+            label="first_name"
+            class="w-full"
+            v-validate="'required'"
+            v-model="waiter"
+            :options="waiters"
+            :reduce="(waiters) => waiters.id"
+            multiple
+            taggable
+          />
+        </div>
+
+        <div class="w-full">
+          <vs-input
+            label="Table No"
+            v-model="table_id"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+            disabled
+          />
+        </div>
+
+        <vs-button class="mb-2 w-full mt-5" @click="assignStaff(table_id)"
+          >Assign Waiter</vs-button
+        >
+      </vs-row>
+    </vs-popup>
   </div>
 </template>
 
@@ -235,8 +282,10 @@ export default {
     resturent_id: localStorage.getItem("resturent_id"),
     popupActive: false,
     staffDetailPpopupActive: false,
+    assignWaiterPopupActive: false,
     tables: [],
     table_no: "",
+    table_id: "",
     name: "",
     detailWaiter: {
       tableName: "",
@@ -300,14 +349,29 @@ export default {
         });
     },
 
-    assignStaff(tableId) {
+    assignStaff(tid) {
+      console.log("tid ", tid);
       axios
-        .post(`/restaurant_management/table/${tableId}/add_staff/`, {
+        .post(`/restaurant_management/table/${tid}/add_staff/`, {
           staff_list: this.waiter,
         })
         .then((res) => {
-          console.log("Staff Created Successfully", res.data.data);
-          this.getTable();
+          console.log("Staff Created Successfully", res);
+
+          // if (res.data.status)
+
+          // updating tables object
+          this.tables = this.tables.map((table) =>
+            table.id === tid
+              ? {
+                  ...table,
+                  staff_assigned: (table.staff_assigned =
+                    res.data.data.staff_assigned),
+                }
+              : table
+          );
+          this.waiter = "";
+          this.assignWaiterPopupActive = false;
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
