@@ -7,7 +7,7 @@
       :subtitle="null"
       finishButtonText="Submit"
     >
-      <tab-content
+      <!-- <tab-content
         title="General Info"
         class="mb-5"
         icon="feather icon-home"
@@ -124,7 +124,7 @@
             </div>
           </div>
         </vs-row>
-      </tab-content>
+      </tab-content> -->
 
       <!-- tab 2 content -->
       <tab-content
@@ -215,27 +215,22 @@
                 name="item-name"
                 type="number"
               />
-            </div>
+            </div> 
             <div class="md:w-3/12 px-2">
-              <!-- <label for=""><small>Option Type</small></label>
+              <label for=""><small>Option Type</small></label>
               <v-select
                 label="name"
                 class="w-full"
-                v-model="selected"
                 :options="optionsTypes"
                 :reduce="(optionsTypes) => optionsTypes.id"
-              /> -->
-              <vs-input
                 :value="option.option_type"
-                class="mt-5 w-full"
-                name="item-name"
-                type="number"
               />
             </div>
             <div class="md:w-2/12 pt-5">
-              <vs-button class="w-full" icon-pack="feather" icon="icon-plus"
-                >Update</vs-button
-              >
+              <div class="flex">
+                <vs-button icon-pack="feather" icon="icon-plus"></vs-button>
+                <vs-button icon-pack="feather" icon="icon-plus"></vs-button>
+              </div>
             </div>
           </vs-row>
         </div>
@@ -305,25 +300,21 @@
               />
             </div>
             <div class="md:w-3/12 px-2">
-              <!-- <label for=""><small>Option Type</small></label>
+              <label for=""><small>Extra Type</small></label>
               <v-select
                 label="name"
                 class="w-full"
-                v-model="selected"
-                :options="optionsTypes"
-                :reduce="(optionsTypes) => optionsTypes.id"
-              /> -->
-              <vs-input
+                :options="extrasTypes"
+                :reduce="(extrasTypes) => extrasTypes.id"
                 :value="extra.extra_type"
-                class="mt-5 w-full"
-                name="item-name"
-                type="number"
               />
             </div>
             <div class="md:w-2/12 pt-5">
-              <vs-button class="w-full" icon-pack="feather" icon="icon-plus"
-                >Update</vs-button
-              >
+              <vs-button
+                class="w-full"
+                icon-pack="feather"
+                icon="icon-plus"
+              ></vs-button>
             </div>
           </vs-row>
         </div>
@@ -354,7 +345,19 @@ export default {
       is_recommended: "false",
       preview: "",
       category: "",
-      food: "",
+      food: {
+        name: "New pizza",
+        image:
+          "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/ihost-Icon_Al5LvLP.png",
+        description: "Ne description",
+        restaurant: 1,
+        is_top: false,
+        is_recommended: true,
+        price: null,
+        ingredients: "nai",
+        category: 5,
+        id: 39,
+      },
       is_single: "true",
       single_price: 0,
       options: [],
