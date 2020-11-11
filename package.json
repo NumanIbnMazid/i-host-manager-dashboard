@@ -29,6 +29,7 @@
         "prismjs": "^1.16.0",
         "qrcode": "^1.4.4",
         "qrcode.vue": "^1.7.0",
+        "sweetalert2": "^10.9.1",
         "vee-validate": "^2.2.8",
         "vue": "^2.6.10",
         "vue-acl": "4.0.7",

@@ -5,7 +5,9 @@
         <h1 class="text-grey-dark">Order Dashboard</h1>
       </div>
       <div class="vx-col md:w-1/2 text-right">
-        <h1 class="text-grey-dark">10:29</h1>
+        <h1 class="text-grey-dark">
+          {{ time }}
+        </h1>
       </div>
     </div>
 
@@ -501,11 +503,15 @@
 
 <script>
 import StatisticsCardLine from "@/components/statistics-cards/StatisticsCardLine.vue";
+import moment from "moment";
+
 export default {
   components: {
     StatisticsCardLine,
+    moment,
   },
   data: () => ({
+    time: "",
     ordersData: [
       { id: 52, table_no: 32, table: [], order_status: null },
       { id: 54, table_no: 71, table: [], order_status: null },
@@ -1196,21 +1202,31 @@ export default {
       if (type == "per") return perData.per;
       if (type == "color") return perData.color;
     },
+
+    getTime() {
+      setInterval(() => {
+        this.time = moment().format("h:mm:ss a");
+      }, 1000);
+    },
+  },
+
+  created() {
+    this.getTime();
   },
 };
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 </style>
 

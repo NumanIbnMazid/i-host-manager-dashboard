@@ -262,11 +262,16 @@ export default {
         .then((res) => {
           console.log("tables ", res.data.data);
           this.tables = res.data.data;
+        })
+        .catch((err) => {
+          console.log("table error ", err.response);
+          this.showActionMessage("error", err.response.statusText);
+          // console.log("sremove error ", err);
+          this.checkError(err);
         });
     },
 
     addTable() {
-      // this.showActionMessage("New table created successfully", "success");
       axios
         .post("/restaurant_management/table/", {
           table_no: this.table_no,
@@ -275,26 +280,23 @@ export default {
         })
         .then((res) => {
           if (res.data.status) {
-            // globalHelper("New table created successfully", "success")
-            // this.showActionMessage("New table created successfully", "success");
-            alert("ok");
+            this.showActionMessage("success", "New table created successfully");
+
             // creating staff based on table id
             this.tables.push(res.data.data);
             this.assignStaff(res.data.data.id);
           } else {
-            console.log("res table ", res);
-            alert("not ok");
-            // globalHelper("New table created successfully", "success")
-            // this.showActionMessage("New table create failed", "danger");
+            this.showActionMessage("error", "New table create failed");
           }
-          // showActionMessage("New table create failed", "danger");
-          // this.popupActive = false;
+
+          this.popupActive = false;
 
           this.table_no = "";
           this.waiter = "";
         })
         .catch((err) => {
-          // showActionMessage("New table create failed", "danger");
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
         });
     },
 
@@ -304,13 +306,12 @@ export default {
           staff_list: this.waiter,
         })
         .then((res) => {
-          // showActionMessage("Staff Created Successfully", "success")
           console.log("Staff Created Successfully", res.data.data);
           this.getTable();
         })
         .catch((err) => {
-          // showActionMessage("Staff Create Faild", "danger");
-          console.log("Staff Create Faild");
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
         });
     },
 
@@ -344,7 +345,6 @@ export default {
         .querySelector("#table-qr-" + id)
         .insertAdjacentHTML("afterend", link);
       document.getElementById("tempDown").click();
-      // console.log(link)
     },
 
     imageRenderFromQr() {
@@ -369,7 +369,8 @@ export default {
           console.log(this.waiters);
         })
         .catch((err) => {
-          console.log(err);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
         });
     },
 
@@ -388,7 +389,6 @@ export default {
       this.detailWaiter.email_address = waiter.user.email_address;
       this.detailWaiter.phone = waiter.user.phone;
 
-      console.log("dwd ", this.detailWaiter);
       this.staffDetailPpopupActive = !this.staffDetailPpopupActive;
     },
 
@@ -400,23 +400,24 @@ export default {
         })
         .then((res) => {
           console.log("sremove ", res);
-          // ?
-          // this.tables.map((table) =>
-          //   table.id === tableId
-          //     ? {
-          //         ...table,
-          //         staff_assigned: table.staff_assigned.filter(
-          //           (staff) => staff.id !== waiterId
-          //         ),
-          //       }
-          //     : table
-          // );
+          // updating tables object
+          this.tables = this.tables.map((table) =>
+            table.id === tableId
+              ? {
+                  ...table,
+                  staff_assigned: table.staff_assigned.filter(
+                    (staff) => staff.id !== waiterId
+                  ),
+                }
+              : table
+          );
           this.staffDetailPpopupActive = false;
-          console.log('tbsr ', this.tables.filter(table => table.id === tableId))
+
+          this.showActionMessage("success", "Waiter removed successfully!");
         })
         .catch((err) => {
-          // work => work._id != action.payload
-          console.log("sremove error ", err);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
         });
     },
   },
