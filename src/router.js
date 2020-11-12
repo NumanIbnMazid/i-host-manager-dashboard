@@ -55,6 +55,13 @@ const router = new Router({
                     beforeEnter: requireAuth
                 },
                 {
+                    path: '/food/edit/:id',
+                    name: 'food-edit',
+                    component: () =>
+                        import ('./components/food/FoodEdit.vue'),
+                    beforeEnter: requireAuth
+                },
+                {
                     path: '/table',
                     name: 'table',
                     component: () =>
