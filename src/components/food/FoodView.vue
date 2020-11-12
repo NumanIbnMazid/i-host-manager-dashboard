@@ -618,18 +618,20 @@ export default {
     },
 
     deleteFood(id) {
-      axios
-        .delete(`resturant/${this.resturent_id}/food/${id}`)
-        .then((res) => {
-          let item = this.foods.findIndex((arr) => arr.id == id);
-          this.foods.splice(item, 1);
-          console.log("df ", res);
-        })
-        .catch((err) => {
-          console.log("dfe ", err.response);
-          this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
-        });
+      this.foods = this.foods.filter((food) => food.id !== id);
+      this.showActionMessage('success', 'Food Deleted Successfully!')
+      // axios
+      //   .delete(`resturant/${this.resturent_id}/food/${id}`)
+      //   .then((res) => {
+      //     let item = this.foods.findIndex((arr) => arr.id == id);
+      //     this.foods.splice(item, 1);
+      //     console.log("df ", res);
+      //   })
+      //   .catch((err) => {
+      //     console.log("dfe ", err.response);
+      //     this.showActionMessage("error", err.response.statusText);
+      //     this.checkError(err);
+      //   });
     },
   },
   created() {

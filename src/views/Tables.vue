@@ -26,7 +26,8 @@
           <template>
             <div class="v-col w-full sm:w-12/12">
               <div class="text-center mb-2">
-                <b>Table: {{ table.table_no }}</b>
+                <b>Table: {{ table.table_no }}</b> <br />
+                <b>Name: {{ table.name }}</b>
               </div>
             </div>
             <div class="w-full flex items-center mb-2">
@@ -59,14 +60,43 @@
                       :text="`${waiter.user.first_name}`"
                       position="top"
                     >
-                      <vs-avatar
+                      <!-- <vs-avatar
                         :src="`${waiter.image}`"
                         @click="detailsWaiterInfo(waiter, table)"
-                      />
+                      /> -->
+                      <vs-chip
+                        :style="`background-color: rgb(${getRandomInt(
+                          0,
+                          255
+                        )}, ${getRandomInt(0, 255)}, ${getRandomInt(
+                          0,
+                          255
+                        )}); color: white; margin-top: 5px; font-size: 10px;
+                        scrollbar-color: red yellow;`"
+                      >
+                        <vs-avatar
+                          :src="`${waiter.image}`"
+                          @click="detailsWaiterInfo(waiter, table)"
+                        />
+                        {{ waiter.first_name }}
+                      </vs-chip>
+                      <!-- <div v-if="i % 2 === 0">
+                        <br />
+                        hellow
+                      </div> -->
                     </vx-tooltip>
+                    <vs-avatar
+                      @click="
+                        assignWaiterPopupActive = true;
+                        table_id = table.id;
+                      "
+                      color="success"
+                      icon-pack="feather"
+                      icon="icon-plus"
+                    />
                   </div>
-                  <div class="vx-row w-full m-0" style="width: 98% !important">
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/2">
+                  <div class="vx-row w-full m-0" style="width: 99% !important">
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/3">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
@@ -77,7 +107,7 @@
                       ></vs-button>
                     </div>
 
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/2">
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/3">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
@@ -85,6 +115,22 @@
                         type="gradient"
                         class="mt-2 lg:ml-1 md:ml-0 sm:ml-0 w-full"
                         @click="downloadImg(table.id)"
+                      ></vs-button>
+                    </div>
+
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/3">
+                      <vs-button
+                        color="primary"
+                        icon-pack="feather"
+                        icon="icon-edit"
+                        type="gradient"
+                        class="mt-2 lg:ml-2 md:ml-0 sm:ml-0 w-full"
+                        @click="
+                          (tableEditPopupActive = true),
+                            (table_id = table.id),
+                            (table_no = table.table_no),
+                            (name = table.name)
+                        "
                       ></vs-button>
                     </div>
                   </div>
@@ -171,7 +217,7 @@
         <div class="w-full mt-5">
           <label for>Select Waiters</label>
           <v-select
-            label="id"
+            label="first_name"
             class="w-full"
             v-validate="'required'"
             v-model="waiter"
@@ -217,6 +263,87 @@
         >
       </vs-row>
     </vs-popup>
+
+    <!-- add new table popup form -->
+    <vs-popup
+      class="holamundo"
+      title="Add new table"
+      :active.sync="tableEditPopupActive"
+    >
+      <vs-row>
+        <div class="w-full">
+          <vs-input
+            label="Table No"
+            v-model="table_no"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <div class="w-full">
+          <vs-input
+            label="Name"
+            v-model="name"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <div class="w-full">
+          <vs-input
+            label="Restaurant Id"
+            v-model="resturent_id"
+            class="mt-5 w-full"
+            type="text"
+            disabled
+          />
+        </div>
+
+        <vs-button class="mb-2 w-full mt-5" @click="editTable()"
+          >Save Changes</vs-button
+        >
+      </vs-row>
+    </vs-popup>
+
+    <!-- popup form for assign waiter to a table -->
+    <vs-popup
+      class="holamundo"
+      title="Add new table"
+      :active.sync="assignWaiterPopupActive"
+    >
+      <vs-row>
+        <div class="w-full mt-5">
+          <label for>Select Waiters</label>
+          <v-select
+            label="first_name"
+            class="w-full"
+            v-validate="'required'"
+            v-model="waiter"
+            :options="waiters"
+            :reduce="(waiters) => waiters.id"
+            multiple
+            taggable
+          />
+        </div>
+
+        <div class="w-full">
+          <vs-input
+            label="Table No"
+            v-model="table_id"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+            disabled
+          />
+        </div>
+
+        <vs-button class="mb-2 w-full mt-5" @click="assignStaff(table_id)"
+          >Assign Waiter</vs-button
+        >
+      </vs-row>
+    </vs-popup>
   </div>
 </template>
 
@@ -235,9 +362,14 @@ export default {
     resturent_id: localStorage.getItem("resturent_id"),
     popupActive: false,
     staffDetailPpopupActive: false,
+    assignWaiterPopupActive: false,
+    tableEditPopupActive: false,
     tables: [],
     table_no: "",
+    table_id: "",
     name: "",
+    
+    colorCode: Math.floor(Math.random() * (255 - 0)) + 0,
     detailWaiter: {
       tableName: "",
       tableId: "",
@@ -256,6 +388,11 @@ export default {
   }),
 
   methods: {
+    // random code
+    getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min)) + min;
+    },
+
     getTable() {
       axios
         .get(`/restaurant_management/restaurant/${this.resturent_id}/tables/`)
@@ -271,6 +408,7 @@ export default {
         });
     },
 
+    // add new table
     addTable() {
       axios
         .post("/restaurant_management/table/", {
@@ -300,14 +438,62 @@ export default {
         });
     },
 
-    assignStaff(tableId) {
+    // table update function
+    editTable() {
       axios
-        .post(`/restaurant_management/table/${tableId}/add_staff/`, {
+        .patch(`/restaurant_management/table/${this.table_id}/`, {
+          table_no: this.table_no,
+          name: this.name,
+          retaurant: this.resturent_id,
+        })
+        .then((res) => {
+          console.log("tur ", res);
+          if (res.data.status) {
+            this.showActionMessage(
+              "success",
+              `${this.name} updated successfully!`
+            );
+
+            // updating tables array
+            this.tables = this.tables.map((table) =>
+              table.id === this.table_id ? { ...res.data.data } : table
+            );
+
+            this.tableEditPopupActive = false;
+          } else {
+            this.showActionMessage("Error", `${this.name} faild to update!`);
+          }
+        })
+        .catch((err) => {
+          console.log("tuerr ", err.response);
+          this.showActionMessage("error", "Something went wrong! Try again.");
+          this.checkError(err);
+        });
+    },
+
+    assignStaff(tid) {
+      console.log("tid ", tid);
+      axios
+        .post(`/restaurant_management/table/${tid}/add_staff/`, {
           staff_list: this.waiter,
         })
         .then((res) => {
-          console.log("Staff Created Successfully", res.data.data);
-          this.getTable();
+          console.log("Staff Created Successfully", res);
+
+          // if (res.data.status)
+
+          // updating tables object
+          this.tables = this.tables.map((table) =>
+            table.id === tid
+              ? {
+                  ...table,
+                  staff_assigned: (table.staff_assigned =
+                    res.data.data.staff_assigned),
+                }
+              : table
+          );
+          this.waiter = "";
+          this.assignWaiterPopupActive = false;
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
@@ -434,5 +620,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+  .waiters-avater {
+    overflow-x: auto;
+    scrollbar-width: 2px;
+    scrollbar-color: red yellow;
+  }
 </style>
