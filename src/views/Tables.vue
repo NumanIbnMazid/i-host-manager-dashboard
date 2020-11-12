@@ -26,7 +26,7 @@
           <template>
             <div class="v-col w-full sm:w-12/12">
               <div class="text-center mb-2">
-                <b>Table: {{ table.table_no }}</b> <br>
+                <b>Table: {{ table.table_no }}</b> <br />
                 <b>Name: {{ table.name }}</b>
               </div>
             </div>
@@ -60,10 +60,30 @@
                       :text="`${waiter.user.first_name}`"
                       position="top"
                     >
-                      <vs-avatar
+                      <!-- <vs-avatar
                         :src="`${waiter.image}`"
                         @click="detailsWaiterInfo(waiter, table)"
-                      />
+                      /> -->
+                      <vs-chip
+                        :style="`background-color: rgb(${getRandomInt(
+                          0,
+                          255
+                        )}, ${getRandomInt(0, 255)}, ${getRandomInt(
+                          0,
+                          255
+                        )}); color: white; margin-top: 5px; font-size: 10px;
+                        scrollbar-color: red yellow;`"
+                      >
+                        <vs-avatar
+                          :src="`${waiter.image}`"
+                          @click="detailsWaiterInfo(waiter, table)"
+                        />
+                        {{ waiter.first_name }}
+                      </vs-chip>
+                      <!-- <div v-if="i % 2 === 0">
+                        <br />
+                        hellow
+                      </div> -->
                     </vx-tooltip>
                     <vs-avatar
                       @click="
@@ -348,6 +368,8 @@ export default {
     table_no: "",
     table_id: "",
     name: "",
+    
+    colorCode: Math.floor(Math.random() * (255 - 0)) + 0,
     detailWaiter: {
       tableName: "",
       tableId: "",
@@ -366,6 +388,11 @@ export default {
   }),
 
   methods: {
+    // random code
+    getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min)) + min;
+    },
+
     getTable() {
       axios
         .get(`/restaurant_management/restaurant/${this.resturent_id}/tables/`)
@@ -593,5 +620,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+  .waiters-avater {
+    overflow-x: auto;
+    scrollbar-width: 2px;
+    scrollbar-color: red yellow;
+  }
 </style>

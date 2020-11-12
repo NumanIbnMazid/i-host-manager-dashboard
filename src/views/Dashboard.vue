@@ -14,7 +14,9 @@
     <div class="vx-row">
       <div class="vx-col md:w-1/4">
         <vs-card class="bg-primary text-center my-auto py-10">
-          <h1 class="text-white py-3" style="font-size: 4rem"><b>22</b></h1>
+          <h1 class="text-white py-3" style="font-size: 4rem">
+            <b>{{ this.orderActiveNow }}</b>
+          </h1>
           <h4 class="text-ihosts">Active Order Now</h4>
         </vs-card>
       </div>
@@ -64,7 +66,7 @@
 
                 <vs-col vs-w="9" class="text-center">
                   <h1 class="mx-auto text-bl" style="font-size: 2.5rem">
-                    <b> 01</b>
+                    <b> {{ this.tableScanned }}</b>
                   </h1>
                   <p class="mx-auto text-bl text-lg">Table Scanned</p>
                 </vs-col>
@@ -111,7 +113,7 @@
 
                 <vs-col vs-w="9" class="text-center">
                   <h1 class="mx-auto text-ihosts" style="font-size: 2.5rem">
-                    <b> 01</b>
+                    <b> {{ this.userConfirmed }}</b>
                   </h1>
                   <p class="mx-auto text-ihosts text-lg">User Confirmed</p>
                 </vs-col>
@@ -170,7 +172,7 @@
 
                 <vs-col vs-w="9" class="text-center">
                   <h1 class="mx-auto text-rd" style="font-size: 2.5rem">
-                    <b> 01</b>
+                    <b> {{ this.kitchen }}</b>
                   </h1>
                   <p class="mx-auto text-rd text-lg">In Kitchen</p>
                 </vs-col>
@@ -241,7 +243,7 @@
 
                 <vs-col vs-w="9" class="text-center">
                   <h1 class="mx-auto text-ihostm" style="font-size: 2.5rem">
-                    <b> 01</b>
+                    <b> {{ this.waiterCollected }}</b>
                   </h1>
                   <p class="mx-auto text-ihostm text-lg">Waiter Collected</p>
                 </vs-col>
@@ -300,7 +302,7 @@
 
                 <vs-col vs-w="9" class="text-center">
                   <h1 class="mx-auto text-pl" style="font-size: 2.5rem">
-                    <b> 01</b>
+                    <b> {{ this.foodServed }}</b>
                   </h1>
                   <p class="mx-auto text-pl text-lg">Food Served</p>
                 </vs-col>
@@ -503,15 +505,22 @@
 
 <script>
 import StatisticsCardLine from "@/components/statistics-cards/StatisticsCardLine.vue";
+import axios from "@/axios.js";
 import moment from "moment";
 
 export default {
   components: {
     StatisticsCardLine,
-    moment,
   },
   data: () => ({
     time: "",
+    resturent_id: localStorage.getItem("resturent_id"),
+    orderActiveNow: "",
+    tableScanned: "",
+    userConfirmed: "",
+    kitchen: "",
+    waiterCollected: "",
+    foodServed: "",
     ordersData: [
       { id: 52, table_no: 32, table: [], order_status: null },
       { id: 54, table_no: 71, table: [], order_status: null },
@@ -1177,6 +1186,41 @@ export default {
   }),
 
   methods: {
+    getRestaurantOrderItemList() {
+      axios
+        .get(
+          `/restaurant_management/restaurant/${this.resturent_id}/order_item_list/`
+        )
+        .then((res) => {
+          console.log("roil ", res);
+
+          // total order active status
+          this.orderActiveNow =  res.data.data.filter((el) => el.status).length;
+
+          // total table scanned
+          this.tableScanned = this.calculateLength(res.data.data, "0_ORDER_INITIALIZED");
+
+          // total user confirmed
+          this.userConfirmed = this.calculateLength(res.data.data, "1_ORDER_PLACED");
+
+          // total kitchen
+          this.kitchen = this.calculateLength(res.data.data, "2_ORDER_CONFIRMED");
+
+          // total waiter collected
+          this.waiterCollected = this.calculateLength(res.data.data, "3_IN_TABLE");
+
+          // total food serve
+          this.foodServed = this.calculateLength(res.data.data, "4_CANCELLED");
+        })
+        .catch((err) => {
+          console.log("eroil ", err.response);
+        });
+    },
+
+    calculateLength(arr, status="") {
+      return arr.filter((el) => el.status === status).length
+    },
+
     orderPercent(status, type) {
       let perData = { per: 0, color: "" };
       switch (status) {
@@ -1212,6 +1256,7 @@ export default {
 
   created() {
     this.getTime();
+    this.getRestaurantOrderItemList();
   },
 };
 </script>
