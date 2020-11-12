@@ -117,6 +117,8 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+          localStorage.removeItem("token");
+          localStorage.removeItem("resturent_id");
           this.$vs.notify({
             title: "Login Failed",
             text: "Your email or password is wrong",
@@ -134,20 +136,20 @@ export default {
 </script>
 
 <style lang="scss">
-#page-login {
-  .social-login-buttons {
-    .bg-facebook {
-      background-color: #1551b1;
-    }
-    .bg-twitter {
-      background-color: #00aaff;
-    }
-    .bg-google {
-      background-color: #4285f4;
-    }
-    .bg-github {
-      background-color: #333;
+  #page-login {
+    .social-login-buttons {
+      .bg-facebook {
+        background-color: #1551b1;
+      }
+      .bg-twitter {
+        background-color: #00aaff;
+      }
+      .bg-google {
+        background-color: #4285f4;
+      }
+      .bg-github {
+        background-color: #333;
+      }
     }
   }
-}
 </style>

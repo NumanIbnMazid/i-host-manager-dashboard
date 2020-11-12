@@ -1205,7 +1205,7 @@ export default {
 
     getTime() {
       setInterval(() => {
-        this.time = moment().format("h:mm:ss a");
+        this.time = moment().format("h:mm:ss A");
       }, 1000);
     },
   },

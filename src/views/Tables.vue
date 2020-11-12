@@ -26,7 +26,8 @@
           <template>
             <div class="v-col w-full sm:w-12/12">
               <div class="text-center mb-2">
-                <b>Table: {{ table.table_no }}</b>
+                <b>Table: {{ table.table_no }}</b> <br>
+                <b>Name: {{ table.name }}</b>
               </div>
             </div>
             <div class="w-full flex items-center mb-2">
@@ -74,8 +75,8 @@
                       icon="icon-plus"
                     />
                   </div>
-                  <div class="vx-row w-full m-0" style="width: 98% !important">
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/2">
+                  <div class="vx-row w-full m-0" style="width: 99% !important">
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/3">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
@@ -86,7 +87,7 @@
                       ></vs-button>
                     </div>
 
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/2">
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/3">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
@@ -94,6 +95,22 @@
                         type="gradient"
                         class="mt-2 lg:ml-1 md:ml-0 sm:ml-0 w-full"
                         @click="downloadImg(table.id)"
+                      ></vs-button>
+                    </div>
+
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/3">
+                      <vs-button
+                        color="primary"
+                        icon-pack="feather"
+                        icon="icon-edit"
+                        type="gradient"
+                        class="mt-2 lg:ml-2 md:ml-0 sm:ml-0 w-full"
+                        @click="
+                          (tableEditPopupActive = true),
+                            (table_id = table.id),
+                            (table_no = table.table_no),
+                            (name = table.name)
+                        "
                       ></vs-button>
                     </div>
                   </div>
@@ -227,6 +244,49 @@
       </vs-row>
     </vs-popup>
 
+    <!-- add new table popup form -->
+    <vs-popup
+      class="holamundo"
+      title="Add new table"
+      :active.sync="tableEditPopupActive"
+    >
+      <vs-row>
+        <div class="w-full">
+          <vs-input
+            label="Table No"
+            v-model="table_no"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <div class="w-full">
+          <vs-input
+            label="Name"
+            v-model="name"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <div class="w-full">
+          <vs-input
+            label="Restaurant Id"
+            v-model="resturent_id"
+            class="mt-5 w-full"
+            type="text"
+            disabled
+          />
+        </div>
+
+        <vs-button class="mb-2 w-full mt-5" @click="editTable()"
+          >Save Changes</vs-button
+        >
+      </vs-row>
+    </vs-popup>
+
     <!-- popup form for assign waiter to a table -->
     <vs-popup
       class="holamundo"
@@ -283,6 +343,7 @@ export default {
     popupActive: false,
     staffDetailPpopupActive: false,
     assignWaiterPopupActive: false,
+    tableEditPopupActive: false,
     tables: [],
     table_no: "",
     table_id: "",
@@ -320,6 +381,7 @@ export default {
         });
     },
 
+    // add new table
     addTable() {
       axios
         .post("/restaurant_management/table/", {
@@ -345,6 +407,39 @@ export default {
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+
+    // table update function
+    editTable() {
+      axios
+        .patch(`/restaurant_management/table/${this.table_id}/`, {
+          table_no: this.table_no,
+          name: this.name,
+          retaurant: this.resturent_id,
+        })
+        .then((res) => {
+          console.log("tur ", res);
+          if (res.data.status) {
+            this.showActionMessage(
+              "success",
+              `${this.name} updated successfully!`
+            );
+
+            // updating tables array
+            this.tables = this.tables.map((table) =>
+              table.id === this.table_id ? { ...res.data.data } : table
+            );
+
+            this.tableEditPopupActive = false;
+          } else {
+            this.showActionMessage("Error", `${this.name} faild to update!`);
+          }
+        })
+        .catch((err) => {
+          console.log("tuerr ", err.response);
+          this.showActionMessage("error", "Something went wrong! Try again.");
           this.checkError(err);
         });
     },
