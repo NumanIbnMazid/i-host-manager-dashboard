@@ -407,30 +407,30 @@
                   />
                 </div>
                 <div
-                  v-if="!order.order_status"
+                  v-if="!order.status"
                   class="w-3/4 my-auto text-center text-hard"
                 >
                   No Order
                 </div>
                 <div v-else class="w-3/4 p-2 ml-2 pt-0">
                   <vs-progress
-                    :percent="orderPercent(order.order_status.status, 'per')"
-                    :color="orderPercent(order.order_status.status, 'color')"
+                    :percent="orderPercent(order.status, 'per')"
+                    :color="orderPercent(order.status, 'color')"
                   ></vs-progress>
                   <div class="flex w-full">
                     <div class="w-3/5">
                       <p class="text-sm leading-none">Order ID</p>
                       <p class="text-lg leading-none font-medium">
-                        #{{ order.table[0].id }}0980
+                        {{ order.table }}
                       </p>
                       <p class="text-base leading-none">
-                        ({{ order.order_status.status }})
+                        ({{ order.status_details }})
                       </p>
                     </div>
                     <div class="w-2/5 text-center mr-3">
                       <p class="text-lg leading-none">Amount</p>
                       <p class="text-base leading-none font-bold">
-                        ৳{{ order.table[0].total_price }}
+                        ৳{{ order.price.total_price }}
                       </p>
                     </div>
                   </div>
@@ -462,11 +462,11 @@
             </div>
           </div>
           <vs-button
-            v-if="order.order_status"
+            v-if="order.status"
             @click="
-              changeStatus(order.order_status.status, order.table[0].id, j)
+              changeStatus(order.status, order.table, j)
             "
-            :disabled="order.order_status.status == 'Pending'"
+            :disabled="order.status == 'Pending'"
           >
             <!-- {{ statusToAction(order.order_status.status) }}             -->
           </vs-button>
@@ -474,7 +474,7 @@
           <vs-button
             class="ml-2"
             color="secondary"
-            v-if="order.order_status && order.order_status.status == 'Verified'"
+            v-if="order.status && order.status == '0_ORDER_INITIALIZED'"
             @click="printKitechRecit(order)"
             >Print for kitchen</vs-button
           >
@@ -482,7 +482,7 @@
             class="ml-2"
             color="secondary"
             v-if="
-              order.order_status && order.order_status.status == 'Delivered'
+              order.status && order.status == '3_IN_TABLE'
             "
             @click="printRecipt(order)"
             >Print Invoice</vs-button
@@ -521,668 +521,7 @@ export default {
     kitchen: "",
     waiterCollected: "",
     foodServed: "",
-    ordersData: [
-      { id: 52, table_no: 32, table: [], order_status: null },
-      { id: 54, table_no: 71, table: [], order_status: null },
-      {
-        id: 36,
-        table_no: 20,
-        table: [
-          {
-            id: 135,
-            user_id: null,
-            food: [
-              {
-                id: 653,
-                food: {
-                  id: 128,
-                  type: "Food",
-                  name: "Lemon-Greek-Salad",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Lemon-Greek-Salad.jpg",
-                  price: 430,
-                  discount_price: 0,
-                  ingredients:
-                    "Lemon Greek salad marinate Combine lemon juice, oregano, vinegar, garlic, salt, pepper powder, olive oil and parsley in a bowl and mix well. Mix together cucumber, tomatoes, onions, capsicum, yellow and red bell pepper and olives in a bowl and toss well.",
-                  featured: false,
-                  category: {
-                    id: 53,
-                    name: "Salad",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Salad_qLGOWTM.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [],
-                price: 1290,
-                quantity: 3,
-                status: "confirmed",
-              },
-              {
-                id: 654,
-                food: {
-                  id: 128,
-                  type: "Food",
-                  name: "Lemon-Greek-Salad",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Lemon-Greek-Salad.jpg",
-                  price: 430,
-                  discount_price: 0,
-                  ingredients:
-                    "Lemon Greek salad marinate Combine lemon juice, oregano, vinegar, garlic, salt, pepper powder, olive oil and parsley in a bowl and mix well. Mix together cucumber, tomatoes, onions, capsicum, yellow and red bell pepper and olives in a bowl and toss well.",
-                  featured: false,
-                  category: {
-                    id: 53,
-                    name: "Salad",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Salad_qLGOWTM.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [],
-                price: 1290,
-                quantity: 3,
-                status: "confirmed",
-              },
-              {
-                id: 655,
-                food: {
-                  id: 127,
-                  type: "Food",
-                  name: "Chicken-Greek-Salad",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Chicken-Greek-Salad.jpg",
-                  price: 450,
-                  discount_price: 0,
-                  ingredients:
-                    "chicken Greek salad marinate 6 cups chopped lettuce such as iceberg or romaine. 1 8- ounce Greek Marinated Chicken Breast sliced or chopped. 2 cups Mediterranean Tomato Salad or sliced tomatoes. 1 cup sliced Persian or hothouse cucumber. 1/4 cup kalamata olives. 1/4 cup feta cheese broken into chunks.",
-                  featured: false,
-                  category: {
-                    id: 53,
-                    name: "Salad",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Salad_qLGOWTM.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [],
-                price: 900,
-                quantity: 2,
-                status: "pending",
-              },
-              {
-                id: 656,
-                food: {
-                  id: 134,
-                  type: "Food",
-                  name: "Premium Chocolate",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/lfgaladari007--1561542765.jpg",
-                  price: 250,
-                  discount_price: 0,
-                  ingredients:
-                    "2 cups white sugar. 1 ¾ cups all-purpose flour. ¾ cup unsweetened cocoa powder. 1 ½ teaspoons baking soda. 1 ½ teaspoons baking powder. 1 teaspoon salt. 2 large eggs eggs. 1 cup milk.",
-                  featured: true,
-                  category: {
-                    id: 59,
-                    name: "Mini Cake",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/221450cc7567bf8eb858da06f656b3f1.png",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [],
-                price: 250,
-                quantity: 1,
-                status: "pending",
-              },
-              {
-                id: 657,
-                food: {
-                  id: 53,
-                  type: "Food",
-                  name: "Pepperoni Pizza",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Pepperoni_Pizza.jpg",
-                  price: 450,
-                  discount_price: 0,
-                  ingredients:
-                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only",
-                  featured: true,
-                  category: {
-                    id: 28,
-                    name: "Pizza",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/HalfAndHalf.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [],
-                price: 450,
-                quantity: 1,
-                status: "pending",
-              },
-            ],
-            total_price: 4280,
-            tax: 0,
-            hint: null,
-            datetime: "2020-10-20T10:50:29.596603+06:00",
-          },
-        ],
-        order_status: {
-          id: 135,
-          status: "Pending",
-          created_at: "2020-10-20T10:50:29.594362+06:00",
-          updated_at: "2020-10-25T18:58:02.119681+06:00",
-        },
-      },
-      {
-        id: 38,
-        table_no: 44,
-        table: [
-          {
-            id: 136,
-            user_id: null,
-            food: [
-              {
-                id: 641,
-                food: {
-                  id: 128,
-                  type: "Food",
-                  name: "Lemon-Greek-Salad",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Lemon-Greek-Salad.jpg",
-                  price: 430,
-                  discount_price: 0,
-                  ingredients:
-                    "Lemon Greek salad marinate Combine lemon juice, oregano, vinegar, garlic, salt, pepper powder, olive oil and parsley in a bowl and mix well. Mix together cucumber, tomatoes, onions, capsicum, yellow and red bell pepper and olives in a bowl and toss well.",
-                  featured: false,
-                  category: {
-                    id: 53,
-                    name: "Salad",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Salad_qLGOWTM.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [],
-                price: 430,
-                quantity: 1,
-                status: "pending",
-              },
-            ],
-            total_price: 430,
-            tax: 0,
-            hint: null,
-            datetime: "2020-10-20T18:50:17.821001+06:00",
-          },
-        ],
-        order_status: {
-          id: 136,
-          status: "Pending",
-          created_at: "2020-10-20T18:50:17.818851+06:00",
-          updated_at: "2020-10-20T18:50:17.818870+06:00",
-        },
-      },
-      { id: 50, table_no: 97, table: [], order_status: null },
-      { id: 55, table_no: 96, table: [], order_status: null },
-      {
-        id: 39,
-        table_no: 99,
-        table: [
-          {
-            id: 123,
-            user_id: null,
-            food: [],
-            total_price: 300,
-            tax: 0,
-            hint: null,
-            datetime: "2020-10-18T02:21:55.058678+06:00",
-          },
-        ],
-        order_status: {
-          id: 123,
-          status: "Pending",
-          created_at: "2020-10-18T02:21:54.998690+06:00",
-          updated_at: "2020-10-18T02:32:21.780402+06:00",
-        },
-      },
-      { id: 53, table_no: 77, table: [], order_status: null },
-      { id: 51, table_no: 77, table: [], order_status: null },
-      {
-        id: 37,
-        table_no: 25,
-        table: [
-          {
-            id: 119,
-            user_id: null,
-            food: [
-              {
-                id: 584,
-                food: {
-                  id: 85,
-                  type: "Food",
-                  name: "Chicken Spring Rolls",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Chicken_Spring_Rolls_BtI6d1X.jpg",
-                  price: 280,
-                  discount_price: 0,
-                  ingredients: "Served with smoked chills",
-                  featured: false,
-                  category: {
-                    id: 39,
-                    name: "Appetizers",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Appetizers_NX3aE4L.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [],
-                price: 280,
-                quantity: 1,
-                status: "pending",
-              },
-              {
-                id: 585,
-                food: {
-                  id: 91,
-                  type: "Food",
-                  name: "Fish in Ginger Pickle",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Fish_in_Ginger_Pickle.jpg",
-                  price: 800,
-                  discount_price: 0,
-                  ingredients: "Served with smoked chills",
-                  featured: false,
-                  category: {
-                    id: 40,
-                    name: "Fish",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Fish.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [70],
-                price: 800,
-                quantity: 1,
-                status: "pending",
-              },
-              {
-                id: 610,
-                food: {
-                  id: 85,
-                  type: "Food",
-                  name: "Chicken Spring Rolls",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Chicken_Spring_Rolls_BtI6d1X.jpg",
-                  price: 280,
-                  discount_price: 0,
-                  ingredients: "Served with smoked chills",
-                  featured: false,
-                  category: {
-                    id: 39,
-                    name: "Appetizers",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Appetizers_NX3aE4L.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [1],
-                price: 560,
-                quantity: 2,
-                status: "pending",
-              },
-            ],
-            total_price: 1640,
-            tax: 0,
-            hint: null,
-            datetime: "2020-10-15T16:48:58.478551+06:00",
-          },
-        ],
-        order_status: {
-          id: 119,
-          status: "Pending",
-          created_at: "2020-10-15T16:48:58.477173+06:00",
-          updated_at: "2020-10-18T13:06:14.512713+06:00",
-        },
-      },
-      {
-        id: 33,
-        table_no: 1,
-        table: [
-          {
-            id: 120,
-            user_id: null,
-            food: [
-              {
-                id: 586,
-                food: {
-                  id: 107,
-                  type: "Food",
-                  name: "Beef-Burger",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Beef-Burger_zbW1yH3.jpg",
-                  price: 250,
-                  discount_price: 0,
-                  ingredients:
-                    "Barbecue sauce, fried onions, Swiss cheese, and bacon. ..",
-                  featured: false,
-                  category: {
-                    id: 47,
-                    name: "Burger",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Beef-Burger.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [],
-                price: 1250,
-                quantity: 5,
-                status: "confirmed",
-              },
-            ],
-            total_price: 1350,
-            tax: 0,
-            hint: null,
-            datetime: "2020-10-15T18:30:34.662100+06:00",
-          },
-        ],
-        order_status: {
-          id: 120,
-          status: "Pending",
-          created_at: "2020-10-15T18:30:34.660575+06:00",
-          updated_at: "2020-10-17T14:10:54.052541+06:00",
-        },
-      },
-      {
-        id: 40,
-        table_no: 22,
-        table: [
-          {
-            id: 145,
-            user_id: null,
-            food: [
-              {
-                id: 663,
-                food: {
-                  id: 128,
-                  type: "Food",
-                  name: "Lemon-Greek-Salad",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Lemon-Greek-Salad.jpg",
-                  price: 430,
-                  discount_price: 0,
-                  ingredients:
-                    "Lemon Greek salad marinate Combine lemon juice, oregano, vinegar, garlic, salt, pepper powder, olive oil and parsley in a bowl and mix well. Mix together cucumber, tomatoes, onions, capsicum, yellow and red bell pepper and olives in a bowl and toss well.",
-                  featured: false,
-                  category: {
-                    id: 53,
-                    name: "Salad",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Salad_qLGOWTM.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [],
-                price: 860,
-                quantity: 2,
-                status: "served",
-              },
-            ],
-            total_price: 860,
-            tax: 0,
-            hint: null,
-            datetime: "2020-11-03T15:45:52.263882+06:00",
-          },
-        ],
-        order_status: {
-          id: 145,
-          status: "Delivered",
-          created_at: "2020-11-03T15:45:52.262037+06:00",
-          updated_at: "2020-11-03T15:46:03.173461+06:00",
-        },
-      },
-      {
-        id: 35,
-        table_no: 5,
-        table: [
-          {
-            id: 122,
-            user_id: null,
-            food: [
-              {
-                id: 591,
-                food: {
-                  id: 86,
-                  type: "Food",
-                  name: "Chicken Taipei",
-                  image:
-                    "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Chicken_Taipei.jpg",
-                  price: 400,
-                  discount_price: 0,
-                  ingredients: "Served with smoked chills",
-                  featured: false,
-                  category: {
-                    id: 39,
-                    name: "Appetizers",
-                    image:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/Appetizers_NX3aE4L.jpg",
-                    restaurant: 12,
-                  },
-                  restaurant: {
-                    id: 12,
-                    name: "Sultan Dine",
-                    address: "m.pur",
-                    table: 10,
-                    start_date: "2020-09-21",
-                    end_date: "2020-10-21",
-                    is_auto_deactivate: true,
-                    mobile_no: "01775280411",
-                    logo:
-                      "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/uploads/restaurant_logo/8f90de52-943c-4492-b782-6cd7a3744272.png",
-                    vat: 5,
-                    service_charge: 10,
-                    status: true,
-                    vat_registration_number: "234234234234",
-                  },
-                },
-                food_options: [],
-                price: 400,
-                quantity: 1,
-                status: "pending",
-              },
-            ],
-            total_price: 400,
-            tax: 0,
-            hint: null,
-            datetime: "2020-10-16T18:12:51.936366+06:00",
-          },
-        ],
-        order_status: {
-          id: 122,
-          status: "Pending",
-          created_at: "2020-10-16T18:12:51.934919+06:00",
-          updated_at: "2020-10-17T16:13:56.203301+06:00",
-        },
-      },
-      { id: 45, table_no: 23, table: [], order_status: null },
-    ],
+    ordersData: [],
   }),
 
   methods: {
@@ -1194,49 +533,66 @@ export default {
         .then((res) => {
           console.log("roil ", res);
 
+          let orderItemList = res.data.data;
+          this.ordersData = orderItemList.filter((el) => el.status);
+
           // total order active status
-          this.orderActiveNow =  res.data.data.filter((el) => el.status).length;
+          this.orderActiveNow = orderItemList.filter((el) => el.status).length;
 
           // total table scanned
-          this.tableScanned = this.calculateLength(res.data.data, "0_ORDER_INITIALIZED");
+          this.tableScanned = this.calculateLength(
+            orderItemList,
+            "0_ORDER_INITIALIZED"
+          );
 
           // total user confirmed
-          this.userConfirmed = this.calculateLength(res.data.data, "1_ORDER_PLACED");
+          this.userConfirmed = this.calculateLength(
+            orderItemList,
+            "1_ORDER_PLACED"
+          );
 
           // total kitchen
-          this.kitchen = this.calculateLength(res.data.data, "2_ORDER_CONFIRMED");
+          this.kitchen = this.calculateLength(
+            orderItemList,
+            "2_ORDER_CONFIRMED"
+          );
 
           // total waiter collected
-          this.waiterCollected = this.calculateLength(res.data.data, "3_IN_TABLE");
+          this.waiterCollected = this.calculateLength(
+            orderItemList,
+            "3_IN_TABLE"
+          );
 
           // total food serve
-          this.foodServed = this.calculateLength(res.data.data, "4_CANCELLED");
+          this.foodServed = this.calculateLength(orderItemList, "4_CANCELLED");
         })
         .catch((err) => {
           console.log("eroil ", err.response);
+          this.showActionMessage("error", err);
+          this.checkError(err);
         });
     },
 
-    calculateLength(arr, status="") {
-      return arr.filter((el) => el.status === status).length
+    calculateLength(arr, status = "") {
+      return arr.filter((el) => el.status === status).length;
     },
 
     orderPercent(status, type) {
       let perData = { per: 0, color: "" };
       switch (status) {
-        case "Pending":
+        case "0_ORDER_INITIALIZED":
           perData = { per: 20, color: "danger" };
           break;
-        case "Received":
+        case "1_ORDER_PLACED":
           perData = { per: 40, color: "primary" };
           break;
-        case "Verified":
+        case "2_ORDER_CONFIRMED":
           perData = { per: 60, color: "secondary" };
           break;
-        case "Delivered":
+        case "3_IN_TABLE":
           perData = { per: 85, color: "success" };
           break;
-        case "Paid":
+        case "4_CANCELLED":
           perData = { per: 100, color: "blue" };
           break;
         default:

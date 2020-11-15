@@ -86,10 +86,10 @@ const plugin = {
     // checking error status
     Vue.prototype.checkError = err => {
       if (err.response.status === 401) {
-        this.$router.push("/login").catch(() => {});
-        // window.location.href = "/login";
         localStorage.removeItem("token");
         localStorage.removeItem("resturent_id");
+        // this.$router.push("/login").catch(() => {});
+        window.location.href = "/login";
       }
     };
   }

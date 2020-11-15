@@ -100,7 +100,7 @@
             <tr v-for="(order, i) in orders" :key="i">
               <td class="text-center">
                 <div class="order-box first-box">
-                  {{ order.order_no }}
+                  {{ order.id }}
                 </div>
               </td>
               <td class="text-center">
@@ -110,13 +110,13 @@
               </td>
               <td class="text-center">
                 <div class="order-box">
-                  {{ order.amount }}
+                  {{ order.price.total_price }}
                 </div>
               </td>
               <td class="text-center">
                 <div class="order-box last-box">
                   <span class="status-chip rounded bg-bl text-white">{{
-                    order.status
+                    order.status_details
                   }}</span>
                 </div>
               </td>
@@ -133,63 +133,36 @@ import axios from "@/axios.js";
 export default {
   data: () => ({
     active: true,
-    orders: [
-      {
-        order_no: "#200000",
-        table_no: "1",
-        amount: "700৳",
-        status: "In Kitechen",
-      },
-      {
-        order_no: "#200001",
-        table_no: "1",
-        amount: "800৳",
-        status: "Waiter Collected",
-      },
-      {
-        order_no: "#200002",
-        table_no: "1",
-        amount: "770৳",
-        status: "In Kitechen",
-      },
-      {
-        order_no: "#200004",
-        table_no: "1",
-        amount: "988৳",
-        status: "In Kitechen",
-      },
-      {
-        order_no: "#200005",
-        table_no: "1",
-        amount: "902৳",
-        status: "In Kitechen",
-      },
-      {
-        order_no: "#200006",
-        table_no: "1",
-        amount: "1050৳",
-        status: "In Kitechen",
-      },
-      {
-        order_no: "#200007",
-        table_no: "1",
-        amount: "2387৳",
-        status: "In Kitechen",
-      },
-    ],
+    resturent_id: localStorage.getItem("resturent_id"),
+    orders: [],
   }),
 
   methods: {
-    // ?
+    getOrderItemList() {
+      axios
+        .get(
+          `/restaurant_management/restaurant/${this.resturent_id}/order_item_list/`
+        )
+        .then((res) => {
+          console.log("r ", res);
+          this.orders = res.data.data.filter((el) => el.status);
+        })
+        .catch((err) => {
+          console.log("eroil ", err.response);
+          this.showActionMessage("error", err);
+          this.checkError(err);
+        });
+    },
+
     logout() {
       axios
         .post("/account_management/auth/logout/")
         .then((res) => {
           console.log(res);
-          localStorage.removeItem("token");
-          localStorage.removeItem("resturent_id");
         })
         .catch((err) => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("resturent_id");
           console.log("log out error ", err);
         });
 
@@ -199,77 +172,81 @@ export default {
       this.$router.push("/login").catch(() => {});
     },
   },
+
+  created() {
+    this.getOrderItemList();
+  },
 };
 </script>
 
 <style >
-.new-sider .vs-sidebar {
-  max-width: 325px !important;
-  background: #ffffff !important;
-  position: fixed;
-  height: 100% !important;
-  top: 0;
-  z-index: 1;
-}
+  .new-sider .vs-sidebar {
+    max-width: 325px !important;
+    background: #ffffff !important;
+    position: fixed;
+    height: 100% !important;
+    top: 0;
+    z-index: 1;
+  }
 
-.vs-sidebar--header {
-  border-bottom: 0px !important;
-}
+  .vs-sidebar--header {
+    border-bottom: 0px !important;
+  }
 
-.vs-sidebar-primary .vs-sidebar-item-active {
-  border-right: 0px !important;
-}
-.vs-sidebar--item a {
-  opacity: 1 !important;
-}
+  .vs-sidebar-primary .vs-sidebar-item-active {
+    border-right: 0px !important;
+  }
+  .vs-sidebar--item a {
+    opacity: 1 !important;
+  }
 
-.order-table {
-  border-collapse: collapse;
-}
+  .order-table {
+    border-collapse: collapse;
+  }
 
-table.order-table th {
-  padding: 6px 4px;
-}
+  table.order-table th {
+    padding: 6px 4px;
+  }
 
-table.order-table th:first-child {
-  border-radius: 3px 0px 0px 3px;
-}
+  table.order-table th:first-child {
+    border-radius: 3px 0px 0px 3px;
+  }
 
-table.order-table th:last-child {
-  border-radius: 0px 3px 3px 0px;
-}
+  table.order-table th:last-child {
+    border-radius: 0px 3px 3px 0px;
+  }
 
-/* table.order-table tbody tr {
-  padding: 6px 4px;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  margin: 10px 0px !important;
-} */
+  /* table.order-table tbody tr {
+        padding: 6px 4px;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        margin: 10px 0px !important;
+      } */
 
-.order-box {
-  padding: 5px 0px;
-  margin: 3px 0px;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-}
-.first-box {
-  border-left: 1px solid #ddd;
-  border-radius: 2px 0px 0px 2px;
-}
+  .order-box {
+    padding: 5px 0px;
+    margin: 3px 0px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+  .first-box {
+    border-left: 1px solid #ddd;
+    border-radius: 2px 0px 0px 2px;
+  }
 
-.last-box {
-  border-right: 1px solid #ddd;
-  border-radius: 0px 2px 2px 0px;
-}
+  .last-box {
+    border-right: 1px solid #ddd;
+    border-radius: 0px 2px 2px 0px;
+  }
 
-.con-vs-chip {
-  font-size: 8px;
-  min-height: 20px;
-}
-.status-chip {
-  border: 1px solid #ddd;
-  /* margin: 1px; */
-  padding: 2px 3px;
-}
+  .con-vs-chip {
+    font-size: 8px;
+    min-height: 20px;
+  }
+  .status-chip {
+    border: 1px solid #ddd;
+    /* margin: 1px; */
+    padding: 2px 3px;
+  }
 </style>
 
