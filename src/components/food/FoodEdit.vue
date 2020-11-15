@@ -168,83 +168,89 @@
           </vs-row>
 
           <vs-row v-else>
-            <div class="md:w-4/12 px-2">
-              <vs-input
-                label="Name"
-                class="mt-5 w-full"
-                name="item-name"
-                v-model="temp_options.name"
-              />
-            </div>
-            <div class="md:w-3/12 px-2">
-              <vs-input
-                label="Price"
-                v-model="temp_options.price"
-                class="mt-5 w-full"
-                name="item-name"
-                type="number"
-              />
-            </div>
-            <div class="md:w-3/12 pt-5 px-2">
-              <label for=""><small>Option Type</small></label>
-              <v-select
-                label="name"
-                class="w-full"
-                v-model="temp_options.type"
-                :options="optionsTypes"
-                :reduce="(optionsTypes) => optionsTypes.id"
-              />
-            </div>
-            <div class="md:w-2/12 pt-10">
-              <vs-button
-                class="w-full"
-                @click="addFoodOption()"
-                icon-pack="feather"
-                icon="icon-plus"
-                >Add</vs-button
-              >
-            </div>
-          </vs-row>
-
-          <vs-row v-for="(option, i) in options" :key="i">
-            <div class="md:w-4/12 px-2">
-              <vs-input
-                class="mt-5 w-full"
-                name="item-name"
-                :value="option.name"
-                disabled
-              />
-            </div>
-            <div class="md:w-3/12 px-2">
-              <vs-input
-                :value="option.price"
-                class="mt-5 w-full"
-                name="item-name"
-                type="number"
-                disabled
-              />
-            </div>
-            <div class="md:w-3/12 px-2">
-              <vs-input
-                :value="option.option_type.name"
-                class="mt-5 w-full"
-                name="item-name"
-                type="text"
-                disabled
-              />
-            </div>
-
-            <div class="md:w-2/12 pt-5">
-              <div class="flex">
+            <vs-row>
+              <div class="md:w-4/12 px-2">
+                <vs-input
+                  label="Name"
+                  class="mt-5 w-full"
+                  name="item-name"
+                  v-model="temp_options.name"
+                />
+              </div>
+              <div class="md:w-3/12 px-2">
+                <vs-input
+                  label="Price"
+                  v-model="temp_options.price"
+                  class="mt-5 w-full"
+                  name="item-name"
+                  type="number"
+                />
+              </div>
+              <div class="md:w-3/12 pt-5 px-2">
+                <label for=""><small>Option Type</small></label>
+                <v-select
+                  label="name"
+                  class="w-full"
+                  v-model="temp_options.type"
+                  :options="optionsTypes"
+                  :reduce="(optionsTypes) => optionsTypes.id"
+                />
+              </div>
+              <div class="md:w-2/12 pt-10">
                 <vs-button
+                  class="w-full"
+                  @click="addFoodOption()"
                   icon-pack="feather"
-                  icon="icon-trash"
-                  color="danger"
-                  @click="removeFoodOption(option.id)"
-                  >Remove</vs-button
+                  icon="icon-plus"
+                  >Add</vs-button
                 >
               </div>
-            </div>
+            </vs-row>
+            <vs-row v-for="(option, i) in options" :key="i">
+              <div
+                v-if="option.option_type.name != 'single_type'"
+                class="w-100 flex"
+              >
+                <div class="md:w-4/12 px-2">
+                  <vs-input
+                    class="mt-5 w-full"
+                    name="item-name"
+                    :value="option.name"
+                    disabled
+                  />
+                </div>
+                <div class="md:w-3/12 px-2">
+                  <vs-input
+                    :value="option.price"
+                    class="mt-5 w-full"
+                    name="item-name"
+                    type="number"
+                    disabled
+                  />
+                </div>
+                <div class="md:w-3/12 px-2">
+                  <vs-input
+                    :value="option.option_type.name"
+                    class="mt-5 w-full"
+                    name="item-name"
+                    type="text"
+                    disabled
+                  />
+                </div>
+
+                <div class="md:w-2/12 pt-5">
+                  <div class="flex">
+                    <vs-button
+                      icon-pack="feather"
+                      icon="icon-trash"
+                      color="danger"
+                      @click="removeFoodOption(option.id)"
+                      >Remove</vs-button
+                    >
+                  </div>
+                </div>
+              </div>
+            </vs-row>
           </vs-row>
         </div>
       </tab-content>
@@ -310,16 +316,16 @@
                 class="mt-5 w-full"
                 name="item-name"
                 type="number"
+                disabled
               />
             </div>
             <div class="md:w-3/12 px-2">
-              <label for=""><small>Extra Type</small></label>
-              <v-select
-                label="name"
-                class="w-full"
-                :options="extrasTypes"
-                :reduce="(extrasTypes) => extrasTypes.id"
-                :value="extra.extra_type"
+              <vs-input
+                :value="extra.extra_type.name"
+                class="mt-5 w-full"
+                name="item-name"
+                type="text"
+                disabled
               />
             </div>
             <div class="md:w-2/12 pt-5">
@@ -327,8 +333,10 @@
                 class="w-full"
                 icon-pack="feather"
                 icon="icon-trash"
+                color="danger"
                 @click="removeFoodExtra(extra.id)"
-              ></vs-button>
+                >Remove</vs-button
+              >
             </div>
           </vs-row>
         </div>
@@ -509,9 +517,13 @@ export default {
         this.food.food_options.length == 1 &&
         this.food.food_options[0].option_type.name == "single_type"
       ) {
-        axios.delete(
-          `restaurant_management/food_option/${this.food.food_options[0].id}`
-        );
+        axios
+          .delete(
+            `restaurant_management/food_option/${this.food.food_options[0].id}`
+          )
+          .then((res) => {
+            this.options.shift();
+          });
       }
 
       axios
@@ -641,10 +653,19 @@ export default {
     getOptionsOfFood() {
       axios
         .get(
-          `restaurant_management/food_option_by_food/${this.$router.params.id}`
+          `restaurant_management/food_option_by_food/${this.$route.params.id}`
         )
         .then((res) => {
           this.options = res.data.data;
+        });
+    },
+    getExtrasOfFood() {
+      axios
+        .get(
+          `restaurant_management/food_extra_by_food/${this.$route.params.id}/`
+        )
+        .then((res) => {
+          this.extras = res.data.data;
         });
     },
   },
@@ -655,6 +676,7 @@ export default {
     this.getAllOptionsType();
     this.getAllExtrasType();
     this.getOptionsOfFood();
+    this.getExtrasOfFood();
   },
 };
 </script>
