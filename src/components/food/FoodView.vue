@@ -58,10 +58,9 @@
         <vs-th>Name</vs-th>
         <vs-th>Category</vs-th>
         <vs-th>Price</vs-th>
-        <vs-th>Discount Price</vs-th>
         <vs-th>Description</vs-th>
         <vs-th>Ingredients</vs-th>
-        <vs-th>Options</vs-th>
+        <vs-th class="text-center">Options</vs-th>
         <vs-th>Recommended</vs-th>
         <vs-th>Top</vs-th>
         <vs-th>Action</vs-th>
@@ -94,12 +93,6 @@
             </vs-td>
 
             <vs-td>
-              <p class="product-name font-medium truncate">
-                {{ tr.discount_price }}
-              </p>
-            </vs-td>
-
-            <vs-td>
               <p
                 class="product-name font-medium truncate"
                 :title="tr.description"
@@ -108,7 +101,7 @@
               </p>
             </vs-td>
 
-            <vs-td>
+            <vs-td class="text-center">
               <p
                 class="product-name font-medium truncate"
                 :title="tr.ingredients"
@@ -117,19 +110,19 @@
               </p>
             </vs-td>
 
-            <vs-td>
+            <vs-td class="text-center">
               <vs-chip v-for="(opt, i) in tr.food_options" :key="i">
                 <b>{{ opt.option_type.name }}: </b>
                 {{ opt.name }}</vs-chip
               >
             </vs-td>
 
-            <vs-td>
+            <vs-td class="text-center">
               <p class="product-name font-medium truncate">
                 {{ tr.is_recommended ? "Yes" : "No" }}
               </p>
             </vs-td>
-            <vs-td>
+            <vs-td class="text-center">
               <p class="product-name font-medium truncate">
                 {{ tr.is_top ? "Yes" : "No" }}
               </p>
@@ -152,275 +145,11 @@
         </tbody>
       </template>
     </vs-table>
-
-    <vs-sidebar
-      click-not-close
-      position-right
-      parent="body"
-      default-index="1"
-      color="primary"
-      class="sidebarx sidebar-custom"
-      spacer
-      v-model="active"
-    >
-      <div class="mt-6 flex items-center justify-between px-6">
-        <h4>Edit {{ editData.name }}</h4>
-        <feather-icon
-          icon="XIcon"
-          @click="active = !active"
-          class="cursor-pointer"
-        ></feather-icon>
-      </div>
-      <vs-divider class="mb-0"></vs-divider>
-      <template>
-        <div
-          class="vs-row"
-          style="height: 100%; overflow: scroll; padding-bottom: 45px"
-        >
-          <!-- Image Container -->
-          <div
-            class="img-container w-64 mx-auto flex items-center justify-center mt-5"
-          >
-            <img :src="editData.image" alt="img" class="responsive" />
-          </div>
-
-          <div class="modify-img flex justify-between mt-5 mx-5">
-            <input
-              type="file"
-              class="hidden"
-              ref="updateImgInput"
-              @change="updateCurrImg"
-              accept="image/*"
-            />
-            <vs-button class="mb-2" @click="$refs.updateImgInput.click()"
-              >Update Image</vs-button
-            >
-            <!-- <vs-button class="mr-4" type="flat" @click="$refs.updateImgInput.click()">Update Image</vs-button> -->
-            <!-- <vs-button type="flat" color="#999">Remove Image</vs-button> -->
-            <vs-button
-              color="warning"
-              type="border"
-              class="mb-2"
-              @click="dataImg = null"
-              >Remove Image</vs-button
-            >
-          </div>
-
-          <div class="flex m-5">
-            <vs-input
-              label="Name"
-              v-model="editData.name"
-              class="mt-5 w-full"
-              name="item-name"
-            />
-          </div>
-          <div class="flex m-5">
-            <vs-input
-              label="Price"
-              v-model="editData.price"
-              class="mt-5 w-full"
-              name="item-name"
-            />
-          </div>
-          <div class="flex m-5">
-            <vs-input
-              label="Discount Price"
-              v-model="editData.discount_price"
-              class="mt-5 w-full"
-              name="item-name"
-            />
-          </div>
-          <div class="flex m-5">
-            <vs-input
-              label="Ingredients"
-              v-model="editData.ingredients"
-              class="mt-5 w-full"
-              name="item-name"
-            />
-          </div>
-
-          <div class="flex m-5">
-            <vs-input
-              label="Featured"
-              v-model="editData.featured"
-              class="mt-5 w-full"
-              name="item-name"
-            />
-          </div>
-
-          <div class="flex m-5">
-            <v-select
-              label="name"
-              class="mt-5 w-full"
-              v-model="editData.category"
-              :options="categorys"
-              :reduce="(categorys) => categorys.id"
-            />
-          </div>
-
-          <!-- <div class="flex m-5">
-            <v-select
-              label="option_name"
-              taggable
-              multiple
-              push-tags
-              class="mt-5 w-full"
-              v-model="editData.options"
-              :options="editData.options"
-              :create-option="
-                (options) => ({
-                  option_name: options,
-                  option_description: '',
-                  id: 0,
-                })
-              "
-              :reduce="(options) => options.option_name"
-            />
-          </div> -->
-
-          <div class="flex m-5">
-            <vs-input
-              label="Type"
-              v-model="editData.type"
-              class="mt-5 w-full"
-              name="item-name"
-            />
-          </div>
-        </div>
-      </template>
-
-      <div class="flex flex-wrap items-center p-6" slot="footer">
-        <vs-button class="mr-6" @click="updateFood">Save Change</vs-button>
-        <vs-button type="border" color="danger" @click="active = false"
-          >Cancel</vs-button
-        >
-      </div>
-    </vs-sidebar>
-
-    <vs-popup
-      class="holamundo"
-      title="Add new category"
-      :active.sync="popupActive"
-    >
-      <vs-row>
-        <input
-          type="file"
-          class="hidden"
-          ref="newImgInput"
-          @change="newImgAdd"
-          accept="image/*"
-        />
-        <div
-          class="vx-col sm:w-1/3 mx-auto w-full rounded flex justify-center items-center"
-          style="border: 1px solid #ddd; height: 150px"
-        >
-          <img
-            v-if="newData.image"
-            :src="newData.preview"
-            class="w-full"
-            alt="img"
-          />
-          <span v-else
-            >Category Image <br />
-            (300px*200px)</span
-          >
-        </div>
-        <vs-row>
-          <vs-button
-            v-if="!newData.image"
-            class="vx-col sm:w-1/3 mx-auto w-full mt-2"
-            @click="$refs.newImgInput.click()"
-            >Upload Image</vs-button
-          >
-
-          <vs-button
-            v-else
-            class="vx-col sm:w-1/3 mx-auto w-full mt-2"
-            color="danger"
-            @click="newData.image = ''"
-            >Remove Image</vs-button
-          >
-        </vs-row>
-
-        <div class="w-full">
-          <vs-input
-            label="Name"
-            v-model="newData.name"
-            class="mt-5 w-full"
-            name="item-name"
-          />
-        </div>
-        <div class="w-full">
-          <vs-input
-            label="Price"
-            v-model="newData.price"
-            class="mt-5 w-full"
-            name="item-name"
-          />
-        </div>
-        <div class="w-full">
-          <vs-input
-            label="Discount Price"
-            v-model="newData.discount_price"
-            class="mt-5 w-full"
-            name="item-name"
-          />
-        </div>
-        <div class="w-full">
-          <vs-input
-            label="Ingredients"
-            v-model="newData.ingredients"
-            class="mt-5 w-full"
-            name="item-name"
-          />
-        </div>
-
-        <!-- <div class="w-full">
-          <vs-input
-            label="Featured"
-            v-model="newData.featured"
-            class="mt-5 w-full"
-            name="item-name"
-            
-          />
-        </div>-->
-
-        <div class="w-full mt-5">
-          <label for>Category</label>
-          <v-select
-            class="w-full"
-            v-model="newData.category"
-            :options="categorys"
-            label="name"
-            :reduce="(categorys) => categorys.id"
-          />
-        </div>
-
-        <!-- <div class="w-full mt-5">
-          <label for>Options</label>
-          <v-select
-            taggable
-            multiple
-            push-tags
-            :options="[]"
-            class="w-full"
-            v-model="newData.options"
-          />
-        </div>
-
-      -->
-
-        <vs-button class="mb-2 w-full mt-5" @click="addFood()"
-          >Add New</vs-button
-        >
-      </vs-row>
-    </vs-popup>
   </div>
 </template>
 
 <script>
-// import DataViewSidebar from "./DataViewSidebar.vue";
-// import moduleDataList from "@/store/data-list/moduleDataList.js";
+
 import vSelect from "vue-select";
 import axios from "@/axios.js";
 export default {
@@ -435,37 +164,10 @@ export default {
       categorys: [],
       itemsPerPage: 10,
       isMounted: false,
-      addNewDataSidebar: false,
       sidebarData: {},
       active: false,
       popupActive: false,
       testImg: null,
-
-      editData: {
-        category: null,
-        discount_price: null,
-        featured: null,
-        id: null,
-        image: null,
-        preview: null,
-        ingredients: null,
-        name: null,
-        price: null,
-        // type: null,
-        options: "",
-      },
-      newData: {
-        category: null,
-        discount_price: null,
-        featured: null,
-        image: null,
-        preview: null,
-        ingredients: null,
-        name: null,
-        price: null,
-        // type: null,
-        options: [],
-      },
     };
   },
   computed: {
@@ -587,33 +289,6 @@ export default {
           this.checkError(err);
         });
     },
-    updateFood() {
-      axios
-        .patch(`resturant/${this.resturent_id}/food/${this.editData.id}`, {
-          category: this.editData.category,
-          discount_price: this.editData.discount_price,
-          featured: this.editData.featured,
-          ingredients: this.editData.ingredients,
-          name: this.editData.name,
-          price: this.editData.price,
-          type: this.editData.type,
-          options: this.editData.options,
-          restaurant: this.resturent_id,
-        })
-        .then((res) => {
-          let item = this.foods.find((arr) => arr.id == this.editData.id);
-          console.log(item.indexOf);
-          item = res.data;
-          console.log(item);
-          console.log(res);
-
-          this.showActionMessage("success", "Food info updated successfully");
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
-        });
-    },
 
     deleteFood(id) {
       this.showActionMessage("success", "Food Deleted Successfully!");
@@ -641,18 +316,6 @@ export default {
   },
 };
 
-/** options data */
-
-// category: 7
-// discount_price: 0
-// featured: true
-// id: 20
-// image: "/media/Beef_seek.jpg"
-// ingredients: "meet"
-// name: "Beef seek"
-// options: [{id: 1, option_name: "Rare", option_description: null, food: 20},…]
-// price: 350
-// type: "Food"
 </script>
 
 <style lang="scss" >
@@ -789,10 +452,18 @@ export default {
     max-width: 400px !important;
   }
 
-  th:first-child .vs-table-text {
-    justify-content: center !important;
-    cursor: pointer;
-  }
+th:first-child .vs-table-text {
+  justify-content: center !important;
+  cursor: pointer;
+}
+.vs-table--thead {
+  background-color: #32304e;
+  color: #fff;
+}
+
+.vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
+  padding: 10px 15px !important;
+}
 </style>
 
 
