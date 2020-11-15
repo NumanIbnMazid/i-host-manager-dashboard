@@ -11,7 +11,7 @@
         title="General Info"
         class="mb-5"
         icon="feather icon-home"
-        :before-change="!food ? createFood : updateFood"
+        :before-change="updateFood"
       >
         <vs-row>
           <div class="md:w-4/12 p-5 my-auto">
@@ -26,22 +26,21 @@
               class="vx-col mx-auto w-full rounded flex justify-center items-center"
               style="border: 1px solid #ddd; height: 250px"
             >
-              <img v-if="image" :src="preview" class="w-full" alt="img" />
+              <img v-if="preview" :src="preview" class="w-full" alt="img" />
               <span v-else
                 >Category Image <br />
                 (300px*200px)</span
               >
             </div>
             <vs-row>
-              <vs-button
+              <!-- <vs-button
                 v-if="!image"
                 class="vx-col mx-auto w-full mt-2"
                 @click="$refs.newImgInput.click()"
                 >Upload Image</vs-button
-              >
+              > -->
 
               <vs-button
-                v-else
                 class="vx-col mx-auto w-full mt-2"
                 color="danger"
                 @click="$refs.newImgInput.click()"
@@ -96,10 +95,14 @@
                   </label>
                   <ul class="">
                     <li>
-                      <vs-radio v-model="is_top" vs-value="1">Yes</vs-radio>
+                      <vs-radio v-model="is_top" name="is_top" vs-value="1"
+                        >Yes</vs-radio
+                      >
                     </li>
                     <li>
-                      <vs-radio v-model="is_top" vs-value="0">No</vs-radio>
+                      <vs-radio v-model="is_top" name="is_top" vs-value="0"
+                        >No</vs-radio
+                      >
                     </li>
                   </ul>
                 </div>
@@ -109,12 +112,18 @@
                   </label>
                   <ul class="">
                     <li>
-                      <vs-radio v-model="is_recommended" vs-value="true"
+                      <vs-radio
+                        v-model="is_recommended"
+                        name="is_recommended"
+                        vs-value="true"
                         >Yes</vs-radio
                       >
                     </li>
                     <li>
-                      <vs-radio v-model="is_recommended" vs-value="false"
+                      <vs-radio
+                        v-model="is_recommended"
+                        name="is_recommended"
+                        vs-value="false"
                         >No</vs-radio
                       >
                     </li>
@@ -137,18 +146,16 @@
           <h4 class="text-center w-full">Is single food?</h4>
           <ul class="centerx slect-type mx-auto">
             <li>
-              <vs-radio v-model="is_single" vs-value="true" checked
-                >Yes</vs-radio
-              >
+              <vs-radio v-model="is_single" vs-value="yes">Yes</vs-radio>
             </li>
             <li>
-              <vs-radio v-model="is_single" vs-value="false">No</vs-radio>
+              <vs-radio v-model="is_single" vs-value="no">No</vs-radio>
             </li>
           </ul>
         </vs-row>
 
         <div class="md:w-1/2 mx-auto">
-          <vs-row v-if="is_single == 'true'">
+          <vs-row v-if="is_single == 'yes'">
             <div class="md:w-1/2 mx-auto">
               <vs-input
                 label="Price"
@@ -161,83 +168,89 @@
           </vs-row>
 
           <vs-row v-else>
-            <div class="md:w-4/12 px-2">
-              <vs-input
-                label="Name"
-                class="mt-5 w-full"
-                name="item-name"
-                v-model="temp_options.name"
-              />
-            </div>
-            <div class="md:w-3/12 px-2">
-              <vs-input
-                label="Price"
-                v-model="temp_options.price"
-                class="mt-5 w-full"
-                name="item-name"
-                type="number"
-              />
-            </div>
-            <div class="md:w-3/12 pt-5 px-2">
-              <label for=""><small>Option Type</small></label>
-              <v-select
-                label="name"
-                class="w-full"
-                v-model="temp_options.type"
-                :options="optionsTypes"
-                :reduce="(optionsTypes) => optionsTypes.id"
-              />
-            </div>
-            <div class="md:w-2/12 pt-10">
-              <vs-button
-                class="w-full"
-                @click="addFoodOption()"
-                icon-pack="feather"
-                icon="icon-plus"
-                >Add</vs-button
-              >
-            </div>
-          </vs-row>
-
-          <vs-row v-for="(option, i) in options" :key="i">
-            <div class="md:w-4/12 px-2">
-              <vs-input
-                class="mt-5 w-full"
-                name="item-name"
-                :value="option.name"
-                disabled
-              />
-            </div>
-            <div class="md:w-3/12 px-2">
-              <vs-input
-                :value="option.price"
-                class="mt-5 w-full"
-                name="item-name"
-                type="number"
-                disabled
-              />
-            </div>
-            <div class="md:w-3/12 px-2">
-              <vs-input
-                :value="option.option_type.name"
-                class="mt-5 w-full"
-                name="item-name"
-                type="text"
-                disabled
-              />
-            </div>
-
-            <div class="md:w-2/12 pt-5">
-              <div class="flex">
+            <vs-row>
+              <div class="md:w-4/12 px-2">
+                <vs-input
+                  label="Name"
+                  class="mt-5 w-full"
+                  name="item-name"
+                  v-model="temp_options.name"
+                />
+              </div>
+              <div class="md:w-3/12 px-2">
+                <vs-input
+                  label="Price"
+                  v-model="temp_options.price"
+                  class="mt-5 w-full"
+                  name="item-name"
+                  type="number"
+                />
+              </div>
+              <div class="md:w-3/12 pt-5 px-2">
+                <label for=""><small>Option Type</small></label>
+                <v-select
+                  label="name"
+                  class="w-full"
+                  v-model="temp_options.type"
+                  :options="optionsTypes"
+                  :reduce="(optionsTypes) => optionsTypes.id"
+                />
+              </div>
+              <div class="md:w-2/12 pt-10">
                 <vs-button
+                  class="w-full"
+                  @click="addFoodOption()"
                   icon-pack="feather"
-                  icon="icon-trash"
-                  color="danger"
-                  @click="removeFoodOption(option.id)"
-                  >Remove</vs-button
+                  icon="icon-plus"
+                  >Add</vs-button
                 >
               </div>
-            </div>
+            </vs-row>
+            <vs-row v-for="(option, i) in options" :key="i">
+              <div
+                v-if="option.option_type.name != 'single_type'"
+                class="w-100 flex"
+              >
+                <div class="md:w-4/12 px-2">
+                  <vs-input
+                    class="mt-5 w-full"
+                    name="item-name"
+                    :value="option.name"
+                    disabled
+                  />
+                </div>
+                <div class="md:w-3/12 px-2">
+                  <vs-input
+                    :value="option.price"
+                    class="mt-5 w-full"
+                    name="item-name"
+                    type="number"
+                    disabled
+                  />
+                </div>
+                <div class="md:w-3/12 px-2">
+                  <vs-input
+                    :value="option.option_type.name"
+                    class="mt-5 w-full"
+                    name="item-name"
+                    type="text"
+                    disabled
+                  />
+                </div>
+
+                <div class="md:w-2/12 pt-5">
+                  <div class="flex">
+                    <vs-button
+                      icon-pack="feather"
+                      icon="icon-trash"
+                      color="danger"
+                      @click="removeFoodOption(option.id)"
+                      >Remove</vs-button
+                    >
+                  </div>
+                </div>
+              </div>
+            </vs-row>
           </vs-row>
         </div>
       </tab-content>
@@ -303,16 +316,16 @@
                 class="mt-5 w-full"
                 name="item-name"
                 type="number"
+                disabled
               />
             </div>
             <div class="md:w-3/12 px-2">
-              <label for=""><small>Extra Type</small></label>
-              <v-select
-                label="name"
-                class="w-full"
-                :options="extrasTypes"
-                :reduce="(extrasTypes) => extrasTypes.id"
-                :value="extra.extra_type"
+              <vs-input
+                :value="extra.extra_type.name"
+                class="mt-5 w-full"
+                name="item-name"
+                type="text"
+                disabled
               />
             </div>
             <div class="md:w-2/12 pt-5">
@@ -320,8 +333,10 @@
                 class="w-full"
                 icon-pack="feather"
                 icon="icon-trash"
+                color="danger"
                 @click="removeFoodExtra(extra.id)"
-              ></vs-button>
+                >Remove</vs-button
+              >
             </div>
           </vs-row>
         </div>
@@ -344,6 +359,7 @@ export default {
   },
   data() {
     return {
+      id: null,
       name: "",
       description: "",
       ingredients: "",
@@ -352,8 +368,8 @@ export default {
       is_recommended: "false",
       preview: "",
       category: "",
-      food: "",
-      is_single: "true",
+      food: {},
+      is_single: "yes",
       single_price: 0,
       options: [],
       extras: [],
@@ -394,39 +410,38 @@ export default {
         };
       }
     },
+    getFood() {
+      axios
+        .get(`restaurant_management/food/${this.$route.params.id}/`)
+        .then((res) => {
+          console.log(res);
+          let food = res.data;
 
-    createFood() {
-      let formData = new FormData();
+          this.id = food.id;
+          this.name = food.name;
+          this.category = food.category.id;
+          this.ingredients = food.ingredients;
+          this.description = food.description;
+          this.preview = food.image;
+          this.is_top = food.is_top ? "1" : "0";
+          this.is_recommended = food.is_recommended ? "true" : "false";
 
-      formData.append("name", this.name);
-      formData.append("restaurant", localStorage.getItem("resturent_id"));
-      formData.append("category", this.category);
-      formData.append("ingredients", this.ingredients);
-      formData.append("description", this.description);
-      formData.append("image", this.image);
-      formData.append("is_top", this.is_top == "0" ? false : true);
-      formData.append(
-        "is_recommended",
-        this.is_recommended == "false" ? false : true
-      );
+          this.is_single =
+            food.food_options.length == 1 &&
+            food.food_options[0].option_type.name == "single_type"
+              ? "yes"
+              : "no";
 
-      return new Promise((resolve, reject) => {
-        axios
-          .post("restaurant_management/food/", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((res) => {
-            this.food = res.data.data;
-            if (res.data.status) {
-              resolve(true);
-            } else {
-              reject("Something went wrong");
-            }
-          });
-      });
+          this.single_price =
+            food.food_options.length == 1 &&
+            food.food_options[0].option_type.name == "single_type"
+              ? food.food_options[0].price
+              : 0;
+
+          this.food = res.data;
+        });
     },
+
     updateFood() {
       let formData = new FormData();
 
@@ -435,7 +450,9 @@ export default {
       formData.append("category", this.category);
       formData.append("ingredients", this.ingredients);
       formData.append("description", this.description);
-      formData.append("image", this.image);
+      if (this.image) {
+        formData.append("image", this.image);
+      }
       formData.append("is_top", this.is_top == "0" ? false : true);
       formData.append(
         "is_recommended",
@@ -444,7 +461,7 @@ export default {
 
       return new Promise((resolve, reject) => {
         axios
-          .patch(`restaurant_management/food/${this.food.id}/`, formData, {
+          .patch(`restaurant_management/food/${this.id}/`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -460,7 +477,7 @@ export default {
       });
     },
     addOption() {
-      if (this.is_single == "true") {
+      if (this.is_single == "yes") {
         return new Promise((resolve, reject) => {
           axios
             .post("restaurant_management/food_option/", {
@@ -496,6 +513,19 @@ export default {
     },
 
     addFoodOption() {
+      if (
+        this.food.food_options.length == 1 &&
+        this.food.food_options[0].option_type.name == "single_type"
+      ) {
+        axios
+          .delete(
+            `restaurant_management/food_option/${this.food.food_options[0].id}`
+          )
+          .then((res) => {
+            this.options.shift();
+          });
+      }
+
       axios
         .post("restaurant_management/food_option/", {
           name: this.temp_options.name,
@@ -619,12 +649,34 @@ export default {
           console.log(err);
         });
     },
+
+    getOptionsOfFood() {
+      axios
+        .get(
+          `restaurant_management/food_option_by_food/${this.$route.params.id}`
+        )
+        .then((res) => {
+          this.options = res.data.data;
+        });
+    },
+    getExtrasOfFood() {
+      axios
+        .get(
+          `restaurant_management/food_extra_by_food/${this.$route.params.id}/`
+        )
+        .then((res) => {
+          this.extras = res.data.data;
+        });
+    },
   },
 
   created() {
+    this.getFood();
     this.getCatgory();
     this.getAllOptionsType();
     this.getAllExtrasType();
+    this.getOptionsOfFood();
+    this.getExtrasOfFood();
   },
 };
 </script>
