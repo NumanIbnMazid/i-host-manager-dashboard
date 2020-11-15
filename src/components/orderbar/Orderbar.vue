@@ -100,7 +100,7 @@
             <tr v-for="(order, i) in orders" :key="i">
               <td class="text-center">
                 <div class="order-box first-box">
-                  {{ order.id }}
+                  #{{ order.id }}
                 </div>
               </td>
               <td class="text-center">

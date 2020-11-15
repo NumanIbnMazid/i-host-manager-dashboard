@@ -429,7 +429,7 @@
                     <div class="w-3/5">
                       <p class="text-sm leading-none">Order ID</p>
                       <p class="text-lg leading-none font-medium">
-                        {{ order.table }}
+                        #{{ order.table }}
                       </p>
                       <p
                         :class="`text-base leading-none text-${selectColor(
