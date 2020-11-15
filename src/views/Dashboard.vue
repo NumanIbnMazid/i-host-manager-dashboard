@@ -205,7 +205,7 @@
                     <div class="w-2/5 text-center mr-3">
                       <p class="text-lg leading-none">Amount</p>
                       <p class="text-base leading-none font-bold">
-                        ৳{{ order.price.total_price }}
+                        ৳{{ parseInt(order.price.total_price) }}
                       </p>
                     </div>
                   </div>
@@ -245,23 +245,20 @@
           </vs-button> -->
           <div class="flex">
             <vs-button
-              class="ml-2"
-              color="secondary"
+              class="ml-2 bg-ihostm"
               v-if="order.status && order.status == '1_ORDER_PLACED'"
               @click="printKitechRecit(order)"
               >Approve & Print for kitchen</vs-button
             >
 
             <vs-button
-              class="ml-2"
-              color="secondary"
+              class="ml-2 bg-pl"
               v-if="order.status && order.status == '2_ORDER_CONFIRMED'"
               @click="printKitechRecit(order)"
               >Mark as Served</vs-button
             >
             <vs-button
-              class="ml-2"
-              color="secondary"
+              class="ml-2 bg-gn"
               v-if="order.status && order.status == '3_IN_TABLE'"
               @click="printRecipt(order)"
               >Collect Payment & Print Invoice</vs-button
@@ -561,7 +558,6 @@ header.vs-collapse-item--header {
 .mb-base {
   margin-bottom: 0.5rem !important;
 }
-
 
 .status-icon {
   width: 100% !important;
