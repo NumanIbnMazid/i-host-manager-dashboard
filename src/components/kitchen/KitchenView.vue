@@ -1102,16 +1102,16 @@ export default {
 </script>
 
 <style scoped >
-.vs-collapse-item.bg-white.border-0.mb-2.rounded.op-block.p-1.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 23%;
-}
+  .vs-collapse-item.bg-white.border-0.mb-2.rounded.op-block.p-1.open-item {
+    position: absolute;
+    z-index: 999;
+    width: 23%;
+  }
 
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
-td {
-  border-top: 10px solid #f8f8f8;
-}
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
+  td {
+    border-top: 10px solid #f8f8f8;
+  }
 </style>

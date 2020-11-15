@@ -136,65 +136,6 @@
                       width="70.7586"
                       height="72"
                       rx="3"
-                      fill="#FF2769"
-                      fill-opacity="0.15"
-                    />
-                    <path
-                      d="M45.9311 58.3448C39.0863 58.3448 33.5173 52.7758 33.5173 45.9311C33.5173 39.0863 39.0863 33.5173 45.9311 33.5173C52.7758 33.5173 58.3449 39.0863 58.3449 45.9311C58.3449 52.7758 52.7758 58.3448 45.9311 58.3448ZM45.9311 36.382C40.6657 36.382 36.382 40.6657 36.382 45.9311C36.382 51.1964 40.6657 55.4801 45.9311 55.4801C51.1964 55.4801 55.4801 51.1964 55.4801 45.9311C55.4801 40.6657 51.1964 36.382 45.9311 36.382Z"
-                      fill="#FF2769"
-                    />
-                    <path
-                      d="M43.8466 52.1378C43.4584 52.1378 43.0858 51.9774 42.8127 51.691L38.9114 47.6284C38.3399 47.0333 38.3399 46.0684 38.9114 45.4733C39.483 44.8781 40.4095 44.8781 40.9811 45.4733L43.7764 48.3841L49.5737 41.4859C50.1062 40.8542 51.0308 40.7871 51.6375 41.3417C52.2461 41.8962 52.3085 42.859 51.776 43.4907L44.9487 51.6158C44.6815 51.9327 44.3011 52.1216 43.8954 52.1358C43.8797 52.1378 43.8622 52.1378 43.8466 52.1378Z"
-                      fill="#FF2769"
-                    />
-                    <path
-                      d="M33.2256 37.2414H22.5001C21.7292 37.2414 21.1035 36.6157 21.1035 35.8448V27.4655C21.1035 26.6946 21.7292 26.069 22.5001 26.069H49.5001C50.271 26.069 50.8966 26.6946 50.8966 27.4655V29.6628C50.8966 30.4337 50.271 31.0593 49.5001 31.0593C48.7292 31.0593 48.1035 30.4337 48.1035 29.6628V28.8621H23.8966V34.4483H33.2256C33.9965 34.4483 34.6221 35.0739 34.6221 35.8448C34.6221 36.6157 33.9965 37.2414 33.2256 37.2414Z"
-                      fill="#FF2769"
-                    />
-                    <path
-                      d="M29.7392 43.4482H22.3989C21.6838 43.4482 21.1035 42.614 21.1035 41.5861C21.1035 40.5583 21.6838 39.7241 22.3989 39.7241H29.7392C30.4542 39.7241 31.0345 40.5583 31.0345 41.5861C31.0345 42.614 30.4542 43.4482 29.7392 43.4482Z"
-                      fill="#FF2769"
-                    />
-                    <path
-                      d="M29.6779 48.4138H22.4602C21.7113 48.4138 21.1035 47.8577 21.1035 47.1724C21.1035 46.4872 21.7113 45.931 22.4602 45.931H29.6779C30.4267 45.931 31.0345 46.4872 31.0345 47.1724C31.0345 47.8577 30.4267 48.4138 29.6779 48.4138Z"
-                      fill="#FF2769"
-                    />
-                    <path
-                      d="M30.7671 54.6206H17.6767C14.7735 54.6206 12.4138 52.3247 12.4138 49.4999V18.7758C12.4138 15.951 14.7735 13.6551 17.6767 13.6551H53.0819C55.9851 13.6551 58.3449 15.951 58.3449 18.7758V33.9889C58.3449 34.7598 57.7018 35.3855 56.9095 35.3855C56.1172 35.3855 55.4742 34.7598 55.4742 33.9889V18.7758C55.4742 17.4928 54.4005 16.4482 53.0819 16.4482H17.6767C16.3581 16.4482 15.2845 17.4928 15.2845 18.7758V49.4999C15.2845 50.7829 16.3581 51.8275 17.6767 51.8275H30.7671C31.5594 51.8275 32.2024 52.4532 32.2024 53.2241C32.2024 53.995 31.5594 54.6206 30.7671 54.6206Z"
-                      fill="#FF2769"
-                    />
-                    <path
-                      d="M55.7457 22.3448H15.013C14.2635 22.3448 13.6552 21.7886 13.6552 21.1034C13.6552 20.4182 14.2635 19.862 15.013 19.862H55.7457C56.4952 19.862 57.1035 20.4182 57.1035 21.1034C57.1035 21.7886 56.4952 22.3448 55.7457 22.3448Z"
-                      fill="#FF2769"
-                    />
-                  </svg>
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-rd" style="font-size: 2.5rem">
-                    <b> {{ this.kitchen }}</b>
-                  </h1>
-                  <p class="mx-auto text-rd text-lg">In Kitchen</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <svg
-                    width="71"
-                    height="72"
-                    viewBox="0 0 71 72"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect
-                      width="70.7586"
-                      height="72"
-                      rx="3"
                       fill="#31314E"
                       fill-opacity="0.15"
                     />
@@ -243,14 +184,15 @@
 
                 <vs-col vs-w="9" class="text-center">
                   <h1 class="mx-auto text-ihostm" style="font-size: 2.5rem">
-                    <b> {{ this.waiterCollected }}</b>
+                    <b> {{ this.kitchen }}</b>
                   </h1>
-                  <p class="mx-auto text-ihostm text-lg">Waiter Collected</p>
+                  <p class="mx-auto text-ihostm text-lg">In Kitchen</p>
                 </vs-col>
               </vs-row>
             </vs-card>
           </div>
 
+          <!-- Food Served -->
           <div class="vx-col w-full sm:w-1/2 md:w-1/3">
             <vs-card>
               <vs-row>
@@ -372,10 +314,72 @@
               </vs-row>
             </vs-card>
           </div>
+
+          <!-- Cancel -->
+          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
+            <vs-card>
+              <vs-row>
+                <vs-col vs-w="3">
+                  <svg
+                    width="71"
+                    height="72"
+                    viewBox="0 0 71 72"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect
+                      width="70.7586"
+                      height="72"
+                      rx="3"
+                      fill="#FF2769"
+                      fill-opacity="0.15"
+                    />
+                    <path
+                      d="M45.9311 58.3448C39.0863 58.3448 33.5173 52.7758 33.5173 45.9311C33.5173 39.0863 39.0863 33.5173 45.9311 33.5173C52.7758 33.5173 58.3449 39.0863 58.3449 45.9311C58.3449 52.7758 52.7758 58.3448 45.9311 58.3448ZM45.9311 36.382C40.6657 36.382 36.382 40.6657 36.382 45.9311C36.382 51.1964 40.6657 55.4801 45.9311 55.4801C51.1964 55.4801 55.4801 51.1964 55.4801 45.9311C55.4801 40.6657 51.1964 36.382 45.9311 36.382Z"
+                      fill="#FF2769"
+                    />
+                    <path
+                      d="M43.8466 52.1378C43.4584 52.1378 43.0858 51.9774 42.8127 51.691L38.9114 47.6284C38.3399 47.0333 38.3399 46.0684 38.9114 45.4733C39.483 44.8781 40.4095 44.8781 40.9811 45.4733L43.7764 48.3841L49.5737 41.4859C50.1062 40.8542 51.0308 40.7871 51.6375 41.3417C52.2461 41.8962 52.3085 42.859 51.776 43.4907L44.9487 51.6158C44.6815 51.9327 44.3011 52.1216 43.8954 52.1358C43.8797 52.1378 43.8622 52.1378 43.8466 52.1378Z"
+                      fill="#FF2769"
+                    />
+                    <path
+                      d="M33.2256 37.2414H22.5001C21.7292 37.2414 21.1035 36.6157 21.1035 35.8448V27.4655C21.1035 26.6946 21.7292 26.069 22.5001 26.069H49.5001C50.271 26.069 50.8966 26.6946 50.8966 27.4655V29.6628C50.8966 30.4337 50.271 31.0593 49.5001 31.0593C48.7292 31.0593 48.1035 30.4337 48.1035 29.6628V28.8621H23.8966V34.4483H33.2256C33.9965 34.4483 34.6221 35.0739 34.6221 35.8448C34.6221 36.6157 33.9965 37.2414 33.2256 37.2414Z"
+                      fill="#FF2769"
+                    />
+                    <path
+                      d="M29.7392 43.4482H22.3989C21.6838 43.4482 21.1035 42.614 21.1035 41.5861C21.1035 40.5583 21.6838 39.7241 22.3989 39.7241H29.7392C30.4542 39.7241 31.0345 40.5583 31.0345 41.5861C31.0345 42.614 30.4542 43.4482 29.7392 43.4482Z"
+                      fill="#FF2769"
+                    />
+                    <path
+                      d="M29.6779 48.4138H22.4602C21.7113 48.4138 21.1035 47.8577 21.1035 47.1724C21.1035 46.4872 21.7113 45.931 22.4602 45.931H29.6779C30.4267 45.931 31.0345 46.4872 31.0345 47.1724C31.0345 47.8577 30.4267 48.4138 29.6779 48.4138Z"
+                      fill="#FF2769"
+                    />
+                    <path
+                      d="M30.7671 54.6206H17.6767C14.7735 54.6206 12.4138 52.3247 12.4138 49.4999V18.7758C12.4138 15.951 14.7735 13.6551 17.6767 13.6551H53.0819C55.9851 13.6551 58.3449 15.951 58.3449 18.7758V33.9889C58.3449 34.7598 57.7018 35.3855 56.9095 35.3855C56.1172 35.3855 55.4742 34.7598 55.4742 33.9889V18.7758C55.4742 17.4928 54.4005 16.4482 53.0819 16.4482H17.6767C16.3581 16.4482 15.2845 17.4928 15.2845 18.7758V49.4999C15.2845 50.7829 16.3581 51.8275 17.6767 51.8275H30.7671C31.5594 51.8275 32.2024 52.4532 32.2024 53.2241C32.2024 53.995 31.5594 54.6206 30.7671 54.6206Z"
+                      fill="#FF2769"
+                    />
+                    <path
+                      d="M55.7457 22.3448H15.013C14.2635 22.3448 13.6552 21.7886 13.6552 21.1034C13.6552 20.4182 14.2635 19.862 15.013 19.862H55.7457C56.4952 19.862 57.1035 20.4182 57.1035 21.1034C57.1035 21.7886 56.4952 22.3448 55.7457 22.3448Z"
+                      fill="#FF2769"
+                    />
+                  </svg>
+                </vs-col>
+
+                <vs-col vs-w="9" class="text-center">
+                  <h1 class="mx-auto text-rd" style="font-size: 2.5rem">
+                    <b> {{ this.cancelOrders }}</b>
+                  </h1>
+                  <p class="mx-auto text-rd text-lg">Cancel</p>
+                </vs-col>
+              </vs-row>
+            </vs-card>
+          </div>
         </div>
       </div>
     </div>
     <vs-divider />
+
+    <!-- order details -->
     <div class="vx-row">
       <vs-collapse
         v-for="(order, j) in ordersData"
@@ -395,7 +399,11 @@
               class="flex justify-between items-center d-theme-border-grey-light"
             >
               <div class="flex w-full">
-                <div class="w-1/4 bg-hard text-center ml-3">
+                <div
+                  :class="`w-1/4 bg-${selectColor(
+                    order.status
+                  )} text-center ml-3`"
+                >
                   <h2 class="text-white">
                     <b>{{ order.table_no }}</b>
                   </h2>
@@ -413,17 +421,21 @@
                   No Order
                 </div>
                 <div v-else class="w-3/4 p-2 ml-2 pt-0">
-                  <vs-progress
+                  <!-- <vs-progress
                     :percent="orderPercent(order.status, 'per')"
                     :color="orderPercent(order.status, 'color')"
-                  ></vs-progress>
-                  <div class="flex w-full">
+                  ></vs-progress> -->
+                  <div class="flex w-full mt-4">
                     <div class="w-3/5">
                       <p class="text-sm leading-none">Order ID</p>
                       <p class="text-lg leading-none font-medium">
                         {{ order.table }}
                       </p>
-                      <p class="text-base leading-none">
+                      <p
+                        :class="`text-base leading-none text-${selectColor(
+                          order.status
+                        )}`"
+                      >
                         ({{ order.status_details }})
                       </p>
                     </div>
@@ -461,41 +473,63 @@
               </div> -->
             </div>
           </div>
-          <vs-button
+          <!-- <vs-button
             v-if="order.status"
-            @click="
-              changeStatus(order.status, order.table, j)
-            "
+            @click="changeStatus(order.status, order.table, j)"
             :disabled="order.status == 'Pending'"
           >
-            <!-- {{ statusToAction(order.order_status.status) }}             -->
-          </vs-button>
+            {{ statusToAction(order.order_status.status) }}            
+          </vs-button> -->
+          <div class="flex">
+            <vs-button
+              class="ml-2"
+              color="secondary"
+              v-if="order.status && order.status == '1_ORDER_PLACED'"
+              @click="printKitechRecit(order)"
+              >Approve & Print for kitchen</vs-button
+            >
 
-          <vs-button
+            <vs-button
+              class="ml-2"
+              color="secondary"
+              v-if="order.status && order.status == '2_ORDER_CONFIRMED'"
+              @click="printKitechRecit(order)"
+              >Mark as Served</vs-button
+            >
+            <vs-button
+              class="ml-2"
+              color="secondary"
+              v-if="order.status && order.status == '3_IN_TABLE'"
+              @click="printRecipt(order)"
+              >Collect Payment & Print Invoice</vs-button
+            >
+
+            <vx-tooltip
             class="ml-2"
-            color="secondary"
-            v-if="order.status && order.status == '0_ORDER_INITIALIZED'"
-            @click="printKitechRecit(order)"
-            >Print for kitchen</vs-button
-          >
-          <vs-button
-            class="ml-2"
-            color="secondary"
-            v-if="
-              order.status && order.status == '3_IN_TABLE'
-            "
-            @click="printRecipt(order)"
-            >Print Invoice</vs-button
-          >
+              color="danger"
+              text="Cancel"
+              v-if="
+                (order.status && order.status == '1_ORDER_PLACED') ||
+                order.status == '2_ORDER_CONFIRMED'
+              "
+            >
+              <vs-button
+                color="danger"
+                type="border"
+                icon-pack="feather"
+                icon="icon-x"
+              ></vs-button>
+            </vx-tooltip>
+          </div>
           <vs-divider />
-          <!-- <vx-timeline
-            v-if="order.order_status"
+          <vx-timeline
+            v-if="order.status"
             class="pt-2"
-            :data="orderStatusData(order.order_status.status)"
+            :data="orderStatusData(order.status)"
           />
           <div v-else>
             <h3>No order made from this table</h3>
-          </div> -->
+          </div>
         </vs-collapse-item>
       </vs-collapse>
       <!-- </vx-card> -->
@@ -505,12 +539,14 @@
 
 <script>
 import StatisticsCardLine from "@/components/statistics-cards/StatisticsCardLine.vue";
+import VxTimeline from "@/components/timeline/VxTimeline";
 import axios from "@/axios.js";
 import moment from "moment";
 
 export default {
   components: {
     StatisticsCardLine,
+    VxTimeline,
   },
   data: () => ({
     time: "",
@@ -519,7 +555,7 @@ export default {
     tableScanned: "",
     userConfirmed: "",
     kitchen: "",
-    waiterCollected: "",
+    paymentDone: "",
     foodServed: "",
     ordersData: [],
   }),
@@ -534,7 +570,7 @@ export default {
           console.log("roil ", res);
 
           let orderItemList = res.data.data;
-          this.ordersData = orderItemList.filter((el) => el.status);
+          this.ordersData = res.data.data;
 
           // total order active status
           this.orderActiveNow = orderItemList.filter((el) => el.status).length;
@@ -557,14 +593,17 @@ export default {
             "2_ORDER_CONFIRMED"
           );
 
-          // total waiter collected
-          this.waiterCollected = this.calculateLength(
-            orderItemList,
-            "3_IN_TABLE"
-          );
-
           // total food serve
-          this.foodServed = this.calculateLength(orderItemList, "4_CANCELLED");
+          this.foodServed = this.calculateLength(orderItemList, "3_IN_TABLE");
+
+          // total payment done
+          this.paymentDone = this.calculateLength(orderItemList, "4_PAID");
+
+          // total cancel orders
+          this.cancelOrders = this.calculateLength(
+            orderItemList,
+            "5_CANCELLED"
+          );
         })
         .catch((err) => {
           console.log("eroil ", err.response);
@@ -592,7 +631,10 @@ export default {
         case "3_IN_TABLE":
           perData = { per: 85, color: "success" };
           break;
-        case "4_CANCELLED":
+        case "4_PAID":
+          perData = { per: 100, color: "blue" };
+          break;
+        case "5_CANCELLED":
           perData = { per: 100, color: "blue" };
           break;
         default:
@@ -607,6 +649,134 @@ export default {
       setInterval(() => {
         this.time = moment().format("h:mm:ss A");
       }, 1000);
+    },
+
+    orderStatusData(status) {
+      let pending = [
+        {
+          color: "primary",
+          icon: "TvIcon",
+          title: "Pending",
+          desc: "Order pending",
+        },
+      ];
+
+      let recived = [
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Pending",
+          desc: "Order pending",
+        },
+        {
+          color: "primary",
+          icon: "TvIcon",
+          title: "Recived",
+          desc: "Order recive & wating for approve",
+        },
+      ];
+
+      let approve = [
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Pending",
+          desc: "Order pending",
+        },
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Recived",
+          desc: "Order recive & wating for approve",
+        },
+        {
+          color: "primary",
+          icon: "TvIcon",
+          title: "Approved",
+          desc: "Order approve & wating for serve",
+        },
+      ];
+
+      let serve = [
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Pending",
+          desc: "Order pending",
+        },
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Recived",
+          desc: "Order recived",
+        },
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Approved",
+          desc: "Order approveed",
+        },
+        {
+          color: "primary",
+          icon: "TvIcon",
+          title: "Served",
+          desc: "Order served & waiting for payment",
+        },
+      ];
+
+      let paid = [
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Pending",
+          desc: "Order pending",
+        },
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Recived",
+          desc: "Order recived",
+        },
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Approved",
+          desc: "Order approveed",
+        },
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Served",
+          desc: "Order served & waiting for payment",
+        },
+        {
+          color: "success",
+          icon: "CheckCircleIcon",
+          title: "Paid",
+          desc: "Order served & waiting for payment",
+        },
+      ];
+
+      switch (status) {
+        case "0_ORDER_INITIALIZED":
+          return pending;
+          break;
+        case "1_ORDER_PLACED":
+          return recived;
+          break;
+        case "2_ORDER_CONFIRMED":
+          return approve;
+          break;
+        case "3_IN_TABLE":
+          return serve;
+          break;
+        case "4_PAID":
+          return paid;
+          break;
+        default:
+          return [];
+          break;
+      }
     },
   },
 

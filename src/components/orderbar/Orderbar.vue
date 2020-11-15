@@ -115,7 +115,7 @@
               </td>
               <td class="text-center">
                 <div class="order-box last-box">
-                  <span class="status-chip rounded bg-bl text-white">{{
+                  <span :class="`status-chip rounded text-white bg-${selectColor(order.status)}`">{{
                     order.status_details
                   }}</span>
                 </div>

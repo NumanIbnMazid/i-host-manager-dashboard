@@ -92,6 +92,25 @@ const plugin = {
         window.location.href = "/login";
       }
     };
+
+    Vue.prototype.selectColor = status => {
+      switch (status) {
+        case "0_ORDER_INITIALIZED":
+          return "bl";
+        case "1_ORDER_PLACED":
+          return "ihosts";
+        case "2_ORDER_CONFIRMED":
+          return "grey-dark";
+        case "3_IN_TABLE":
+          return "pl";
+        case "4_PAID":
+          return "gn";
+        case "":
+          return "hard";
+        default:
+          return "";
+      }
+    };
   }
 };
 
