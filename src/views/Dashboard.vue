@@ -280,6 +280,7 @@
                 color="danger"
                 icon-pack="feather"
                 icon="icon-x-circle"
+                @click="cancelOrder(order.id)"
               ></vs-button>
             </vx-tooltip>
           </div>
@@ -319,6 +320,7 @@ export default {
     kitchen: "",
     paymentDone: "",
     foodServed: "",
+    cancelOrders: "",
     ordersData: [],
   }),
 
@@ -397,7 +399,7 @@ export default {
           perData = { per: 100, color: "blue" };
           break;
         case "5_CANCELLED":
-          perData = { per: 100, color: "blue" };
+          perData = { per: 100, color: "red" };
           break;
         default:
           return [];
@@ -411,6 +413,30 @@ export default {
       setInterval(() => {
         this.time = moment().format("h:mm:ss A");
       }, 1000);
+    },
+
+    cancelOrder(order_id) {
+      axios
+        .post("/restaurant_management/order/cancel_order/", { order_id })
+        .then((res) => {
+          console.log("odres ", res);
+
+          // test
+          this.getRestaurantOrderItemList();
+
+          // if (res.data.status) {
+          //   this.ordersData = this.ordersData.map((order) =>
+          //     order.id === order_id
+          //       ? { ...order, status: res.data.data.status }
+          //       : order
+          //   );
+          // }
+        })
+        .catch((err) => {
+          console.log("errorOd ", err.response);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
     },
 
     orderStatusData(status) {
@@ -550,22 +576,21 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 </style>
 
