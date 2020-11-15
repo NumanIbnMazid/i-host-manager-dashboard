@@ -233,7 +233,7 @@ export default {
   methods: {
     getWaiters() {
       axios
-        .get(`/account_management/resturant/${this.restaurant_id}/waiter_info/`)
+        .get(`/account_management/restaurant/${this.restaurant_id}/waiter_info/`)
         .then((res) => {
           console.log(res);
           this.waiters = res.data.data;
