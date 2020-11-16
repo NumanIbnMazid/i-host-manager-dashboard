@@ -481,6 +481,11 @@ export default {
         })
         .then((res) => {
           console.log("order confirm ", res);
+          if (res.data.status) {
+            this.ordersData = this.ordersData.map((order) =>
+              order.id === order_id ? { ...res.data.data } : order
+            );
+          }
         })
         .catch((err) => {
           console.log("error oc ", err.response);
