@@ -295,14 +295,19 @@
       <!-- </vx-card> -->
     </div>
 
-    <vs-popup class="holamundo" :title="`Order #${orderToVarify.id} | Table No: ${orderToVarify.table_no}`" :active.sync="varifyPopup">
+    <vs-popup
+      class="holamundo"
+      :title="`Order #${orderToVarify.id} | Table No: ${orderToVarify.table_no}`"
+      :active.sync="varifyPopup"
+    >
       <vs-table :data="orderToVarify.ordered_items">
         <template slot="thead">
           <vs-th class="text-center">Check</vs-th>
           <vs-th class="text-center">Item Id.</vs-th>
           <vs-th class="text-center">Name</vs-th>
+          <vs-th class="text-center">Qty</vs-th>
           <vs-th class="text-center">Options</vs-th>
-          <vs-th class="text-center">Extra</vs-th>
+          <!-- <vs-th class="text-center">Extra</vs-th> -->
           <vs-th class="text-center">Price</vs-th>
         </template>
 
@@ -323,6 +328,10 @@
               {{ data[i].food_name }}
             </vs-td>
 
+            <vs-td class="text-center" :data="data[i].quantity">
+              {{ data[i].quantity }}
+            </vs-td>
+
             <vs-td class="text-center" :data="data[i].food_option">
               <span class="bg-gn p-1 rounded text-white">
                 <i v-if="data[i].food_option.option_type.name != 'single_type'">
@@ -332,11 +341,11 @@
               </span>
             </vs-td>
 
-            <vs-td :data="data[i].food_extra">
+            <!-- <vs-td :data="data[i].food_extra">
               <span v-for="(extra, k) in data[i].food_extra" :key="k">
                 {{ extra }}
               </span>
-            </vs-td>
+            </vs-td> -->
 
             <vs-td :data="data[i].food_option.price">
               ৳{{ data[i].food_option.price }}
@@ -344,6 +353,30 @@
           </vs-tr>
         </template>
       </vs-table>
+      {{ selectedItemForVarify }}
+
+      <!-- action buttons -->
+      <div class="action-buttons flex float-right mt-4">
+        <!-- confirm all -->
+        <vx-tooltip color="success" text="Confirm All" class="mr-2">
+          <vs-button
+            color="success"
+            type="border"
+            @click="selectAll(orderToVarify.ordered_items, orderToVarify.id)"
+            >Confirm All</vs-button
+          >
+        </vx-tooltip>
+
+        <!-- confirm selected -->
+        <vx-tooltip color="primary" text="Confirm Selects">
+          <vs-button
+            color="primary"
+            type="border"
+            @click="confirmOrder(orderToVarify.id)"
+            >Confirm Select</vs-button
+          >
+        </vx-tooltip>
+      </div>
     </vs-popup>
   </div>
 </template>
@@ -425,6 +458,32 @@ export default {
           console.log("eroil ", err.response);
           this.showActionMessage("error", err);
           this.checkError(err);
+        });
+    },
+
+    // select all item
+    selectAll(data, order_id) {
+      let tempArr = [];
+      data.map((el) => tempArr.push(el.id));
+
+      if (this.selectedItemForVarify !== tempArr) {
+        this.selectedItemForVarify = tempArr;
+
+        this.confirmOrder(order_id);
+      }
+    },
+
+    confirmOrder(order_id) {
+      axios
+        .post("/restaurant_management/order/status/confirm/", {
+          order_id,
+          food_items: this.selectedItemForVarify,
+        })
+        .then((res) => {
+          console.log("order confirm ", res);
+        })
+        .catch((err) => {
+          console.log("error oc ", err.response);
         });
     },
 
@@ -824,21 +883,21 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 </style>
 
