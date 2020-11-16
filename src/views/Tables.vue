@@ -95,8 +95,10 @@
                       icon="icon-plus"
                     />
                   </div>
-                  <div class="vx-row w-full m-0" style="width: 99% !important">
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/3">
+
+                  <!-- action buttons -->
+                  <div class="vx-row w-full m-0" style="width: 100% !important">
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/5">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
@@ -107,7 +109,7 @@
                       ></vs-button>
                     </div>
 
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/3">
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/5">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
@@ -118,7 +120,7 @@
                       ></vs-button>
                     </div>
 
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/3">
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/4">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
@@ -131,6 +133,18 @@
                             (table_no = table.table_no),
                             (name = table.name)
                         "
+                      ></vs-button>
+                    </div>
+
+                    <!-- table delete button -->
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/5 ml-1">
+                      <vs-button
+                        color="danger"
+                        icon-pack="feather"
+                        icon="icon-trash"
+                        type="gradient"
+                        class="mt-2 mr-4 lg:ml-2 md:ml-0 sm:ml-0 w-full"
+                        @click="deleteTable(table.id)"
                       ></vs-button>
                     </div>
                   </div>
@@ -368,7 +382,7 @@ export default {
     table_no: "",
     table_id: "",
     name: "",
-    
+
     colorCode: Math.floor(Math.random() * (255 - 0)) + 0,
     detailWaiter: {
       tableName: "",
@@ -417,6 +431,7 @@ export default {
           restaurant: this.resturent_id,
         })
         .then((res) => {
+          console.log("ntres ", res);
           if (res.data.status) {
             this.showActionMessage("success", "New table created successfully");
 
@@ -501,6 +516,22 @@ export default {
         });
     },
 
+    deleteTable(table_id) {
+      axios
+        .delete(`/restaurant_management/table/${table_id}/delete_table/`)
+        .then((res) => {
+          if (res.data.status) {
+            this.tables = this.tables.filter((table) => table.id !== table_id);
+          }
+          console.log("table delete res ", res);
+          this.showActionMessage("success", "Table Deleted Successfully!");
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+
     printQr(id) {
       const prtHtml = document.querySelector("#table-qr-" + id + ">img").src;
       const WinPrint = window.open(
@@ -547,12 +578,10 @@ export default {
 
     getWaiters() {
       axios
-        .get(`/account_management/resturant/${this.resturent_id}/waiter_info/`)
+        .get(`/account_management/restaurant/${this.resturent_id}/waiter_info/`)
         .then((res) => {
-          console.log("waiters ", res);
-          this.waiters = res.data.data;
-
-          console.log(this.waiters);
+          if (res.data.data) this.waiters = res.data.data;
+          else this.showActionMessage("error", "Something went wrong!");
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
@@ -561,8 +590,6 @@ export default {
     },
 
     detailsWaiterInfo(waiter, table) {
-      console.log("dw ", waiter);
-
       this.detailWaiter.tableName = table.name;
       this.detailWaiter.tableId = table.id;
 
@@ -585,7 +612,6 @@ export default {
           staff_list: [waiterId],
         })
         .then((res) => {
-          console.log("sremove ", res);
           // updating tables object
           this.tables = this.tables.map((table) =>
             table.id === tableId

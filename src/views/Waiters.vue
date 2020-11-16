@@ -266,7 +266,6 @@ export default {
           this.waiters.push(res.data.data);
 
           this.popupActive = false;
-          console.log("res ", res);
           this.user.first_name = "";
           this.user.phone = "";
           this.user.email = "";
