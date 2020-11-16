@@ -305,8 +305,9 @@
           <vs-th class="text-center">Check</vs-th>
           <vs-th class="text-center">Item Id.</vs-th>
           <vs-th class="text-center">Name</vs-th>
+          <vs-th class="text-center">Qty</vs-th>
           <vs-th class="text-center">Options</vs-th>
-          <vs-th class="text-center">Extra</vs-th>
+          <!-- <vs-th class="text-center">Extra</vs-th> -->
           <vs-th class="text-center">Price</vs-th>
         </template>
 
@@ -327,6 +328,10 @@
               {{ data[i].food_name }}
             </vs-td>
 
+            <vs-td class="text-center" :data="data[i].quantity">
+              {{ data[i].quantity }}
+            </vs-td>
+
             <vs-td class="text-center" :data="data[i].food_option">
               <span class="bg-gn p-1 rounded text-white">
                 <i v-if="data[i].food_option.option_type.name != 'single_type'">
@@ -336,11 +341,11 @@
               </span>
             </vs-td>
 
-            <vs-td :data="data[i].food_extra">
+            <!-- <vs-td :data="data[i].food_extra">
               <span v-for="(extra, k) in data[i].food_extra" :key="k">
                 {{ extra }}
               </span>
-            </vs-td>
+            </vs-td> -->
 
             <vs-td :data="data[i].food_option.price">
               ৳{{ data[i].food_option.price }}
@@ -348,6 +353,30 @@
           </vs-tr>
         </template>
       </vs-table>
+      {{ selectedItemForVarify }}
+
+      <!-- action buttons -->
+      <div class="action-buttons flex float-right mt-4">
+        <!-- confirm all -->
+        <vx-tooltip color="success" text="Confirm All" class="mr-2">
+          <vs-button
+            color="success"
+            type="border"
+            @click="selectAll(orderToVarify.ordered_items, orderToVarify.id)"
+            >Confirm All</vs-button
+          >
+        </vx-tooltip>
+
+        <!-- confirm selected -->
+        <vx-tooltip color="primary" text="Confirm Selects">
+          <vs-button
+            color="primary"
+            type="border"
+            @click="confirmOrder(orderToVarify.id)"
+            >Confirm Select</vs-button
+          >
+        </vx-tooltip>
+      </div>
     </vs-popup>
   </div>
 </template>
@@ -433,38 +462,65 @@ export default {
         });
     },
 
+    // select all item
+    selectAll(data, order_id) {
+      let tempArr = [];
+      data.map((el) => tempArr.push(el.id));
+
+      if (this.selectedItemForVarify !== tempArr) {
+        this.selectedItemForVarify = tempArr;
+
+        this.confirmOrder(order_id);
+      }
+    },
+
+    confirmOrder(order_id) {
+      axios
+        .post("/restaurant_management/order/status/confirm/", {
+          order_id,
+          food_items: this.selectedItemForVarify,
+        })
+        .then((res) => {
+          console.log("order confirm ", res);
+        })
+        .catch((err) => {
+          console.log("error oc ", err.response);
+        });
+    },
+
     calculateLength(arr, status = "") {
       return arr.filter((el) => el.status === status).length;
     },
 
-    orderPercent(status, type) {
-      let perData = { per: 0, color: "" };
-      switch (status) {
-        case "0_ORDER_INITIALIZED":
-          perData = { per: 20, color: "danger" };
-          break;
-        case "1_ORDER_PLACED":
-          perData = { per: 40, color: "primary" };
-          break;
-        case "2_ORDER_CONFIRMED":
-          perData = { per: 60, color: "secondary" };
-          break;
-        case "3_IN_TABLE":
-          perData = { per: 85, color: "success" };
-          break;
-        case "4_PAID":
-          perData = { per: 100, color: "blue" };
-          break;
-        case "5_CANCELLED":
-          perData = { per: 100, color: "red" };
-          break;
-        default:
-          return [];
-          break;
-      }
-      if (type == "per") return perData.per;
-      if (type == "color") return perData.color;
-    },
+    //! No need for the time being
+    // orderPercent(status, type) {
+    //   let perData = { per: 0, color: "" };
+    //   switch (status) {
+    //     case "0_ORDER_INITIALIZED":
+    //       perData = { per: 20, color: "danger" };
+    //       break;
+    //     case "1_ORDER_PLACED":
+    //       perData = { per: 40, color: "primary" };
+    //       break;
+    //     case "2_ORDER_CONFIRMED":
+    //       perData = { per: 60, color: "secondary" };
+    //       break;
+    //     case "3_IN_TABLE":
+    //       perData = { per: 85, color: "success" };
+    //       break;
+    //     case "4_PAID":
+    //       perData = { per: 100, color: "blue" };
+    //       break;
+    //     case "5_CANCELLED":
+    //       perData = { per: 100, color: "red" };
+    //       break;
+    //     default:
+    //       return [];
+    //       break;
+    //   }
+    //   if (type == "per") return perData.per;
+    //   if (type == "color") return perData.color;
+    // },
 
     getTime() {
       setInterval(() => {
@@ -481,6 +537,7 @@ export default {
           // test
           this.getRestaurantOrderItemList();
 
+          // TODO: Should be update object for real time ui update
           // if (res.data.status) {
           //   this.ordersData = this.ordersData.map((order) =>
           //     order.id === order_id
@@ -1027,21 +1084,21 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 </style>
 
