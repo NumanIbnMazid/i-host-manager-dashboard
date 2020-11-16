@@ -192,10 +192,10 @@
                     <div class="w-3/5">
                       <p class="text-sm leading-none">Order ID</p>
                       <p class="text-lg leading-none font-medium">
-                        #{{ order.table }}
+                        #{{ order.id }}
                       </p>
                       <p
-                        :class="`text-base leading-none text-${selectColor(
+                        :class="`text-sm leading-none text-${selectColor(
                           order.status
                         )}`"
                       >
@@ -247,7 +247,7 @@
             <vs-button
               class="ml-2 bg-ihostm"
               v-if="order.status && order.status == '1_ORDER_PLACED'"
-              @click="printKitechRecit(order)"
+              @click="varifyConfirm(order)"
               >Approve & Print for kitchen</vs-button
             >
 
@@ -265,7 +265,7 @@
             >
 
             <vx-tooltip
-              class="ml-2"
+              class="ml-2 my-auto"
               color="danger"
               text="Cancel"
               v-if="
@@ -294,6 +294,57 @@
       </vs-collapse>
       <!-- </vx-card> -->
     </div>
+
+    <vs-popup class="holamundo" :title="`Order #${orderToVarify.id} | Table No: ${orderToVarify.table_no}`" :active.sync="varifyPopup">
+      <vs-table :data="orderToVarify.ordered_items">
+        <template slot="thead">
+          <vs-th class="text-center">Check</vs-th>
+          <vs-th class="text-center">Item Id.</vs-th>
+          <vs-th class="text-center">Name</vs-th>
+          <vs-th class="text-center">Options</vs-th>
+          <vs-th class="text-center">Extra</vs-th>
+          <vs-th class="text-center">Price</vs-th>
+        </template>
+
+        <template slot-scope="{ data }">
+          <vs-tr :key="i" v-for="(tr, i) in data">
+            <vs-td :data="data[i].id">
+              <vs-checkbox
+                v-model="selectedItemForVarify"
+                :vs-value="data[i].id"
+              ></vs-checkbox>
+            </vs-td>
+
+            <vs-td :data="data[i].id">
+              {{ data[i].id }}
+            </vs-td>
+
+            <vs-td class="text-center" :data="data[i].food_name">
+              {{ data[i].food_name }}
+            </vs-td>
+
+            <vs-td class="text-center" :data="data[i].food_option">
+              <span class="bg-gn p-1 rounded text-white">
+                <i v-if="data[i].food_option.option_type.name != 'single_type'">
+                  {{ data[i].food_option.option_type.name }}:</i
+                >
+                {{ data[i].food_option.name }}
+              </span>
+            </vs-td>
+
+            <vs-td :data="data[i].food_extra">
+              <span v-for="(extra, k) in data[i].food_extra" :key="k">
+                {{ extra }}
+              </span>
+            </vs-td>
+
+            <vs-td :data="data[i].food_option.price">
+              ৳{{ data[i].food_option.price }}
+            </vs-td>
+          </vs-tr>
+        </template>
+      </vs-table>
+    </vs-popup>
   </div>
 </template>
 
@@ -319,6 +370,10 @@ export default {
     foodServed: "",
     cancelOrders: "",
     ordersData: [],
+
+    varifyPopup: false,
+    orderToVarify: [],
+    selectedItemForVarify: [],
   }),
 
   methods: {
@@ -434,6 +489,11 @@ export default {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
+    },
+
+    varifyConfirm(order) {
+      this.varifyPopup = true;
+      this.orderToVarify = order;
     },
 
     orderStatusData(status) {
@@ -563,6 +623,195 @@ export default {
           break;
       }
     },
+
+    printRecipt(order) {
+      console.log(order);
+      const WinPrint = window.open(
+        "",
+        "",
+        "left=0,top=0,width=600,height=600,toolbar=0,scrollbars=0,status=0"
+      );
+
+      // let itemDetail = "";
+      // let resLogo = document.querySelector("#res_logo").src;
+
+      // order.table[0].food.forEach((el) => {
+      //   itemDetail += `<tr class="service">
+      //                   <td class="tableitem itemname">
+      //                       <p class="itemtext">${el.food.name}(<b>${el.quantity}</b>)</p>
+      //                   </td>
+      //                   <td class="tableitem">
+      //                       <p class="itemtext" style="text-align:center">${el.food.price}/-</p>
+      //                   </td>
+      //                   <td class="tableitem price">
+      //                       <p class="itemtext">${el.price}/-</p>
+      //                   </td>
+      //               </tr>`;
+      // });
+
+      WinPrint.document.write(`<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #invoice-POS {
+            box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+            padding: 2mm;
+            margin: 0 auto;
+            width: 44mm;
+            background: #FFF;
+        }
+        
+        #invoice-POS ::selection {
+            background: #f31544;
+            color: #000;
+        }
+        
+        #invoice-POS ::moz-selection {
+            background: #f31544;
+            color: #000;
+        }
+        
+        #invoice-POS h1 {
+            font-size: 1.5em;
+            color: #222;
+        }
+        
+        #invoice-POS h2 {
+            font-size: .9em;
+        }
+        
+        #invoice-POS h3 {
+            font-size: 1.2em;
+            font-weight: 300;
+            line-height: 2em;
+        }
+        
+        #invoice-POS p {
+            font-size: .7em;
+            color: #000;
+            line-height: 1.2em;
+        }
+        /* #invoice-POS #top,
+        #invoice-POS #mid,
+        #invoice-POS #bot {
+            border-bottom: 1px solid #000;
+        } */
+        
+        #invoice-POS #top {
+            min-height: 77px;
+        }
+        
+        #invoice-POS #bot {
+            min-height: 50px;
+        }
+        
+        #invoice-POS #top .logo {
+            height: 60px;
+            width: 60px;
+        }
+        
+        
+        #invoice-POS .info {
+            display: block;
+            margin-left: 0;
+        }
+        
+        #invoice-POS .title {
+            float: right;
+        }
+        
+        #invoice-POS .title p {
+            text-align: right;
+        }
+        
+        #invoice-POS table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        #invoice-POS .tabletitle {
+            font-size: .7em;
+            background: #EEE;
+        }
+        
+        #invoice-POS .service {
+            border-bottom: 1px solid #EEE;
+        }
+        
+        #invoice-POS .item {
+            width: 24mm;
+        }
+        
+        #invoice-POS .itemtext {
+            font-size: .7em;
+        }
+        
+        #invoice-POS #legalcopy {
+            margin-top: 5mm;
+        }
+        
+        .price>p,
+        .price>h2,
+        .payment>h2 {
+            float: right;
+            margin-right: 5px;
+        }
+        
+        .info {
+            padding: 5px 0px;
+        }
+        
+        .info>p {
+            text-align: center !important;
+        }
+        
+        .final {
+            border: 1px solid #000;
+            border-left: 0;
+            border-right: 0;
+        }
+        
+        .itemname>p {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="invoice-POS">
+        <center id="top">
+            <div id="legalcopy">
+                <center>
+                    <p class="legal"><strong> Powerd by @i-host <br> <small>www.i-host.com.bd</small></strong>
+                    </p>
+                </center>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>`);
+
+      WinPrint.document.close();
+      WinPrint.focus();
+
+      WinPrint.print();
+      // WinPrint.close();
+    },
   },
 
   created() {
@@ -573,21 +822,21 @@ export default {
 </script>
 
 <style >
-  header.vs-collapse-item--header {
-    padding: 0px !important;
-  }
-  .open-item {
-    position: absolute;
-    z-index: 999;
-    width: 22.3%;
-  }
-  .mb-base {
-    margin-bottom: 0.5rem !important;
-  }
+header.vs-collapse-item--header {
+  padding: 0px !important;
+}
+.open-item {
+  position: absolute;
+  z-index: 999;
+  width: 22.3%;
+}
+.mb-base {
+  margin-bottom: 0.5rem !important;
+}
 
-  .status-icon {
-    width: 100% !important;
-    height: 100%;
-  }
+.status-icon {
+  width: 100% !important;
+  height: 100%;
+}
 </style>
 
