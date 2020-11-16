@@ -81,7 +81,7 @@
       </div>
     </vs-sidebar-item>
     <vs-sidebar-item index="2">
-      <h5 class="text-center mx-auto">10/10/2020</h5></vs-sidebar-item
+      <h5 class="text-center mx-auto">{{date}}</h5></vs-sidebar-item
     >
     <vs-sidebar-item index="3">
       <div class="w-full">
@@ -99,9 +99,7 @@
           <tbody>
             <tr v-for="(order, i) in orders" :key="i">
               <td class="text-center">
-                <div class="order-box first-box">
-                  #{{ order.id }}
-                </div>
+                <div class="order-box first-box">#{{ order.id }}</div>
               </td>
               <td class="text-center">
                 <div class="order-box">
@@ -115,9 +113,12 @@
               </td>
               <td class="text-center">
                 <div class="order-box last-box">
-                  <span :class="`status-chip rounded text-white bg-${selectColor(order.status)}`">{{
-                    order.status_details
-                  }}</span>
+                  <span
+                    :class="`status-chip rounded text-white bg-${selectColor(
+                      order.status
+                    )}`"
+                    >{{ order.status_details }}</span
+                  >
                 </div>
               </td>
             </tr>
@@ -130,11 +131,13 @@
 
 <script>
 import axios from "@/axios.js";
+import moment from "moment";
 export default {
   data: () => ({
     active: true,
     resturent_id: localStorage.getItem("resturent_id"),
     orders: [],
+    date: "",
   }),
 
   methods: {
@@ -152,6 +155,10 @@ export default {
           this.showActionMessage("error", err);
           this.checkError(err);
         });
+    },
+
+    getDate() {
+      this.date = moment().format("DD/MM/YYYY");
     },
 
     logout() {
@@ -175,6 +182,7 @@ export default {
 
   created() {
     this.getOrderItemList();
+    this.getDate();
   },
 };
 </script>
@@ -217,11 +225,11 @@ export default {
   }
 
   /* table.order-table tbody tr {
-        padding: 6px 4px;
-        border-top: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
-        margin: 10px 0px !important;
-      } */
+            padding: 6px 4px;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            margin: 10px 0px !important;
+          } */
 
   .order-box {
     padding: 5px 0px;
