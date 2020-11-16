@@ -10,7 +10,7 @@
         tabindex="-1"
         v-if="to"
         exact
-        :class="[{'router-link-active': activeLink}]"
+        :class="`${[{'router-link-active': activeLink}]}`"
         :to="to"
         :target="target" >
           <vs-icon v-if="!featherIcon" :icon-pack="iconPack" :icon="icon" />

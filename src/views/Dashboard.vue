@@ -142,7 +142,7 @@
         <vs-collapse-item
           icon-pack="feather"
           icon-arrow="icon-chevrons-down"
-          class="bg-white border-0 m-0 rounded op-block p-0 vs-con-loading__container"
+          class="bg-white border-0 m-0 rounded op-block p-0 vs-con-loading__container mt-2"
           style="background-color: #ddd"
           :id="`div-with-loading-${order.id}`"
         >
@@ -154,7 +154,7 @@
                 <div
                   :class="`w-1/4 bg-${selectColor(
                     order.status
-                  )} text-center ml-3`"
+                  )} text-center`"
                 >
                   <h2 class="text-white">
                     <b>{{ order.table_no }}</b>
