@@ -372,7 +372,7 @@
           <vs-button
             color="primary"
             type="border"
-            @click="confirmOrder(orderToVarify.id)"
+            @click="confirmOrder(orderToVarify.id);"
             >Confirm Select</vs-button
           >
         </vx-tooltip>
