@@ -353,7 +353,6 @@
           </vs-tr>
         </template>
       </vs-table>
-      {{ selectedItemForVarify }}
 
       <!-- action buttons -->
       <div class="action-buttons flex float-right mt-4">
@@ -481,7 +480,7 @@ export default {
           food_items: this.selectedItemForVarify,
         })
         .then((res) => {
-          console.log("order confirm ", res);
+          
         })
         .catch((err) => {
           console.log("error oc ", err.response);
@@ -492,35 +491,7 @@ export default {
       return arr.filter((el) => el.status === status).length;
     },
 
-    //! No need for the time being
-    // orderPercent(status, type) {
-    //   let perData = { per: 0, color: "" };
-    //   switch (status) {
-    //     case "0_ORDER_INITIALIZED":
-    //       perData = { per: 20, color: "danger" };
-    //       break;
-    //     case "1_ORDER_PLACED":
-    //       perData = { per: 40, color: "primary" };
-    //       break;
-    //     case "2_ORDER_CONFIRMED":
-    //       perData = { per: 60, color: "secondary" };
-    //       break;
-    //     case "3_IN_TABLE":
-    //       perData = { per: 85, color: "success" };
-    //       break;
-    //     case "4_PAID":
-    //       perData = { per: 100, color: "blue" };
-    //       break;
-    //     case "5_CANCELLED":
-    //       perData = { per: 100, color: "red" };
-    //       break;
-    //     default:
-    //       return [];
-    //       break;
-    //   }
-    //   if (type == "per") return perData.per;
-    //   if (type == "color") return perData.color;
-    // },
+    
 
     getTime() {
       setInterval(() => {
