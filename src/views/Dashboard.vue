@@ -474,24 +474,40 @@ export default {
     },
 
     confirmOrder(order_id) {
-      axios
-        .post("/restaurant_management/order/status/confirm/", {
-          order_id,
-          food_items: this.selectedItemForVarify,
-        })
-        .then((res) => {
-          
-        })
-        .catch((err) => {
-          console.log("error oc ", err.response);
-        });
+      let varified = this.varifyOrderByManager(order_id);
+      if (varified) {
+        this.printKitechRecit(res.data.data);
+      }
+    },
+
+    varifyOrderByManager() {
+      return new Promise((resolve, reject) => {
+        axios
+          .post("/restaurant_management/order/status/confirm/", {
+            order_id,
+            food_items: this.selectedItemForVarify,
+          })
+          .then((res) => {
+            if (res.data.status) {
+              this.varifyPopup = false;
+              this.ordersData = this.ordersData.map((order) =>
+                order.id === order_id ? { ...res.data.data } : order
+              );
+              resolve(true);
+            } else {
+              reject("Something went wrong");
+            }
+          })
+          .catch((err) => {
+            console.log("error oc ", err.response);
+            reject("Something went wrong");
+          });
+      });
     },
 
     calculateLength(arr, status = "") {
       return arr.filter((el) => el.status === status).length;
     },
-
-    
 
     getTime() {
       setInterval(() => {
@@ -1055,21 +1071,21 @@ export default {
 </script>
 
 <style >
-  header.vs-collapse-item--header {
-    padding: 0px !important;
-  }
-  .open-item {
-    position: absolute;
-    z-index: 999;
-    width: 22.3%;
-  }
-  .mb-base {
-    margin-bottom: 0.5rem !important;
-  }
+header.vs-collapse-item--header {
+  padding: 0px !important;
+}
+.open-item {
+  position: absolute;
+  z-index: 999;
+  width: 22.3%;
+}
+.mb-base {
+  margin-bottom: 0.5rem !important;
+}
 
-  .status-icon {
-    width: 100% !important;
-    height: 100%;
-  }
+.status-icon {
+  width: 100% !important;
+  height: 100%;
+}
 </style>
 
