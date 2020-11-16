@@ -59,7 +59,6 @@
           <vs-th>Sl</vs-th>
           <vs-th>Image</vs-th>
           <vs-th sort-key="name">Name</vs-th>
-          <vs-th>Email</vs-th>
           <vs-th>Phone No.</vs-th>
           <vs-th>Action</vs-th>
         </template>
@@ -79,12 +78,6 @@
               <vs-td>
                 <p class="product-name font-medium truncate">
                   {{ tr.user.first_name }}
-                </p>
-              </vs-td>
-
-              <vs-td>
-                <p class="product-name font-medium truncate">
-                  {{ tr.user.email_address }}
                 </p>
               </vs-td>
 
@@ -113,9 +106,10 @@
       </vs-table>
     </div>
 
+    <!-- ADD NEW WAITER POPUP -->
     <vs-popup
       class="holamundo"
-      title="Add new category"
+      title="Add new waiter"
       :active.sync="popupActive"
     >
       <vs-row>
@@ -206,6 +200,101 @@
         >
       </vs-row>
     </vs-popup>
+
+    <!-- WAITER EDIT POPUP -->
+    <vs-popup
+      class="holamundo"
+      title="Add new waiter"
+      :active.sync="waiterEditPopupActive"
+    >
+      <vs-row>
+        <div class="vx-col sm:w-8/12 w-full mb-2 mx-auto">
+          <img
+            v-if="!user.logoPreview"
+            :src="user.image"
+            style="width: 100%"
+            class="rounded"
+            alt
+          />
+          <img
+            v-else
+            :src="user.logoPreview"
+            style="width: 100%"
+            class="rounded"
+            alt
+          />
+
+          <input
+            type="file"
+            class="hidden"
+            ref="logoInput"
+            @change="updateCurrImg"
+            accept="image/*"
+          />
+
+          <div class="vx-row mt-4">
+            <div class="vx-col w-full">
+              <vs-button
+                class="mr-5 mb-2 w-full"
+                icon-pack="feather"
+                icon="icon-edit"
+                @click="$refs.logoInput.click()"
+                >Change restaurants logo</vs-button
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-user"
+            label="Name"
+            v-model="user.first_name"
+            class="mt-5 w-full"
+            type="email"
+            v-validate="'required'"
+          />
+        </div>
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-phone"
+            label="Phone"
+            v-model="user.phone"
+            class="mt-5 w-full"
+            type="email"
+            v-validate="'required'"
+          />
+        </div>
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-mail"
+            label="Email"
+            v-model="user.email"
+            class="mt-5 w-full"
+            type="email"
+            v-validate="'required'"
+          />
+        </div>
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-lock"
+            label="Password"
+            v-model="user.password"
+            class="mt-5 w-full"
+            type="password"
+            v-validate="'required'"
+          />
+        </div>
+
+        <vs-button class="mb-2 w-full mt-5" @click="updateStaffInfo()"
+          >Save Changes</vs-button
+        >
+      </vs-row>
+    </vs-popup>
   </div>
 </template>
 
@@ -220,6 +309,7 @@ export default {
     itemsPerPage: 5,
     isMounted: false,
     popupActive: false,
+    waiterEditPopupActive: false,
     user: {
       image: "",
       logoPreview: "",
@@ -233,7 +323,9 @@ export default {
   methods: {
     getWaiters() {
       axios
-        .get(`/account_management/restaurant/${this.restaurant_id}/waiter_info/`)
+        .get(
+          `/account_management/restaurant/${this.restaurant_id}/waiter_info/`
+        )
         .then((res) => {
           console.log(res);
           this.waiters = res.data.data;
@@ -243,6 +335,7 @@ export default {
           this.checkError(err);
         });
     },
+
     addWaiters() {
       let formData = new FormData();
       formData.append("restaurant_id", this.restaurant_id);
@@ -279,6 +372,18 @@ export default {
           console.log(err);
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
+        });
+    },
+
+// TODO
+    updateStaffInfo() {
+      axios
+        .patch(``)
+        .then((res) => {
+          console.log("sures ", res);
+        })
+        .catch((err) => {
+          console.log("errSu ", err.response);
         });
     },
 

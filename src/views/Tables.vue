@@ -518,7 +518,7 @@ export default {
 
     deleteTable(table_id) {
       axios
-        .delete(`/restaurant_management/table/${table_id}/delete_table/`)
+        .delete(`/restaurant_management/table/${table_id}/`)
         .then((res) => {
           if (res.data.status) {
             this.tables = this.tables.filter((table) => table.id !== table_id);
