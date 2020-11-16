@@ -192,7 +192,7 @@
                     <div class="w-3/5">
                       <p class="text-sm leading-none">Order ID</p>
                       <p class="text-lg leading-none font-medium">
-                        #{{ order.table }}
+                        #{{ order.id }}
                       </p>
                       <p
                         :class="`text-base leading-none text-${selectColor(
@@ -377,34 +377,35 @@ export default {
       return arr.filter((el) => el.status === status).length;
     },
 
-    orderPercent(status, type) {
-      let perData = { per: 0, color: "" };
-      switch (status) {
-        case "0_ORDER_INITIALIZED":
-          perData = { per: 20, color: "danger" };
-          break;
-        case "1_ORDER_PLACED":
-          perData = { per: 40, color: "primary" };
-          break;
-        case "2_ORDER_CONFIRMED":
-          perData = { per: 60, color: "secondary" };
-          break;
-        case "3_IN_TABLE":
-          perData = { per: 85, color: "success" };
-          break;
-        case "4_PAID":
-          perData = { per: 100, color: "blue" };
-          break;
-        case "5_CANCELLED":
-          perData = { per: 100, color: "red" };
-          break;
-        default:
-          return [];
-          break;
-      }
-      if (type == "per") return perData.per;
-      if (type == "color") return perData.color;
-    },
+    //! No need for the time being
+    // orderPercent(status, type) {
+    //   let perData = { per: 0, color: "" };
+    //   switch (status) {
+    //     case "0_ORDER_INITIALIZED":
+    //       perData = { per: 20, color: "danger" };
+    //       break;
+    //     case "1_ORDER_PLACED":
+    //       perData = { per: 40, color: "primary" };
+    //       break;
+    //     case "2_ORDER_CONFIRMED":
+    //       perData = { per: 60, color: "secondary" };
+    //       break;
+    //     case "3_IN_TABLE":
+    //       perData = { per: 85, color: "success" };
+    //       break;
+    //     case "4_PAID":
+    //       perData = { per: 100, color: "blue" };
+    //       break;
+    //     case "5_CANCELLED":
+    //       perData = { per: 100, color: "red" };
+    //       break;
+    //     default:
+    //       return [];
+    //       break;
+    //   }
+    //   if (type == "per") return perData.per;
+    //   if (type == "color") return perData.color;
+    // },
 
     getTime() {
       setInterval(() => {
@@ -421,6 +422,7 @@ export default {
           // test
           this.getRestaurantOrderItemList();
 
+          // TODO: Should be update object for real time ui update
           // if (res.data.status) {
           //   this.ordersData = this.ordersData.map((order) =>
           //     order.id === order_id
