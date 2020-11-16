@@ -248,7 +248,7 @@
               class="ml-2 bg-ihostm"
               v-if="order.status && order.status == '1_ORDER_PLACED'"
               @click="varifyConfirm(order)"
-              >Approve & Print for kitchen</vs-button
+              >Varify & Print for kitchen</vs-button
             >
 
             <vs-button
@@ -295,7 +295,11 @@
       <!-- </vx-card> -->
     </div>
 
-    <vs-popup class="holamundo" :title="`Order #${orderToVarify.id} | Table No: ${orderToVarify.table_no}`" :active.sync="varifyPopup">
+    <vs-popup
+      class="holamundo"
+      :title="`Order #${orderToVarify.id} | Table No: ${orderToVarify.table_no}`"
+      :active.sync="varifyPopup"
+    >
       <vs-table :data="orderToVarify.ordered_items">
         <template slot="thead">
           <vs-th class="text-center">Check</vs-th>
@@ -362,6 +366,7 @@ export default {
   data: () => ({
     time: "",
     resturent_id: localStorage.getItem("resturent_id"),
+    resturent: JSON.parse(localStorage.getItem("resturent")),
     orderActiveNow: "",
     tableScanned: "",
     userConfirmed: "",
@@ -622,6 +627,206 @@ export default {
           return [];
           break;
       }
+    },
+
+    printKitechRecit(order) {
+      const WinPrint = window.open(
+        "",
+        "",
+        "left=0,top=0,width=600,height=600,toolbar=0,scrollbars=0,status=0"
+      );
+
+      let itemDetail = "";
+
+      order.ordered_items.forEach((el) => {
+        itemDetail += `<tr class="service">
+                        <td class="tableitem">
+                            <p class="itemtext">${el.food_name}</p> 
+                            ${
+                              el.food_option.option_type.name != "single_type"
+                                ? el.food_option.name
+                                : ""
+                            }
+                        </td>
+                        <td>-</td>
+                        <td class="tableitem qty">
+                            <p class="itemtext">${el.quantity}</p>
+                        </td>
+                    </tr>`;
+      });
+
+      WinPrint.document.write(`<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>POS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #invoice-POS {
+            box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+            padding: 2mm;
+            margin: 0 auto;
+            width: 44mm;
+            background: #FFF;
+        }
+        
+        #invoice-POS ::selection {
+            background: #f31544;
+            color: #000;
+        }
+        
+        #invoice-POS ::moz-selection {
+            background: #f31544;
+            color: #000;
+        }
+        
+        #invoice-POS h1 {
+            font-size: 1.5em;
+            color: #222;
+        }
+        
+        #invoice-POS h2 {
+            font-size: .9em;
+        }
+        
+        #invoice-POS h3 {
+            font-size: 1.2em;
+            font-weight: 300;
+            line-height: 2em;
+        }
+        
+        #invoice-POS p {
+            font-size: .7em;
+            color: #000;
+            line-height: 1.2em;
+        }
+        
+        #invoice-POS #top,
+        #invoice-POS #mid,
+        #invoice-POS #bot {
+            /* Targets all id with 'col-' */
+            border-bottom: 1px solid #000;
+        }
+        
+        #invoice-POS #top {
+            min-height: 100px;
+        }
+        /* #invoice-POS #mid {
+            min-height: 80px;
+        } */
+        
+        #invoice-POS #bot {
+            min-height: 50px;
+        }
+        
+        #invoice-POS #top .logo {
+            height: 60px;
+            width: 60px;
+            
+        }
+        
+        #invoice-POS .info {
+            display: block;
+            margin-left: 0;
+        }
+        
+        #invoice-POS .title {
+            float: right;
+        }
+        
+        #invoice-POS .title p {
+            text-align: right;
+        }
+        
+        #invoice-POS table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        #invoice-POS .tabletitle {
+            font-size: .7em;
+            background: #EEE;
+        }
+        
+        #invoice-POS .service {
+            border-bottom: 1px solid #EEE;
+        }
+        
+        #invoice-POS .item {
+            width: 24mm;
+        }
+        
+        #invoice-POS .itemtext {
+            font-size: .7em;
+        }
+        
+        #invoice-POS #legalcopy {
+            margin-top: 5mm;
+        }
+        
+        .qty>p,
+        .qty>h2 {
+            float: right;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- partial:index.partial.html -->
+    <div id="invoice-POS">
+        <div id="mid">
+            <div class="info">
+                <center>
+                    <h2>${this.resturent.name}</h2>
+                    <h2>Order # ${order.id}</h2>
+                    <h2>Table No: ${order.table_no}</h2>
+                    <h2>Waiter: Rakib Hasan</h2>
+                    <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
+                    <br>
+                </center>
+
+            </div>
+        </div>
+        <!--End Invoice Mid-->
+
+        <div id="bot">
+
+            <div id="table">
+                <table>
+                    <tr class="tabletitle">
+                        <td class="item">
+                            <h2>Item</h2>
+                        </td>
+                        <td>-</td>
+                        <td class="Hours qty">
+                            <h2>Qty</h2>
+                        </td>
+                    </tr>
+                      ${itemDetail}
+                </table>
+            </div>
+        </div>
+        <br>
+    </div>
+</body>
+
+</html>`);
+
+      WinPrint.document.close();
+      WinPrint.focus();
+      WinPrint.print();
+      // WinPrint.close();
     },
 
     printRecipt(order) {
