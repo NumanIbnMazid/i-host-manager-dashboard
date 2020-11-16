@@ -371,7 +371,7 @@
           <vs-button
             color="primary"
             type="border"
-            @click="confirmOrder(orderToVarify.id)"
+            @click="confirmOrder(orderToVarify.id);"
             >Confirm Select</vs-button
           >
         </vx-tooltip>
@@ -475,12 +475,15 @@ export default {
 
     confirmOrder(order_id) {
       let varified = this.varifyOrderByManager(order_id);
-      if (varified) {
-        this.printKitechRecit(res.data.data);
+      this.varifyPopup = false;
+      if (varified && !this.varifyPopup) {
+        let orders = { ...this.ordersData };
+        let theOrder = this.ordersData.find((orders) => orders.id == order_id);
+        this.printKitechRecit(theOrder);
       }
     },
 
-    varifyOrderByManager() {
+    varifyOrderByManager(order_id) {
       return new Promise((resolve, reject) => {
         axios
           .post("/restaurant_management/order/status/confirm/", {
@@ -489,7 +492,6 @@ export default {
           })
           .then((res) => {
             if (res.data.status) {
-              this.varifyPopup = false;
               this.ordersData = this.ordersData.map((order) =>
                 order.id === order_id ? { ...res.data.data } : order
               );
