@@ -248,13 +248,13 @@
               class="ml-2 bg-ihostm"
               v-if="order.status && order.status == '1_ORDER_PLACED'"
               @click="varifyConfirm(order)"
-              >Varify & Print for kitchen</vs-button
+              >Approve & Print for kitchen</vs-button
             >
 
             <vs-button
               class="ml-2 bg-pl"
               v-if="order.status && order.status == '2_ORDER_CONFIRMED'"
-              @click="printKitechRecit(order)"
+              @click="markAsServedPopup=true, orderToServed=order"
               >Mark as Served</vs-button
             >
             <vs-button
@@ -295,6 +295,7 @@
       <!-- </vx-card> -->
     </div>
 
+    <!-- item list for order -->
     <vs-popup
       class="holamundo"
       :title="`Order #${orderToVarify.id} | Table No: ${orderToVarify.table_no}`"
@@ -377,6 +378,91 @@
         </vx-tooltip>
       </div>
     </vs-popup>
+
+    <!-- mark as served -->
+        <vs-popup
+      class="holamundo"
+      :title="`Order #${orderToServed.id} | Table No: ${orderToServed.table_no}`"
+      :active.sync="markAsServedPopup"
+    >
+      <vs-table :data="orderToServed.ordered_items">
+        <template slot="thead">
+          <vs-th class="text-center">Check</vs-th>
+          <vs-th class="text-center">Item Id.</vs-th>
+          <vs-th class="text-center">Name</vs-th>
+          <vs-th class="text-center">Qty</vs-th>
+          <vs-th class="text-center">Options</vs-th>
+          <!-- <vs-th class="text-center">Extra</vs-th> -->
+          <vs-th class="text-center">Price</vs-th>
+        </template>
+
+        <template slot-scope="{ data }">
+          <vs-tr :key="i" v-for="(tr, i) in data">
+            <vs-td :data="data[i].id">
+              <vs-checkbox
+                v-model="selectedItemForVarify"
+                :vs-value="data[i].id"
+              ></vs-checkbox>
+            </vs-td>
+
+            <vs-td :data="data[i].id">
+              {{ data[i].id }}
+            </vs-td>
+
+            <vs-td class="text-center" :data="data[i].food_name">
+              {{ data[i].food_name }}
+            </vs-td>
+
+            <vs-td class="text-center" :data="data[i].quantity">
+              {{ data[i].quantity }}
+            </vs-td>
+
+            <vs-td class="text-center" :data="data[i].food_option">
+              <span class="bg-gn p-1 rounded text-white">
+                <i v-if="data[i].food_option.option_type.name != 'single_type'">
+                  {{ data[i].food_option.option_type.name }}:</i
+                >
+                {{ data[i].food_option.name }}
+              </span>
+            </vs-td>
+
+            <!-- <vs-td :data="data[i].food_extra">
+              <span v-for="(extra, k) in data[i].food_extra" :key="k">
+                {{ extra }}
+              </span>
+            </vs-td> -->
+
+            <vs-td :data="data[i].food_option.price">
+              ৳{{ data[i].food_option.price }}
+            </vs-td>
+            
+          </vs-tr>
+        </template>
+      </vs-table>
+
+      <!-- action buttons -->
+      <div class="action-buttons flex float-right mt-4">
+        <!-- confirm all -->
+        <vx-tooltip color="success" text="Confirm All" class="mr-2">
+          <vs-button
+            color="success"
+            type="border"
+            @click="selectAll(orderToVarify.ordered_items, orderToVarify.id)"
+            >Confirm All</vs-button
+          >
+        </vx-tooltip>
+
+        <!-- confirm selected -->
+        <vx-tooltip color="primary" text="Confirm Selects">
+          <vs-button
+            color="primary"
+            type="border"
+            @click="confirmOrder(orderToVarify.id)"
+            >Confirm Select</vs-button
+          >
+        </vx-tooltip>
+      </div>
+    </vs-popup>
   </div>
 </template>
 
@@ -394,7 +480,6 @@ export default {
   data: () => ({
     time: "",
     resturent_id: localStorage.getItem("resturent_id"),
-    resturent: JSON.parse(localStorage.getItem("resturent")),
     orderActiveNow: "",
     tableScanned: "",
     userConfirmed: "",
@@ -405,7 +490,9 @@ export default {
     ordersData: [],
 
     varifyPopup: false,
+    markAsServedPopup: false,
     orderToVarify: [],
+    orderToServed: [],
     selectedItemForVarify: [],
   }),
 
@@ -474,42 +561,60 @@ export default {
     },
 
     confirmOrder(order_id) {
-      let varified = this.varifyOrderByManager(order_id);
-      this.varifyPopup = false;
-      if (varified && !this.varifyPopup) {
-        let orders = { ...this.ordersData };
-        let theOrder = this.ordersData.find((orders) => orders.id == order_id);
-        this.printKitechRecit(theOrder);
-      }
-    },
+      axios
+        .post("/restaurant_management/order/status/confirm/", {
+          order_id,
+          food_items: this.selectedItemForVarify,
+        })
+        .then((res) => {
+          console.log("order confirm ", res);
+          if (res.data.status) {
+            this.ordersData = this.ordersData.map((order) =>
+              order.id === order_id ? { ...res.data.data } : order
+            );
+          }
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
 
-    varifyOrderByManager(order_id) {
-      return new Promise((resolve, reject) => {
-        axios
-          .post("/restaurant_management/order/status/confirm/", {
-            order_id,
-            food_items: this.selectedItemForVarify,
-          })
-          .then((res) => {
-            if (res.data.status) {
-              this.ordersData = this.ordersData.map((order) =>
-                order.id === order_id ? { ...res.data.data } : order
-              );
-              resolve(true);
-            } else {
-              reject("Something went wrong");
-            }
-          })
-          .catch((err) => {
-            console.log("error oc ", err.response);
-            reject("Something went wrong");
-          });
-      });
+          // checking error code
+          this.checkError(err);
+        });
     },
 
     calculateLength(arr, status = "") {
       return arr.filter((el) => el.status === status).length;
     },
+
+    //! No need for the time being
+    // orderPercent(status, type) {
+    //   let perData = { per: 0, color: "" };
+    //   switch (status) {
+    //     case "0_ORDER_INITIALIZED":
+    //       perData = { per: 20, color: "danger" };
+    //       break;
+    //     case "1_ORDER_PLACED":
+    //       perData = { per: 40, color: "primary" };
+    //       break;
+    //     case "2_ORDER_CONFIRMED":
+    //       perData = { per: 60, color: "secondary" };
+    //       break;
+    //     case "3_IN_TABLE":
+    //       perData = { per: 85, color: "success" };
+    //       break;
+    //     case "4_PAID":
+    //       perData = { per: 100, color: "blue" };
+    //       break;
+    //     case "5_CANCELLED":
+    //       perData = { per: 100, color: "red" };
+    //       break;
+    //     default:
+    //       return [];
+    //       break;
+    //   }
+    //   if (type == "per") return perData.per;
+    //   if (type == "color") return perData.color;
+    // },
 
     getTime() {
       setInterval(() => {
@@ -673,206 +778,6 @@ export default {
           return [];
           break;
       }
-    },
-
-    printKitechRecit(order) {
-      const WinPrint = window.open(
-        "",
-        "",
-        "left=0,top=0,width=600,height=600,toolbar=0,scrollbars=0,status=0"
-      );
-
-      let itemDetail = "";
-
-      order.ordered_items.forEach((el) => {
-        itemDetail += `<tr class="service">
-                        <td class="tableitem">
-                            <p class="itemtext">${el.food_name}</p> 
-                            ${
-                              el.food_option.option_type.name != "single_type"
-                                ? el.food_option.name
-                                : ""
-                            }
-                        </td>
-                        <td>-</td>
-                        <td class="tableitem qty">
-                            <p class="itemtext">${el.quantity}</p>
-                        </td>
-                    </tr>`;
-      });
-
-      WinPrint.document.write(`<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>POS</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            margin: 0;
-            padding: 0;
-        }
-        
-        #invoice-POS {
-            box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
-            padding: 2mm;
-            margin: 0 auto;
-            width: 44mm;
-            background: #FFF;
-        }
-        
-        #invoice-POS ::selection {
-            background: #f31544;
-            color: #000;
-        }
-        
-        #invoice-POS ::moz-selection {
-            background: #f31544;
-            color: #000;
-        }
-        
-        #invoice-POS h1 {
-            font-size: 1.5em;
-            color: #222;
-        }
-        
-        #invoice-POS h2 {
-            font-size: .9em;
-        }
-        
-        #invoice-POS h3 {
-            font-size: 1.2em;
-            font-weight: 300;
-            line-height: 2em;
-        }
-        
-        #invoice-POS p {
-            font-size: .7em;
-            color: #000;
-            line-height: 1.2em;
-        }
-        
-        #invoice-POS #top,
-        #invoice-POS #mid,
-        #invoice-POS #bot {
-            /* Targets all id with 'col-' */
-            border-bottom: 1px solid #000;
-        }
-        
-        #invoice-POS #top {
-            min-height: 100px;
-        }
-        /* #invoice-POS #mid {
-            min-height: 80px;
-        } */
-        
-        #invoice-POS #bot {
-            min-height: 50px;
-        }
-        
-        #invoice-POS #top .logo {
-            height: 60px;
-            width: 60px;
-            
-        }
-        
-        #invoice-POS .info {
-            display: block;
-            margin-left: 0;
-        }
-        
-        #invoice-POS .title {
-            float: right;
-        }
-        
-        #invoice-POS .title p {
-            text-align: right;
-        }
-        
-        #invoice-POS table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        #invoice-POS .tabletitle {
-            font-size: .7em;
-            background: #EEE;
-        }
-        
-        #invoice-POS .service {
-            border-bottom: 1px solid #EEE;
-        }
-        
-        #invoice-POS .item {
-            width: 24mm;
-        }
-        
-        #invoice-POS .itemtext {
-            font-size: .7em;
-        }
-        
-        #invoice-POS #legalcopy {
-            margin-top: 5mm;
-        }
-        
-        .qty>p,
-        .qty>h2 {
-            float: right;
-            margin-right: 10px;
-        }
-    </style>
-</head>
-
-<body>
-    <!-- partial:index.partial.html -->
-    <div id="invoice-POS">
-        <div id="mid">
-            <div class="info">
-                <center>
-                    <h2>${this.resturent.name}</h2>
-                    <h2>Order # ${order.id}</h2>
-                    <h2>Table No: ${order.table_no}</h2>
-                    <h2>Waiter: Rakib Hasan</h2>
-                    <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
-                    <br>
-                </center>
-
-            </div>
-        </div>
-        <!--End Invoice Mid-->
-
-        <div id="bot">
-
-            <div id="table">
-                <table>
-                    <tr class="tabletitle">
-                        <td class="item">
-                            <h2>Item</h2>
-                        </td>
-                        <td>-</td>
-                        <td class="Hours qty">
-                            <h2>Qty</h2>
-                        </td>
-                    </tr>
-                      ${itemDetail}
-                </table>
-            </div>
-        </div>
-        <br>
-    </div>
-</body>
-
-</html>`);
-
-      WinPrint.document.close();
-      WinPrint.focus();
-      WinPrint.print();
-      // WinPrint.close();
     },
 
     printRecipt(order) {
@@ -1073,21 +978,21 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 </style>
 
