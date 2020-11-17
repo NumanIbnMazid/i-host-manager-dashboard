@@ -631,7 +631,7 @@ export default {
         .then((res) => {
           console.log("paymentResult ", res);
           // printRecipt(res.data.data);
-          // printKitechRecit(order);
+          printKitechRecit(order);
         })
         .catch((err) => {
           console.log("error paymentResult ", err.response);
