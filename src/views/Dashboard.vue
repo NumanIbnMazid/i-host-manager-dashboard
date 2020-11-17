@@ -360,7 +360,13 @@
           <vs-button
             color="success"
             type="border"
-            @click="selectAll(orderToVarify.ordered_items, orderToVarify.id, 'user_confirmed')"
+            @click="
+              selectAll(
+                orderToVarify.ordered_items,
+                orderToVarify.id,
+                'user_confirmed'
+              )
+            "
             >Confirm All</vs-button
           >
         </vx-tooltip>
@@ -444,7 +450,13 @@
           <vs-button
             color="success"
             type="border"
-            @click="selectAll(orderToServed.ordered_items, orderToServed.id, 'in_kitchen')"
+            @click="
+              selectAll(
+                orderToServed.ordered_items,
+                orderToServed.id,
+                'in_kitchen'
+              )
+            "
             >Confirm All</vs-button
           >
         </vx-tooltip>
@@ -553,54 +565,43 @@ export default {
       if (this.selectedItemForVarify !== tempArr) {
         this.selectedItemForVarify = tempArr;
 
-        if (status === 'user_confirmed') this.confirmOrder(order_id);
-        if (status === 'in_kitchen') this.foodServedInTable(order_id);
+        if (status === "user_confirmed")
+          this.confirmProcess(
+            order_id,
+            "/restaurant_management/order/status/confirm/"
+          );
+        if (status === "in_kitchen")
+          this.confirmProcess(
+            order_id,
+            "/restaurant_management/order/status/in_table/"
+          );
       }
     },
 
-    confirmOrder(order_id) {
-      axios
-        .post("/restaurant_management/order/status/confirm/", {
-          order_id,
-          food_items: this.selectedItemForVarify,
-        })
-        .then((res) => {
-          console.log("order confirm ", res);
-          if (res.data.status) {
-            this.ordersData = this.ordersData.map((order) =>
-              order.id === order_id ? { ...res.data.data } : order
-            );
-          }
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err.response.statusText);
+    confirmProcess(order_id, url) {
+      if (this.selectedItemForVarify) {
+        axios
+          .post(url, {
+            order_id,
+            food_items: this.selectedItemForVarify,
+          })
+          .then((res) => {
+            console.log("order confirm ", res);
+            if (res.data.status) {
+              this.ordersData = this.ordersData.map((order) =>
+                order.id === order_id ? { ...res.data.data } : order
+              );
+            }
+          })
+          .catch((err) => {
+            this.showActionMessage("error", err.response.statusText);
 
-          // checking error code
-          this.checkError(err);
-        });
-    },
-
-    foodServedInTable(order_id) {
-      axios
-        .post("/restaurant_management/order/status/in_table/", {
-          order_id,
-          food_items: this.selectedItemForVarify,
-        })
-        .then((res) => {
-          console.log("in table ", res);
-          if (res.data.status) {
-            this.ordersData = this.ordersData.map((order) =>
-              order.id === order_id ? { ...res.data.data } : order
-            );
-          }
-        })
-        .catch((err) => {
-          console.log('in table', err.response);
-          this.showActionMessage("error", err.response.statusText);
-
-          // checking error code
-          this.checkError(err);
-        });
+            // checking error code
+            this.checkError(err);
+          });
+      } else {
+        this.showActionMessage("error", "Please select food!");
+      }
     },
 
     calculateLength(arr, status = "") {
