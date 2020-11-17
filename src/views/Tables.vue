@@ -137,7 +137,7 @@
                     </div>
 
                     <!-- table delete button -->
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/5 ml-1">
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/4 ml-1">
                       <vs-button
                         color="danger"
                         icon-pack="feather"
