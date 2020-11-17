@@ -501,6 +501,7 @@ export default {
   data: () => ({
     time: "",
     resturent_id: localStorage.getItem("resturent_id"),
+    resturent: JSON.parse(localStorage.getItem("resturent")),
     orderActiveNow: "",
     tableScanned: "",
     userConfirmed: "",
@@ -515,6 +516,7 @@ export default {
     orderToVarify: [],
     orderToServed: [],
     selectedItemForVarify: [],
+    selectedItemForKitchen: [],
   }),
 
   methods: {
@@ -577,11 +579,16 @@ export default {
       if (this.selectedItemForVarify !== tempArr) {
         this.selectedItemForVarify = tempArr;
 
-        if (status === "user_confirmed")
+        if (status === "user_confirmed") {
           this.confirmProcess(
             order_id,
             "/restaurant_management/order/status/confirm/"
           );
+          let order = { ...this.ordersData };
+          let theorder = this.ordersData.find((order) => order.id === order_id);
+          console.log("order kitchen ", theorder);
+          this.printKitechRecit(theorder);
+        }
         if (status === "in_kitchen")
           this.confirmProcess(
             order_id,
@@ -603,6 +610,8 @@ export default {
               this.ordersData = this.ordersData.map((order) =>
                 order.id === order_id ? { ...res.data.data } : order
               );
+
+              this.selectedItemForVarify = "";
             }
           })
           .catch((err) => {
@@ -624,7 +633,7 @@ export default {
         .then((res) => {
           console.log("paymentResult ", res);
           // printRecipt(res.data.data);
-          printKitechRecit(order);
+          // printKitechRecit(order);
         })
         .catch((err) => {
           console.log("error paymentResult ", err.response);
@@ -1019,6 +1028,7 @@ export default {
     },
 
     printKitechRecit(order) {
+      console.log("test", order);
       const WinPrint = window.open(
         "",
         "",
