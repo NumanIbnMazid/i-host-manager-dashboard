@@ -258,7 +258,7 @@
             <vs-button
               class="ml-2 bg-gn"
               v-if="order.status && order.status == '3_IN_TABLE'"
-              @click="printRecipt(order)"
+              @click="collectPaymentAndPrintInvoice(order)"
               >Collect Payment & Print Invoice</vs-button
             >
 
@@ -376,7 +376,7 @@
           <vs-button
             color="primary"
             type="border"
-            @click="confirmOrder(orderToVarify.id)"
+            @click="confirmProcess(orderToVarify.id, '/restaurant_management/order/status/confirm/')"
             >Confirm Select</vs-button
           >
         </vx-tooltip>
@@ -466,7 +466,7 @@
           <vs-button
             color="primary"
             type="border"
-            @click="foodServedInTable(orderToServed.id)"
+            @click="confirmProcess(orderToServed.id, '/restaurant_management/order/status/in_table/')"
             >Confirm Select</vs-button
           >
         </vx-tooltip>
@@ -602,6 +602,20 @@ export default {
       } else {
         this.showActionMessage("error", "Please select food!");
       }
+    },
+
+    collectPaymentAndPrintInvoice(order) {
+      axios
+        .post("/restaurant_management/order/confirm_payment/", {
+          order_id: order.id,
+        })
+        .then((res) => {
+          console.log("paymentResult ", res);
+          printRecipt(res.data.data);
+        })
+        .catch((err) => {
+          console.log("error paymentResult ", err.response);
+        });
     },
 
     calculateLength(arr, status = "") {
