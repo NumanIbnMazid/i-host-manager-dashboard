@@ -174,6 +174,8 @@
                     />
                     <path d="M0 4.07144H38V6.78573H0V4.07144Z" fill="white" />
                   </svg>
+                  <br>
+                  <b class="text-white text-sm">{{ order.table_name }}</b>
                 </div>
                 <div
                   v-if="!order.status"
@@ -181,7 +183,7 @@
                 >
                   No Order
                 </div>
-                <div v-else class="w-3/4 p-2 ml-2 pt-0">
+                <div v-else class="w-3/4 p-2 ml-2 pt-0 my-auto">
                   <!-- <vs-progress
                     :percent="orderPercent(order.status, 'per')"
                     :color="orderPercent(order.status, 'color')"
