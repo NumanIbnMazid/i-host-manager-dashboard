@@ -244,8 +244,8 @@
             <vs-button
               class="ml-2 bg-gn"
               v-if="order.status && order.status == '4_CREATE_INVOICE'"
-              @click="createInvoice(order.id)"
-              >Print Invoice</vs-button
+              @click="collectOrdersPayment(order.id)"
+              >Collect Payment</vs-button
             >
 
             <vx-tooltip
@@ -619,12 +619,12 @@ export default {
         .post("/restaurant_management/order/create_invoice/", { order_id })
         .then((res) => {
           console.log("create i res ", res);
-          if (res.data.status) {
-            this.ordersData = this.ordersData.map((order) =>
-              order.id === order_id ? { ...res.data.data } : order
-            );
-            this.printRecipt(res.data.data);
-          }
+          // if (res.data.status) {
+          //   this.ordersData = this.ordersData.map((order) =>
+          //     order.id === order_id ? { ...res.data.data } : order
+          //   );
+          // }
+          this.printRecipt(res.data.data);
         })
         .catch((err) => {
           console.log("create i res ", err.response);
@@ -633,11 +633,9 @@ export default {
         });
     },
 
-    collectPaymentAndPrintInvoice(order) {
+    collectOrdersPayment(order_id) {
       axios
-        .post("/restaurant_management/order/confirm_payment/", {
-          order_id: order.id,
-        })
+        .post("/restaurant_management/order/confirm_payment/", {order_id})
         .then((res) => {
           console.log("paymentResult ", res);
           // printRecipt(res.data.data);
