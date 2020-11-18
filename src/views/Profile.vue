@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vx-card title="Restaurant profile">
+    <vx-card :title="resturent.name">
       <vs-tabs>
         <vs-tab label="Restaurant" icon-pack="feather" icon="icon-home">
           <div class="vx-row mt-5">
@@ -172,6 +172,7 @@ import axios from "@/axios.js";
 export default {
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
+    resturent: JSON.parse(localStorage.getItem("resturent")),
     name: "",
     address: "",
     logo: "",
