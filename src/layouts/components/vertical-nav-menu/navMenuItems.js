@@ -29,6 +29,12 @@ export default [{
         icon: "ArchiveIcon",
     },
     {
+        url: "/offer",
+        name: "Offer",
+        slug: "offer",
+        icon: "ShoppingBagIcon",
+    },
+    {
         url: "/report",
         name: "Report",
         slug: "report",
