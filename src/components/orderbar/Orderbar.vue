@@ -18,11 +18,20 @@
             <ul style="min-width: 9rem">
               <li
                 class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
+                @click="profilePage"
+              >
+                <feather-icon icon="SettingsIcon" svgClasses="w-4 h-4" />
+                <span class="ml-2">Settings</span>
+              </li>
+              
+              <li
+                class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
                 @click="logout"
               >
                 <feather-icon icon="LogOutIcon" svgClasses="w-4 h-4" />
                 <span class="ml-2">Logout</span>
               </li>
+              
             </ul>
           </vs-dropdown-menu>
         </vs-dropdown>
@@ -162,6 +171,11 @@ export default {
       this.date = moment().format("DD/MM/YYYY");
     },
 
+    profilePage(){
+
+      this.$router.push("/profile/setting").catch(() => {});
+    },
+
     logout() {
       axios
         .post("/account_management/auth/logout/")
@@ -169,12 +183,14 @@ export default {
           console.log(res);
           localStorage.removeItem("token");
           localStorage.removeItem("resturent_id");
+          localStorage.removeItem("resturent");
           localStorage.removeItem("user");
           localStorage.removeItem("staff_info");
         })
         .catch((err) => {
           localStorage.removeItem("token");
           localStorage.removeItem("resturent_id");
+          localStorage.removeItem("resturent");
           localStorage.removeItem("user");
           localStorage.removeItem("staff_info");
           console.log("log out error ", err);
