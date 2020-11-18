@@ -65,10 +65,10 @@
                 </vs-col>
 
                 <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-ihostm" style="font-size: 2.5rem">
+                  <h1 class="mx-auto text-rd" style="font-size: 2.5rem">
                     <b> {{ this.kitchen }}</b>
                   </h1>
-                  <p class="mx-auto text-ihostm text-lg">In Kitchen</p>
+                  <p class="mx-auto text-rd text-lg">In Kitchen</p>
                 </vs-col>
               </vs-row>
             </vs-card>
@@ -100,10 +100,10 @@
                 </vs-col>
 
                 <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-gn" style="font-size: 2.5rem">
-                    <b> 01</b>
+                  <h1 class="mx-auto text-hostm" style="font-size: 2.5rem">
+                    <b> {{this.invoiceCreated}}</b>
                   </h1>
-                  <p class="mx-auto text-gn text-lg">Payment Done</p>
+                  <p class="mx-auto text-hostm text-lg">Create Invoice</p>
                 </vs-col>
               </vs-row>
             </vs-card>
@@ -118,10 +118,10 @@
                 </vs-col>
 
                 <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-rd" style="font-size: 2.5rem">
-                    <b> {{ this.cancelOrders }}</b>
+                  <h1 class="mx-auto text-gn" style="font-size: 2.5rem">
+                    <b> {{ this.paymentDone }}</b>
                   </h1>
-                  <p class="mx-auto text-rd text-lg">Cancel</p>
+                  <p class="mx-auto text-gn text-lg">Payment Done</p>
                 </vs-col>
               </vs-row>
             </vs-card>
@@ -508,6 +508,7 @@ export default {
     kitchen: "",
     paymentDone: "",
     foodServed: "",
+    invoiceCreated: "",
     cancelOrders: "",
     ordersData: [],
 
@@ -554,6 +555,7 @@ export default {
 
           // total food serve
           this.foodServed = this.calculateLength(orderItemList, "3_IN_TABLE");
+          this.invoiceCreated = this.calculateLength(orderItemList, "4_CREATE_INVOICE");
 
           // total payment done
           this.paymentDone = this.calculateLength(orderItemList, "4_PAID");

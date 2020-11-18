@@ -23,12 +23,12 @@
               accept="image/*"
             />
             <div
-              class="vx-col mx-auto w-full rounded flex justify-center items-center"
+              class="vx-col mx-auto w-full rounded flex justify-center items-center text-cnter"
               style="border: 1px solid #ddd; height: 250px"
             >
               <img v-if="image" :src="preview" class="w-full" alt="img" />
-              <span v-else
-                >Category Image <br />
+              <span class="text-center" v-else
+                >Food Image <br />
                 (300px*200px)</span
               >
             </div>
