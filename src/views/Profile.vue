@@ -1,6 +1,88 @@
 <template>
   <div>
-    <vx-card :title="resturent.name">
+    <!-- restaurent info -->
+    <vx-card :title="resturent.name" class="mb-base" v-show="!showEditField">
+      <!-- Avatar -->
+      <div class="md:w-8/12 sm:w-12/12 mx-auto">
+        <div class="vx-row">
+          <!-- Avatar Col -->
+          <div class="vx-col" id="avatar-col">
+            <div class="img-container mb-4">
+              <img :src="logo" class="rounded" style="width: 250px" />
+            </div>
+          </div>
+
+          <!-- Information - Col 1 -->
+          <div class="vx-col flex-1" id="account-info-col-1">
+            <table>
+              <tr>
+                <td class="font-semibold">Name</td>
+                <td>{{ name }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Address</td>
+                <td>{{ address }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Website</td>
+                <td>
+                  <a
+                    class="text-success"
+                    :href="website"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    >{{ website }}</a
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="font-semibold">Created At</td>
+                <td>{{ created_at }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Status</td>
+                <td>{{ status }}</td>
+              </tr>
+              <tr>
+                <td class="font-semibold">Tax Percentage</td>
+                <td>{{ tax_percentage }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Service Charge</td>
+                <td>
+                  <span v-if="!service_charge_is_percentage">৳</span>
+                  {{ service_charge }}
+                  <span v-if="service_charge_is_percentage">%</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="font-semibold">Subscription Ends</td>
+                <td>{{ subscription_ends }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- /edit button -->
+      <div
+        class="w-full object-right-bottom flex flex-row-reverse"
+        id="account-manage-buttons"
+      >
+        <vs-button
+          icon-pack="feather"
+          icon="icon-edit"
+          class="mr-4"
+          @click="showEditField = true"
+          >Edit</vs-button
+        >
+      </div>
+    </vx-card>
+
+    <vx-card :title="resturent.name" v-show="showEditField">
       <vs-tabs>
         <vs-tab label="Restaurant" icon-pack="feather" icon="icon-home">
           <div class="vx-row mt-5">
@@ -66,14 +148,33 @@
               </div>
               <div class="vx-row mb-6">
                 <div class="vx-col w-full">
-                  <vs-input
+                  <!-- <vs-input
                     class="w-full"
                     icon-pack="feather"
                     icon="icon-dollar-sign"
                     icon-no-border
                     label="Service Charge Is Percentage"
                     v-model="service_charge_is_percentage"
-                  />
+                  /> -->
+                  <ul class="flex">
+                    <label for=""> Service Charge Is Percentage </label>
+                    <li class="ml-4">
+                      <vs-radio
+                        v-model="service_charge_is_percentage"
+                        name="service_charge_is_percentage"
+                        vs-value="1"
+                        >Yes</vs-radio
+                      >
+                    </li>
+                    <li class="ml-4">
+                      <vs-radio
+                        v-model="service_charge_is_percentage"
+                        name="service_charge_is_percentage"
+                        vs-value="0"
+                        >No</vs-radio
+                      >
+                    </li>
+                  </ul>
                 </div>
               </div>
               <div class="vx-row mb-6">
@@ -152,9 +253,20 @@
                 </div>
               </div>
               <div class="vx-row">
-                <div class="vx-col w-full">
-                  <vs-button class="mr-3 mb-2" @click="updateRestaurant"
+                <div class="vx-col w-full flex">
+                  <vs-button
+                    icon-pack="feather"
+                    icon="icon-save"
+                    class="mr-3 mb-2"
+                    @click="updateRestaurant"
                     >Save Change</vs-button
+                  >
+                  <vs-button
+                    icon-pack="feather"
+                    icon="icon-delete"
+                    class="mr-3 mb-2"
+                    @click="showEditField = !showEditField"
+                    >Cancel</vs-button
                   >
                 </div>
               </div>
@@ -173,6 +285,7 @@ export default {
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
     resturent: JSON.parse(localStorage.getItem("resturent")),
+    showEditField: false,
     name: "",
     address: "",
     logo: "",
@@ -252,7 +365,7 @@ export default {
       formData.append("address", this.address);
       formData.append(
         "service_charge_is_percentage",
-        this.service_charge_is_percentage
+        this.service_charge_is_percentage === "1" ? true : false
       );
       formData.append("service_charge", this.service_charge);
       formData.append("tax_percentage", this.tax_percentage);
@@ -283,6 +396,7 @@ export default {
               color: "success",
               position: "top-right",
             });
+            this.getRestaurant();
           } else {
             console.log(res.data.error.error_details);
             const errors = res.data.error.error_details;

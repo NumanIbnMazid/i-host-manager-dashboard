@@ -23,7 +23,7 @@
                 <feather-icon icon="SettingsIcon" svgClasses="w-4 h-4" />
                 <span class="ml-2">Settings</span>
               </li>
-              
+
               <li
                 class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
                 @click="logout"
@@ -31,7 +31,6 @@
                 <feather-icon icon="LogOutIcon" svgClasses="w-4 h-4" />
                 <span class="ml-2">Logout</span>
               </li>
-              
             </ul>
           </vs-dropdown-menu>
         </vs-dropdown>
@@ -82,9 +81,10 @@
       </div>
     </div>
 
+
     <vs-sidebar-item index="1">
       <div class="mx-10 py-4 w-full text-center bg-primary rounded shadow-md">
-        <h1 class="text-white">88270৳</h1>
+        <h1 class="text-white">{{total_sell}} ৳</h1>
         <p class="text-ihosts"><b> Total Sell Today </b></p>
       </div>
     </vs-sidebar-item>
@@ -147,10 +147,32 @@ export default {
     active: true,
     resturent_id: localStorage.getItem("resturent_id"),
     orders: [],
+    total_sell: "",
     date: "",
   }),
 
   methods: {
+    getTodaysTotalSell() {
+      axios
+        .get(
+          `/restaurant_management/restaurant/${this.resturent_id}/today_sell/`
+        )
+        .then((res) => {
+          if (res.data.status) {
+            this.total_sell = res.data.data.total_sell;
+          } else {
+            this.showActionMessage(
+              "error",
+              "Something went wrong getting total sell!"
+            );
+          }
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err);
+          this.checkError(err);
+        });
+    },
+
     getOrderItemList() {
       axios
         .get(
@@ -171,8 +193,7 @@ export default {
       this.date = moment().format("DD/MM/YYYY");
     },
 
-    profilePage(){
-
+    profilePage() {
       this.$router.push("/profile/setting").catch(() => {});
     },
 
@@ -204,14 +225,9 @@ export default {
   },
 
   created() {
-    // staff_info: localStorage.getItem("staff_info"),
-    // user: localStorage.getItem("user"),
-    let us = JSON.parse(localStorage.getItem("user"))
-    let us1 = JSON.parse(localStorage.getItem("staff_info"))
-    console.log("user ", us);
-    console.log("s ", us1);
     this.getOrderItemList();
     this.getDate();
+    this.getTodaysTotalSell();
   },
 };
 </script>
@@ -254,11 +270,11 @@ export default {
   }
 
   /* table.order-table tbody tr {
-                padding: 6px 4px;
-                border-top: 1px solid #ddd;
-                border-bottom: 1px solid #ddd;
-                margin: 10px 0px !important;
-              } */
+                    padding: 6px 4px;
+                    border-top: 1px solid #ddd;
+                    border-bottom: 1px solid #ddd;
+                    margin: 10px 0px !important;
+                  } */
 
   .order-box {
     padding: 5px 0px;

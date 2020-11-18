@@ -62,6 +62,12 @@ const router = new Router({
           beforeEnter: requireAuth
         },
         {
+          path: "/offer",
+          name: "offer",
+          component: () => import("./views/Offer.vue"),
+          beforeEnter: requireAuth
+        },
+        {
           path: "/waiter",
           name: "waiter",
           component: () => import("./views/Waiters.vue"),
