@@ -101,7 +101,7 @@
 
                 <vs-col vs-w="9" class="text-center">
                   <h1 class="mx-auto text-hostm" style="font-size: 2.5rem">
-                    <b> {{this.invoiceCreated}}</b>
+                    <b> {{ this.invoiceCreated }}</b>
                   </h1>
                   <p class="mx-auto text-hostm text-lg">Create Invoice</p>
                 </vs-col>
@@ -174,7 +174,7 @@
                     />
                     <path d="M0 4.07144H38V6.78573H0V4.07144Z" fill="white" />
                   </svg>
-                  <br>
+                  <br />
                   <b class="text-white text-sm">{{ order.table_name }}</b>
                 </div>
                 <div
@@ -239,6 +239,13 @@
               v-if="order.status && order.status == '3_IN_TABLE'"
               @click="collectPaymentAndPrintInvoice(order)"
               >Collect Payment & Print Invoice</vs-button
+            >
+
+            <vs-button
+              class="ml-2 bg-gn"
+              v-if="order.status && order.status == '4_CREATE_INVOICE'"
+              @click="createInvoice(order.id)"
+              >Print Invoice</vs-button
             >
 
             <vx-tooltip
@@ -532,7 +539,10 @@ export default {
 
           // total food serve
           this.foodServed = this.calculateLength(orderItemList, "3_IN_TABLE");
-          this.invoiceCreated = this.calculateLength(orderItemList, "4_CREATE_INVOICE");
+          this.invoiceCreated = this.calculateLength(
+            orderItemList,
+            "4_CREATE_INVOICE"
+          );
 
           // total payment done
           this.paymentDone = this.calculateLength(orderItemList, "4_PAID");
@@ -602,6 +612,25 @@ export default {
       } else {
         this.showActionMessage("error", "Please select food!");
       }
+    },
+
+    createInvoice(order_id) {
+      axios
+        .post("/restaurant_management/order/create_invoice/", { order_id })
+        .then((res) => {
+          console.log("create i res ", res);
+          if (res.data.status) {
+            this.ordersData = this.ordersData.map((order) =>
+              order.id === order_id ? { ...res.data.data } : order
+            );
+            this.printRecipt(res.data.data);
+          }
+        })
+        .catch((err) => {
+          console.log("create i res ", err.response);
+          this.showActionMessage("error", err);
+          this.checkError(err);
+        });
     },
 
     collectPaymentAndPrintInvoice(order) {
