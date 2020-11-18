@@ -682,8 +682,8 @@ export default {
 </script>
 
 <style scoped>
-.slect-type > li {
-  float: left;
-  margin: 10px;
-}
+  .slect-type > li {
+    float: left;
+    margin: 10px;
+  }
 </style>

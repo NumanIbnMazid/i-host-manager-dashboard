@@ -12,7 +12,7 @@
         <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
           <img
             class="h-16 w-16 md:h-12 md:w-12 rounded-full mx-auto md:mx-0 md:mr-6 shadow-md"
-            src="http://i-host.com.bd/assets/team/karina.jpeg"
+            :src="staff_info.image"
           />
           <vs-dropdown-menu class="vx-navbar-dropdown">
             <ul style="min-width: 9rem">
@@ -27,8 +27,8 @@
           </vs-dropdown-menu>
         </vs-dropdown>
         <div class="text-center md:text-left my-auto w-full">
-          <h6>Tahsin Karina</h6>
-          <p class="text-sm">Manager</p>
+          <h6>{{ user.first_name }}</h6>
+          <p class="text-sm">{{ staff_info.is_owner ? "Owner" : "Manager" }}</p>
         </div>
 
         <div class="text-right md:text-right float-right my-auto w-full">
@@ -57,7 +57,6 @@
                 :is="scrollbarTag"
                 ref="mainSidebarPs"
                 class="scroll-area--nofications-dropdown p-0 mb-10"
-                :settings="settings"
                 :key="$vs.rtl"
               >
                 <ul class="bordered-items"></ul>
@@ -81,7 +80,7 @@
       </div>
     </vs-sidebar-item>
     <vs-sidebar-item index="2">
-      <h5 class="text-center mx-auto">{{date}}</h5></vs-sidebar-item
+      <h5 class="text-center mx-auto">{{ date }}</h5></vs-sidebar-item
     >
     <vs-sidebar-item index="3">
       <div class="w-full">
@@ -134,6 +133,8 @@ import axios from "@/axios.js";
 import moment from "moment";
 export default {
   data: () => ({
+    staff_info: JSON.parse(localStorage.getItem("staff_info")),
+    user: JSON.parse(localStorage.getItem("user")),
     active: true,
     resturent_id: localStorage.getItem("resturent_id"),
     orders: [],
@@ -166,10 +167,16 @@ export default {
         .post("/account_management/auth/logout/")
         .then((res) => {
           console.log(res);
+          localStorage.removeItem("token");
+          localStorage.removeItem("resturent_id");
+          localStorage.removeItem("user");
+          localStorage.removeItem("staff_info");
         })
         .catch((err) => {
           localStorage.removeItem("token");
           localStorage.removeItem("resturent_id");
+          localStorage.removeItem("user");
+          localStorage.removeItem("staff_info");
           console.log("log out error ", err);
         });
 
@@ -181,6 +188,12 @@ export default {
   },
 
   created() {
+    // staff_info: localStorage.getItem("staff_info"),
+    // user: localStorage.getItem("user"),
+    let us = JSON.parse(localStorage.getItem("user"))
+    let us1 = JSON.parse(localStorage.getItem("staff_info"))
+    console.log("user ", us);
+    console.log("s ", us1);
     this.getOrderItemList();
     this.getDate();
   },
@@ -225,11 +238,11 @@ export default {
   }
 
   /* table.order-table tbody tr {
-            padding: 6px 4px;
-            border-top: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
-            margin: 10px 0px !important;
-          } */
+                padding: 6px 4px;
+                border-top: 1px solid #ddd;
+                border-bottom: 1px solid #ddd;
+                margin: 10px 0px !important;
+              } */
 
   .order-box {
     padding: 5px 0px;

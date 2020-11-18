@@ -91,9 +91,11 @@ export default {
           password: this.password,
         })
         .then((res) => {
-          // console.log(res.data.data);
+          console.log('login res ', res.data.data);
           if (res.data.data.auth.token) {
             localStorage.setItem("token", res.data.data.auth.token);
+            localStorage.setItem("staff_info", JSON.stringify(res.data.data.staff_info[0]));
+            localStorage.setItem("user", JSON.stringify(res.data.data.user));
             // localStorage.setItem("resturent_id", res.data.data.restuarant_id);
             let rstrnt = res.data.data.staff_info;
             console.log(rstrnt[0].restaurant);
