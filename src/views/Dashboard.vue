@@ -237,7 +237,7 @@
             <vs-button
               class="ml-2 bg-gn"
               v-if="order.status && order.status == '3_IN_TABLE'"
-              @click="createInvoice(order)"
+              @click="createInvoice(order.id)"
               >Create Invoice</vs-button
             >
 
