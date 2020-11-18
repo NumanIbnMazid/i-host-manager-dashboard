@@ -407,7 +407,7 @@ export default {
       return Math.floor(Math.random() * (max - min)) + min;
     },
 
-    getTable() {
+    getTables() {
       axios
         .get(`/restaurant_management/restaurant/${this.resturent_id}/tables/`)
         .then((res) => {
@@ -580,10 +580,12 @@ export default {
       axios
         .get(`/account_management/restaurant/${this.resturent_id}/waiter_info/`)
         .then((res) => {
+          console.log('waiter res ', res);
           if (res.data.data) this.waiters = res.data.data;
           else this.showActionMessage("error", "Something went wrong!");
         })
         .catch((err) => {
+          console.log('waiter error ', err.response);
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
@@ -635,7 +637,7 @@ export default {
   },
 
   created() {
-    this.getTable();
+    this.getTables();
     this.getWaiters();
   },
   mounted() {

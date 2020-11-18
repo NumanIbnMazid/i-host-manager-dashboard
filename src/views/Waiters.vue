@@ -97,7 +97,7 @@
                   icon="TrashIcon"
                   svgClasses="w-5 h-5 hover:text-danger stroke-current"
                   class="ml-2"
-                  @click.stop="deleteData(tr.id)"
+                  @click="deleteStaff(tr.id)"
                 />
               </vs-td>
             </vs-tr>
@@ -375,7 +375,7 @@ export default {
         });
     },
 
-// TODO
+    // TODO
     updateStaffInfo() {
       axios
         .patch(``)
@@ -384,6 +384,24 @@ export default {
         })
         .catch((err) => {
           console.log("errSu ", err.response);
+        });
+    },
+
+    // delete staff
+    deleteStaff(staff_id) {
+      axios
+        .delete(`/account_management/restaurant/${staff_id}/delete_staff/`)
+        .then((res) => {
+          console.log("sd ", res);
+          this.waiters = this.waiters.filter(
+            (waiter) => waiter.id !== staff_id
+          );
+
+          this.showActionMessage("success", "Waiter Deleted Successfully!");
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
         });
     },
 
