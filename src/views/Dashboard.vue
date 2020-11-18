@@ -211,29 +211,6 @@
                   </div>
                 </div>
               </div>
-              <!-- <div v-if="order.order_status">
-                <p>
-                  <span class="font-semibold"
-                    >Order ID #{{ order.table[0].id }}
-                    <small>({{ order.order_status.status }})</small></span
-                  >
-                </p> -->
-
-              <!-- </div>
-              <div v-else>
-                <p>
-                  <span class="font-semibold">No order</span>
-                </p>
-              </div>
-              <div class="text-center mr-4">
-                <p>
-                  Table: {{ order.table_no }} <br />
-                  <span v-if="order.order_status"
-                    >Amount: ৳{{ order.table[0].total_price }}</span
-                  >
-                  <span v-else>-</span>
-                </p>
-              </div> -->
             </div>
           </div>
           <!-- <vs-button

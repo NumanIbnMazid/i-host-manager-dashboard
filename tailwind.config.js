@@ -76,7 +76,7 @@ module.exports = {
                 'ihosts': '#f7b742',
                 'bl': '#5c97f0',
                 'yl': '#ffd950',
-                'rd': '#ff2769',
+                'rd': '#EF5555',
                 'pl': '#b973ff',
                 'gn': '#02bc77',
                 'hard': '#C4C4C4',

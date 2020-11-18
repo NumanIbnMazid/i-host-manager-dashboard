@@ -61,6 +61,7 @@
         <vs-th>Description</vs-th>
         <vs-th>Ingredients</vs-th>
         <vs-th class="text-center">Options</vs-th>
+        <vs-th class="text-center">Extras</vs-th>
         <vs-th>Recommended</vs-th>
         <vs-th>Top</vs-th>
         <vs-th>Action</vs-th>
@@ -118,6 +119,12 @@
             </vs-td>
 
             <vs-td class="text-center">
+              <vs-chip v-for="(extra, i) in tr.food_extras" :key="i">
+                {{ extra }}
+              </vs-chip>
+            </vs-td>
+
+            <vs-td class="text-center">
               <p class="product-name font-medium truncate">
                 {{ tr.is_recommended ? "Yes" : "No" }}
               </p>
@@ -149,7 +156,6 @@
 </template>
 
 <script>
-
 import vSelect from "vue-select";
 import axios from "@/axios.js";
 export default {
@@ -315,142 +321,141 @@ export default {
     this.isMounted = true;
   },
 };
-
 </script>
 
 <style lang="scss" >
-  #data-list-thumb-view {
-    .vs-con-table {
-      .product-name {
-        max-width: 23rem;
-      }
+#data-list-thumb-view {
+  .vs-con-table {
+    .product-name {
+      max-width: 23rem;
+    }
 
-      .vs-table--header {
+    .vs-table--header {
+      display: flex;
+      flex-wrap: wrap-reverse;
+      margin-left: 1.5rem;
+      margin-right: 1.5rem;
+      > span {
         display: flex;
-        flex-wrap: wrap-reverse;
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
-        > span {
-          display: flex;
-          flex-grow: 1;
-        }
-
-        .vs-table--search {
-          padding-top: 0;
-
-          .vs-table--search-input {
-            padding: 0.9rem 2.5rem;
-            font-size: 1rem;
-
-            & + i {
-              left: 1rem;
-            }
-
-            &:focus + i {
-              left: 1rem;
-            }
-          }
-        }
+        flex-grow: 1;
       }
 
-      .vs-table {
-        border-collapse: separate;
-        border-spacing: 0 1.3rem;
-        padding: 0 1rem;
+      .vs-table--search {
+        padding-top: 0;
 
-        tr {
-          box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-          td {
-            padding: 10px;
-            &:first-child {
-              border-top-left-radius: 0.5rem;
-              border-bottom-left-radius: 0.5rem;
-            }
-            &:last-child {
-              border-top-right-radius: 0.5rem;
-              border-bottom-right-radius: 0.5rem;
-            }
-            &.img-container {
-              // width: 1rem;
-              // background: #fff;
+        .vs-table--search-input {
+          padding: 0.9rem 2.5rem;
+          font-size: 1rem;
 
-              span {
-                display: flex;
-                justify-content: flex-start;
-              }
-
-              .product-img {
-                height: 110px;
-              }
-            }
+          & + i {
+            left: 1rem;
           }
-          td.td-check {
-            padding: 20px !important;
+
+          &:focus + i {
+            left: 1rem;
           }
         }
-      }
-
-      .vs-table--thead {
-        th {
-          padding-top: 0;
-          padding-bottom: 0;
-
-          .vs-table-text {
-            text-transform: uppercase;
-            font-weight: 600;
-          }
-        }
-        th.td-check {
-          padding: 0 15px !important;
-        }
-        tr {
-          background: none;
-          box-shadow: none;
-        }
-      }
-
-      .vs-table--pagination {
-        justify-content: center;
       }
     }
-  }
 
-  .vs-sidebar {
-    z-index: 100000;
-  }
+    .vs-table {
+      border-collapse: separate;
+      border-spacing: 0 1.3rem;
+      padding: 0 1rem;
 
-  .sidebar-custom > .header-sidebar {
+      tr {
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+        td {
+          padding: 10px;
+          &:first-child {
+            border-top-left-radius: 0.5rem;
+            border-bottom-left-radius: 0.5rem;
+          }
+          &:last-child {
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+          }
+          &.img-container {
+            // width: 1rem;
+            // background: #fff;
+
+            span {
+              display: flex;
+              justify-content: flex-start;
+            }
+
+            .product-img {
+              height: 110px;
+            }
+          }
+        }
+        td.td-check {
+          padding: 20px !important;
+        }
+      }
+    }
+
+    .vs-table--thead {
+      th {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        .vs-table-text {
+          text-transform: uppercase;
+          font-weight: 600;
+        }
+      }
+      th.td-check {
+        padding: 0 15px !important;
+      }
+      tr {
+        background: none;
+        box-shadow: none;
+      }
+    }
+
+    .vs-table--pagination {
+      justify-content: center;
+    }
+  }
+}
+
+.vs-sidebar {
+  z-index: 100000;
+}
+
+.sidebar-custom > .header-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  h4 {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    width: 100%;
-    h4 {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      > button {
-        margin-left: 10px;
-      }
-    }
-  }
-
-  .footer-sidebar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     width: 100%;
     > button {
-      border: 0px solid rgba(0, 0, 0, 0) !important;
-      border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
-      border-radius: 0px !important;
+      margin-left: 10px;
     }
   }
+}
 
-  .sidebar-custom > .vs-sidebar-primary {
-    max-width: 400px !important;
+.footer-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  > button {
+    border: 0px solid rgba(0, 0, 0, 0) !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
+    border-radius: 0px !important;
   }
+}
+
+.sidebar-custom > .vs-sidebar-primary {
+  max-width: 400px !important;
+}
 
 th:first-child .vs-table-text {
   justify-content: center !important;
