@@ -120,7 +120,7 @@
 
             <vs-td class="text-center">
               <vs-chip v-for="(extra, i) in tr.food_extras" :key="i">
-                {{ extra }}
+                {{ extra.type_name }}
               </vs-chip>
             </vs-td>
 

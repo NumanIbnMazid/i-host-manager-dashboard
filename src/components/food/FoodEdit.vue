@@ -415,7 +415,7 @@ export default {
         .get(`restaurant_management/food/${this.$route.params.id}/`)
         .then((res) => {
           console.log(res);
-          let food = res.data;
+          let food = res.data.data;
 
           this.id = food.id;
           this.name = food.name;
@@ -438,7 +438,7 @@ export default {
               ? food.food_options[0].price
               : 0;
 
-          this.food = res.data;
+          this.food = res.data.data;
         });
     },
 
@@ -682,8 +682,8 @@ export default {
 </script>
 
 <style scoped>
-  .slect-type > li {
-    float: left;
-    margin: 10px;
-  }
+.slect-type > li {
+  float: left;
+  margin: 10px;
+}
 </style>
