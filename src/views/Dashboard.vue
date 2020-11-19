@@ -232,13 +232,20 @@
               class="ml-2 bg-pl"
               v-if="order.status && order.status == '2_ORDER_CONFIRMED'"
               @click="(markAsServedPopup = true), (orderToServed = order)"
-              >Mark as Served</vs-button
+              >Mark as Serve</vs-button
             >
             <vs-button
               class="ml-2 bg-gn"
-              v-if="order.status && order.status == '3_IN_TABLE'"
+              v-if="order.status && order.status == '3_IN_TABLE' && checkAllServed(order.ordered_items)"
               @click="createInvoice(order.id)"
               >Create Invoice</vs-button
+            >
+
+            <vs-button
+              class="ml-2 bg-gn"
+              v-if="order.status && order.status == '3_IN_TABLE' && !checkAllServed(order.ordered_items)"
+              @click="(markAsServedPopup = true), (orderToServed = order)"
+              >Serve</vs-button
             >
 
             <vs-button
@@ -563,6 +570,14 @@ export default {
         });
     },
 
+    checkAllServed(orderItemList) {
+      let totalLength = orderItemList.filter(item => item.status === '2_ORDER_CONFIRMED').length;
+
+      if (totalLength > 0) return false;
+
+      return true;
+    },
+
     // select all item
     selectAll(data, order_id, status) {
       console.log('order item ', data);
@@ -572,21 +587,21 @@ export default {
       if (this.selectedItemForVarify !== tempArr) {
         this.selectedItemForVarify = tempArr;
 
-        // if (status === "user_confirmed") {
-        //   this.confirmProcess(
-        //     order_id,
-        //     "/restaurant_management/order/status/confirm/"
-        //   );
-        //   let order = { ...this.ordersData };
-        //   let theorder = this.ordersData.find((order) => order.id === order_id);
-        //   console.log("order kitchen ", theorder);
-        //   this.printKitechRecit(theorder);
-        // }
-        // if (status === "in_kitchen")
-        //   this.confirmProcess(
-        //     order_id,
-        //     "/restaurant_management/order/status/in_table/"
-        //   );
+        if (status === "user_confirmed") {
+          this.confirmProcess(
+            order_id,
+            "/restaurant_management/order/status/confirm/"
+          );
+          let order = { ...this.ordersData };
+          let theorder = this.ordersData.find((order) => order.id === order_id);
+          console.log("order kitchen ", theorder);
+          this.printKitechRecit(theorder);
+        }
+        if (status === "in_kitchen")
+          this.confirmProcess(
+            order_id,
+            "/restaurant_management/order/status/in_table/"
+          );
       }
     },
 
