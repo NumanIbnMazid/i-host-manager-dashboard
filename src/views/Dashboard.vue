@@ -562,27 +562,28 @@ export default {
 
     // select all item
     selectAll(data, order_id, status) {
+      console.log('order item ', data);
       let tempArr = [];
       data.map((el) => tempArr.push(el.id));
 
       if (this.selectedItemForVarify !== tempArr) {
         this.selectedItemForVarify = tempArr;
 
-        if (status === "user_confirmed") {
-          this.confirmProcess(
-            order_id,
-            "/restaurant_management/order/status/confirm/"
-          );
-          let order = { ...this.ordersData };
-          let theorder = this.ordersData.find((order) => order.id === order_id);
-          console.log("order kitchen ", theorder);
-          this.printKitechRecit(theorder);
-        }
-        if (status === "in_kitchen")
-          this.confirmProcess(
-            order_id,
-            "/restaurant_management/order/status/in_table/"
-          );
+        // if (status === "user_confirmed") {
+        //   this.confirmProcess(
+        //     order_id,
+        //     "/restaurant_management/order/status/confirm/"
+        //   );
+        //   let order = { ...this.ordersData };
+        //   let theorder = this.ordersData.find((order) => order.id === order_id);
+        //   console.log("order kitchen ", theorder);
+        //   this.printKitechRecit(theorder);
+        // }
+        // if (status === "in_kitchen")
+        //   this.confirmProcess(
+        //     order_id,
+        //     "/restaurant_management/order/status/in_table/"
+        //   );
       }
     },
 
@@ -601,6 +602,8 @@ export default {
               );
 
               this.selectedItemForVarify = "";
+              this.markAsServedPopup = false;
+              this.varifyPopup = false;
             }
           })
           .catch((err) => {
