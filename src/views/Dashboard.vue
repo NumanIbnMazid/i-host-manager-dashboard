@@ -538,6 +538,7 @@ export default {
           let orderItemList = res.data.data;
           this.ordersData = res.data.data;
 
+          console.log("order data ", this.ordersData);
           // total order active status
           this.orderActiveNow = orderItemList.filter((el) => el.status).length;
 
@@ -655,12 +656,12 @@ export default {
         .post("/restaurant_management/order/create_invoice/", { order_id })
         .then((res) => {
           console.log("create i res ", res);
-          // if (res.data.status) {
-          //   this.ordersData = this.ordersData.map((order) =>
-          //     order.id === order_id ? { ...res.data.data } : order
-          //   );
-          // }
-          this.printRecipt(res.data.data);
+          if (res.data.status) {
+            this.ordersData = this.ordersData.map((order) =>
+              order.id === order_id ? { ...res.data.data } : order
+            );
+            this.printRecipt(res.data.data);
+          }
         })
         .catch((err) => {
           console.log("create i res ", err.response);
