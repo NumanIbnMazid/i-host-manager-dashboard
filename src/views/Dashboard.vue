@@ -213,13 +213,7 @@
               </div>
             </div>
           </div>
-          <!-- <vs-button
-            v-if="order.status"
-            @click="changeStatus(order.status, order.table, j)"
-            :disabled="order.status == 'Pending'"
-          >
-            {{ statusToAction(order.order_status.status) }}            
-          </vs-button> -->
+
           <div class="flex">
             <vs-button
               class="ml-2 bg-ihostm"
@@ -236,14 +230,22 @@
             >
             <vs-button
               class="ml-2 bg-gn"
-              v-if="order.status && order.status == '3_IN_TABLE' && checkAllServed(order.ordered_items)"
+              v-if="
+                order.status &&
+                order.status == '3_IN_TABLE' &&
+                checkAllServed(order.ordered_items)
+              "
               @click="createInvoice(order.id)"
               >Create Invoice</vs-button
             >
 
             <vs-button
               class="ml-2 bg-gn"
-              v-if="order.status && order.status == '3_IN_TABLE' && !checkAllServed(order.ordered_items)"
+              v-if="
+                order.status &&
+                order.status == '3_IN_TABLE' &&
+                !checkAllServed(order.ordered_items)
+              "
               @click="(markAsServedPopup = true), (orderToServed = order)"
               >Serve</vs-button
             >
@@ -394,20 +396,28 @@
           <vs-th class="text-center">Name</vs-th>
           <vs-th class="text-center">Qty</vs-th>
           <vs-th class="text-center">Options</vs-th>
-          <!-- <vs-th class="text-center">Extra</vs-th> -->
           <vs-th class="text-center">Price</vs-th>
+          <vs-th class="text-center">Action</vs-th>
         </template>
 
         <template slot-scope="{ data }">
           <vs-tr :key="i" v-for="(tr, i) in data">
-
             <vs-td :data="data[i].id">
-              <vs-checkbox v-if="data[i].status === '2_ORDER_CONFIRMED'"
+              <vs-checkbox
+                v-if="data[i].status === '2_ORDER_CONFIRMED'"
                 v-model="selectedItemForVarify"
                 :vs-value="data[i].id"
               ></vs-checkbox>
-              <span v-if="data[i].status === '3_IN_TABLE'" class="badge bg-gn text-white rounded">Served</span>
-              <span v-if="data[i].status === '4_CANCELLED'" class="badge bg-danger text-white rounded">Canceled</span>
+              <span
+                v-if="data[i].status === '3_IN_TABLE'"
+                class="badge bg-gn text-white rounded"
+                >Served</span
+              >
+              <span
+                v-if="data[i].status === '4_CANCELLED'"
+                class="badge bg-danger text-white rounded"
+                >Canceled</span
+              >
             </vs-td>
 
             <vs-td :data="data[i].id">
@@ -430,15 +440,17 @@
                 {{ data[i].food_option.name }}
               </span>
             </vs-td>
-
-            <!-- <vs-td :data="data[i].food_extra">
-              <span v-for="(extra, k) in data[i].food_extra" :key="k">
-                {{ extra }}
-              </span>
-            </vs-td> -->
-
             <vs-td :data="data[i].food_option.price">
               ৳{{ data[i].food_option.price }}
+            </vs-td>
+            <vs-td>
+              <span
+                v-if="data[i].status != '4_CANCELLED'"
+                class="badge rounded bg-rd text-white"
+                style="cursor: pointer"
+                @click="cancelOrderItem(orderToServed.id, data[i].id)"
+                >Cancel</span
+              >
             </vs-td>
           </vs-tr>
         </template>
@@ -571,7 +583,9 @@ export default {
     },
 
     checkAllServed(orderItemList) {
-      let totalLength = orderItemList.filter(item => item.status === '2_ORDER_CONFIRMED').length;
+      let totalLength = orderItemList.filter(
+        (item) => item.status === "2_ORDER_CONFIRMED"
+      ).length;
 
       if (totalLength > 0) return false;
 
@@ -580,7 +594,7 @@ export default {
 
     // select all item
     selectAll(data, order_id, status) {
-      console.log('order item ', data);
+      console.log("order item ", data);
       let tempArr = [];
       data.map((el) => tempArr.push(el.id));
 
@@ -657,7 +671,7 @@ export default {
 
     collectOrdersPayment(order_id) {
       axios
-        .post("/restaurant_management/order/confirm_payment/", {order_id})
+        .post("/restaurant_management/order/confirm_payment/", { order_id })
         .then((res) => {
           console.log("paymentResult ", res);
           // printRecipt(res.data.data);
@@ -668,6 +682,23 @@ export default {
         });
     },
 
+    cancelOrderItem(order_id, item_id) {
+      axios
+        .post("/restaurant_management/order/cart/cancel_items/", {
+            order_id,
+          food_items: [item_id],
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.ordersData = this.ordersData.map((order) =>
+              order.id === order_id ? { ...res.data.data } : order
+            );
+          }
+        })
+        .catch((err) => {
+          console.log("error paymentResult ", err.response);
+        });
+    },
     calculateLength(arr, status = "") {
       return arr.filter((el) => el.status === status).length;
     },
@@ -1255,21 +1286,21 @@ export default {
 </script>
 
 <style >
-  header.vs-collapse-item--header {
-    padding: 0px !important;
-  }
-  .open-item {
-    position: absolute;
-    z-index: 999;
-    width: 22.3%;
-  }
-  .mb-base {
-    margin-bottom: 0.5rem !important;
-  }
+header.vs-collapse-item--header {
+  padding: 0px !important;
+}
+.open-item {
+  position: absolute;
+  z-index: 999;
+  width: 22.3%;
+}
+.mb-base {
+  margin-bottom: 0.5rem !important;
+}
 
-  .status-icon {
-    width: 100% !important;
-    height: 100%;
-  }
+.status-icon {
+  width: 100% !important;
+  height: 100%;
+}
 </style>
 
