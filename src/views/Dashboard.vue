@@ -175,7 +175,11 @@
                     <path d="M0 4.07144H38V6.78573H0V4.07144Z" fill="white" />
                   </svg>
                   <br />
-                  <b class="text-white text-sm">{{ order.table_name }}</b>
+                  <b class="text-white text-sm">{{
+                    order.table_name.length > 10
+                      ? order.table_name.substr(0, 9) + "..."
+                      : order.table_name
+                  }}</b>
                 </div>
                 <div
                   v-if="!order.status"
@@ -229,7 +233,7 @@
               >Mark as Serve</vs-button
             >
             <vs-button
-              class="ml-2 bg-gn"
+              class="ml-2 bg-ihostm"
               v-if="
                 order.status &&
                 order.status == '3_IN_TABLE' &&
@@ -263,9 +267,11 @@
               text="Cancel"
               v-if="
                 (order.status && order.status == '1_ORDER_PLACED') ||
-                order.status == '2_ORDER_CONFIRMED'
+                order.status == '2_ORDER_CONFIRMED' ||
+                checkAllCanceled(order.ordered_items)
               "
             >
+              <!-- sabbir -->
               <vs-button
                 color="danger"
                 icon-pack="feather"
@@ -306,7 +312,11 @@
         </template>
 
         <template slot-scope="{ data }">
-          <vs-tr :key="i" v-for="(tr, i) in data">
+          <vs-tr
+            :key="i"
+            v-for="(tr, i) in data"
+            v-show="data[i].status != '0_ORDER_INITIALIZED'"
+          >
             <vs-td :data="data[i].id">
               <vs-checkbox
                 v-model="selectedItemForVarify"
@@ -334,12 +344,6 @@
                 {{ data[i].food_option.name }}
               </span>
             </vs-td>
-
-            <!-- <vs-td :data="data[i].food_extra">
-              <span v-for="(extra, k) in data[i].food_extra" :key="k">
-                {{ extra }}
-              </span>
-            </vs-td> -->
 
             <vs-td :data="data[i].food_option.price">
               ৳{{ data[i].food_option.price }}
@@ -401,7 +405,11 @@
         </template>
 
         <template slot-scope="{ data }">
-          <vs-tr :key="i" v-for="(tr, i) in data">
+          <vs-tr
+            :key="i"
+            v-for="(tr, i) in data"
+            v-show="data[i].status != '0_ORDER_INITIALIZED'"
+          >
             <vs-td :data="data[i].id">
               <vs-checkbox
                 v-if="data[i].status === '2_ORDER_CONFIRMED'"
@@ -412,6 +420,11 @@
                 v-if="data[i].status === '3_IN_TABLE'"
                 class="badge bg-gn text-white rounded"
                 >Served</span
+              >
+              <span
+                v-if="data[i].status === '1_ORDER_PLACED'"
+                class="badge bg-danger text-white rounded"
+                >Not Verified</span
               >
               <span
                 v-if="data[i].status === '4_CANCELLED'"
@@ -451,6 +464,14 @@
                 @click="cancelOrderItem(orderToServed.id, data[i].id)"
                 >Cancel</span
               >
+              <span
+                v-if="data[i].status == '1_ORDER_PLACED'"
+                class="badge rounded bg-bl text-white"
+                style="cursor: pointer"
+                @click="verifyOrderItem(orderToServed.id, data[i].id)"
+                >Verify</span
+              >
+              <!-- sabbir -->
             </vs-td>
           </vs-tr>
         </template>
@@ -592,6 +613,15 @@ export default {
 
       return true;
     },
+    checkAllCanceled(orderItemList) {
+      let totalLength = orderItemList.filter(
+        (item) => item.status === "4_CANCELLED"
+      ).length;
+
+      if (orderItemList.length == totalLength) true;
+
+      return false;
+    },
 
     // select all item
     selectAll(data, order_id, status) {
@@ -686,7 +716,7 @@ export default {
     cancelOrderItem(order_id, item_id) {
       axios
         .post("/restaurant_management/order/cart/cancel_items/", {
-            order_id,
+          order_id,
           food_items: [item_id],
         })
         .then((res) => {
@@ -694,6 +724,28 @@ export default {
             this.ordersData = this.ordersData.map((order) =>
               order.id === order_id ? { ...res.data.data } : order
             );
+
+            this.orderToServed = res.data.data;
+          }
+        })
+        .catch((err) => {
+          console.log("error paymentResult ", err.response);
+        });
+    },
+
+    verifyOrderItem(order_id, item_id) {
+      axios
+        .post("/restaurant_management/order/status/confirm/", {
+          order_id,
+          food_items: [item_id],
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.ordersData = this.ordersData.map((order) =>
+              order.id === order_id ? { ...res.data.data } : order
+            );
+
+            this.orderToServed = res.data.data;
           }
         })
         .catch((err) => {
