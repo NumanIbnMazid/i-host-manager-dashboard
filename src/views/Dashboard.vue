@@ -601,7 +601,8 @@ export default {
                 order.id === order_id ? { ...res.data.data } : order
               );
 
-              this.selectedItemForVarify = "";
+              this.selectedItemForVarify = [];
+              this.selectedItemForKitchen = [];
               this.markAsServedPopup = false;
               this.varifyPopup = false;
             }
