@@ -393,11 +393,14 @@
 
         <template slot-scope="{ data }">
           <vs-tr :key="i" v-for="(tr, i) in data">
+
             <vs-td :data="data[i].id">
-              <vs-checkbox
+              <vs-checkbox v-if="data[i].status === '2_ORDER_CONFIRMED'"
                 v-model="selectedItemForVarify"
                 :vs-value="data[i].id"
               ></vs-checkbox>
+              <span v-if="data[i].status === '3_IN_TABLE'" class="badge bg-gn text-white rounded">Served</span>
+              <span v-if="data[i].status === '4_CANCELLED'" class="badge bg-danger text-white rounded">Canceled</span>
             </vs-td>
 
             <vs-td :data="data[i].id">
@@ -448,11 +451,11 @@
                 'in_kitchen'
               )
             "
-            >Confirm All</vs-button
+            >Serve All</vs-button
           >
         </vx-tooltip>
 
-        <!-- confirm selected -->
+        <!-- Serve selected -->
         <vx-tooltip color="primary" text="Confirm Selects">
           <vs-button
             color="primary"
@@ -463,7 +466,7 @@
                 '/restaurant_management/order/status/in_table/'
               )
             "
-            >Confirm Select</vs-button
+            >Serve Select</vs-button
           >
         </vx-tooltip>
       </div>
