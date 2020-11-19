@@ -236,14 +236,22 @@
             >
             <vs-button
               class="ml-2 bg-gn"
-              v-if="order.status && order.status == '3_IN_TABLE' && checkAllServed(order.ordered_items)"
+              v-if="
+                order.status &&
+                order.status == '3_IN_TABLE' &&
+                checkAllServed(order.ordered_items)
+              "
               @click="createInvoice(order.id)"
               >Create Invoice</vs-button
             >
 
             <vs-button
               class="ml-2 bg-gn"
-              v-if="order.status && order.status == '3_IN_TABLE' && !checkAllServed(order.ordered_items)"
+              v-if="
+                order.status &&
+                order.status == '3_IN_TABLE' &&
+                !checkAllServed(order.ordered_items)
+              "
               @click="(markAsServedPopup = true), (orderToServed = order)"
               >Serve</vs-button
             >
@@ -400,14 +408,22 @@
 
         <template slot-scope="{ data }">
           <vs-tr :key="i" v-for="(tr, i) in data">
-
             <vs-td :data="data[i].id">
-              <vs-checkbox v-if="data[i].status === '2_ORDER_CONFIRMED'"
+              <vs-checkbox
+                v-if="data[i].status === '2_ORDER_CONFIRMED'"
                 v-model="selectedItemForVarify"
                 :vs-value="data[i].id"
               ></vs-checkbox>
-              <span v-if="data[i].status === '3_IN_TABLE'" class="badge bg-gn text-white rounded">Served</span>
-              <span v-if="data[i].status === '4_CANCELLED'" class="badge bg-danger text-white rounded">Canceled</span>
+              <span
+                v-if="data[i].status === '3_IN_TABLE'"
+                class="badge bg-gn text-white rounded"
+                >Served</span
+              >
+              <span
+                v-if="data[i].status === '4_CANCELLED'"
+                class="badge bg-danger text-white rounded"
+                >Canceled</span
+              >
             </vs-td>
 
             <vs-td :data="data[i].id">
@@ -526,6 +542,7 @@ export default {
           let orderItemList = res.data.data;
           this.ordersData = res.data.data;
 
+          console.log("order data ", this.ordersData);
           // total order active status
           this.orderActiveNow = orderItemList.filter((el) => el.status).length;
 
@@ -571,7 +588,9 @@ export default {
     },
 
     checkAllServed(orderItemList) {
-      let totalLength = orderItemList.filter(item => item.status === '2_ORDER_CONFIRMED').length;
+      let totalLength = orderItemList.filter(
+        (item) => item.status === "2_ORDER_CONFIRMED"
+      ).length;
 
       if (totalLength > 0) return false;
 
@@ -580,7 +599,7 @@ export default {
 
     // select all item
     selectAll(data, order_id, status) {
-      console.log('order item ', data);
+      console.log("order item ", data);
       let tempArr = [];
       data.map((el) => tempArr.push(el.id));
 
@@ -641,12 +660,12 @@ export default {
         .post("/restaurant_management/order/create_invoice/", { order_id })
         .then((res) => {
           console.log("create i res ", res);
-          // if (res.data.status) {
-          //   this.ordersData = this.ordersData.map((order) =>
-          //     order.id === order_id ? { ...res.data.data } : order
-          //   );
-          // }
-          this.printRecipt(res.data.data);
+          if (res.data.status) {
+            this.ordersData = this.ordersData.map((order) =>
+              order.id === order_id ? { ...res.data.data } : order
+            );
+            this.printRecipt(res.data.data);
+          }
         })
         .catch((err) => {
           console.log("create i res ", err.response);
@@ -657,7 +676,7 @@ export default {
 
     collectOrdersPayment(order_id) {
       axios
-        .post("/restaurant_management/order/confirm_payment/", {order_id})
+        .post("/restaurant_management/order/confirm_payment/", { order_id })
         .then((res) => {
           console.log("paymentResult ", res);
           // printRecipt(res.data.data);
