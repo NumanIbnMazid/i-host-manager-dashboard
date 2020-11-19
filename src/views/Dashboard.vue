@@ -678,9 +678,14 @@ export default {
       axios
         .post("/restaurant_management/order/confirm_payment/", { order_id })
         .then((res) => {
-          console.log("paymentResult ", res);
           // printRecipt(res.data.data);
-          printKitechRecit(order);
+          if (res.data.status) {
+            console.log("paymentResult ", res);
+            this.ordersData = this.ordersData.map((order) =>
+              order.id === order_id ? { ...order, status: "" } : order
+            );
+            printKitechRecit(order);
+          }
         })
         .catch((err) => {
           console.log("error paymentResult ", err.response);
@@ -734,16 +739,13 @@ export default {
           console.log("odres ", res);
 
           // test
-          this.getRestaurantOrderItemList();
+          // this.getRestaurantOrderItemList();
 
-          // TODO: Should be update object for real time ui update
-          // if (res.data.status) {
-          //   this.ordersData = this.ordersData.map((order) =>
-          //     order.id === order_id
-          //       ? { ...order, status: res.data.data.status }
-          //       : order
-          //   );
-          // }
+          if (res.data.status) {
+            this.ordersData = this.ordersData.map((order) =>
+              order.id === order_id ? { ...order, status: "" } : order
+            );
+          }
         })
         .catch((err) => {
           console.log("errorOd ", err.response);
