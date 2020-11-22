@@ -1335,7 +1335,10 @@ export default {
 
   created() {
     this.getTime();
-    this.getRestaurantOrderItemList();
+
+    setInterval(() => {
+      this.getRestaurantOrderItemList();
+    }, 1000);
   },
 };
 </script>

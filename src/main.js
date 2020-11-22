@@ -89,7 +89,7 @@ const plugin = {
             if (err.response.status === 401) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("resturent_id");
-                // this.$router.push("/login").catch(() => {});
+                this.$router.push("/login").catch(() => {});
                 window.location.href = "/login";
             }
         };
