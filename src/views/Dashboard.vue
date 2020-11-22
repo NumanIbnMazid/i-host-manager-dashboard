@@ -268,6 +268,7 @@
               v-if="
                 (order.status && order.status == '1_ORDER_PLACED') ||
                 order.status == '2_ORDER_CONFIRMED' ||
+                order.status == '0_ORDER_INITIALIZED' ||
                 checkAllCanceled(order.ordered_items)
               "
             >
@@ -300,14 +301,14 @@
       :title="`Order #${orderToVarify.id} | Table No: ${orderToVarify.table_no}`"
       :active.sync="varifyPopup"
     >
-      <vs-row>
+      <!-- <vs-row>
         <vs-col>
           <vs-input class=""></vs-input>
         </vs-col>
         <vs-col>
           <vs-input class=""></vs-input>
         </vs-col>
-      </vs-row>
+      </vs-row> -->
       <vs-table :data="orderToVarify.ordered_items">
         <template slot="thead">
           <vs-th class="text-center">Check</vs-th>
@@ -402,23 +403,17 @@
       :title="`Order #${orderToServed.id} | Table No: ${orderToServed.table_no}`"
       :active.sync="markAsServedPopup"
     >
-      <div class="flex">
+      <!-- <div class="flex">
         <div class="w:3/12">
           <vs-input label="Name" placeholder="Your Name" />
         </div>
         <div class="w:3/12">
-          <vs-input
-            label="Password"
-            placeholder="Your Password"
-          />
+          <vs-input label="Password" placeholder="Your Password" />
         </div>
         <div class="w:3/12">
-          <vs-input
-            label="Password"
-            placeholder="Your Password"
-          />
+          <vs-input label="Password" placeholder="Your Password" />
         </div>
-      </div>
+      </div> -->
 
       <vs-table :data="orderToServed.ordered_items">
         <template slot="thead">
@@ -1380,21 +1375,21 @@ export default {
 </script>
 
 <style >
-  header.vs-collapse-item--header {
-    padding: 0px !important;
-  }
-  .open-item {
-    position: absolute;
-    z-index: 999;
-    width: 22.3%;
-  }
-  .mb-base {
-    margin-bottom: 0.5rem !important;
-  }
+header.vs-collapse-item--header {
+  padding: 0px !important;
+}
+.open-item {
+  position: absolute;
+  z-index: 999;
+  width: 22.3%;
+}
+.mb-base {
+  margin-bottom: 0.5rem !important;
+}
 
-  .status-icon {
-    width: 100% !important;
-    height: 100%;
-  }
+.status-icon {
+  width: 100% !important;
+  height: 100%;
+}
 </style>
 
