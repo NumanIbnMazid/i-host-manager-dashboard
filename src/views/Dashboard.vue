@@ -378,7 +378,8 @@
             @click="
               confirmProcess(
                 orderToVarify.id,
-                '/restaurant_management/order/status/confirm/'
+                '/restaurant_management/order/status/confirm/',
+                true
               )
             "
             >Confirm Select</vs-button
@@ -651,8 +652,8 @@ export default {
       } else this.showActionMessage("success", "All item selected!");
     },
 
-    confirmProcess(order_id, url) {
-      if (this.selectedItemForVarify) {
+    confirmProcess(order_id, url, printRecipt = false) {
+      if (this.selectedItemForVarify.length) {
         axios
           .post(url, {
             order_id,
@@ -664,6 +665,14 @@ export default {
               this.ordersData = this.ordersData.map((order) =>
                 order.id === order_id ? { ...res.data.data } : order
               );
+
+              if (printRecipt) {
+                let order = { ...this.ordersData };
+                let theorder = this.ordersData.find(
+                  (order) => order.id === order_id
+                );
+                this.printKitechRecit(theorder);
+              }
 
               this.selectedItemForVarify = [];
               this.selectedItemForKitchen = [];
