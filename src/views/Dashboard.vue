@@ -386,7 +386,8 @@
             @click="
               confirmProcess(
                 orderToVarify.id,
-                '/restaurant_management/order/status/confirm/'
+                '/restaurant_management/order/status/confirm/',
+                true
               )
             "
             >Confirm Select</vs-button
@@ -668,16 +669,17 @@ export default {
           console.log("order kitchen ", theorder);
           this.printKitechRecit(theorder);
         }
+
         if (status === "in_kitchen")
           this.confirmProcess(
             order_id,
             "/restaurant_management/order/status/in_table/"
           );
-      }
+      } else this.showActionMessage("success", "All item selected!");
     },
 
-    confirmProcess(order_id, url) {
-      if (this.selectedItemForVarify) {
+    confirmProcess(order_id, url, printRecipt = false) {
+      if (this.selectedItemForVarify.length) {
         axios
           .post(url, {
             order_id,
@@ -689,6 +691,14 @@ export default {
               this.ordersData = this.ordersData.map((order) =>
                 order.id === order_id ? { ...res.data.data } : order
               );
+
+              if (printRecipt) {
+                let order = { ...this.ordersData };
+                let theorder = this.ordersData.find(
+                  (order) => order.id === order_id
+                );
+                this.printKitechRecit(theorder);
+              }
 
               this.selectedItemForVarify = [];
               this.selectedItemForKitchen = [];
@@ -1370,21 +1380,21 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 </style>
 
