@@ -91,10 +91,13 @@ export default {
           password: this.password,
         })
         .then((res) => {
-          console.log('login res ', res.data.data);
+          console.log("login res ", res.data.data);
           if (res.data.data.auth.token) {
             localStorage.setItem("token", res.data.data.auth.token);
-            localStorage.setItem("staff_info", JSON.stringify(res.data.data.staff_info[0]));
+            localStorage.setItem(
+              "staff_info",
+              JSON.stringify(res.data.data.staff_info[0])
+            );
             localStorage.setItem("user", JSON.stringify(res.data.data.user));
             // localStorage.setItem("resturent_id", res.data.data.restuarant_id);
             let rstrnt = res.data.data.staff_info;
@@ -107,7 +110,8 @@ export default {
               localStorage.setItem("resturent_id", rstrnt[0].restaurant.id);
             }
 
-            this.$router.push("/");
+            // this.$router.push("/");
+            window.location.href = "/";
           } else {
             this.$vs.notify({
               title: "Login Failed",
@@ -138,20 +142,20 @@ export default {
 </script>
 
 <style lang="scss">
-  #page-login {
-    .social-login-buttons {
-      .bg-facebook {
-        background-color: #1551b1;
-      }
-      .bg-twitter {
-        background-color: #00aaff;
-      }
-      .bg-google {
-        background-color: #4285f4;
-      }
-      .bg-github {
-        background-color: #333;
-      }
+#page-login {
+  .social-login-buttons {
+    .bg-facebook {
+      background-color: #1551b1;
+    }
+    .bg-twitter {
+      background-color: #00aaff;
+    }
+    .bg-google {
+      background-color: #4285f4;
+    }
+    .bg-github {
+      background-color: #333;
     }
   }
+}
 </style>
