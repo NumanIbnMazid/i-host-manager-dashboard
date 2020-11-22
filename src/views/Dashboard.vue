@@ -626,7 +626,6 @@ export default {
 
     // select all item
     selectAll(data, order_id, status) {
-      console.log("order item ", data);
       let tempArr = [];
       data.map((el) => tempArr.push(el.id));
 
@@ -660,7 +659,6 @@ export default {
             food_items: this.selectedItemForVarify,
           })
           .then((res) => {
-            console.log("order confirm ", res);
             if (res.data.status) {
               this.ordersData = this.ordersData.map((order) =>
                 order.id === order_id ? { ...res.data.data } : order
@@ -695,7 +693,6 @@ export default {
       axios
         .post("/restaurant_management/order/create_invoice/", { order_id })
         .then((res) => {
-          console.log("create i res ", res);
           if (res.data.status) {
             this.ordersData = this.ordersData.map((order) =>
               order.id === order_id ? { ...res.data.data } : order
@@ -704,7 +701,6 @@ export default {
           }
         })
         .catch((err) => {
-          console.log("create i res ", err.response);
           this.showActionMessage("error", err);
           this.checkError(err);
         });
@@ -716,7 +712,6 @@ export default {
         .then((res) => {
           // printRecipt(res.data.data);
           if (res.data.status) {
-            console.log("paymentResult ", res);
             this.ordersData = this.ordersData.map((order) =>
               order.id === order_id ? { ...order, status: "" } : order
             );
@@ -724,7 +719,8 @@ export default {
           }
         })
         .catch((err) => {
-          console.log("error paymentResult ", err.response);
+          this.showActionMessage("error", err);
+          this.checkError(err);
         });
     },
 
@@ -744,7 +740,8 @@ export default {
           }
         })
         .catch((err) => {
-          console.log("error paymentResult ", err.response);
+          this.showActionMessage("error", err);
+          this.checkError(err);
         });
     },
 
@@ -764,9 +761,11 @@ export default {
           }
         })
         .catch((err) => {
-          console.log("error paymentResult ", err.response);
+          this.showActionMessage("error", err);
+          this.checkError(err);
         });
     },
+
     calculateLength(arr, status = "") {
       return arr.filter((el) => el.status === status).length;
     },
@@ -811,8 +810,6 @@ export default {
       axios
         .post("/restaurant_management/order/cancel_order/", { order_id })
         .then((res) => {
-          console.log("odres ", res);
-
           // test
           // this.getRestaurantOrderItemList();
 
@@ -823,7 +820,6 @@ export default {
           }
         })
         .catch((err) => {
-          console.log("errorOd ", err.response);
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
@@ -1152,7 +1148,6 @@ export default {
     },
 
     printKitechRecit(order) {
-      console.log("test", order);
       const WinPrint = window.open(
         "",
         "",
