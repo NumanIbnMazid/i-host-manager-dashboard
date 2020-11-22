@@ -300,6 +300,14 @@
       :title="`Order #${orderToVarify.id} | Table No: ${orderToVarify.table_no}`"
       :active.sync="varifyPopup"
     >
+      <vs-row>
+        <vs-col>
+          <vs-input class=""></vs-input>
+        </vs-col>
+        <vs-col>
+          <vs-input class=""></vs-input>
+        </vs-col>
+      </vs-row>
       <vs-table :data="orderToVarify.ordered_items">
         <template slot="thead">
           <vs-th class="text-center">Check</vs-th>
@@ -393,6 +401,24 @@
       :title="`Order #${orderToServed.id} | Table No: ${orderToServed.table_no}`"
       :active.sync="markAsServedPopup"
     >
+      <div class="flex">
+        <div class="w:3/12">
+          <vs-input label="Name" placeholder="Your Name" />
+        </div>
+        <div class="w:3/12">
+          <vs-input
+            label="Password"
+            placeholder="Your Password"
+          />
+        </div>
+        <div class="w:3/12">
+          <vs-input
+            label="Password"
+            placeholder="Your Password"
+          />
+        </div>
+      </div>
+
       <vs-table :data="orderToServed.ordered_items">
         <template slot="thead">
           <vs-th class="text-center">Check</vs-th>
@@ -1336,9 +1362,9 @@ export default {
   created() {
     this.getTime();
 
-    setInterval(() => {
-      this.getRestaurantOrderItemList();
-    }, 1000);
+    // setInterval(() => {
+    this.getRestaurantOrderItemList();
+    // }, 5000);
   },
 };
 </script>
