@@ -207,9 +207,16 @@
                 icon-pack="feather"
                 icon="icon-trash"
                 color="danger"
-                @click="staffDetailPpopupActive = false; confirmAction(removeWaiterFromTable, [detailWaiter.waiterId, detailWaiter.tableId])"
-                >Remove From Table</button
+                @click="
+                  staffDetailPpopupActive = false;
+                  confirmAction(removeWaiterFromTable, [
+                    detailWaiter.waiterId,
+                    detailWaiter.tableId,
+                  ]);
+                "
               >
+                Remove From Table
+              </button>
             </div>
             <!-- </div> -->
           </vs-list>
@@ -356,7 +363,6 @@
     </vs-popup>
   </div>
 </template>
-
 
 <script>
 import axios from "@/axios.js";
