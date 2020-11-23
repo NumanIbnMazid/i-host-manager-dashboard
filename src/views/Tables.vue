@@ -144,7 +144,7 @@
                         icon="icon-trash"
                         type="gradient"
                         class="mt-2 mr-4 lg:ml-2 md:ml-0 sm:ml-0 w-full"
-                        @click="deleteTable(table.id)"
+                        @click="confirmAction(deleteTable, [table.id])"
                       ></vs-button>
                     </div>
                   </div>
@@ -199,20 +199,16 @@
             </p>
 
             <div class="flex mt-2">
-              <vs-button
+              <button
+                class="btn btn-danger text-dark"
                 title="Remove From Table"
                 type="border"
                 size="small"
                 icon-pack="feather"
                 icon="icon-trash"
                 color="danger"
-                @click="
-                  removeWaiterFromTable(
-                    detailWaiter.waiterId,
-                    detailWaiter.tableId
-                  )
-                "
-                >Remove From Table</vs-button
+                @click="staffDetailPpopupActive = false; confirmAction(removeWaiterFromTable, [detailWaiter.waiterId, detailWaiter.tableId])"
+                >Remove From Table</button
               >
             </div>
             <!-- </div> -->
@@ -366,6 +362,7 @@
 import axios from "@/axios.js";
 import QrcodeVue from "qrcode.vue";
 import vSelect from "vue-select";
+import Swal from "sweetalert2";
 
 export default {
   components: {
@@ -516,6 +513,19 @@ export default {
         });
     },
 
+    // confirmAction(acceptFunc, args) {
+    //   Swal.fire({
+    //     title: "Are you sure?",
+    //     icon: "warning",
+    //     showCancelButton: true,
+    //     confirmButtonColor: "#32304e",
+    //     cancelButtonColor: "#d33",
+    //     confirmButtonText: "Yes, delete it!",
+    //   }).then((result) => {
+    //     if (result.isConfirmed) acceptFunc.apply(this, args);
+    //   });
+    // },
+
     deleteTable(table_id) {
       axios
         .delete(`/restaurant_management/table/${table_id}/`)
@@ -580,12 +590,12 @@ export default {
       axios
         .get(`/account_management/restaurant/${this.resturent_id}/waiter_info/`)
         .then((res) => {
-          console.log('waiter res ', res);
+          console.log("waiter res ", res);
           if (res.data.data) this.waiters = res.data.data;
           else this.showActionMessage("error", "Something went wrong!");
         })
         .catch((err) => {
-          console.log('waiter error ', err.response);
+          console.log("waiter error ", err.response);
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
@@ -649,30 +659,30 @@ export default {
 </script>
 
 <style scoped>
-.waiters-avater {
-  overflow-x: auto;
-  scrollbar-width: 2px;
-  scrollbar-color: red yellow;
-}
+  .waiters-avater {
+    overflow-x: auto;
+    scrollbar-width: 2px;
+    scrollbar-color: red yellow;
+  }
 
-/* width */
-::-webkit-scrollbar {
-  height: 4px;              /* height of horizontal scrollbar ← You're missing this */
-           /* width of vertical scrollbar */
-  border: 1px solid #d5d5d5;
-}
-/* Track */
-::-webkit-scrollbar-track {
-  background: #000 !important;
-}
+  /* width */
+  ::-webkit-scrollbar {
+    height: 4px; /* height of horizontal scrollbar ← You're missing this */
+    /* width of vertical scrollbar */
+    border: 1px solid #d5d5d5;
+  }
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #000 !important;
+  }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #000;
-}
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #000;
+  }
 </style>

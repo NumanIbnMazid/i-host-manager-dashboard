@@ -115,6 +115,20 @@ const plugin = {
                     return "";
             }
         };
+
+        // global confirm action alert
+        Vue.prototype.confirmAction = (acceptFunc, args) => {
+            Swal.fire({
+              title: "Are you sure?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#32304e",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, delete it!",
+            }).then((result) => {
+              if (result.isConfirmed) acceptFunc.apply(this, args);
+            });
+          };
     }
 };
 
