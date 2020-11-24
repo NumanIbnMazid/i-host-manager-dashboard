@@ -166,6 +166,7 @@
         <div class="con-expand-users w-full">
           <div class="con-btns-user flex items-center justify-between">
             <div class="con-userx items-center justify-start mx-auto">
+              <!-- staff profile avatar -->
               <img
                 class="rounded"
                 style="height: 180px"
@@ -173,7 +174,8 @@
               />
             </div>
           </div>
-          <!-- <div></div> -->
+
+          <!-- staff details information -->
           <vs-list class="w-1/3 p-2 mx-auto">
             <p>
               <strong>Name : </strong>
@@ -199,8 +201,7 @@
             </p>
 
             <div class="flex mt-2">
-              <button
-                class="btn btn-danger text-dark"
+              <vs-button
                 title="Remove From Table"
                 type="border"
                 size="small"
@@ -216,9 +217,8 @@
                 "
               >
                 Remove From Table
-              </button>
+              </vs-button>
             </div>
-            <!-- </div> -->
           </vs-list>
         </div>
       </template>
@@ -490,7 +490,6 @@ export default {
     },
 
     assignStaff(tid) {
-      console.log("tid ", tid);
       axios
         .post(`/restaurant_management/table/${tid}/add_staff/`, {
           staff_list: this.waiter,
@@ -519,19 +518,7 @@ export default {
         });
     },
 
-    // confirmAction(acceptFunc, args) {
-    //   Swal.fire({
-    //     title: "Are you sure?",
-    //     icon: "warning",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#32304e",
-    //     cancelButtonColor: "#d33",
-    //     confirmButtonText: "Yes, delete it!",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) acceptFunc.apply(this, args);
-    //   });
-    // },
-
+    // table delete function
     deleteTable(table_id) {
       axios
         .delete(`/restaurant_management/table/${table_id}/`)
