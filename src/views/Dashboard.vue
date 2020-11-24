@@ -427,6 +427,7 @@
 
         <template slot-scope="{ data }">
           <vs-tr
+            class="text-center"
             :key="i"
             v-for="(tr, i) in data"
             v-show="data[i].status != '0_ORDER_INITIALIZED'"
@@ -444,7 +445,7 @@
               >
               <span
                 v-if="data[i].status === '1_ORDER_PLACED'"
-                class="badge bg-danger text-white rounded"
+                class="text-danger"
                 >Not Verified</span
               >
               <span
@@ -485,6 +486,7 @@
                 @click="cancelOrderItem(orderToServed.id, data[i].id)"
                 >Cancel</span
               >
+              <br />
               <span
                 v-if="data[i].status == '1_ORDER_PLACED'"
                 class="badge rounded bg-bl text-white"
@@ -721,6 +723,7 @@ export default {
     },
 
     createInvoice(order_id) {
+      // this.printRecipt(order_id);
       axios
         .post("/restaurant_management/order/create_invoice/", { order_id })
         .then((res) => {
@@ -777,10 +780,13 @@ export default {
 
     verifyOrderItem(order_id, item_id) {
       axios
-        .post("/restaurant_management/order/status/confirm/", {
-          order_id,
-          food_items: [item_id],
-        })
+        .post(
+          "/restaurant_management/order/status/confirm_status_without_cancel/",
+          {
+            order_id,
+            food_items: [item_id],
+          }
+        )
         .then((res) => {
           if (res.data.status) {
             this.ordersData = this.ordersData.map((order) =>
@@ -788,6 +794,7 @@ export default {
             );
 
             this.orderToServed = res.data.data;
+            // this.printKitechRecit(orderToServed, item_id);
           }
         })
         .catch((err) => {
@@ -800,36 +807,6 @@ export default {
       return arr.filter((el) => el.status === status).length;
     },
 
-    //! No need for the time being
-    // orderPercent(status, type) {
-    //   let perData = { per: 0, color: "" };
-    //   switch (status) {
-    //     case "0_ORDER_INITIALIZED":
-    //       perData = { per: 20, color: "danger" };
-    //       break;
-    //     case "1_ORDER_PLACED":
-    //       perData = { per: 40, color: "primary" };
-    //       break;
-    //     case "2_ORDER_CONFIRMED":
-    //       perData = { per: 60, color: "secondary" };
-    //       break;
-    //     case "3_IN_TABLE":
-    //       perData = { per: 85, color: "success" };
-    //       break;
-    //     case "4_PAID":
-    //       perData = { per: 100, color: "blue" };
-    //       break;
-    //     case "5_CANCELLED":
-    //       perData = { per: 100, color: "red" };
-    //       break;
-    //     default:
-    //       return [];
-    //       break;
-    //   }
-    //   if (type == "per") return perData.per;
-    //   if (type == "color") return perData.color;
-    // },
-
     getTime() {
       setInterval(() => {
         this.time = moment().format("h:mm:ss A");
@@ -840,9 +817,6 @@ export default {
       axios
         .post("/restaurant_management/order/cancel_order/", { order_id })
         .then((res) => {
-          // test
-          // this.getRestaurantOrderItemList();
-
           if (res.data.status) {
             this.ordersData = this.ordersData.map((order) =>
               order.id === order_id ? { ...order, status: "" } : order
@@ -999,7 +973,7 @@ export default {
       let itemDetail = "";
       let resLogo = document.querySelector("#res_logo").src;
 
-      order.table[0].food.forEach((el) => {
+      order.ordered_items.forEach((el) => {
         itemDetail += `<tr class="service">
                         <td class="tableitem itemname">
                             <p class="itemtext">${el.food_name}(<b>${
@@ -1019,23 +993,6 @@ export default {
                     </tr>`;
       });
 
-      // order.ordered_items.forEach((el) => {
-      //   itemDetail += `<tr class="service">
-      //                   <td class="tableitem">
-      //                       <p class="itemtext">${el.food_name}</p>
-      //                       ${
-      //                         el.food_option.option_type.name != "single_type"
-      //                           ? el.food_option.name
-      //                           : ""
-      //                       }
-      //                   </td>
-      //                   <td>-</td>
-      //                   <td class="tableitem qty">
-      //                       <p class="itemtext">${el.quantity}</p>
-      //                   </td>
-      //               </tr>`;
-      // });
-
       WinPrint.document.write(`<!DOCTYPE html>
 <html lang="en">
 
@@ -1043,6 +1000,138 @@ export default {
     <meta charset="UTF-8">
     <title>Invoice</title>
 
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #invoice-POS {
+            box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+            padding: 2mm;
+            margin: 0 auto;
+            width: 44mm;
+            background: #FFF;
+        }
+        
+        #invoice-POS ::selection {
+            background: #f31544;
+            color: #000;
+        }
+        
+        #invoice-POS ::moz-selection {
+            background: #f31544;
+            color: #000;
+        }
+        
+        #invoice-POS h1 {
+            font-size: 1.5em;
+            color: #222;
+        }
+        
+        #invoice-POS h2 {
+            font-size: .9em;
+        }
+        
+        #invoice-POS h3 {
+            font-size: 1.2em;
+            font-weight: 300;
+            line-height: 2em;
+        }
+        
+        #invoice-POS p {
+            font-size: .7em;
+            color: #000;
+            line-height: 1.2em;
+        }
+        /* #invoice-POS #top,
+        #invoice-POS #mid,
+        #invoice-POS #bot {
+            border-bottom: 1px solid #000;
+        } */
+        
+        #invoice-POS #top {
+            min-height: 77px;
+        }
+        
+        #invoice-POS #bot {
+            min-height: 50px;
+        }
+        
+        #invoice-POS #top .logo {
+            height: 60px;
+            width: 60px;
+        }
+        
+        #invoice-POS .info {
+            display: block;
+            margin-left: 0;
+        }
+        
+        #invoice-POS .title {
+            float: right;
+        }
+        
+        #invoice-POS .title p {
+            text-align: right;
+        }
+        
+        #invoice-POS table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        #invoice-POS .tabletitle {
+            font-size: .7em;
+            background: #EEE;
+        }
+        
+        #invoice-POS .service {
+            border-bottom: 1px solid #EEE;
+        }
+        
+        #invoice-POS .item {
+            width: 24mm;
+        }
+        
+        #invoice-POS .itemtext {
+            font-size: .7em;
+        }
+        
+        #invoice-POS #legalcopy {
+            margin-top: 5mm;
+        }
+        
+        .price>p,
+        .price>h2,
+        .payment>h2 {
+            float: right;
+            margin-right: 5px;
+        }
+        
+        .info {
+            padding: 5px 0px;
+        }
+        
+        .info>p {
+            text-align: center !important;
+        }
+        
+        .final {
+            border: 1px solid #000;
+            border-left: 0;
+            border-right: 0;
+        }
+        
+        .itemname>p {
+            margin-right: 5px;
+        }
+    </style>
   
 </head>
 
@@ -1109,7 +1198,7 @@ export default {
                     </tr>
                     <tr class="tabletitle">
                         <td class="Rate">
-                            <h2>VAT (15%)</h2>
+                            <h2>VAT (${order.price.tax_percentage}%)</h2>
                         </td>
                         <td></td>
                         <td class="payment">
