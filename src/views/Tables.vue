@@ -229,7 +229,7 @@
                   ]);
                 "
               >
-                <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" />
+                <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" class="ml-2"/>
                 <span class="text-danger m-1">Remove From Table</span>
               </div>
             </div>

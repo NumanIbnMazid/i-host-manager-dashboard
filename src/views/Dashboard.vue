@@ -297,18 +297,54 @@
 
     <!-- item list for order -->
     <vs-popup
-      class="holamundo"
+      class="holamundo w-full"
       :title="`Order #${orderToVarify.id} | Table No: ${orderToVarify.table_no}`"
       :active.sync="varifyPopup"
     >
-      <!-- <vs-row>
-        <vs-col>
-          <vs-input class=""></vs-input>
-        </vs-col>
-        <vs-col>
-          <vs-input class=""></vs-input>
-        </vs-col>
-      </vs-row> -->
+      <!-- food select form -->
+      <dvi class="food-select-form">
+        <div class="vx-row">
+          <div class="vx-col w-4/12 pl-1 pr-0 mb-4" @click="getFoodNames()">
+            <small>Food Name</small>
+            <v-select
+              label="name"
+              v-model="selectedFood"
+              :options="foods"
+              :reduce="(foods) => foods.id"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+
+          <div class="vx-col w-4/12 mb-4" @click="getFoodOptions()">
+            <small>Food Option</small>
+            <v-select
+              label="name"
+              :options="foodOptions"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+
+          <div class="vx-col w-3/12 pl-0 mb-4">
+            <small>Food Extra</small>
+            <v-select
+              label="foodName"
+              :options="foodExtras"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+          <div class="vx-col w-1/12 pl-0 mt-5">
+            <vs-button
+              color="success"
+              type="border"
+              title="Add"
+              icon-pack="feather"
+              icon="icon-plus"
+            ></vs-button>
+          </div>
+        </div>
+      </dvi>
+
+      <!-- food item list -->
       <vs-table :data="orderToVarify.ordered_items">
         <template slot="thead">
           <vs-th class="text-center">Check</vs-th>
@@ -403,17 +439,45 @@
       :title="`Order #${orderToServed.id} | Table No: ${orderToServed.table_no}`"
       :active.sync="markAsServedPopup"
     >
-      <!-- <div class="flex">
-        <div class="w:3/12">
-          <vs-input label="Name" placeholder="Your Name" />
+      <dvi class="food-select-form">
+        <div class="vx-row">
+          <div class="vx-col w-4/12 pl-1 pr-0 mb-4" @click="getFoodNames()">
+            <small>Food Name</small>
+            <v-select
+              label="name"
+              :options="foods"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+
+          <div class="vx-col w-4/12 mb-4">
+            <small>Food Option</small>
+            <v-select
+              label="foodName"
+              :options="foods"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+
+          <div class="vx-col w-3/12 pl-0 mb-4">
+            <small>Food Extra</small>
+            <v-select
+              label="foodName"
+              :options="foods"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+          <div class="vx-col w-1/12 pl-0 mt-5">
+            <vs-button
+              color="success"
+              type="border"
+              title="Add"
+              icon-pack="feather"
+              icon="icon-plus"
+            ></vs-button>
+          </div>
         </div>
-        <div class="w:3/12">
-          <vs-input label="Password" placeholder="Your Password" />
-        </div>
-        <div class="w:3/12">
-          <vs-input label="Password" placeholder="Your Password" />
-        </div>
-      </div> -->
+      </dvi>
 
       <vs-table :data="orderToServed.ordered_items">
         <template slot="thead">
@@ -539,6 +603,7 @@
 <script>
 import StatisticsCardLine from "@/components/statistics-cards/StatisticsCardLine.vue";
 import VxTimeline from "@/components/timeline/VxTimeline";
+import vSelect from "vue-select";
 import axios from "@/axios.js";
 import moment from "moment";
 
@@ -546,6 +611,7 @@ export default {
   components: {
     StatisticsCardLine,
     VxTimeline,
+    "v-select": vSelect,
   },
   data: () => ({
     time: "",
@@ -567,9 +633,44 @@ export default {
     orderToServed: [],
     selectedItemForVarify: [],
     selectedItemForKitchen: [],
+
+    foods: [],
+    foodExtras: [],
+    foodOptions: [],
+    selectedFood: "",
   }),
 
   methods: {
+    getFoodNames() {
+      axios
+        .get(`/restaurant_management/restaurant/${this.resturent_id}/foods/`)
+        .then((res) => {
+          console.log("foods ", res);
+          if (res.data.status) this.foods = res.data.data;
+          else this.showActionMessage("error", "Failed to get foods name!");
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+
+          // checking error code
+          this.checkError(err);
+        });
+    },
+
+    // food options
+    getFoodOptions() {
+      console.log('I am in food option function', this.selectedFood)
+      if (this.selectedFood !== "") {
+        const food = this.foods.filter(
+          (food) => food.id === this.selectedFood
+        )[0];
+        console.log('selected food ', food);
+
+        this.foodOptions = food.food_options;
+        this.foodExtras = food.food_extras;
+      } else this.showActionMessage("error", "Select Food First!");
+    },
+
     getRestaurantOrderItemList() {
       axios
         .get(
@@ -1370,21 +1471,21 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 </style>
 
