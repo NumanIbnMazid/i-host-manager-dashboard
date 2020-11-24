@@ -201,12 +201,10 @@
             </p>
 
             <div class="flex mt-2">
-              <vs-button
+              <!-- <vs-button
                 title="Remove From Table"
                 type="border"
                 size="small"
-                icon-pack="feather"
-                icon="icon-trash"
                 color="danger"
                 @click="
                   staffDetailPpopupActive = false;
@@ -216,8 +214,24 @@
                   ]);
                 "
               >
-                Remove From Table
-              </vs-button>
+                <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" />
+                <span class="text-primary">Remove From Table</span>
+              </vs-button> -->
+
+              <div
+                class="flex mt-2 rounded-lg cursor-pointer flex items-center justify-between text-sm font-small text-base text-primary border border-solid border-danger text-danger"
+                title="Remove Waiter From Table"
+                @click="
+                  staffDetailPpopupActive = false;
+                  confirmAction(removeWaiterFromTable, [
+                    detailWaiter.waiterId,
+                    detailWaiter.tableId,
+                  ]);
+                "
+              >
+                <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" />
+                <span class="text-danger m-1">Remove From Table</span>
+              </div>
             </div>
           </vs-list>
         </div>
