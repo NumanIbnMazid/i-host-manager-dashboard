@@ -144,7 +144,7 @@
                         icon="icon-trash"
                         type="gradient"
                         class="mt-2 mr-4 lg:ml-2 md:ml-0 sm:ml-0 w-full"
-                        @click="deleteTable(table.id)"
+                        @click="confirmAction(deleteTable, [table.id])"
                       ></vs-button>
                     </div>
                   </div>
@@ -166,6 +166,7 @@
         <div class="con-expand-users w-full">
           <div class="con-btns-user flex items-center justify-between">
             <div class="con-userx items-center justify-start mx-auto">
+              <!-- staff profile avatar -->
               <img
                 class="rounded"
                 style="height: 180px"
@@ -173,7 +174,8 @@
               />
             </div>
           </div>
-          <!-- <div></div> -->
+
+          <!-- staff details information -->
           <vs-list class="w-1/3 p-2 mx-auto">
             <p>
               <strong>Name : </strong>
@@ -199,23 +201,38 @@
             </p>
 
             <div class="flex mt-2">
-              <vs-button
+              <!-- <vs-button
                 title="Remove From Table"
                 type="border"
                 size="small"
-                icon-pack="feather"
-                icon="icon-trash"
                 color="danger"
                 @click="
-                  removeWaiterFromTable(
+                  staffDetailPpopupActive = false;
+                  confirmAction(removeWaiterFromTable, [
                     detailWaiter.waiterId,
-                    detailWaiter.tableId
-                  )
+                    detailWaiter.tableId,
+                  ]);
                 "
-                >Remove From Table</vs-button
               >
+                <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" />
+                <span class="text-primary">Remove From Table</span>
+              </vs-button> -->
+
+              <div
+                class="flex mt-2 rounded-lg cursor-pointer flex items-center justify-between text-sm font-small text-base text-primary border border-solid border-danger text-danger"
+                title="Remove Waiter From Table"
+                @click="
+                  staffDetailPpopupActive = false;
+                  confirmAction(removeWaiterFromTable, [
+                    detailWaiter.waiterId,
+                    detailWaiter.tableId,
+                  ]);
+                "
+              >
+                <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" />
+                <span class="text-danger m-1">Remove From Table</span>
+              </div>
             </div>
-            <!-- </div> -->
           </vs-list>
         </div>
       </template>
@@ -361,11 +378,11 @@
   </div>
 </template>
 
-
 <script>
 import axios from "@/axios.js";
 import QrcodeVue from "qrcode.vue";
 import vSelect from "vue-select";
+import Swal from "sweetalert2";
 
 export default {
   components: {
@@ -487,7 +504,6 @@ export default {
     },
 
     assignStaff(tid) {
-      console.log("tid ", tid);
       axios
         .post(`/restaurant_management/table/${tid}/add_staff/`, {
           staff_list: this.waiter,
@@ -516,6 +532,7 @@ export default {
         });
     },
 
+    // table delete function
     deleteTable(table_id) {
       axios
         .delete(`/restaurant_management/table/${table_id}/`)
@@ -580,12 +597,12 @@ export default {
       axios
         .get(`/account_management/restaurant/${this.resturent_id}/waiter_info/`)
         .then((res) => {
-          console.log('waiter res ', res);
+          console.log("waiter res ", res);
           if (res.data.data) this.waiters = res.data.data;
           else this.showActionMessage("error", "Something went wrong!");
         })
         .catch((err) => {
-          console.log('waiter error ', err.response);
+          console.log("waiter error ", err.response);
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
@@ -649,30 +666,30 @@ export default {
 </script>
 
 <style scoped>
-.waiters-avater {
-  overflow-x: auto;
-  scrollbar-width: 2px;
-  scrollbar-color: red yellow;
-}
+  .waiters-avater {
+    overflow-x: auto;
+    scrollbar-width: 2px;
+    scrollbar-color: red yellow;
+  }
 
-/* width */
-::-webkit-scrollbar {
-  height: 4px;              /* height of horizontal scrollbar ← You're missing this */
-           /* width of vertical scrollbar */
-  border: 1px solid #d5d5d5;
-}
-/* Track */
-::-webkit-scrollbar-track {
-  background: #000 !important;
-}
+  /* width */
+  ::-webkit-scrollbar {
+    height: 4px; /* height of horizontal scrollbar ← You're missing this */
+    /* width of vertical scrollbar */
+    border: 1px solid #d5d5d5;
+  }
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #000 !important;
+  }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #000;
-}
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #000;
+  }
 </style>

@@ -145,7 +145,7 @@
                 icon="TrashIcon"
                 svgClasses="w-5 h-5 hover:text-danger stroke-current"
                 class="ml-2"
-                @click="deleteFood(tr.id)"
+                @click="confirmAction(deleteFood, [tr.id])"
               />
             </vs-td>
           </vs-tr>

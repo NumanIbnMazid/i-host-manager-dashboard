@@ -258,7 +258,7 @@
                     icon-pack="feather"
                     icon="icon-save"
                     class="mr-3 mb-2"
-                    @click="updateRestaurant"
+                    @click="confirmAction(updateRestaurantGo)"
                     >Save Change</vs-button
                   >
                   <vs-button
@@ -347,16 +347,6 @@ export default {
       this.website = restaurant.website;
       this.status = restaurant.status;
       this.subscription_ends = restaurant.subscription_ends;
-    },
-
-    updateRestaurant() {
-      this.$vs.dialog({
-        type: "confirm",
-        color: "danger",
-        title: `Confirm`,
-        text: "Confirm update",
-        accept: this.updateRestaurantGo,
-      });
     },
 
     updateRestaurantGo() {
