@@ -732,6 +732,7 @@ export default {
   }),
 
   watch: {
+    // adding food extra options in foodExtraType
     selectedFoodExtraTypes: function (val, oldVal) {
       if (val !== oldVal) {
         this.foodExtras = [];
@@ -744,6 +745,7 @@ export default {
       }
     },
 
+    // clear state if food removed from state
     selectedFood: function (val, oldVal) {
       if (!val) {
         this.clearFoodStates();
@@ -796,6 +798,7 @@ export default {
       this.selectedFoodExtraTypes = [];
     },
 
+    // adding food order to order cart
     addOrderedItems(orderId) {
       console.log("orderItem ", {
         quantity: this.quantity,
@@ -814,6 +817,14 @@ export default {
         ])
         .then((res) => {
           console.log("order res ", res);
+          console.log("orderToVarify ", this.orderToVarify);
+
+          // TODO: real time ui update (data object update)
+          // if (res.data.status) {
+          //   this.ordersData.map(order => order.id === orderId && order.ordered_items.push(res.data.data));
+
+          //   this.orderToVarify.ordered_items.push(res.data.data);
+          // }
         })
         .catch((err) => console.log("orderaa error ", err.response));
     },
