@@ -442,9 +442,10 @@
       </vs-table>
 
       <!-- action buttons -->
-      <div class="action-buttons flex float-right mt-4">
+      <div class="action-buttons flex mt-4">
         <!-- confirm all -->
-        <vx-tooltip color="success" text="Confirm All" class="mr-2">
+
+        <vx-tooltip color="success" text="Confirm All" class="mr-2 float-right">
           <vs-button
             color="success"
             type="border"
@@ -460,7 +461,7 @@
         </vx-tooltip>
 
         <!-- confirm selected -->
-        <vx-tooltip color="primary" text="Confirm Selects">
+        <vx-tooltip color="primary" text="Confirm Selects" class="float-right">
           <vs-button
             color="primary"
             type="border"
@@ -536,11 +537,13 @@
 
         <template slot-scope="{ data }">
           <vs-tr
-            class="text-center"
+            :class="`text-center ${
+              data[i].status == '0_ORDER_INITIALIZED' ? 'bg-grey' : ''
+            }`"
             :key="i"
             v-for="(tr, i) in data"
-            v-show="data[i].status != '0_ORDER_INITIALIZED'"
           >
+            <!-- v-show="data[i].status != '0_ORDER_INITIALIZED'" -->
             <vs-td :data="data[i].id">
               <vs-checkbox
                 v-if="data[i].status === '2_ORDER_CONFIRMED'"
@@ -561,6 +564,11 @@
                 v-if="data[i].status === '4_CANCELLED'"
                 class="badge bg-danger text-white rounded"
                 >Canceled</span
+              >
+              <span
+                v-if="data[i].status === '0_ORDER_INITIALIZED'"
+                class="text-yl"
+                >Item Carts by user</span
               >
             </vs-td>
 
@@ -609,7 +617,23 @@
       </vs-table>
 
       <!-- action buttons -->
-      <div class="action-buttons flex float-right mt-4">
+
+      <div class="action-buttons flex mt-4 float-right">
+        <vx-tooltip color="warning" text="Confirm All" class="mr-2">
+          <vs-button
+            v-if="selectedItemForVarify.length > 0"
+            color="warning"
+            icon-pack="feather"
+            icon="icon-printer"
+            type="border"
+            @click="
+              printKitechRecit(orderToServed, selectedItemForVarify);
+              markAsServedPopup = false;
+            "
+            >Selected item print for kitchen</vs-button
+          >
+        </vx-tooltip>
+
         <!-- confirm all -->
         <vx-tooltip color="success" text="Confirm All" class="mr-2">
           <vs-button
@@ -1441,14 +1465,21 @@ export default {
       // WinPrint.close();
     },
 
-    printKitechRecit(order) {
+    printKitechRecit(order, items = []) {
       const WinPrint = window.open(
         "",
         "",
         "left=0,top=0,width=600,height=600,toolbar=0,scrollbars=0,status=0"
       );
       let itemDetail = "";
-      order.ordered_items.forEach((el) => {
+      let allItems = [];
+      if (items.length > 0) {
+        allItems = order.ordered_items.filter((itm) => items.includes(itm.id));
+      } else {
+        allItems = order.ordered_items;
+      }
+
+      allItems.forEach((el) => {
         if (el.status == "2_ORDER_CONFIRMED") {
           itemDetail += `<tr class="service">
                         <td class="tableitem">
