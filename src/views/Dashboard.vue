@@ -661,12 +661,12 @@ export default {
 
     // food options
     getFoodOptions() {
-      console.log('I am in food option function', this.selectedFood)
+      console.log("I am in food option function", this.selectedFood);
       if (this.selectedFood !== "") {
         const food = this.foods.filter(
           (food) => food.id === this.selectedFood
         )[0];
-        console.log('selected food ', food);
+        console.log("selected food ", food);
 
         this.foodOptions = food.food_options;
         this.foodExtras = food.food_extras;
@@ -803,7 +803,7 @@ export default {
                 let theorder = this.ordersData.find(
                   (order) => order.id === order_id
                 );
-                this.printKitechRecit(theorder);
+                this.printKitechRecit(res.data.data);
               }
 
               this.selectedItemForVarify = [];
@@ -1345,7 +1345,8 @@ export default {
       );
       let itemDetail = "";
       order.ordered_items.forEach((el) => {
-        itemDetail += `<tr class="service">
+        if (el.status == "2_ORDER_CONFIRMED") {
+          itemDetail += `<tr class="service">
                         <td class="tableitem">
                             <p class="itemtext">${el.food_name}</p> 
                             ${
@@ -1359,6 +1360,7 @@ export default {
                             <p class="itemtext">${el.quantity}</p>
                         </td>
                     </tr>`;
+        }
       });
       WinPrint.document.write(`<!DOCTYPE html>
 <html lang="en">
@@ -1539,21 +1541,21 @@ export default {
 </script>
 
 <style >
-  header.vs-collapse-item--header {
-    padding: 0px !important;
-  }
-  .open-item {
-    position: absolute;
-    z-index: 999;
-    width: 22.3%;
-  }
-  .mb-base {
-    margin-bottom: 0.5rem !important;
-  }
+header.vs-collapse-item--header {
+  padding: 0px !important;
+}
+.open-item {
+  position: absolute;
+  z-index: 999;
+  width: 22.3%;
+}
+.mb-base {
+  margin-bottom: 0.5rem !important;
+}
 
-  .status-icon {
-    width: 100% !important;
-    height: 100%;
-  }
+.status-icon {
+  width: 100% !important;
+  height: 100%;
+}
 </style>
 
