@@ -302,8 +302,8 @@
     >
       <!-- food select form -->
       <dvi class="food-select-form">
-        <div class="vx-row">
-          <div class="vx-col w-4/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
+        <div class="vx-row text-sm">
+          <div class="vx-col w-3/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
             <small>Food Name</small>
             <v-select
               label="name"
@@ -314,7 +314,10 @@
             />
           </div>
 
-          <div class="vx-col w-4/12 mb-4 ml-0 pl-1" @click="getFoodOptions()">
+          <div
+            class="vx-col w-3/12 mb-4 ml-0 pl-1 mr-0 pr-1"
+            @click="getFoodOptions()"
+          >
             <small>Food Option</small>
             <v-select
               label="name"
@@ -324,7 +327,7 @@
             />
           </div>
 
-          <div class="vx-col w-3/12 pl-0 ml-0 mb-4">
+          <div class="vx-col w-3/12 pl-0 ml-0 mb-4 mr-0 pr-1">
             <small>Food Extra</small>
             <v-select
               label="type_name"
@@ -335,6 +338,18 @@
             />
           </div>
 
+          <div class="vx-col w-2/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+            <!-- <small>Quantity</small> -->
+            <vs-input
+              class="w-10/12"
+              color="rgb(213, 14, 151)"
+              type="number"
+              min="1"
+              label-placeholder="Quantity"
+              v-model="quantity"
+            />
+          </div>
+
           <div class="vx-col w-1/12 pl-0 mt-5">
             <vs-button
               color="success"
@@ -342,21 +357,38 @@
               title="Add"
               icon-pack="feather"
               icon="icon-plus"
+              @click="addOrderedItems(orderToVarify.id)"
             ></vs-button>
           </div>
         </div>
       </dvi>
       <div class="food-extras-list">
         <ul
-          class="flex float-left mb-4 pb-4"
+          class="flex float-left"
           v-for="foodExtra in foodExtras"
           :key="foodExtra.id"
         >
-          <li v-for="fe in foodExtra" :key="fe.id">
-            <vs-checkbox color="success">{{ fe.name }}</vs-checkbox>
+          <li class="mb-4" v-for="fe in foodExtra" :key="fe.id">
+            <vs-checkbox
+              v-model="selectedFoodExtras"
+              :vs-value="fe.id"
+              color="success"
+              >{{ fe.name }}</vs-checkbox
+            >
           </li>
+          <!-- @cilck="saveFoodExtras(fe.id)" -->
         </ul>
       </div>
+      <!-- <br />
+      <br />
+      {{ quantity }} <br />
+      <br />
+      {{ selectedOption }} <br />
+      <br />
+      {{ selectedFood }} <br />
+      <br />
+      {{ selectedFoodExtras }} <br />
+      <br /> -->
       <!-- food item list -->
       <vs-table :data="orderToVarify.ordered_items">
         <template slot="thead">
@@ -373,7 +405,6 @@
           <vs-tr
             :key="i"
             v-for="(tr, i) in data"
-            v-show="data[i].status != '0_ORDER_INITIALIZED'"
           >
             <vs-td :data="data[i].id">
               <vs-checkbox
@@ -656,7 +687,9 @@ export default {
     foodOptions: [],
     selectedFood: "",
     selectedFoodExtraTypes: [],
+    quantity: 1,
     selectedOption: "",
+    selectedFoodExtras: [],
   }),
 
   watch: {
@@ -722,6 +755,26 @@ export default {
       this.foodExtras = [];
       this.foodOptions = [];
       this.selectedFoodExtraTypes = [];
+    },
+
+    addOrderedItems(orderId) {
+      console.log("orderItem ", {
+          quantity: this.quantity,
+          food_option: this.selectedOption.id,
+          food_order: orderId,
+          food_extra: this.selectedFoodExtras,
+        });
+      axios
+        .post("/restaurant_management/order/cart/items/", [{
+          quantity: this.quantity,
+          food_option: this.selectedOption.id,
+          food_order: orderId,
+          food_extra: this.selectedFoodExtras,
+        }])
+        .then((res) => {
+          console.log("order res ", res);
+        })
+        .catch((err) => console.log("orderaa error ", err.response));
     },
 
     getRestaurantOrderItemList() {
@@ -1592,21 +1645,21 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 </style>
 
