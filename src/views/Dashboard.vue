@@ -303,7 +303,7 @@
       <!-- food select form -->
       <dvi class="food-select-form">
         <div class="vx-row">
-          <div class="vx-col w-4/12 pl-1 pr-0 mb-4" @click="getFoodNames()">
+          <div class="vx-col w-4/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
             <small>Food Name</small>
             <v-select
               label="name"
@@ -314,23 +314,27 @@
             />
           </div>
 
-          <div class="vx-col w-4/12 mb-4" @click="getFoodOptions()">
+          <div class="vx-col w-4/12 mb-4 ml-0 pl-1" @click="getFoodOptions()">
             <small>Food Option</small>
             <v-select
               label="name"
+              v-model="selectedOption"
               :options="foodOptions"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
             />
           </div>
 
-          <div class="vx-col w-3/12 pl-0 mb-4">
+          <div class="vx-col w-3/12 pl-0 ml-0 mb-4">
             <small>Food Extra</small>
             <v-select
-              label="foodName"
-              :options="foodExtras"
+              label="type_name"
+              multiple
+              v-model="selectedFoodExtraTypes"
+              :options="foodExtraTypes"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
             />
           </div>
+
           <div class="vx-col w-1/12 pl-0 mt-5">
             <vs-button
               color="success"
@@ -342,7 +346,17 @@
           </div>
         </div>
       </dvi>
-
+      <div class="food-extras-list">
+        <ul
+          class="flex float-left mb-4 pb-4"
+          v-for="foodExtra in foodExtras"
+          :key="foodExtra.id"
+        >
+          <li v-for="fe in foodExtra" :key="fe.id">
+            <vs-checkbox color="success">{{ fe.name }}</vs-checkbox>
+          </li>
+        </ul>
+      </div>
       <!-- food item list -->
       <vs-table :data="orderToVarify.ordered_items">
         <template slot="thead">
@@ -637,10 +651,38 @@ export default {
     selectedItemForKitchen: [],
 
     foods: [],
+    foodExtraTypes: [],
     foodExtras: [],
     foodOptions: [],
     selectedFood: "",
+    selectedFoodExtraTypes: [],
+    selectedOption: "",
   }),
+
+  watch: {
+    selectedFoodExtraTypes: function (val, oldVal) {
+      if (val !== oldVal) {
+        this.foodExtras = [];
+        this.foodExtraTypes.map((foodExtraType) =>
+          this.selectedFoodExtraTypes.map(
+            (st) =>
+              foodExtraType === st && this.foodExtras.push(foodExtraType.extras)
+          )
+        );
+      }
+    },
+
+    selectedFood: function (val, oldVal) {
+      if (!val) {
+        this.clearFoodStates();
+      }
+
+      if (val !== oldVal) {
+        this.clearFoodStates();
+        this.getFoodOptions();
+      }
+    },
+  },
 
   methods: {
     getFoodNames() {
@@ -669,8 +711,17 @@ export default {
         console.log("selected food ", food);
 
         this.foodOptions = food.food_options;
-        this.foodExtras = food.food_extras;
+        this.foodExtraTypes = food.food_extras;
       } else this.showActionMessage("error", "Select Food First!");
+    },
+
+    // clear food states
+    clearFoodStates() {
+      this.selectedOption = "";
+      this.foodExtraTypes = [];
+      this.foodExtras = [];
+      this.foodOptions = [];
+      this.selectedFoodExtraTypes = [];
     },
 
     getRestaurantOrderItemList() {
