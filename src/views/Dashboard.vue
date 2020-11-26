@@ -514,7 +514,10 @@
               v-model="selectedOption"
               :options="foodOptions"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
-            />
+              ><template #no-options="{}">
+                <span class="text-danger"> Please select food first. </span>
+              </template></v-select
+            >
           </div>
 
           <div class="vx-col w-3/12 pl-0 ml-0 mb-4 mr-0 pr-1">
@@ -782,14 +785,23 @@ export default {
         this.clearFoodStates();
       }
 
+      // checking if selected food is changed
       if (val !== oldVal) {
         this.clearFoodStates();
         this.getFoodOptions();
       }
     },
+
+    // watch quantity value if it 0 or less
+    quantity: function (val, oldVal) {
+      if (this.quantity <= 0) {
+        this.quantity = "";
+      }
+    },
   },
 
   methods: {
+    // getting food names
     getFoodNames() {
       axios
         .get(`/restaurant_management/restaurant/${this.resturent_id}/foods/`)
@@ -808,16 +820,15 @@ export default {
 
     // food options
     getFoodOptions() {
-      console.log("I am in food option function", this.selectedFood);
       if (this.selectedFood !== "") {
         const food = this.foods.filter(
           (food) => food.id === this.selectedFood
         )[0];
-        console.log("selected food ", food);
 
         this.foodOptions = food.food_options;
         this.foodExtraTypes = food.food_extras;
-      } else this.showActionMessage("error", "Select Food First!");
+      }
+      // else this.showActionMessage("error", "Select Food First!");
     },
 
     // clear food states
@@ -827,6 +838,7 @@ export default {
       this.foodExtras = [];
       this.foodOptions = [];
       this.selectedFoodExtraTypes = [];
+      this.quantity = 1;
     },
 
     // adding food order to order cart
@@ -852,6 +864,9 @@ export default {
                 order.id === orderId &&
                 order.ordered_items.push(res.data.data[0])
             );
+
+            // clear food state after add item to cart
+            this.selectedFood = "";
           } else this.showActionMessage("error", "New Item Add Failed!");
         })
         .catch((err) => console.log("orderaa error ", err.response));
