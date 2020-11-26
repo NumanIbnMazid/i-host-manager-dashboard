@@ -20,7 +20,7 @@
               @click="popupActive = true"
             >
               <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
-              <span class="ml-2 text-base text-primary">Add New</span>
+              <span class="ml-2 text-base text-primary">Add New Waiter</span>
             </div>
           </div>
 
@@ -57,9 +57,8 @@
 
         <template slot="thead">
           <vs-th>Sl</vs-th>
-          <vs-th>Image</vs-th>
-          <vs-th sort-key="name">Name</vs-th>
-          <vs-th>Phone No.</vs-th>
+          <vs-th>Waiter Details</vs-th>
+          <vs-th>Assigned Tables</vs-th>
           <vs-th>Action</vs-th>
         </template>
 
@@ -72,19 +71,64 @@
                 </p>
               </vs-td>
               <vs-td class="img-container">
-                <img :src="tr.image" class="product-img" style="height: 60px" />
+                <div class="md:w-8/12 sm:w-12/12">
+                  <div class="vx-row">
+                    <!-- Avatar Col -->
+                    <div class="vx-col" id="avatar-col">
+                      <div class="img-container mb-4">
+                        <img
+                          :src="tr.image"
+                          class="product-img"
+                          style="height: 60px"
+                        />
+                      </div>
+                    </div>
+
+                    <!-- Information - Col 1 -->
+                    <div class="vx-col" id="account-info-col-1">
+                      <table>
+                        <tr>
+                          <td class="font-semibold">Name</td>
+                          <td>{{ tr.user.first_name }}</td>
+                        </tr>
+
+                        <tr>
+                          <td class="font-semibold">Phone</td>
+                          <td>{{ tr.user.phone }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
               </vs-td>
 
               <vs-td>
-                <p class="product-name font-medium truncate">
-                  {{ tr.user.first_name }}
-                </p>
-              </vs-td>
+                <div class="waiter-table flex">
+                  <div class="table-svg mt-2 ml-2 mr-2">
+                    <svg
+                      width="24"
+                      height="17"
+                      viewBox="0 0 24 17"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M23.1431 16.2857V5.14285H0.857422V16.2857H2.57171V6.42857C2.57171 6.19189 2.7636 6 3.00028 6H21.0003C21.237 6 21.4288 6.19189 21.4288 6.42857V16.2857H23.1431Z"
+                        fill="#F8B843"
+                      />
+                      <path
+                        d="M1.51507 0L0.37207 1.71429H23.6279L22.4849 0H1.51507Z"
+                        fill="#F8B843"
+                      />
+                      <path
+                        d="M0 2.57143H24V4.28571H0V2.57143Z"
+                        fill="#F8B843"
+                      />
+                    </svg>
+                  </div>
 
-              <vs-td>
-                <p class="product-name font-medium truncate">
-                  {{ tr.user.phone }}
-                </p>
+                  <p class="table-number text-2xl">01</p>
+                </div>
               </vs-td>
 
               <vs-td class="whitespace-no-wrap">
@@ -327,7 +371,7 @@ export default {
           `/account_management/restaurant/${this.restaurant_id}/waiter_info/`
         )
         .then((res) => {
-          console.log(res);
+          console.log("all waiters ", res);
           this.waiters = res.data.data;
         })
         .catch((err) => {
@@ -441,5 +485,18 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+  .waiter-table {
+    width: 77px;
+    height: 34px;
+    left: 1085px;
+    top: 370px;
+
+    background: #31314e;
+    border-radius: 5px;
+  }
+
+  .table-number {
+    color: #f8b843;
+  }
 </style>
