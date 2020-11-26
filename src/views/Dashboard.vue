@@ -356,7 +356,7 @@
               title="Add"
               icon-pack="feather"
               icon="icon-plus"
-              @click="addOrderedItems(orderToVarify.id)"
+              @click="addOrderedItems(orderToVarify.id, '1_ORDER_PLACED')"
             ></vs-button>
           </div>
         </div>
@@ -546,7 +546,7 @@
               title="Add"
               icon-pack="feather"
               icon="icon-plus"
-              @click="addOrderedItems(orderToVarify.id)"
+              @click="addOrderedItems(orderToServed.id, '2_ORDER_CONFIRMED')"
             ></vs-button>
           </div>
         </div>
@@ -828,52 +828,31 @@ export default {
       this.foodOptions = [];
       this.selectedFoodExtraTypes = [];
     },
-    // /restaurant_management/order/cart_create_from_dashboard/items/
 
-    // {
-    // quantity*	integer
-    // title: Quantity
-    // maximum: 2147483647
-    // minimum: 1
-    // status	string
-    // title: Status
-    // Enum:
-    // Array [ 5 ]
-    // food_option*	integer
-    // title: Food option
-    // food_order*	integer
-    // title: Food order
-    // food_extra	[
-    // uniqueItems: true
-    // integer]
-    // }
     // adding food order to order cart
-    addOrderedItems(orderId) {
-      console.log("orderItem ", {
-        quantity: this.quantity,
-        food_option: this.selectedOption.id,
-        food_order: orderId,
-        food_extra: this.selectedFoodExtras,
-      });
+    addOrderedItems(orderId, status) {
       axios
-        .post("/restaurant_management/order/cart/items/", [
-          {
-            quantity: this.quantity,
-            food_option: this.selectedOption.id,
-            food_order: orderId,
-            food_extra: this.selectedFoodExtras,
-          },
-        ])
+        .post(
+          "/restaurant_management/order/cart_create_from_dashboard/items/",
+          [
+            {
+              quantity: this.quantity,
+              status,
+              food_option: this.selectedOption.id,
+              food_order: orderId,
+              food_extra: this.selectedFoodExtras,
+            },
+          ]
+        )
         .then((res) => {
-          console.log("order res ", res);
-          console.log("orderToVarify ", this.orderToVarify);
-
-          // TODO: real time ui update (data object update)
-          // if (res.data.status) {
-          //   this.ordersData.map(order => order.id === orderId && order.ordered_items.push(res.data.data));
-
-          //   this.orderToVarify.ordered_items.push(res.data.data);
-          // }
+          // real time ui update (data object update)
+          if (res.data.status) {
+            this.ordersData.map(
+              (order) =>
+                order.id === orderId &&
+                order.ordered_items.push(res.data.data[0])
+            );
+          } else this.showActionMessage("error", "New Item Add Failed!");
         })
         .catch((err) => console.log("orderaa error ", err.response));
     },
@@ -1754,21 +1733,21 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 </style>
 
