@@ -844,18 +844,15 @@ export default {
     // adding food order to order cart
     addOrderedItems(orderId, status) {
       axios
-        .post(
-          "/restaurant_management/order/cart_create_from_dashboard/items/",
-          [
-            {
-              quantity: this.quantity,
-              status,
-              food_option: this.selectedOption.id,
-              food_order: orderId,
-              food_extra: this.selectedFoodExtras,
-            },
-          ]
-        )
+        .post("/restaurant_management/dashboard/order/cart/items/", [
+          {
+            quantity: this.quantity,
+            status,
+            food_option: this.selectedOption.id,
+            food_order: orderId,
+            food_extra: this.selectedFoodExtras,
+          },
+        ])
         .then((res) => {
           // real time ui update (data object update)
           if (res.data.status) {

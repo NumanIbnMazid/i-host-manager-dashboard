@@ -103,31 +103,39 @@
               </vs-td>
 
               <vs-td>
-                <div class="waiter-table flex">
-                  <div class="table-svg mt-2 ml-2 mr-2">
-                    <svg
-                      width="24"
-                      height="17"
-                      viewBox="0 0 24 17"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M23.1431 16.2857V5.14285H0.857422V16.2857H2.57171V6.42857C2.57171 6.19189 2.7636 6 3.00028 6H21.0003C21.237 6 21.4288 6.19189 21.4288 6.42857V16.2857H23.1431Z"
-                        fill="#F8B843"
-                      />
-                      <path
-                        d="M1.51507 0L0.37207 1.71429H23.6279L22.4849 0H1.51507Z"
-                        fill="#F8B843"
-                      />
-                      <path
-                        d="M0 2.57143H24V4.28571H0V2.57143Z"
-                        fill="#F8B843"
-                      />
-                    </svg>
+                <div class="flex">
+                  <div
+                    class="waiter-table mr-2"
+                    v-for="(table, index) in tr.tables"
+                    :key="index"
+                  >
+                    <div class="table-svg flex">
+                      <svg
+                        class="mt-2 ml-2 mr-2"
+                        width="24"
+                        height="17"
+                        viewBox="0 0 24 17"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M23.1431 16.2857V5.14285H0.857422V16.2857H2.57171V6.42857C2.57171 6.19189 2.7636 6 3.00028 6H21.0003C21.237 6 21.4288 6.19189 21.4288 6.42857V16.2857H23.1431Z"
+                          fill="#F8B843"
+                        />
+                        <path
+                          d="M1.51507 0L0.37207 1.71429H23.6279L22.4849 0H1.51507Z"
+                          fill="#F8B843"
+                        />
+                        <path
+                          d="M0 2.57143H24V4.28571H0V2.57143Z"
+                          fill="#F8B843"
+                        />
+                      </svg>
+                      <p class="table-number text-2xl mt-0 pt-0 ml-3">
+                        {{ table }}
+                      </p>
+                    </div>
                   </div>
-
-                  <p class="table-number text-2xl">01</p>
                 </div>
               </vs-td>
 
