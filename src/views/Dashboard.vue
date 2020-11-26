@@ -301,7 +301,7 @@
       :active.sync="varifyPopup"
     >
       <!-- food select form -->
-      <dvi class="food-select-form">
+      <div class="food-select-form">
         <div class="vx-row text-sm">
           <div class="vx-col w-3/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
             <small>Food Name</small>
@@ -339,7 +339,6 @@
           </div>
 
           <div class="vx-col w-2/12 pl-0 ml-0 mb-4 mr-0 pr-1">
-            <!-- <small>Quantity</small> -->
             <vs-input
               class="w-10/12"
               color="rgb(213, 14, 151)"
@@ -361,7 +360,9 @@
             ></vs-button>
           </div>
         </div>
-      </dvi>
+      </div>
+
+      <!-- food extra list -->
       <div class="food-extras-list">
         <ul
           class="flex float-left"
@@ -376,20 +377,10 @@
               >{{ fe.name }}</vs-checkbox
             >
           </li>
-          <!-- @cilck="saveFoodExtras(fe.id)" -->
         </ul>
       </div>
-      <!-- <br />
-      <br />
-      {{ quantity }} <br />
-      <br />
-      {{ selectedOption }} <br />
-      <br />
-      {{ selectedFood }} <br />
-      <br />
-      {{ selectedFoodExtras }} <br />
-      <br /> -->
-      <!-- food item list -->
+
+      <!-- order item list -->
       <vs-table :data="orderToVarify.ordered_items">
         <template slot="thead">
           <vs-th class="text-center">Check</vs-th>
@@ -481,34 +472,55 @@
       :title="`Order #${orderToServed.id} | Table No: ${orderToServed.table_no}`"
       :active.sync="markAsServedPopup"
     >
-      <dvi class="food-select-form">
-        <div class="vx-row">
-          <div class="vx-col w-4/12 pl-1 pr-0 mb-4" @click="getFoodNames()">
+      <!-- food select form -->
+      <div class="food-select-form">
+        <div class="vx-row text-sm">
+          <div class="vx-col w-3/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
             <small>Food Name</small>
             <v-select
               label="name"
+              v-model="selectedFood"
               :options="foods"
+              :reduce="(foods) => foods.id"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
             />
           </div>
 
-          <div class="vx-col w-4/12 mb-4">
+          <div
+            class="vx-col w-3/12 mb-4 ml-0 pl-1 mr-0 pr-1"
+            @click="getFoodOptions()"
+          >
             <small>Food Option</small>
             <v-select
-              label="foodName"
-              :options="foods"
+              label="name"
+              v-model="selectedOption"
+              :options="foodOptions"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
             />
           </div>
 
-          <div class="vx-col w-3/12 pl-0 mb-4">
+          <div class="vx-col w-3/12 pl-0 ml-0 mb-4 mr-0 pr-1">
             <small>Food Extra</small>
             <v-select
-              label="foodName"
-              :options="foods"
+              label="type_name"
+              multiple
+              v-model="selectedFoodExtraTypes"
+              :options="foodExtraTypes"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
             />
           </div>
+
+          <div class="vx-col w-2/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+            <vs-input
+              class="w-10/12"
+              color="rgb(213, 14, 151)"
+              type="number"
+              min="1"
+              label-placeholder="Quantity"
+              v-model="quantity"
+            />
+          </div>
+
           <div class="vx-col w-1/12 pl-0 mt-5">
             <vs-button
               color="success"
@@ -516,10 +528,29 @@
               title="Add"
               icon-pack="feather"
               icon="icon-plus"
+              @click="addOrderedItems(orderToVarify.id)"
             ></vs-button>
           </div>
         </div>
-      </dvi>
+      </div>
+
+      <!-- food extra list -->
+      <div class="food-extras-list">
+        <ul
+          class="flex float-left"
+          v-for="foodExtra in foodExtras"
+          :key="foodExtra.id"
+        >
+          <li class="mb-4" v-for="fe in foodExtra" :key="fe.id">
+            <vs-checkbox
+              v-model="selectedFoodExtras"
+              :vs-value="fe.id"
+              color="success"
+              >{{ fe.name }}</vs-checkbox
+            >
+          </li>
+        </ul>
+      </div>
 
       <vs-table :data="orderToServed.ordered_items">
         <template slot="thead">
@@ -779,7 +810,25 @@ export default {
       this.foodOptions = [];
       this.selectedFoodExtraTypes = [];
     },
+    // /restaurant_management/order/cart_create_from_dashboard/items/
 
+    // {
+    // quantity*	integer
+    // title: Quantity
+    // maximum: 2147483647
+    // minimum: 1
+    // status	string
+    // title: Status
+    // Enum:
+    // Array [ 5 ]
+    // food_option*	integer
+    // title: Food option
+    // food_order*	integer
+    // title: Food order
+    // food_extra	[
+    // uniqueItems: true
+    // integer]
+    // }
     // adding food order to order cart
     addOrderedItems(orderId) {
       console.log("orderItem ", {
