@@ -393,12 +393,30 @@
         </template>
 
         <template slot-scope="{ data }">
-          <vs-tr :key="i" v-for="(tr, i) in data">
+          <vs-tr
+            :class="`text-center ${
+              data[i].status == '0_ORDER_INITIALIZED' ? 'bg-grey' : ''
+            }`"
+            :key="i"
+            v-for="(tr, i) in data"
+          >
             <vs-td :data="data[i].id">
               <vs-checkbox
+                v-if="data[i].status === '1_ORDER_PLACED'"
                 v-model="selectedItemForVarify"
                 :vs-value="data[i].id"
               ></vs-checkbox>
+
+              <span
+                v-if="data[i].status === '4_CANCELLED'"
+                class="badge bg-danger text-white rounded"
+                >Canceled</span
+              >
+              <span
+                v-if="data[i].status === '0_ORDER_INITIALIZED'"
+                class="text-yl"
+                >Item In Cart</span
+              >
             </vs-td>
 
             <vs-td :data="data[i].id">
@@ -956,12 +974,13 @@ export default {
         if (status === "user_confirmed") {
           this.confirmProcess(
             order_id,
-            "/restaurant_management/order/status/confirm/"
+            "/restaurant_management/order/status/confirm/",
+            true
           );
           let order = { ...this.ordersData };
           let theorder = this.ordersData.find((order) => order.id === order_id);
           console.log("order kitchen ", theorder);
-          this.printKitechRecit(theorder);
+          // this.printKitechRecit(theorder);
         }
 
         if (status === "in_kitchen")
@@ -1735,21 +1754,21 @@ export default {
 </script>
 
 <style >
-  header.vs-collapse-item--header {
-    padding: 0px !important;
-  }
-  .open-item {
-    position: absolute;
-    z-index: 999;
-    width: 22.3%;
-  }
-  .mb-base {
-    margin-bottom: 0.5rem !important;
-  }
+header.vs-collapse-item--header {
+  padding: 0px !important;
+}
+.open-item {
+  position: absolute;
+  z-index: 999;
+  width: 22.3%;
+}
+.mb-base {
+  margin-bottom: 0.5rem !important;
+}
 
-  .status-icon {
-    width: 100% !important;
-    height: 100%;
-  }
+.status-icon {
+  width: 100% !important;
+  height: 100%;
+}
 </style>
 
