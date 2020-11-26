@@ -258,7 +258,7 @@
                     icon-pack="feather"
                     icon="icon-save"
                     class="mr-3 mb-2"
-                    @click="confirmAction(updateRestaurantGo)"
+                    @click="confirmAction(updateRestaurantGo , '', 'Confirm change?')"
                     >Save Change</vs-button
                   >
                   <vs-button

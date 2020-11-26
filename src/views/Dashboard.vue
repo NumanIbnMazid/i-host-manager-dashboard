@@ -1443,7 +1443,7 @@ export default {
         </div>
         <div id="bot">
             <center>
-                <h2>Order # ${order.id}</h2>
+                <h2>Order # ${order.invoice.id}</h2>
                 <h2>Table No: ${order.table_no}</h2>
                 <h2>Waiter: ${order.waiter.name}</h2>
                 <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
