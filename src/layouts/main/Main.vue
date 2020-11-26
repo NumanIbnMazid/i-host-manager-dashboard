@@ -16,7 +16,10 @@
 
     <div
       id="content-area"
-      :class="[contentAreaClass, { 'show-overlay': bodyOverlay }]"
+      :class="[
+        $router.currentRoute.path === '/neworder' ? 'content-area-alt' : contentAreaClass,
+        { 'show-overlay': bodyOverlay },
+      ]"
     >
       <div id="content-overlay" />
 
@@ -158,7 +161,7 @@
       </div>
       <the-footer />
     </div>
-    <Orderbar />
+    <Orderbar v-if="$router.currentRoute.path != '/neworder'" />
   </div>
 </template>
 
@@ -221,6 +224,15 @@ export default {
         else return "content-area-full";
       } else return "content-area-full";
     },
+
+    // contentAreaClassAlt() {
+    //   if (this.$router.currentRoute.path === "/neworder") {
+    //     return "content-area-alt";
+    //   } else {
+    //     return false;
+    //   }
+    // },
+
     footerClasses() {
       return {
         "footer-hidden": this.footerType === "hidden",
@@ -325,6 +337,11 @@ export default {
 
 .v-nav-menu .vs-sidebar--item .router-link-active {
   box-shadow: 0px 0px 0px 0px rgba(var(--vs-primary), 0.7) !important;
+}
+
+.content-area-alt {
+  margin-left: 200px !important;
+  margin-right: 0px !important;
 }
 
 .content-area-reduced {

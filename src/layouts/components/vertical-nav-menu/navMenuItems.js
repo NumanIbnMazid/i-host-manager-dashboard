@@ -39,5 +39,11 @@ export default [{
         name: "Report",
         slug: "report",
         icon: "BarChart2Icon",
+    },
+    {
+        url: "/neworder",
+        name: "New Order",
+        slug: "neworder",
+        icon: "CheckSquareIcon",
     }
 ]

@@ -3,7 +3,7 @@
     position-right
     default-index="1"
     color="primary"
-    class="sidebarx new-sider"
+    class="sidebarx new-sidebar"
     spacer
     v-model="active"
   >
@@ -233,7 +233,7 @@ export default {
 </script>
 
 <style >
-  .new-sider .vs-sidebar {
+  .new-sidebar .vs-sidebar {
     max-width: 325px !important;
     background: #ffffff !important;
     position: fixed;
