@@ -15,28 +15,43 @@
 
         <vs-row>
           <div class="w-2/12">
-            <vs-button
-              v-for="i in 10"
-              :key="i"
-              class="w-full my-1"
-              color="primary"
-              type="filled"
-              >Primary</vs-button
+            <p class="text-center">Menu Categories</p>
+            <vs-divider class="my-2" />
+            <vs-button class="w-full my-1" color="secondary" type="filled"
+              >All</vs-button
             >
+            <hooper
+              :vertical="true"
+              style="height: 80vh"
+              :itemsToShow="17"
+              :itemsToSlide="4"
+              :initialSlide="7"
+            >
+              <slide v-for="(category, i) in categories" :key="i">
+                <vs-button class="w-full my-1" color="primary" type="filled">{{
+                  category.name
+                }}</vs-button>
+              </slide>
+              <hooper-navigation
+                v-if="categories.length > 16"
+                slot="hooper-addons"
+              ></hooper-navigation>
+            </hooper>
           </div>
 
           <div class="w-10/12">
             <div class="w-full mx-2">
               <vs-input
-                class="w-full"
+                class="w-full px-1"
                 placeholder="Search for item......"
+                v-model="search"
               ></vs-input>
 
               <vs-table class="p-0" ref="table" :data="foods">
                 <template slot="thead">
-                  <vs-th>Sl</vs-th>
-                  <vs-th>Item</vs-th>
-                  <vs-th>Item</vs-th>
+                  <vs-th class="text-center">Image</vs-th>
+                  <vs-th>Name</vs-th>
+                  <vs-th>Price</vs-th>
                   <vs-th>Price</vs-th>
                   <vs-th>Action</vs-th>
                 </template>
@@ -48,10 +63,10 @@
                       :key="indextr"
                       v-for="(tr, indextr) in data"
                     >
-                      <vs-td>
-                        <p class="img-container font-medium">
-                          <img :src="tr.image" class="product-img" />
-                        </p>
+                      <vs-td style="width: 10%">
+                        <!-- <p class="img-container font-medium"> -->
+                        <img :src="tr.image" class="product-img" />
+                        <!-- </p> -->
                       </vs-td>
                       <vs-td>
                         <p>{{ tr.name }}</p>
@@ -93,8 +108,26 @@
           </div>
         </vs-row>
       </div>
-      <div class="vx-col w-1/4">
-        <div class="w-100 h-100 bg-bl">hello</div>
+      <div
+        class="vx-col w-1/4 pl-3"
+        style="
+          position: fixed;
+          right: 0px;
+          top: 0;
+          height: 100%;
+          width: 22% !important;
+        "
+      >
+        <div class="w-100 shadow-lg rounded" style="height: 100%">
+          <div class="flex text-center">
+            <div class="w-1/2">
+              <vs-button color="primary" class="w-100">Dine In</vs-button>
+            </div>
+            <div class="w-1/2">
+              <vs-button color="success" type="filled">Success</vs-button>
+            </div>
+          </div>
+        </div>
       </div>
     </vs-row>
   </div>
@@ -104,11 +137,20 @@
 <script>
 import axios from "@/axios.js";
 import moment from "moment";
+import { Hooper, Slide, Navigation as HooperNavigation } from "hooper";
+import "hooper/dist/hooper.css";
 export default {
+  components: {
+    Hooper,
+    Slide,
+    HooperNavigation,
+  },
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
     time: "",
     foods: [],
+    search: "",
+    categories: [],
   }),
 
   methods: {
@@ -131,11 +173,25 @@ export default {
           this.checkError(err);
         });
     },
+
+    getCategorys() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/category_list/${this.resturent_id}`
+        )
+        .then((res) => {
+          if (res.data.status) this.categories = res.data.data;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
   },
 
   created() {
     this.getTime();
     this.getFood();
+    this.getCategorys();
   },
 };
 </script>
@@ -292,6 +348,11 @@ export default {
 .product-img {
   width: 150px !important;
   // width: 100px !important;
+}
+
+.th .sort-th,
+th .vs-table-text {
+  justify-content: center !important;
 }
 </style>
 
