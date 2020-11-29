@@ -355,8 +355,8 @@ export default {
         });
     },
 
+    // decided if open form for add new waiter or update waiter
     activeWaiterForm(data = null) {
-      console.log("staff data ", data);
       if (data) {
         this.staffId = data.id;
         this.user.image = data.image;
@@ -372,7 +372,19 @@ export default {
         this.popupActive = true;
         this.waiterFormActionMethod = this.updateStaffInfo;
       } else {
-        this.user = {};
+        this.user = {
+          staffId: "",
+          image: "",
+          logoPreview: "",
+          email: "",
+          first_name: "",
+          phone: "",
+          password: "",
+          showPassField: true,
+          nid: "",
+          shift_start: "",
+          shift_end: "",
+        };
         this.popupActive = true;
         this.waiterFormActionMethod = this.addWaiters;
       }
@@ -383,7 +395,7 @@ export default {
       let formData = new FormData();
       formData.append("restaurant_id", this.restaurant_id);
 
-      formData.append("email", this.user.email);
+      formData.append("email_address", this.user.email);
       formData.append("name", this.user.first_name);
       formData.append("phone", this.user.phone);
       formData.append("password", this.user.password);
@@ -412,6 +424,7 @@ export default {
               });
             }
           } else {
+            console.log('added waiter res ', res)
             this.waiters.push(res.data.data);
             this.popupActive = false;
             this.user.first_name = "";
@@ -459,6 +472,7 @@ export default {
           if (res.data.status) {
             this.popupActive = false;
 
+            // udpating waiter object for real time ui update
             this.waiters = this.waiters.map((waiter) =>
               waiter.id === this.staffId
                 ? {
