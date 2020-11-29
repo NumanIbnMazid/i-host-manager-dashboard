@@ -17,7 +17,7 @@
             <!-- ACTION - DROPDOWN -->
             <div
               class="p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary"
-              @click="popupActive = true"
+              @click="activeWaiterForm()"
             >
               <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
               <span class="ml-2 text-base text-primary">Add New Waiter</span>
@@ -96,6 +96,26 @@
                           <td class="font-semibold">Phone</td>
                           <td>{{ tr.user.phone }}</td>
                         </tr>
+
+                        <tr>
+                          <td class="font-semibold">Email</td>
+                          <td>{{ tr.email }}</td>
+                        </tr>
+
+                        <tr>
+                          <td class="font-semibold">Shift Start</td>
+                          <td>{{ tr.shift_start }}</td>
+                        </tr>
+
+                        <tr>
+                          <td class="font-semibold">Shift End</td>
+                          <td>{{ tr.shift_end }}</td>
+                        </tr>
+
+                        <tr>
+                          <td class="font-semibold">NID</td>
+                          <td>{{ tr.nid }}</td>
+                        </tr>
                       </table>
                     </div>
                   </div>
@@ -143,7 +163,7 @@
                 <feather-icon
                   icon="EditIcon"
                   svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                  @click="editItem(tr)"
+                  @click="activeWaiterForm(tr)"
                 />
                 <feather-icon
                   icon="TrashIcon"
@@ -158,12 +178,8 @@
       </vs-table>
     </div>
 
-    <!-- ADD NEW WAITER POPUP -->
-    <vs-popup
-      class="holamundo"
-      title="Add new waiter"
-      :active.sync="popupActive"
-    >
+    <!-- WAITER POPUP FORM -->
+    <vs-popup class="holamundo" title="Waiter Form" :active.sync="popupActive">
       <vs-row>
         <div class="vx-col sm:w-8/12 w-full mb-2 mx-auto">
           <img
@@ -235,7 +251,8 @@
             v-validate="'required'"
           />
         </div>
-        <div class="w-full">
+
+        <div class="w-full" v-if="user.showPassField">
           <vs-input
             icon-pack="feather"
             icon="icon-lock"
@@ -247,103 +264,47 @@
           />
         </div>
 
-        <vs-button class="mb-2 w-full mt-5" @click="addWaiters()"
-          >Add New</vs-button
-        >
-      </vs-row>
-    </vs-popup>
-
-    <!-- WAITER EDIT POPUP -->
-    <vs-popup
-      class="holamundo"
-      title="Add new waiter"
-      :active.sync="waiterEditPopupActive"
-    >
-      <vs-row>
-        <div class="vx-col sm:w-8/12 w-full mb-2 mx-auto">
-          <img
-            v-if="!user.logoPreview"
-            :src="user.image"
-            style="width: 100%"
-            class="rounded"
-            alt
-          />
-          <img
-            v-else
-            :src="user.logoPreview"
-            style="width: 100%"
-            class="rounded"
-            alt
-          />
-
-          <input
-            type="file"
-            class="hidden"
-            ref="logoInput"
-            @change="updateCurrImg"
-            accept="image/*"
-          />
-
-          <div class="vx-row mt-4">
-            <div class="vx-col w-full">
-              <vs-button
-                class="mr-5 mb-2 w-full"
-                icon-pack="feather"
-                icon="icon-edit"
-                @click="$refs.logoInput.click()"
-                >Change restaurants logo</vs-button
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="w-full">
-          <vs-input
-            icon-pack="feather"
-            icon="icon-user"
-            label="Name"
-            v-model="user.first_name"
-            class="mt-5 w-full"
-            type="email"
-            v-validate="'required'"
-          />
-        </div>
-        <div class="w-full">
-          <vs-input
-            icon-pack="feather"
-            icon="icon-phone"
-            label="Phone"
-            v-model="user.phone"
-            class="mt-5 w-full"
-            type="email"
-            v-validate="'required'"
-          />
-        </div>
-        <div class="w-full">
-          <vs-input
-            icon-pack="feather"
-            icon="icon-mail"
-            label="Email"
-            v-model="user.email"
-            class="mt-5 w-full"
-            type="email"
-            v-validate="'required'"
-          />
-        </div>
+        <!-- nid field -->
         <div class="w-full">
           <vs-input
             icon-pack="feather"
             icon="icon-lock"
-            label="Password"
-            v-model="user.password"
+            label="Nid"
+            v-model="user.nid"
             class="mt-5 w-full"
-            type="password"
+            type="number"
             v-validate="'required'"
           />
         </div>
 
-        <vs-button class="mb-2 w-full mt-5" @click="updateStaffInfo()"
-          >Save Changes</vs-button
+        <!-- shift start field -->
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-lock"
+            label="Shift Start"
+            v-model="user.shift_start"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <!-- shift end field -->
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-lock"
+            label="Shift End"
+            v-model="user.shift_end"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <vs-button class="mb-2 w-full mt-5" @click="waiterFormActionMethod()"
+          >Save</vs-button
         >
       </vs-row>
     </vs-popup>
@@ -362,13 +323,19 @@ export default {
     isMounted: false,
     popupActive: false,
     waiterEditPopupActive: false,
+    waiterFormActionMethod: "",
     user: {
+      staffId: "",
       image: "",
       logoPreview: "",
       email: "",
       first_name: "",
       phone: "",
       password: "",
+      showPassField: true,
+      nid: "",
+      shift_start: "",
+      shift_end: "",
     },
   }),
 
@@ -388,14 +355,41 @@ export default {
         });
     },
 
+    activeWaiterForm(data = null) {
+      console.log("staff data ", data);
+      if (data) {
+        this.staffId = data.id;
+        this.user.image = data.image;
+        this.user.logoPreview = data.image;
+        this.user.email = data.email;
+        this.user.first_name = data.user.first_name;
+        this.user.phone = data.user.phone;
+        this.user.nid = data.nid;
+        this.user.shift_start = data.shift_start;
+        this.user.shift_end = data.shift_end;
+        this.user.showPassField = false;
+
+        this.popupActive = true;
+        this.waiterFormActionMethod = this.updateStaffInfo;
+      } else {
+        this.user = {};
+        this.popupActive = true;
+        this.waiterFormActionMethod = this.addWaiters;
+      }
+    },
+
+    // add new waiter
     addWaiters() {
       let formData = new FormData();
       formData.append("restaurant_id", this.restaurant_id);
 
       formData.append("email", this.user.email);
-      formData.append("first_name", this.user.first_name);
+      formData.append("name", this.user.first_name);
       formData.append("phone", this.user.phone);
       formData.append("password", this.user.password);
+      formData.append("nid", this.user.nid);
+      formData.append("shift_start", this.user.shift_start);
+      formData.append("shift_end", this.user.shift_end);
 
       if (this.user.logoPreview != "") {
         formData.append("image", this.user.image);
@@ -403,22 +397,31 @@ export default {
 
       axios
         .post(`/account_management/restaurant/create_waiter/`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
-          this.waiters.push(res.data.data);
-
-          this.popupActive = false;
-          this.user.first_name = "";
-          this.user.phone = "";
-          this.user.email = "";
-          this.user.image = "";
-          this.user.logoPreview = "";
-          this.user.password = "";
-
-          this.showActionMessage("success", "Waiter Created Successfully!");
+          // Checking errors
+          if (res.data.error.code == 400) {
+            const errors = res.data.error.error_details;
+            for (const property in errors) {
+              this.$vs.notify({
+                title: "Create Failed",
+                text: `${property}: ${errors[property]}`,
+                color: "danger",
+                position: "top-right",
+              });
+            }
+          } else {
+            this.waiters.push(res.data.data);
+            this.popupActive = false;
+            this.user.first_name = "";
+            this.user.phone = "";
+            this.user.email = "";
+            this.user.image = "";
+            this.user.logoPreview = "";
+            this.user.password = "";
+            this.showActionMessage("success", "Waiter Created Successfully!");
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -427,11 +430,69 @@ export default {
         });
     },
 
-    // TODO
+    // waiter update functionality
     updateStaffInfo() {
+      let formData = new FormData();
+      formData.append("email", this.user.email);
+      formData.append("name", this.user.first_name);
+      // formData.append("phone", this.user.phone);
+      formData.append("nid", this.user.nid);
+      formData.append("shift_start", this.user.shift_start);
+      formData.append("shift_end", this.user.shift_end);
+
+      if (
+        this.user.logoPreview != "" &&
+        !this.user.image.toString().includes("https")
+      ) {
+        formData.append("image", this.user.image);
+      }
+
       axios
-        .patch(``)
+        .patch(
+          `/account_management/restaurant/staff/${this.staffId}/`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        )
         .then((res) => {
+          if (res.data.status) {
+            this.popupActive = false;
+
+            this.waiters = this.waiters.map((waiter) =>
+              waiter.id === this.staffId
+                ? {
+                    ...waiter,
+                    email: res.data.data.email,
+                    image: res.data.data.image,
+                    first_name: res.data.data.name,
+                    name: res.data.data.name,
+                    nid: res.data.data.nid,
+                    shift_start: res.data.data.shift_start,
+                    shift_end: res.data.data.shift_end,
+                    user: {
+                      first_name: res.data.data.name,
+                    },
+                  }
+                : waiter
+            );
+
+            this.showActionMessage(
+              "success",
+              "Waiter Inforamtion updated successfully!"
+            );
+          } else {
+            const errors = res.data.error.error_details;
+            for (const property in errors) {
+              this.$vs.notify({
+                title: "Create Failed",
+                text: `${property}: ${errors[property]}`,
+                color: "danger",
+                position: "top-right",
+              });
+            }
+          }
+
           console.log("sures ", res);
         })
         .catch((err) => {
@@ -457,6 +518,7 @@ export default {
         });
     },
 
+    // checking image size
     updateCurrImg(input) {
       if (input.target.files && input.target.files[0]) {
         const reader = new FileReader();
@@ -466,8 +528,14 @@ export default {
           let img = new Image();
           img.src = e.target.result;
           img.onload = () => {
-            this.user.image = input.target.files[0];
-            this.user.logoPreview = e.target.result;
+            if (input.target.files[0].size > 1.5e6) {
+              alert("Image size must be below 1.50 mb");
+              this.user.image = "";
+              this.user.logoPreview = "";
+            } else {
+              this.user.image = input.target.files[0];
+              this.user.logoPreview = e.target.result;
+            }
           };
         };
       }
