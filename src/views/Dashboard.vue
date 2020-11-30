@@ -474,7 +474,7 @@
             @click="
               confirmProcess(
                 orderToVarify.id,
-                '/restaurant_management/order/status/confirm/',
+                '/restaurant_management/dashboard/order/status/confirm/',
                 true
               )
             "
@@ -707,7 +707,7 @@
             @click="
               confirmProcess(
                 orderToServed.id,
-                '/restaurant_management/order/status/in_table/'
+                '/restaurant_management/dashboard/order/status/in_table/'
               )
             "
             >Serve Select</vs-button
@@ -804,7 +804,7 @@ export default {
     // getting food names
     getFoodNames() {
       axios
-        .get(`/restaurant_management/restaurant/${this.resturent_id}/foods/`)
+        .get(`/restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`)
         .then((res) => {
           console.log("foods ", res);
           if (res.data.status) this.foods = res.data.data;
@@ -844,7 +844,7 @@ export default {
     // adding food order to order cart
     addOrderedItems(orderId, status) {
       axios
-        .post("/restaurant_management/dashboard/order/cart/items/", [
+        .post("/restaurant_management/dashboard/dashboard/order/cart/items/", [
           {
             quantity: this.quantity,
             status,
@@ -872,7 +872,7 @@ export default {
     getRestaurantOrderItemList() {
       axios
         .get(
-          `/restaurant_management/restaurant/${this.resturent_id}/order_item_list/`
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/order_item_list/`
         )
         .then((res) => {
           console.log("roil ", res);
@@ -965,7 +965,7 @@ export default {
         if (status === "user_confirmed") {
           this.confirmProcess(
             order_id,
-            "/restaurant_management/order/status/confirm/",
+            "/restaurant_management/dashboard/order/status/confirm/",
             true
           );
           let order = { ...this.ordersData };
@@ -977,7 +977,7 @@ export default {
         if (status === "in_kitchen")
           this.confirmProcess(
             order_id,
-            "/restaurant_management/order/status/in_table/"
+            "/restaurant_management/dashboard/order/status/in_table/"
           );
       } else this.showActionMessage("success", "All item selected!");
     },
@@ -1023,7 +1023,7 @@ export default {
     createInvoice(order_id) {
       // this.printRecipt(order_id);
       axios
-        .post("/restaurant_management/order/create_invoice/", { order_id })
+        .post("/restaurant_management/dashboard/order/create_invoice/", { order_id })
         .then((res) => {
           if (res.data.status) {
             this.ordersData = this.ordersData.map((order) =>
@@ -1040,7 +1040,7 @@ export default {
 
     collectOrdersPayment(order_id) {
       axios
-        .post("/restaurant_management/order/confirm_payment/", { order_id })
+        .post("/restaurant_management/dashboard/order/confirm_payment/", { order_id })
         .then((res) => {
           // printRecipt(res.data.data);
           if (res.data.status) {
@@ -1057,7 +1057,7 @@ export default {
 
     cancelOrderItem(order_id, item_id) {
       axios
-        .post("/restaurant_management/order/cart/cancel_items/", {
+        .post("/restaurant_management/dashboard/order/cart/cancel_items/", {
           order_id,
           food_items: [item_id],
         })
@@ -1079,7 +1079,7 @@ export default {
     verifyOrderItem(order_id, item_id) {
       axios
         .post(
-          "/restaurant_management/order/status/confirm_status_without_cancel/",
+          "/restaurant_management/dashboard/order/status/confirm_status_without_cancel/",
           {
             order_id,
             food_items: [item_id],
@@ -1113,7 +1113,7 @@ export default {
 
     cancelOrder(order_id) {
       axios
-        .post("/restaurant_management/order/cancel_order/", { order_id })
+        .post("/restaurant_management/dashboard/order/cancel_order/", { order_id })
         .then((res) => {
           if (res.data.status) {
             this.ordersData = this.ordersData.map((order) =>

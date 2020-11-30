@@ -212,7 +212,7 @@ export default {
     },
     getFood() {
       axios
-        .get(`/restaurant_management/restaurant/${this.resturent_id}/foods/`)
+        .get(`/restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`)
         .then((res) => {
           console.log(res);
           this.foods = res.data.data;

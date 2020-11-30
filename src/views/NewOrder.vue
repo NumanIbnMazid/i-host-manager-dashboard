@@ -162,7 +162,7 @@ export default {
 
     getFood() {
       axios
-        .get(`restaurant_management/restaurant/${this.resturent_id}/foods/`)
+        .get(`restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`)
         .then((res) => {
           console.log("food ", res);
           this.foods = res.data.data;
@@ -177,7 +177,7 @@ export default {
     getCategorys() {
       axios
         .get(
-          `/restaurant_management/dashboard/category_list/${this.resturent_id}`
+          `/restaurant_management/dashboard/dashboard/category_list/${this.resturent_id}`
         )
         .then((res) => {
           if (res.data.status) this.categories = res.data.data;

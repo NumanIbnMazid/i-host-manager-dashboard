@@ -426,7 +426,7 @@ export default {
 
     getTables() {
       axios
-        .get(`/restaurant_management/restaurant/${this.resturent_id}/tables/`)
+        .get(`/restaurant_management/dashboard/restaurant/${this.resturent_id}/tables/`)
         .then((res) => {
           console.log("tables ", res.data.data);
           this.tables = res.data.data;
@@ -442,7 +442,7 @@ export default {
     // add new table
     addTable() {
       axios
-        .post("/restaurant_management/table/", {
+        .post("/restaurant_management/dashboard/table/", {
           table_no: this.table_no,
           name: this.name,
           restaurant: this.resturent_id,
@@ -473,7 +473,7 @@ export default {
     // table update function
     editTable() {
       axios
-        .patch(`/restaurant_management/table/${this.table_id}/`, {
+        .patch(`/restaurant_management/dashboard/table/${this.table_id}/`, {
           table_no: this.table_no,
           name: this.name,
           retaurant: this.resturent_id,
@@ -505,7 +505,7 @@ export default {
 
     assignStaff(tid) {
       axios
-        .post(`/restaurant_management/table/${tid}/add_staff/`, {
+        .post(`/restaurant_management/dashboard/table/${tid}/add_staff/`, {
           staff_list: this.waiter,
         })
         .then((res) => {
@@ -535,7 +535,7 @@ export default {
     // table delete function
     deleteTable(table_id) {
       axios
-        .delete(`/restaurant_management/table/${table_id}/`)
+        .delete(`/restaurant_management/dashboard/table/${table_id}/`)
         .then((res) => {
           if (res.data.status) {
             this.tables = this.tables.filter((table) => table.id !== table_id);
@@ -627,7 +627,7 @@ export default {
     removeWaiterFromTable(waiterId, tableId) {
       console.log("rwft ", waiterId, tableId);
       axios
-        .post(`/restaurant_management/table/${tableId}/staff_remove/`, {
+        .post(`/restaurant_management/dashboard/table/${tableId}/staff_remove/`, {
           staff_list: [waiterId],
         })
         .then((res) => {

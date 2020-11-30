@@ -155,7 +155,7 @@ export default {
     getTodaysTotalSell() {
       axios
         .get(
-          `/restaurant_management/restaurant/${this.resturent_id}/today_sell/`
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/today_sell/`
         )
         .then((res) => {
           if (res.data.status) {
@@ -176,7 +176,7 @@ export default {
     getOrderItemList() {
       axios
         .get(
-          `/restaurant_management/restaurant/${this.resturent_id}/order_item_list/`
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/order_item_list/`
         )
         .then((res) => {
           console.log("r ", res);

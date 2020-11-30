@@ -284,7 +284,7 @@ export default {
     },
     getFood() {
       axios
-        .get(`restaurant_management/restaurant/${this.resturent_id}/foods/`)
+        .get(`restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`)
         .then((res) => {
           console.log("food ", res);
           this.foods = res.data.data;
@@ -299,7 +299,7 @@ export default {
     deleteFood(id) {
       this.showActionMessage("success", "Food Deleted Successfully!");
       axios
-        .delete(`/restaurant_management/food/${id}/`)
+        .delete(`/restaurant_management/dashboard/food/${id}/`)
         .then((res) => {
           if (res.data.status) {
             this.foods = this.foods.filter((food) => food.id !== id);
