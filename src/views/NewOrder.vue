@@ -108,6 +108,8 @@
           </div>
         </vs-row>
       </div>
+
+      <!-- side bar -->
       <div
         class="vx-col w-1/4 pl-3"
         style="
@@ -129,7 +131,10 @@
               <vs-button
                 color="primary"
                 class="w-100"
-                @click="isDinein = !isDinein"
+                @click="
+                  isDinein = !isDinein;
+                  getTables();
+                "
                 >Dine In</vs-button
               >
             </div>
@@ -142,11 +147,24 @@
           <div class="table-info mt-4 pt-4" v-if="isDinein">
             <div class="table-card">
               <div class="table-list m-2 grid grid-cols-3 gap-4">
-                <div class="restaurant-tables mr-2 text-white center">
+                <div
+                  class="restaurant-tables mr-2 text-white center"
+                  v-for="(table, index) in tables"
+                  :key="index"
+                >
                   <!-- single table -->
-                  <div class="table-no ml-4" @click="testFunc()">
+                  <!-- v-bind:class="[is_occupied ? activeClass : '', errorClass]" -->
+                  <div
+                    class="table-no ml-4"
+                    v-bind:class="[
+                      table.is_occupied ? 'bg-warning' : 'bg-success',
+                    ]"
+                    @click="testFunc()"
+                  >
                     <div class="table-svg">
-                      <p class="table-number text-2xl mt-0 pt-0 ml-4">01</p>
+                      <p class="table-number text-2xl mt-0 pt-0 ml-4">
+                        {{ table.table_no }}
+                      </p>
 
                       <svg
                         class="ml-4"
@@ -184,8 +202,9 @@
           </div>
 
           <!-- place order btn -->
-          <div v-if="isDinein"
-            class="place-order w-2/3 mx-auto mt-4 text-center relative absolute bottom-0"
+          <div
+            v-if="isDinein"
+            class="place-order w-2/3 mx-auto mt-4 text-center"
           >
             <vs-button color="primary" class="text-3xl text-white" type="flat"
               >Place Order</vs-button
@@ -205,6 +224,7 @@ import { Hooper, Slide, Navigation as HooperNavigation } from "hooper";
 import "hooper/dist/hooper.css";
 
 import UserProfile from "./UserProfile";
+import Tables from "./Tables";
 export default {
   components: {
     Hooper,
@@ -217,6 +237,7 @@ export default {
     time: "",
     foods: [],
     search: "",
+    tables: [],
     categories: [],
     isDinein: false,
   }),
@@ -258,6 +279,24 @@ export default {
         })
         .catch((err) => {
           console.error(err);
+        });
+    },
+
+    getTables() {
+      console.log("table func called!!");
+      axios
+        .get(
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/tables/`
+        )
+        .then((res) => {
+          console.log("tables ", res.data.data);
+          this.tables = res.data.data;
+        })
+        .catch((err) => {
+          console.log("table error ", err.response);
+          this.showActionMessage("error", err.response.statusText);
+          // console.log("sremove error ", err);
+          this.checkError(err);
         });
     },
   },
@@ -430,11 +469,8 @@ export default {
   }
 
   .place-order {
-    // position: absolute;
-    // width: 391px;
-    height: 61px;
-    // left: 1518px;
-    // top: 984px;
+    position: sticky;
+    top: 900px;
 
     background: #c4c4c4;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
@@ -473,10 +509,6 @@ export default {
     .table-no {
       width: 56.97px;
       height: 59px;
-      // left: 1560px;
-      // // top: 283px;
-
-      background: #02bc77;
     }
   }
 </style>

@@ -425,6 +425,7 @@ export default {
     },
 
     getTables() {
+      console.log('table func called!!')
       axios
         .get(`/restaurant_management/dashboard/restaurant/${this.resturent_id}/tables/`)
         .then((res) => {
