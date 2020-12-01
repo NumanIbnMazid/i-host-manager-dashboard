@@ -123,15 +123,73 @@
           <div class="profile mb-4">
             <UserProfile />
           </div>
-          <!-- </vs-sidebar> -->
 
           <div class="flex text-center">
             <div class="w-1/2">
-              <vs-button color="primary" class="w-100">Dine In</vs-button>
+              <vs-button
+                color="primary"
+                class="w-100"
+                @click="isDinein = !isDinein"
+                >Dine In</vs-button
+              >
             </div>
             <div class="w-1/2">
               <vs-button color="success" type="filled">Success</vs-button>
             </div>
+          </div>
+
+          <!-- table card -->
+          <div class="table-info mt-4 pt-4" v-if="isDinein">
+            <div class="table-card">
+              <div class="table-list m-2 grid grid-cols-3 gap-4">
+                <div class="restaurant-tables mr-2 text-white center">
+                  <!-- single table -->
+                  <div class="table-no ml-4" @click="testFunc()">
+                    <div class="table-svg">
+                      <p class="table-number text-2xl mt-0 pt-0 ml-4">01</p>
+
+                      <svg
+                        class="ml-4"
+                        width="26"
+                        height="19"
+                        viewBox="0 0 24 17"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M23.1431 16.2857V5.14285H0.857422V16.2857H2.57171V6.42857C2.57171 6.19189 2.7636 6 3.00028 6H21.0003C21.237 6 21.4288 6.19189 21.4288 6.42857V16.2857H23.1431Z"
+                          fill="#fff"
+                        />
+                        <path
+                          d="M1.51507 0L0.37207 1.71429H23.6279L22.4849 0H1.51507Z"
+                          fill="#fff"
+                        />
+                        <path
+                          d="M0 2.57143H24V4.28571H0V2.57143Z"
+                          fill="#fff"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- select button -->
+              <div class="mx-auto text-center mt-4 mb-4">
+                <vs-button class="w-3/4 text-2xl" color="dark" type="filled"
+                  >Select</vs-button
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- place order btn -->
+          <div v-if="isDinein"
+            class="place-order w-2/3 mx-auto mt-4 text-center relative absolute bottom-0"
+          >
+            <vs-button color="primary" class="text-3xl text-white" type="flat"
+              >Place Order</vs-button
+            >
           </div>
         </div>
       </div>
@@ -160,9 +218,14 @@ export default {
     foods: [],
     search: "",
     categories: [],
+    isDinein: false,
   }),
 
   methods: {
+    testFunc() {
+      console.log("hellow world!");
+    },
+
     getTime() {
       setInterval(() => {
         this.time = moment().format("h:mm:ss A");
@@ -364,6 +427,57 @@ export default {
   .th .sort-th,
   th .vs-table-text {
     justify-content: center !important;
+  }
+
+  .place-order {
+    // position: absolute;
+    // width: 391px;
+    height: 61px;
+    // left: 1518px;
+    // top: 984px;
+
+    background: #c4c4c4;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
+      inset 0px -3px 5px rgba(0, 0, 0, 0.38);
+    border-radius: 7px;
+  }
+
+  // table card styles
+  .table-card {
+    margin: 4px 0 4px 12px;
+    width: 387px;
+    height: auto;
+    left: 1517px;
+    top: 258px;
+
+    background: #ffffff;
+    border: 1px solid #c4c4c4;
+    box-sizing: border-box;
+    border-radius: 9px;
+  }
+
+  // restaurant table styles
+  .restaurant-tables {
+    width: 89px;
+    height: 63px;
+    left: 1544px;
+    top: 283px;
+
+    background: #ffffff;
+    border: 2px solid #c4c4c4;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+
+    // table number styles
+    .table-no {
+      width: 56.97px;
+      height: 59px;
+      // left: 1560px;
+      // // top: 283px;
+
+      background: #02bc77;
+    }
   }
 </style>
 
