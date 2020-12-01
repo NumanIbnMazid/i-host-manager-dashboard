@@ -119,6 +119,12 @@
         "
       >
         <div class="w-100 shadow-lg rounded" style="height: 100%">
+          <!-- profile information & notification -->
+          <div class="profile mb-4">
+            <UserProfile />
+          </div>
+          <!-- </vs-sidebar> -->
+
           <div class="flex text-center">
             <div class="w-1/2">
               <vs-button color="primary" class="w-100">Dine In</vs-button>
@@ -139,11 +145,14 @@ import axios from "@/axios.js";
 import moment from "moment";
 import { Hooper, Slide, Navigation as HooperNavigation } from "hooper";
 import "hooper/dist/hooper.css";
+
+import UserProfile from "./UserProfile";
 export default {
   components: {
     Hooper,
     Slide,
     HooperNavigation,
+    UserProfile,
   },
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
@@ -162,7 +171,9 @@ export default {
 
     getFood() {
       axios
-        .get(`restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`)
+        .get(
+          `restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
+        )
         .then((res) => {
           console.log("food ", res);
           this.foods = res.data.data;
@@ -198,161 +209,161 @@ export default {
 
 
 <style lang="scss" >
-#data-list-thumb-view-alt {
-  .vs-con-table {
-    .product-name {
-      max-width: 23rem;
-    }
+  #data-list-thumb-view-alt {
+    .vs-con-table {
+      .product-name {
+        max-width: 23rem;
+      }
 
-    .vs-table--header {
-      display: flex;
-      flex-wrap: wrap-reverse;
-      margin-left: 1.5rem;
-      margin-right: 1.5rem;
-      > span {
+      .vs-table--header {
         display: flex;
-        flex-grow: 1;
-      }
-
-      .vs-table--search {
-        padding-top: 0;
-
-        .vs-table--search-input {
-          padding: 0.9rem 2.5rem;
-          font-size: 1rem;
-
-          & + i {
-            left: 1rem;
-          }
-
-          &:focus + i {
-            left: 1rem;
-          }
+        flex-wrap: wrap-reverse;
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+        > span {
+          display: flex;
+          flex-grow: 1;
         }
-      }
-    }
 
-    .vs-table {
-      border-collapse: separate;
-      // border-spacing: 0 1.3rem;
-      // padding: 0 1rem;
+        .vs-table--search {
+          padding-top: 0;
 
-      tr {
-        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-        td {
-          padding: 10px;
-          &:first-child {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-          }
-          &:last-child {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-          }
-          &.img-container {
-            // width: 1rem;
-            // background: #fff;
+          .vs-table--search-input {
+            padding: 0.9rem 2.5rem;
+            font-size: 1rem;
 
-            span {
-              display: flex;
-              justify-content: flex-start;
+            & + i {
+              left: 1rem;
             }
 
-            .product-img {
-              height: 50px;
-              width: 50px !important;
+            &:focus + i {
+              left: 1rem;
             }
           }
         }
-        td.td-check {
-          padding: 20px !important;
+      }
+
+      .vs-table {
+        border-collapse: separate;
+        // border-spacing: 0 1.3rem;
+        // padding: 0 1rem;
+
+        tr {
+          box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+          td {
+            padding: 10px;
+            &:first-child {
+              border-top-left-radius: 0;
+              border-bottom-left-radius: 0;
+            }
+            &:last-child {
+              border-top-right-radius: 0;
+              border-bottom-right-radius: 0;
+            }
+            &.img-container {
+              // width: 1rem;
+              // background: #fff;
+
+              span {
+                display: flex;
+                justify-content: flex-start;
+              }
+
+              .product-img {
+                height: 50px;
+                width: 50px !important;
+              }
+            }
+          }
+          td.td-check {
+            padding: 20px !important;
+          }
         }
       }
-    }
 
-    .vs-table--thead {
-      th {
-        padding-top: 0;
-        padding-bottom: 0;
+      .vs-table--thead {
+        th {
+          padding-top: 0;
+          padding-bottom: 0;
 
-        .vs-table-text {
-          text-transform: uppercase;
-          font-weight: 600;
+          .vs-table-text {
+            text-transform: uppercase;
+            font-weight: 600;
+          }
+        }
+        th.td-check {
+          padding: 0 15px !important;
+        }
+        tr {
+          background: none;
+          box-shadow: none;
         }
       }
-      th.td-check {
-        padding: 0 15px !important;
-      }
-      tr {
-        background: none;
-        box-shadow: none;
-      }
-    }
 
-    .vs-table--pagination {
-      justify-content: center;
+      .vs-table--pagination {
+        justify-content: center;
+      }
     }
   }
-}
 
-.vs-sidebar {
-  z-index: 100000;
-}
+  .vs-sidebar {
+    z-index: 100000;
+  }
 
-.sidebar-custom > .header-sidebar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  h4 {
+  .sidebar-custom > .header-sidebar {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     width: 100%;
-    > button {
-      margin-left: 10px;
+    h4 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      > button {
+        margin-left: 10px;
+      }
     }
   }
-}
 
-.footer-sidebar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  > button {
-    border: 0px solid rgba(0, 0, 0, 0) !important;
-    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
-    border-radius: 0px !important;
+  .footer-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    > button {
+      border: 0px solid rgba(0, 0, 0, 0) !important;
+      border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
+      border-radius: 0px !important;
+    }
   }
-}
 
-.sidebar-custom > .vs-sidebar-primary {
-  max-width: 400px !important;
-}
+  .sidebar-custom > .vs-sidebar-primary {
+    max-width: 400px !important;
+  }
 
-// th:first-child .vs-table-text {
-//   justify-content: center !important;
-//   cursor: pointer;
-// }
-.vs-table--thead {
-  background-color: #32304e;
-  color: #fff;
-}
+  // th:first-child .vs-table-text {
+  //   justify-content: center !important;
+  //   cursor: pointer;
+  // }
+  .vs-table--thead {
+    background-color: #32304e;
+    color: #fff;
+  }
 
-.vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
-  padding: 10px 15px !important;
-}
+  .vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
+    padding: 10px 15px !important;
+  }
 
-.product-img {
-  width: 150px !important;
-  // width: 100px !important;
-}
+  .product-img {
+    width: 150px !important;
+    // width: 100px !important;
+  }
 
-.th .sort-th,
-th .vs-table-text {
-  justify-content: center !important;
-}
+  .th .sort-th,
+  th .vs-table-text {
+    justify-content: center !important;
+  }
 </style>
 
