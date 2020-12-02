@@ -20,6 +20,21 @@
             <vs-button class="w-full my-1" color="secondary" type="filled"
               >All</vs-button
             >
+
+            <!-- food name list ⬇ -->
+            <div
+              class="food-name-list"
+              v-for="(food, index) in foods"
+              :key="index"
+            >
+              <div class="w-full mb-2">
+                <vs-button color="primary" class="w-full">{{
+                  food.name
+                }}</vs-button>
+              </div>
+            </div>
+            <!-- food name list end 🙅‍♂️🤷‍♀️ -->
+
             <hooper
               :vertical="true"
               style="height: 80vh"
