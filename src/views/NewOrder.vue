@@ -20,6 +20,21 @@
             <vs-button class="w-full my-1" color="secondary" type="filled"
               >All</vs-button
             >
+
+            <!-- food name list ⬇ -->
+            <div
+              class="food-name-list"
+              v-for="(food, index) in foods"
+              :key="index"
+            >
+              <div class="w-full mb-2">
+                <vs-button color="primary" class="w-full">{{
+                  food.name
+                }}</vs-button>
+              </div>
+            </div>
+            <!-- food name list end 🙅‍♂️🤷‍♀️ -->
+
             <hooper
               :vertical="true"
               style="height: 80vh"
@@ -127,19 +142,75 @@
           </div>
 
           <div class="flex text-center">
+            <!-- take out -->
             <div class="w-1/2">
               <vs-button
-                color="primary"
-                class="w-100"
+                color="white"
+                class="text-dark shadow"
+                type="filled"
+                @click="
+                  isTakeOut = !isTakeOut;
+                  isDinein = false;
+                "
+                v-bind:class="[
+                  isTakeOut ? 'text-white bg-warning' : 'text-dark',
+                ]"
+                >Take Out</vs-button
+              >
+            </div>
+
+            <!-- dine in 🍴🍽 -->
+            <div class="w-1/2">
+              <vs-button
+                v-bind:class="[
+                  isDinein ? 'text-white bg-warning' : 'text-dark',
+                ]"
+                color="white"
+                class="w-100 shadow"
                 @click="
                   isDinein = !isDinein;
+                  isTakeOut = false;
                   getTables();
                 "
                 >Dine In</vs-button
               >
             </div>
-            <div class="w-1/2">
-              <vs-button color="success" type="filled">Success</vs-button>
+          </div>
+
+          <!-- take out information table -->
+          <div class="table-info mt-4 pt-4" v-if="isTakeOut">
+            <div class="table-card">
+              <vs-table>
+                <template slot="thead">
+                  <vs-th class="text-xs">Variant</vs-th>
+                  <vs-th class="text-xs">Item</vs-th>
+                  <vs-th class="text-xs">Qty</vs-th>
+                  <vs-th class="text-xs">Amount</vs-th>
+                </template>
+
+                <template>
+                  <vs-tr class="text-xs">
+                    <vs-td> Burger </vs-td>
+
+                    <vs-td> Double patty </vs-td>
+
+                    <vs-td> 5 </vs-td>
+
+                    <vs-td> 25.00 </vs-td>
+                  </vs-tr>
+
+                  <vs-tr class="text-xs">
+
+                    <vs-td> Lemonda </vs-td>
+
+                    <vs-td> Single patty </vs-td>
+
+                    <vs-td> 6 </vs-td>
+
+                    <vs-td> 30.00 </vs-td>
+                  </vs-tr>
+                </template>
+              </vs-table>
             </div>
           </div>
 
@@ -240,6 +311,7 @@ export default {
     tables: [],
     categories: [],
     isDinein: false,
+    isTakeOut: false,
   }),
 
   methods: {
