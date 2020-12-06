@@ -541,8 +541,7 @@ export default {
           if (res.data.status) {
             this.tables = this.tables.filter((table) => table.id !== table_id);
           }
-          console.log("table delete res ", res);
-          this.showActionMessage("success", "Table Deleted Successfully!");
+          this.showActionMessage("success", res.data.msg);
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);

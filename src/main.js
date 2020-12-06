@@ -91,6 +91,7 @@ const plugin = {
                 localStorage.removeItem("resturent_id");
                 this.$router.push("/login").catch(() => {});
                 window.location.href = "/login";
+                location.reload();
             }
         };
 
