@@ -17,24 +17,13 @@
           <div class="w-2/12">
             <p class="text-center">Menu Categories</p>
             <vs-divider class="my-2" />
-            <vs-button class="w-full my-1" color="secondary" type="filled"
+            <vs-button
+              class="w-full my-1"
+              :color="!slectedCategory ? 'secondary' : 'primary'"
+              type="filled"
+              @click="allItem()"
               >All</vs-button
             >
-
-            <!-- food name list ⬇ -->
-            <div
-              class="food-name-list"
-              v-for="(food, index) in foods"
-              :key="index"
-            >
-              <div class="w-full mb-2">
-                <vs-button color="primary" class="w-full">{{
-                  food.name
-                }}</vs-button>
-              </div>
-            </div>
-            <!-- food name list end 🙅‍♂️🤷‍♀️ -->
-
             <hooper
               :vertical="true"
               style="height: 80vh"
@@ -43,9 +32,15 @@
               :initialSlide="7"
             >
               <slide v-for="(category, i) in categories" :key="i">
-                <vs-button class="w-full my-1" color="primary" type="filled">{{
-                  category.name
-                }}</vs-button>
+                <vs-button
+                  class="w-full my-1"
+                  :color="
+                    slectedCategory == category.id ? 'secondary' : 'primary'
+                  "
+                  type="filled"
+                  @click="findFooitemByCat(category.id)"
+                  >{{ category.name }}</vs-button
+                >
               </slide>
               <hooper-navigation
                 v-if="categories.length > 16"
@@ -60,6 +55,7 @@
                 class="w-full px-1"
                 placeholder="Search for item......"
                 v-model="search"
+                @keypress="findFooitem()"
               ></vs-input>
 
               <vs-table class="p-0" ref="table" :data="foods">
@@ -200,7 +196,6 @@
                   </vs-tr>
 
                   <vs-tr class="text-xs">
-
                     <vs-td> Lemonda </vs-td>
 
                     <vs-td> Single patty </vs-td>
@@ -223,17 +218,24 @@
                   v-for="(table, index) in tables"
                   :key="index"
                 >
-                  <!-- single table -->
-                  <!-- v-bind:class="[is_occupied ? activeClass : '', errorClass]" -->
                   <div
-                    class="table-no ml-4"
-                    v-bind:class="[
-                      table.is_occupied ? 'bg-warning' : 'bg-success',
-                    ]"
-                    @click="testFunc()"
+                    :style="`${
+                      table.is_occupied
+                        ? 'cursor: not-allowed'
+                        : 'cursor: pointer'
+                    }`"
+                    class="table-no mx-auto"
+                    :class="
+                      !table.is_occupied
+                        ? table.id == slectedTable
+                          ? 'bg-primary'
+                          : 'bg-success'
+                        : 'bg-grey'
+                    "
+                    @click="slectedTable = table.id"
                   >
                     <div class="table-svg">
-                      <p class="table-number text-2xl mt-0 pt-0 ml-4">
+                      <p class="table-number text-center text-2xl mt-0 pt-0">
                         {{ table.table_no }}
                       </p>
 
@@ -310,8 +312,10 @@ export default {
     search: "",
     tables: [],
     categories: [],
+    slectedCategory: "",
     isDinein: false,
-    isTakeOut: false,
+    isTakeOut: true,
+    slectedTable: null,
   }),
 
   methods: {
@@ -323,6 +327,44 @@ export default {
       setInterval(() => {
         this.time = moment().format("h:mm:ss A");
       }, 1000);
+    },
+
+    findFooitem() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/dashboard_food_search/${this.search}?restaurant=${this.resturent_id}`
+        )
+        .then((res) => {
+          console.log("food ", res);
+          this.foods = res.data.data;
+        })
+        .catch((err) => {
+          console.log("get food error ", err.response);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+
+    findFooitemByCat(category_id) {
+      this.slectedCategory = category_id;
+      axios
+        .get(
+          `/restaurant_management/dashboard/food_list/${category_id}?restaurant=${this.resturent_id}`
+        )
+        .then((res) => {
+          console.log("food ", res);
+          this.foods = res.data.data;
+        })
+        .catch((err) => {
+          console.log("get food error ", err.response);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+
+    allItem() {
+      this.slectedCategory = "";
+      this.getFood();
     },
 
     getFood() {
@@ -344,7 +386,7 @@ export default {
     getCategorys() {
       axios
         .get(
-          `/restaurant_management/dashboard/dashboard/category_list/${this.resturent_id}`
+          `/restaurant_management/dashboard/category_list/${this.resturent_id}`
         )
         .then((res) => {
           if (res.data.status) this.categories = res.data.data;
@@ -383,205 +425,205 @@ export default {
 
 
 <style lang="scss" >
-  #data-list-thumb-view-alt {
-    .vs-con-table {
-      .product-name {
-        max-width: 23rem;
-      }
+#data-list-thumb-view-alt {
+  .vs-con-table {
+    .product-name {
+      max-width: 23rem;
+    }
 
-      .vs-table--header {
+    .vs-table--header {
+      display: flex;
+      flex-wrap: wrap-reverse;
+      margin-left: 1.5rem;
+      margin-right: 1.5rem;
+      > span {
         display: flex;
-        flex-wrap: wrap-reverse;
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
-        > span {
-          display: flex;
-          flex-grow: 1;
-        }
-
-        .vs-table--search {
-          padding-top: 0;
-
-          .vs-table--search-input {
-            padding: 0.9rem 2.5rem;
-            font-size: 1rem;
-
-            & + i {
-              left: 1rem;
-            }
-
-            &:focus + i {
-              left: 1rem;
-            }
-          }
-        }
+        flex-grow: 1;
       }
 
-      .vs-table {
-        border-collapse: separate;
-        // border-spacing: 0 1.3rem;
-        // padding: 0 1rem;
+      .vs-table--search {
+        padding-top: 0;
 
-        tr {
-          box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-          td {
-            padding: 10px;
-            &:first-child {
-              border-top-left-radius: 0;
-              border-bottom-left-radius: 0;
-            }
-            &:last-child {
-              border-top-right-radius: 0;
-              border-bottom-right-radius: 0;
-            }
-            &.img-container {
-              // width: 1rem;
-              // background: #fff;
+        .vs-table--search-input {
+          padding: 0.9rem 2.5rem;
+          font-size: 1rem;
 
-              span {
-                display: flex;
-                justify-content: flex-start;
-              }
-
-              .product-img {
-                height: 50px;
-                width: 50px !important;
-              }
-            }
+          & + i {
+            left: 1rem;
           }
-          td.td-check {
-            padding: 20px !important;
+
+          &:focus + i {
+            left: 1rem;
           }
         }
-      }
-
-      .vs-table--thead {
-        th {
-          padding-top: 0;
-          padding-bottom: 0;
-
-          .vs-table-text {
-            text-transform: uppercase;
-            font-weight: 600;
-          }
-        }
-        th.td-check {
-          padding: 0 15px !important;
-        }
-        tr {
-          background: none;
-          box-shadow: none;
-        }
-      }
-
-      .vs-table--pagination {
-        justify-content: center;
       }
     }
-  }
 
-  .vs-sidebar {
-    z-index: 100000;
-  }
+    .vs-table {
+      border-collapse: separate;
+      // border-spacing: 0 1.3rem;
+      // padding: 0 1rem;
 
-  .sidebar-custom > .header-sidebar {
+      tr {
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+        td {
+          padding: 10px;
+          &:first-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+          }
+          &:last-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+          }
+          &.img-container {
+            // width: 1rem;
+            // background: #fff;
+
+            span {
+              display: flex;
+              justify-content: flex-start;
+            }
+
+            .product-img {
+              height: 50px;
+              width: 50px !important;
+            }
+          }
+        }
+        td.td-check {
+          padding: 20px !important;
+        }
+      }
+    }
+
+    .vs-table--thead {
+      th {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        .vs-table-text {
+          text-transform: uppercase;
+          font-weight: 600;
+        }
+      }
+      th.td-check {
+        padding: 0 15px !important;
+      }
+      tr {
+        background: none;
+        box-shadow: none;
+      }
+    }
+
+    .vs-table--pagination {
+      justify-content: center;
+    }
+  }
+}
+
+.vs-sidebar {
+  z-index: 100000;
+}
+
+.sidebar-custom > .header-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  h4 {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    width: 100%;
-    h4 {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      > button {
-        margin-left: 10px;
-      }
-    }
-  }
-
-  .footer-sidebar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     width: 100%;
     > button {
-      border: 0px solid rgba(0, 0, 0, 0) !important;
-      border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
-      border-radius: 0px !important;
+      margin-left: 10px;
     }
   }
+}
 
-  .sidebar-custom > .vs-sidebar-primary {
-    max-width: 400px !important;
+.footer-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  > button {
+    border: 0px solid rgba(0, 0, 0, 0) !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
+    border-radius: 0px !important;
   }
+}
 
-  // th:first-child .vs-table-text {
-  //   justify-content: center !important;
-  //   cursor: pointer;
-  // }
-  .vs-table--thead {
-    background-color: #32304e;
-    color: #fff;
+.sidebar-custom > .vs-sidebar-primary {
+  max-width: 400px !important;
+}
+
+// th:first-child .vs-table-text {
+//   justify-content: center !important;
+//   cursor: pointer;
+// }
+.vs-table--thead {
+  background-color: #32304e;
+  color: #fff;
+}
+
+.vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
+  padding: 10px 15px !important;
+}
+
+.product-img {
+  width: 150px !important;
+  // width: 100px !important;
+}
+
+.th .sort-th,
+th .vs-table-text {
+  justify-content: center !important;
+}
+
+.place-order {
+  position: sticky;
+  top: 900px;
+
+  background: #c4c4c4;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
+    inset 0px -3px 5px rgba(0, 0, 0, 0.38);
+  border-radius: 7px;
+}
+
+// table card styles
+.table-card {
+  margin: 4px 0 4px 12px;
+  width: 387px;
+  height: auto;
+  left: 1517px;
+  top: 258px;
+
+  background: #ffffff;
+  border: 1px solid #c4c4c4;
+  box-sizing: border-box;
+  border-radius: 9px;
+}
+
+// restaurant table styles
+.restaurant-tables {
+  width: 89px;
+  height: 63px;
+  left: 1544px;
+  top: 283px;
+
+  background: #ffffff;
+  border: 2px solid #c4c4c4;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+
+  // table number styles
+  .table-no {
+    width: 56.97px;
+    height: 59px;
   }
-
-  .vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
-    padding: 10px 15px !important;
-  }
-
-  .product-img {
-    width: 150px !important;
-    // width: 100px !important;
-  }
-
-  .th .sort-th,
-  th .vs-table-text {
-    justify-content: center !important;
-  }
-
-  .place-order {
-    position: sticky;
-    top: 900px;
-
-    background: #c4c4c4;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
-      inset 0px -3px 5px rgba(0, 0, 0, 0.38);
-    border-radius: 7px;
-  }
-
-  // table card styles
-  .table-card {
-    margin: 4px 0 4px 12px;
-    width: 387px;
-    height: auto;
-    left: 1517px;
-    top: 258px;
-
-    background: #ffffff;
-    border: 1px solid #c4c4c4;
-    box-sizing: border-box;
-    border-radius: 9px;
-  }
-
-  // restaurant table styles
-  .restaurant-tables {
-    width: 89px;
-    height: 63px;
-    left: 1544px;
-    top: 283px;
-
-    background: #ffffff;
-    border: 2px solid #c4c4c4;
-    box-sizing: border-box;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 5px;
-
-    // table number styles
-    .table-no {
-      width: 56.97px;
-      height: 59px;
-    }
-  }
+}
 </style>
 
