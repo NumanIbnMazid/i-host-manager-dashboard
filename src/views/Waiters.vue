@@ -268,7 +268,7 @@
         <div class="w-full">
           <vs-input
             icon-pack="feather"
-            icon="icon-lock"
+            icon="icon-credit-card"
             label="Nid"
             v-model="user.nid"
             class="mt-5 w-full"
@@ -281,11 +281,11 @@
         <div class="w-full">
           <vs-input
             icon-pack="feather"
-            icon="icon-lock"
+            icon="icon-clock"
             label="Shift Start"
             v-model="user.shift_start"
             class="mt-5 w-full"
-            type="text"
+            type="time"
             v-validate="'required'"
           />
         </div>
@@ -294,11 +294,11 @@
         <div class="w-full">
           <vs-input
             icon-pack="feather"
-            icon="icon-lock"
+            icon="icon-clock"
             label="Shift End"
             v-model="user.shift_end"
             class="mt-5 w-full"
-            type="text"
+            type="time"
             v-validate="'required'"
           />
         </div>
@@ -310,8 +310,6 @@
     </vs-popup>
   </div>
 </template>
-
-
 <script>
 import axios from "@/axios.js";
 export default {
@@ -424,7 +422,7 @@ export default {
               });
             }
           } else {
-            console.log('added waiter res ', res)
+            console.log("added waiter res ", res);
             this.waiters.push(res.data.data);
             this.popupActive = false;
             this.user.first_name = "";
@@ -510,7 +508,8 @@ export default {
           console.log("sures ", res);
         })
         .catch((err) => {
-          console.log("errSu ", err.response);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
         });
     },
 

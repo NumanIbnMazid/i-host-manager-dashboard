@@ -412,7 +412,7 @@ export default {
 
       return new Promise((resolve, reject) => {
         axios
-          .post("restaurant_management/food/", formData, {
+          .post("restaurant_management/dashboard/food/", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -444,7 +444,7 @@ export default {
 
       return new Promise((resolve, reject) => {
         axios
-          .patch(`restaurant_management/food/${this.food.id}/`, formData, {
+          .patch(`restaurant_management/dashboard/food/${this.food.id}/`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -463,7 +463,7 @@ export default {
       if (this.is_single == "true") {
         return new Promise((resolve, reject) => {
           axios
-            .post("restaurant_management/food_option/", {
+            .post("restaurant_management/dashboard/food_option/", {
               name: "Default",
               price: this.single_price,
               food: this.food.id,
@@ -497,7 +497,7 @@ export default {
 
     addFoodOption() {
       axios
-        .post("restaurant_management/food_option/", {
+        .post("restaurant_management/dashboard/food_option/", {
           name: this.temp_options.name,
           price: this.temp_options.price,
           food: this.food.id,
@@ -520,7 +520,7 @@ export default {
     },
     removeFoodOption(id) {
       axios
-        .delete(`restaurant_management/food_option/${id}`)
+        .delete(`restaurant_management/dashboard/food_option/${id}`)
         .then((res) => {
           if (res.data.status) {
             let options = { ...this.options };
@@ -539,7 +539,7 @@ export default {
     },
     addFoodExtra() {
       axios
-        .post("restaurant_management/food_extra/", {
+        .post("restaurant_management/dashboard/food_extra/", {
           name: this.temp_extra.name,
           price: this.temp_extra.price,
           food: this.food.id,
@@ -563,7 +563,7 @@ export default {
 
     removeFoodExtra(id) {
       axios
-        .delete(`restaurant_management/food_extra/${id}`)
+        .delete(`restaurant_management/dashboard/food_extra/${id}`)
         .then((res) => {
           if (res.data.status) {
             let extras = { ...this.extras };
@@ -584,7 +584,7 @@ export default {
     /** Get all category */
     getCatgory() {
       axios
-        .get(`restaurant_management/food_category/`)
+        .get(`restaurant_management/dashboard/food_category/`)
         .then((res) => {
           console.log(res);
           this.allcategorys = res.data.data;
@@ -597,7 +597,7 @@ export default {
     /** Get all option type */
     getAllOptionsType() {
       axios
-        .get("restaurant_management/food_option_type/")
+        .get("restaurant_management/dashboard/food_option_type/")
         .then((res) => {
           console.log(res);
           this.optionsTypes = res.data.data;
@@ -610,7 +610,7 @@ export default {
     /** Get all option type */
     getAllExtrasType() {
       axios
-        .get("restaurant_management/food_extra_type/")
+        .get("restaurant_management/dashboard/food_extra_type/")
         .then((res) => {
           console.log(res);
           this.extrasTypes = res.data.data;

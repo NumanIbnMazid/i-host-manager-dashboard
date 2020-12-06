@@ -7,84 +7,12 @@
     spacer
     v-model="active"
   >
-    <div class="header-sidebar md:flex" slot="header">
-      <div class="md:flex bg-white rounded-lg px-6 py-3 w-full">
-        <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
-          <img
-            class="h-16 w-16 md:h-12 md:w-12 rounded-full mx-auto md:mx-0 md:mr-6 shadow-md"
-            :src="staff_info.image"
-          />
-          <vs-dropdown-menu class="vx-navbar-dropdown">
-            <ul style="min-width: 9rem">
-              <li
-                class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
-                @click="profilePage"
-              >
-                <feather-icon icon="SettingsIcon" svgClasses="w-4 h-4" />
-                <span class="ml-2">Settings</span>
-              </li>
-
-              <li
-                class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"
-                @click="logout"
-              >
-                <feather-icon icon="LogOutIcon" svgClasses="w-4 h-4" />
-                <span class="ml-2">Logout</span>
-              </li>
-            </ul>
-          </vs-dropdown-menu>
-        </vs-dropdown>
-        <div class="text-center md:text-left my-auto w-full">
-          <h6>{{ user.first_name }}</h6>
-          <p class="text-sm">{{ staff_info.is_owner ? "Owner" : "Manager" }}</p>
-        </div>
-
-        <div class="text-right md:text-right float-right my-auto w-full">
-          <vs-dropdown
-            vs-custom-content
-            vs-trigger-click
-            class="cursor-pointer"
-            badge="4"
-          >
-            <feather-icon
-              icon="BellIcon"
-              class="cursor-pointer mt-1 sm:mr-6 mr-2"
-            />
-
-            <vs-dropdown-menu
-              class="notification-dropdown dropdown-custom vx-navbar-dropdown"
-            >
-              <div
-                class="notification-top text-center p-5 bg-primary text-white"
-              >
-                <h3 class="text-white">8 New</h3>
-                <p class="opacity-75">App Notifications</p>
-              </div>
-
-              <component
-                :is="scrollbarTag"
-                ref="mainSidebarPs"
-                class="scroll-area--nofications-dropdown p-0 mb-10"
-                :key="$vs.rtl"
-              >
-                <ul class="bordered-items"></ul>
-              </component>
-
-              <div
-                class="checkout-footer fixed bottom-0 rounded-b-lg text-primary w-full p-2 font-semibold text-center border border-b-0 border-l-0 border-r-0 border-solid d-theme-border-grey-light cursor-pointer"
-              >
-                <span>View All Notifications</span>
-              </div>
-            </vs-dropdown-menu>
-          </vs-dropdown>
-        </div>
-      </div>
-    </div>
-
+    <!-- user profile and notification -->
+    <UserProfile />
 
     <vs-sidebar-item index="1">
       <div class="mx-10 py-4 w-full text-center bg-primary rounded shadow-md">
-        <h1 class="text-white">{{total_sell}} ৳</h1>
+        <h1 class="text-white">{{ total_sell }} ৳</h1>
         <p class="text-ihosts"><b> Total Sell Today </b></p>
       </div>
     </vs-sidebar-item>
@@ -140,7 +68,12 @@
 <script>
 import axios from "@/axios.js";
 import moment from "moment";
+
+import UserProfile from "../../views/UserProfile";
 export default {
+  components: {
+    UserProfile,
+  },
   data: () => ({
     staff_info: JSON.parse(localStorage.getItem("staff_info")),
     user: JSON.parse(localStorage.getItem("user")),
@@ -155,7 +88,7 @@ export default {
     getTodaysTotalSell() {
       axios
         .get(
-          `/restaurant_management/restaurant/${this.resturent_id}/today_sell/`
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/today_sell/`
         )
         .then((res) => {
           if (res.data.status) {
@@ -176,7 +109,7 @@ export default {
     getOrderItemList() {
       axios
         .get(
-          `/restaurant_management/restaurant/${this.resturent_id}/order_item_list/`
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/order_item_list/`
         )
         .then((res) => {
           console.log("r ", res);
@@ -270,11 +203,11 @@ export default {
   }
 
   /* table.order-table tbody tr {
-                    padding: 6px 4px;
-                    border-top: 1px solid #ddd;
-                    border-bottom: 1px solid #ddd;
-                    margin: 10px 0px !important;
-                  } */
+                        padding: 6px 4px;
+                        border-top: 1px solid #ddd;
+                        border-bottom: 1px solid #ddd;
+                        margin: 10px 0px !important;
+                      } */
 
   .order-box {
     padding: 5px 0px;

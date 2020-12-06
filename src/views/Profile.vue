@@ -368,7 +368,7 @@ export default {
 
       axios
         .patch(
-          `/restaurant_management/restaurant/${this.resturent_id}/`,
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/`,
           formData,
           {
             headers: {
