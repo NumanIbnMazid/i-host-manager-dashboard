@@ -108,6 +108,7 @@ export default {
         });
 
       window.location.href = "/login";
+      location.reload();
     },
   },
 };
