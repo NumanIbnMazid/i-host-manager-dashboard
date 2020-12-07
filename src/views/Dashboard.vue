@@ -844,7 +844,7 @@ export default {
     // adding food order to order cart
     addOrderedItems(orderId, status) {
       axios
-        .post("/restaurant_management/dashboard/dashboard/order/cart/items/", [
+        .post("/restaurant_management/dashboard/order/cart/items/", [
           {
             quantity: this.quantity,
             status,
