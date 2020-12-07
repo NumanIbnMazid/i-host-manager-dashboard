@@ -324,7 +324,10 @@
               v-model="selectedOption"
               :options="foodOptions"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
-            />
+              ><template v-if="!selectedFood" #no-options="{}">
+                <span class="text-danger"> Please select food first. </span>
+              </template></v-select
+            >
           </div>
 
           <div class="vx-col w-3/12 pl-0 ml-0 mb-4 mr-0 pr-1">
@@ -491,6 +494,7 @@
       :active.sync="markAsServedPopup"
     >
       <!-- food select form -->
+      <!-- food select form -->
       <div class="food-select-form">
         <div class="vx-row text-sm">
           <div class="vx-col w-3/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
@@ -514,7 +518,7 @@
               v-model="selectedOption"
               :options="foodOptions"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
-              ><template #no-options="{}">
+              ><template v-if="!selectedFood" #no-options="{}">
                 <span class="text-danger"> Please select food first. </span>
               </template></v-select
             >
@@ -804,7 +808,9 @@ export default {
     // getting food names
     getFoodNames() {
       axios
-        .get(`/restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`)
+        .get(
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
+        )
         .then((res) => {
           console.log("foods ", res);
           if (res.data.status) this.foods = res.data.data;
@@ -1020,11 +1026,12 @@ export default {
       }
     },
 
-
     createInvoice(order_id) {
       // this.printRecipt(order_id);
       axios
-        .post("/restaurant_management/dashboard/order/create_invoice/", { order_id })
+        .post("/restaurant_management/dashboard/order/create_invoice/", {
+          order_id,
+        })
         .then((res) => {
           if (res.data.status) {
             this.ordersData = this.ordersData.map((order) =>
@@ -1041,7 +1048,9 @@ export default {
 
     collectOrdersPayment(order_id) {
       axios
-        .post("/restaurant_management/dashboard/order/confirm_payment/", { order_id })
+        .post("/restaurant_management/dashboard/order/confirm_payment/", {
+          order_id,
+        })
         .then((res) => {
           // printRecipt(res.data.data);
           if (res.data.status) {
@@ -1114,7 +1123,9 @@ export default {
 
     cancelOrder(order_id) {
       axios
-        .post("/restaurant_management/dashboard/order/cancel_order/", { order_id })
+        .post("/restaurant_management/dashboard/order/cancel_order/", {
+          order_id,
+        })
         .then((res) => {
           if (res.data.status) {
             this.ordersData = this.ordersData.map((order) =>
@@ -1746,21 +1757,21 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 </style>
 
