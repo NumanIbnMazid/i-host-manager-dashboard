@@ -99,17 +99,38 @@
                       </vs-td>
 
                       <vs-td>
-                        <feather-icon
-                          icon="EditIcon"
-                          svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                          @click="$router.push(`/food/edit/${tr.id}`)"
-                        />
-                        <feather-icon
-                          icon="TrashIcon"
-                          svgClasses="w-5 h-5 hover:text-danger stroke-current"
-                          class="ml-2"
-                          @click="confirmAction(deleteFood, [tr.id])"
-                        />
+                        <div class="flex" v-if="!checkIfCart(tr)">
+                          <vs-button
+                            color="primary"
+                            type="border"
+                            icon-pack="feather"
+                            icon="icon-plus"
+                            class="w-full"
+                            @click="itemAddToCart(tr)"
+                            >Add {{checkIfCart(item)}}</vs-button
+                          >
+                        </div>
+
+                        <div v-else class="flex">
+                          <vs-button
+                            color="primary"
+                            type="border"
+                            icon-pack="feather"
+                            icon="icon-plus"
+                          > {{checkIfCart(item)}}</vs-button>
+                         
+                          <vs-input
+                            class="px-1"
+                            :value="checkIfCart(item).qty"
+                            disabled
+                          ></vs-input>
+                          <vs-button
+                            color="primary"
+                            type="border"
+                            icon-pack="feather"
+                            icon="icon-minus"
+                          ></vs-button>
+                        </div>
                       </vs-td>
                     </vs-tr>
                   </tbody>
@@ -312,6 +333,7 @@ export default {
     search: "",
     tables: [],
     categories: [],
+    itemsCarts: [],
     slectedCategory: "",
     isDinein: false,
     isTakeOut: true,
@@ -365,6 +387,21 @@ export default {
     allItem() {
       this.slectedCategory = "";
       this.getFood();
+    },
+
+    itemAddToCart(item) {
+      let theitem = this.itemsCarts.filter((arr) => arr.id == item.id);
+      console.log(theitem);
+      if (theitem.length == 0) {
+        item["qty"] = 1;
+        this.itemsCarts.push(item);
+      }
+    },
+
+    checkIfCart(item) {
+      let theitem = this.itemsCarts.find((arr) => arr == item);
+      console.log(theitem);
+      return theitem ? theitem : false;
     },
 
     getFood() {
