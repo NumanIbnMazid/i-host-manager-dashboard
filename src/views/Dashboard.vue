@@ -324,7 +324,7 @@
               v-model="selectedOption"
               :options="foodOptions"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
-              ><template #no-options="{}">
+              ><template v-if="!selectedFood" #no-options="{}">
                 <span class="text-danger"> Please select food first. </span>
               </template></v-select
             >
@@ -518,7 +518,7 @@
               v-model="selectedOption"
               :options="foodOptions"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
-              ><template #no-options="{}">
+              ><template v-if="!selectedFood" #no-options="{}">
                 <span class="text-danger"> Please select food first. </span>
               </template></v-select
             >

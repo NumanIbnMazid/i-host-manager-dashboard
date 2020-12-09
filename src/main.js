@@ -125,7 +125,7 @@ const plugin = {
                 showCancelButton: true,
                 confirmButtonColor: "#32304e",
                 cancelButtonColor: "#d33",
-                confirmButtonText: text ? text : "Yes, delete it!"
+                confirmButtonText: text ? text : "Yes!"
             }).then(result => {
                 if (result.isConfirmed) {
                     if (args !== "") acceptFunc.apply(this, args);
