@@ -94,7 +94,7 @@
                           class="product-name font-medium truncate"
                           :title="tr.ingredients"
                         >
-                          {{ tr.ingredients }}
+                          {{ tr.ingredients }} 
                         </p>
                       </vs-td>
 
