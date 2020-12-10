@@ -56,7 +56,7 @@
         </div>
 
         <template slot="thead">
-          <vs-th>Sl</vs-th>
+          <!-- <vs-th>Sl</vs-th> -->
           <vs-th>Waiter Details</vs-th>
           <vs-th>Assigned Tables</vs-th>
           <vs-th>Action</vs-th>
@@ -65,65 +65,74 @@
         <template slot-scope="{ data }">
           <tbody>
             <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
+              <!-- <vs-td style="width: fixed;">
                 <p class="product-name font-medium truncate text-center">
                   {{ itemsPerPage * (currentPage - 1) + indextr + 1 }}
                 </p>
-              </vs-td>
+              </vs-td> -->
               <vs-td class="img-container">
                 <div class="md:w-8/12 sm:w-12/12">
                   <div class="vx-row">
                     <!-- Avatar Col -->
-                    <div class="vx-col" id="avatar-col">
+                    <div class="vx-col flex" id="avatar-col">
                       <div class="img-container mb-4">
                         <img
                           :src="tr.image"
                           class="product-img"
-                          style="height: 60px"
+                          style="
+                            height: 126px;
+                            width: 126px;
+                            border-radius: 9px;
+                            box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.39);
+                          "
                         />
                       </div>
-                    </div>
 
-                    <!-- Information - Col 1 -->
-                    <div class="vx-col" id="account-info-col-1">
-                      <table>
-                        <tr>
-                          <td class="font-semibold">Name</td>
-                          <td>{{ tr.user.first_name }}</td>
-                        </tr>
+                      <!-- Information - Col 1 -->
+                      <div class="ml-8" id="account-info-col-1">
+                        <div class="waiter-name">
+                          <strong>Name : </strong>
+                          {{ tr.user.first_name }}
+                        </div>
 
-                        <tr>
-                          <td class="font-semibold">Phone</td>
-                          <td>{{ tr.user.phone }}</td>
-                        </tr>
+                        <div class="waiter-phone" :title="tr.user.phone">
+                          <strong>Phone : </strong>
+                          {{
+                            tr.user.phone.length > 5
+                              ? tr.user.phone.substr(0, 5) + "..."
+                              : tr.user.phone
+                          }}
+                        </div>
 
-                        <tr>
-                          <td class="font-semibold">Email</td>
-                          <td>{{ tr.email }}</td>
-                        </tr>
+                        <div class="waiter-email">
+                          <strong>Email : </strong>
+                          {{ tr.user.email }}
+                        </div>
 
-                        <tr>
-                          <td class="font-semibold">Shift Start</td>
-                          <td>{{ tr.shift_start }}</td>
-                        </tr>
+                        <div class="waiter-shift-start">
+                          <strong>Shift Start : </strong>
+                          {{ tr.user.shift_start }}
+                        </div>
 
-                        <tr>
-                          <td class="font-semibold">Shift End</td>
-                          <td>{{ tr.shift_end }}</td>
-                        </tr>
+                        <div class="waiter-shift-end">
+                          <strong>Shift End : </strong>
+                          {{ tr.user.shift_end }}
+                        </div>
 
-                        <tr>
-                          <td class="font-semibold">NID</td>
-                          <td>{{ tr.nid }}</td>
-                        </tr>
-                      </table>
+                        <div class="waiter-nid">
+                          <strong>NID : </strong>
+                          {{ tr.user.nid }}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </vs-td>
+<!-- style="width: 486px;" -->
+<!-- style="width: 261px;" -->
+              <vs-td style="width: fixed;">
+                <div class="grid gap-x-8 gap-y-4 grid-cols-3">
 
-              <vs-td>
-                <div class="flex">
                   <div
                     class="waiter-table mr-2"
                     v-for="(table, index) in tr.tables"
@@ -156,6 +165,8 @@
                       </p>
                     </div>
                   </div>
+
+                  
                 </div>
               </vs-td>
 
@@ -587,5 +598,13 @@ export default {
 
   .table-number {
     color: #f8b843;
+  }
+
+  .waiter-info {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 27px;
   }
 </style>
