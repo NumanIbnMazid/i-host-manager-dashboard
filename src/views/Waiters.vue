@@ -130,8 +130,9 @@
               </vs-td>
 <!-- style="width: 486px;" -->
 <!-- style="width: 261px;" -->
-              <vs-td style="width: fixed;">
-                <div class="grid gap-x-8 gap-y-4 grid-cols-3">
+              <vs-td>
+                <!-- <div class="grid gap-x-8 gap-y-4 grid-cols-3"> -->
+                <div class="flex flex-wrap">
 
                   <div
                     class="waiter-table mr-2"
