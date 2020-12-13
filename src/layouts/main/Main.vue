@@ -161,7 +161,7 @@
       </div>
       <the-footer />
     </div>
-    <Orderbar v-if="$router.currentRoute.path != '/neworder'" />
+    <Orderbar v-if="isDashboardOrRestaurent()" />
   </div>
 </template>
 
@@ -287,6 +287,11 @@ export default {
         this.$store.commit("TOGGLE_IS_VERTICAL_NAV_MENU_ACTIVE", true);
       }
     },
+
+    isDashboardOrRestaurent () {
+      if (this.$router.currentRoute.path === '/' || this.$router.currentRoute.path === '/order' ) return true;
+      return false;
+    }
   },
   created() {
     const color =
