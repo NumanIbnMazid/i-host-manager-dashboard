@@ -114,6 +114,12 @@ const router = new Router({
                     name: "new-order",
                     component: () =>
                         import ("@/views/NewOrder.vue")
+                },
+                {
+                    path: "/test",
+                    name: "test",
+                    component: () =>
+                        import ("@/views/Test.vue")
                 }
             ]
         },

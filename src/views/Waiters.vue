@@ -98,9 +98,7 @@
                         <div class="waiter-phone" :title="tr.user.phone">
                           <strong>Phone : </strong>
                           {{
-                            tr.user.phone.length > 5
-                              ? tr.user.phone.substr(0, 5) + "..."
-                              : tr.user.phone
+                           tr.user.phone
                           }}
                         </div>
 
@@ -224,7 +222,7 @@
                 icon-pack="feather"
                 icon="icon-edit"
                 @click="$refs.logoInput.click()"
-                >Change restaurants logo</vs-button
+                >Upload waiter image</vs-button
               >
             </div>
           </div>

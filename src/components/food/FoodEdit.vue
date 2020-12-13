@@ -23,24 +23,47 @@
               accept="image/*"
             />
             <div
-              class="vx-col mx-auto w-full rounded flex justify-center items-center"
+              class="vx-col mx-auto w-full rounded flex justify-center items-center text-cnter"
               style="border: 1px solid #ddd; height: 250px"
             >
-              <img v-if="preview" :src="preview" class="w-full" alt="img" />
-              <span v-else
-                >Category Image <br />
+              <img
+                v-if="!tempImage"
+                :src="preview"
+                style="height: 250px !important"
+                class="w-full"
+                alt="img"
+              />
+
+              <vue-cropper
+                v-else
+                class="w-full"
+                style="border: 1px solid #ddd; height: 250px"
+                ref="cropper"
+                :src="tempImage"
+                :guides="true"
+              ></vue-cropper>
+
+              <!-- <span class="text-center" v-else
+                >Food Image <br />
                 (300px*200px)</span
-              >
+              > -->
             </div>
             <vs-row>
-              <!-- <vs-button
-                v-if="!image"
+              <vs-button
+                v-if="!image && !preview"
                 class="vx-col mx-auto w-full mt-2"
                 @click="$refs.newImgInput.click()"
                 >Upload Image</vs-button
-              > -->
+              >
 
               <vs-button
+                v-else-if="tempImage"
+                class="vx-col mx-auto w-full mt-2"
+                @click="cropImage()"
+                >Crop Image</vs-button
+              >
+              <vs-button
+                v-else
                 class="vx-col mx-auto w-full mt-2"
                 color="danger"
                 @click="$refs.newImgInput.click()"
@@ -350,12 +373,15 @@ import axios from "@/axios.js";
 import vSelect from "vue-select";
 import { FormWizard, TabContent } from "vue-form-wizard";
 import "vue-form-wizard/dist/vue-form-wizard.min.css";
+import VueCropper from "vue-cropperjs";
+import "cropperjs/dist/cropper.css";
 
 export default {
   components: {
     FormWizard,
     TabContent,
     vSelect,
+    VueCropper,
   },
   data() {
     return {
@@ -364,9 +390,10 @@ export default {
       description: "",
       ingredients: "",
       image: "",
+      preview: "",
+      tempImage: "",
       is_top: "0",
       is_recommended: "false",
-      preview: "",
       category: "",
       food: {},
       is_single: "yes",
@@ -391,6 +418,11 @@ export default {
     };
   },
   methods: {
+    cropImage() {
+      this.image = this.$refs.cropper.getCroppedCanvas().toDataURL();
+      this.preview = this.$refs.cropper.getCroppedCanvas().toDataURL();
+      this.tempImage = "";
+    },
     newImgAdd(input) {
       if (input.target.files && input.target.files[0]) {
         const reader = new FileReader();
@@ -399,14 +431,17 @@ export default {
         reader.onload = (e) => {
           let img = new Image();
           img.src = e.target.result;
-          img.onload = () => {
-            if (img.width !== 300 && img.height !== 200) {
-              alert("Image size must be 300px*200px");
-            } else {
-              this.image = input.target.files[0];
-              this.preview = e.target.result;
-            }
-          };
+          // img.onload = () => {
+          // if (img.width !== 300 && img.height !== 200) {
+          //   alert("Image size must be 300px*200px");
+          // } else {
+          // this.image = input.target.files[0];
+          this.preview = e.target.result;
+          this.image = "";
+          this.tempImage = e.target.result;
+          this.$refs.cropper.replace(e.target.result);
+          // }
+          // };
         };
       }
     },

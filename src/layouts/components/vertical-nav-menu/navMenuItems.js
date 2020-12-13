@@ -8,13 +8,13 @@ export default [{
         url: "/order",
         name: "Orders",
         slug: "home",
-        icon: "BoxIcon",
+        icon: "ShoppingCartIcon",
     },
     {
         url: "/restaurant",
         name: "Restaurant",
         slug: "resturent",
-        icon: "ShoppingCartIcon",
+        icon: "BoxIcon",
     },
     {
         url: "/waiter",

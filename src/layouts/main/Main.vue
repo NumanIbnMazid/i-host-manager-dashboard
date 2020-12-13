@@ -17,9 +17,13 @@
     <div
       id="content-area"
       :class="[
+<<<<<<< HEAD
         $router.currentRoute.path === '/neworder'
           ? 'content-area-alt'
           : contentAreaClass,
+=======
+        !isDashboardOrRestaurent() ? 'content-area-alt' : contentAreaClass,
+>>>>>>> e25c60b76f7fe0558057b0741902487bc1dc110b
         { 'show-overlay': bodyOverlay },
       ]"
     >
@@ -289,12 +293,8 @@ export default {
       }
     },
 
-    isDashboardOrRestaurent() {
-      if (
-        this.$router.currentRoute.path === "/" ||
-        this.$router.currentRoute.path === "/order"
-      )
-        return true;
+    isDashboardOrRestaurent () {
+      if (this.$router.currentRoute.path === '/' || this.$router.currentRoute.path === '/order' || this.$router.currentRoute.path === '/restaurant' ) return true;
       return false;
     },
   },
