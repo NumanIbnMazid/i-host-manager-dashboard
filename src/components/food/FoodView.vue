@@ -94,28 +94,37 @@
             </vs-td>
 
             <vs-td>
-              <p
-                class="product-name font-medium truncate"
-                :title="tr.description"
-              >
-                {{ tr.description }}
-              </p>
+              <vx-tooltip :text="tr.description" position="bottom">
+                <p class="product-name font-medium truncate">
+                  {{
+                    tr.description.length > 10
+                      ? tr.description.substr(0, 10) + "..."
+                      : tr.description
+                  }}
+                </p>
+              </vx-tooltip>
             </vs-td>
 
             <vs-td class="text-center">
-              <p
-                class="product-name font-medium truncate"
-                :title="tr.ingredients"
-              >
-                {{ tr.ingredients }}
-              </p>
+              <vx-tooltip :text="tr.ingredients" position="bottom">
+                <p class="product-name font-medium truncate">
+                  {{
+                    tr.ingredients.length > 10
+                      ? tr.ingredients.substr(0, 10) + "..."
+                      : tr.ingredients
+                  }}
+                </p>
+              </vx-tooltip>
             </vs-td>
 
             <vs-td class="text-center">
-              <vs-chip v-for="(opt, i) in tr.food_options" :key="i">
-                <b>{{ opt.option_type.name }}: </b>
-                {{ opt.name }}</vs-chip
-              >
+              <span v-for="(opt, i) in tr.food_options" :key="i">
+                <vs-chip>
+                  <b>{{ opt.option_type.name }}: </b>
+                  {{ opt.name }}</vs-chip
+                >
+                <br />
+              </span>
             </vs-td>
 
             <vs-td class="text-center">
@@ -284,7 +293,9 @@ export default {
     },
     getFood() {
       axios
-        .get(`restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`)
+        .get(
+          `restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
+        )
         .then((res) => {
           console.log("food ", res);
           this.foods = res.data.data;

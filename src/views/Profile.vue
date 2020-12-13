@@ -6,8 +6,11 @@
       <h3 class="text-center mb-4 pb-4">{{ resturent.name }}</h3>
 
       <!-- Avatar -->
-      <div class="md:w-8/12 sm:w-12/12 lg:w-4/12 mx-auto" style="border: 1px solid grey;">
-      <!-- <div class="md:w-8/12 sm:w-12/12 lg:w-4/12 mx-auto border-dashed border-4 border-light-blue-500"> -->
+      <div
+        class="md:w-8/12 sm:w-12/12 lg:w-4/12 mx-auto rounded"
+        style="border: 1px solid grey"
+      >
+        <!-- <div class="md:w-8/12 sm:w-12/12 lg:w-4/12 mx-auto border-dashed border-4 border-light-blue-500"> -->
         <div class="vx-row">
           <!-- Avatar Col -->
           <div class="vx-col mx-auto mt-4" id="avatar-col">
@@ -122,7 +125,7 @@
                     icon-pack="feather"
                     icon="icon-edit"
                     @click="$refs.logoInput.click()"
-                    >Change restaurants logo</vs-button
+                    >Change Restaurant Logo</vs-button
                   >
                 </div>
               </div>
@@ -264,6 +267,7 @@
                     icon-pack="feather"
                     icon="icon-save"
                     class="mr-3 mb-2"
+                    color="success"
                     @click="
                       confirmAction(updateRestaurantGo, '', 'Confirm change?')
                     "
@@ -273,6 +277,7 @@
                     icon-pack="feather"
                     icon="icon-delete"
                     class="mr-3 mb-2"
+                    color="danger"
                     @click="showEditField = !showEditField"
                     >Cancel</vs-button
                   >

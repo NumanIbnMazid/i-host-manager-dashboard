@@ -18,7 +18,7 @@
 
     <div class="vx-row">
       <div
-        class="vx-col sm:w-2/12 w-full mb-2 p-2"
+        class="vx-col sm:w-3/12 w-full mb-2 p-2"
         v-for="(table, i) in tables"
         :key="i"
       >
@@ -98,13 +98,13 @@
 
                   <!-- action buttons -->
                   <div class="vx-row w-full m-0" style="width: 100% !important">
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/5">
+                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/5 ml-4">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
                         icon="icon-printer"
                         type="gradient"
-                        class="mt-2 lg:mr-1 md:mr-0 sm:mr-0 w-full"
+                        class="mt-2 lg:mr-2 md:mr-0 sm:mr-0 w-full"
                         @click="printQr(table.id)"
                       ></vs-button>
                     </div>

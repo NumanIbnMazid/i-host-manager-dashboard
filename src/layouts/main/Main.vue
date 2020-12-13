@@ -17,7 +17,7 @@
     <div
       id="content-area"
       :class="[
-        $router.currentRoute.path === '/neworder' ? 'content-area-alt' : contentAreaClass,
+        !isDashboardOrRestaurent() ? 'content-area-alt' : contentAreaClass,
         { 'show-overlay': bodyOverlay },
       ]"
     >
@@ -289,7 +289,7 @@ export default {
     },
 
     isDashboardOrRestaurent () {
-      if (this.$router.currentRoute.path === '/' || this.$router.currentRoute.path === '/order' ) return true;
+      if (this.$router.currentRoute.path === '/' || this.$router.currentRoute.path === '/order' || this.$router.currentRoute.path === '/restaurant' ) return true;
       return false;
     }
   },
