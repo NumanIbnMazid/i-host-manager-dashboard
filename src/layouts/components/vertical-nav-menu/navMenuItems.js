@@ -5,6 +5,12 @@ export default [{
         icon: "HomeIcon",
     },
     {
+        url: "/order",
+        name: "Order",
+        slug: "home",
+        icon: "HomeIcon",
+    },
+    {
         url: "/restaurant",
         name: "Restaurant",
         slug: "resturent",
