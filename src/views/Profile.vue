@@ -1,19 +1,24 @@
 <template>
   <div>
     <!-- restaurent info -->
-    <vx-card :title="resturent.name" class="mb-base" v-show="!showEditField">
+    <vx-card class="mb-base" v-show="!showEditField">
+      <!-- restaurent name -->
+      <h3 class="text-center mb-4 pb-4">{{ resturent.name }}</h3>
+
       <!-- Avatar -->
-      <div class="md:w-8/12 sm:w-12/12 mx-auto">
+      <div class="md:w-8/12 sm:w-12/12 mx-auto border-solid">
         <div class="vx-row">
           <!-- Avatar Col -->
-          <div class="vx-col" id="avatar-col">
+          <div class="vx-col mx-auto mt-2" id="avatar-col">
             <div class="img-container mb-4">
               <img :src="logo" class="rounded" style="width: 250px" />
             </div>
           </div>
+        </div>
 
+        <div class="vx-row">
           <!-- Information - Col 1 -->
-          <div class="vx-col flex-1" id="account-info-col-1">
+          <div class="vx-col pl-4 mx-auto" id="account-info-col-1">
             <table>
               <tr>
                 <td class="font-semibold">Name</td>
@@ -258,7 +263,9 @@
                     icon-pack="feather"
                     icon="icon-save"
                     class="mr-3 mb-2"
-                    @click="confirmAction(updateRestaurantGo , '', 'Confirm change?')"
+                    @click="
+                      confirmAction(updateRestaurantGo, '', 'Confirm change?')
+                    "
                     >Save Change</vs-button
                   >
                   <vs-button
