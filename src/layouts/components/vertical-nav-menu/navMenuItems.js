@@ -6,9 +6,9 @@ export default [{
     },
     {
         url: "/order",
-        name: "Order",
+        name: "Orders",
         slug: "home",
-        icon: "HomeIcon",
+        icon: "BoxIcon",
     },
     {
         url: "/restaurant",
