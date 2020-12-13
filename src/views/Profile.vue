@@ -6,10 +6,11 @@
       <h3 class="text-center mb-4 pb-4">{{ resturent.name }}</h3>
 
       <!-- Avatar -->
-      <div class="md:w-8/12 sm:w-12/12 mx-auto border-solid">
+      <div class="md:w-8/12 sm:w-12/12 lg:w-4/12 mx-auto" style="border: 1px solid grey;">
+      <!-- <div class="md:w-8/12 sm:w-12/12 lg:w-4/12 mx-auto border-dashed border-4 border-light-blue-500"> -->
         <div class="vx-row">
           <!-- Avatar Col -->
-          <div class="vx-col mx-auto mt-2" id="avatar-col">
+          <div class="vx-col mx-auto mt-4" id="avatar-col">
             <div class="img-container mb-4">
               <img :src="logo" class="rounded" style="width: 250px" />
             </div>
@@ -18,7 +19,7 @@
 
         <div class="vx-row">
           <!-- Information - Col 1 -->
-          <div class="vx-col pl-4 mx-auto" id="account-info-col-1">
+          <div class="vx-col pl-4 mx-auto mb-4" id="account-info-col-1">
             <table>
               <tr>
                 <td class="font-semibold">Name</td>
