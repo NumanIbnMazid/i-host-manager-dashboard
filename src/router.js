@@ -21,6 +21,13 @@ const router = new Router({
                     beforeEnter: requireAuth
                 },
                 {
+                    path: "/order",
+                    name: "order",
+                    component: () =>
+                        import ("./views/Order.vue"),
+                    beforeEnter: requireAuth
+                },
+                {
                     path: "/page2",
                     name: "page-2",
                     component: () =>
