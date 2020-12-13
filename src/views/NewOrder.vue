@@ -13,6 +13,39 @@
           </div>
         </div>
 
+        <!-- list and grid btn -->
+        <vs-row>
+          <div class="grid-btns grid grid-cols-12 gap-4 w-full">
+            <!-- list btn -->
+            <vs-button
+              class="col-end-12 m-2 mr-0"
+              color="primary"
+              type="filled"
+              icon-pack="feather"
+              icon="icon-list"
+              @click="
+                isGrid = false;
+                isList = true;
+              "
+              >List</vs-button
+            >
+
+            <!-- grid btn -->
+            <vs-button
+              class="col-end-13 m-2 ml-0"
+              color="secondary"
+              type="filled"
+              icon-pack="feather"
+              icon="icon-grid"
+              @click="
+                isGrid = true;
+                isList = false;
+              "
+              >Grid</vs-button
+            >
+          </div>
+        </vs-row>
+
         <vs-row>
           <div class="w-2/12">
             <p class="text-center">Menu Categories</p>
@@ -58,7 +91,62 @@
                 @keypress="findFooitem()"
               ></vs-input>
 
-              <vs-table class="p-0" ref="table" :data="foods">
+              <!-- food grid view -->
+              <div id="demo-basic-card" class="mt-4" v-if="isGrid">
+                <div class="vx-row">
+                  <div
+                    class="vx-col w-full sm:w-1/2 md:w-1/3 lg:w-1/4 mb-base"
+                    v-for="(food, indextr) in foods"
+                    :key="indextr"
+                  >
+                    <vx-card>
+                      <div slot="no-body">
+                        <img
+                          style="height: 176px; width: 235px"
+                          :src="food.image"
+                          alt="content-img"
+                          class="responsive card-img-top"
+                        />
+                      </div>
+                      <vx-tooltip :text="food.name">
+                        <h5 class="mb-2 text-center">
+                          {{
+                            food.name.length > 11
+                              ? food.name.substr(0, 10) + "..."
+                              : food.name
+                          }}
+                        </h5>
+                      </vx-tooltip>
+                      <p class="text-grey text-center mb-2">
+                        <strong>Price : </strong> {{ food.price }}
+                      </p>
+                      <!-- <p class="text-grey">{{ "card_1.subtitle_2" }}</p> -->
+                      <div class="flex justify-between flex-wrap">
+                        <!-- <vs-button
+                          class="mt-4 mr-2 shadow-lg"
+                          type="gradient"
+                          color="#7367F0"
+                          gradient-color-secondary="#CE9FFC"
+                          >Download</vs-button
+                        > -->
+
+                        <vs-button
+                          color="primary"
+                          type="border"
+                          icon-pack="feather"
+                          icon="icon-plus"
+                          class="w-full"
+                          @click="itemAddToCart(food)"
+                          >Add</vs-button
+                        >
+                      </div>
+                    </vx-card>
+                  </div>
+                </div>
+              </div>
+
+              <!-- foods table view -->
+              <vs-table class="p-0" ref="table" :data="foods" v-if="isList">
                 <template slot="thead">
                   <vs-th class="text-center">Image</vs-th>
                   <vs-th>Name</vs-th>
@@ -94,7 +182,7 @@
                           class="product-name font-medium truncate"
                           :title="tr.ingredients"
                         >
-                          {{ tr.ingredients }} 
+                          {{ tr.ingredients }}
                         </p>
                       </vs-td>
 
@@ -107,7 +195,7 @@
                             icon="icon-plus"
                             class="w-full"
                             @click="itemAddToCart(tr)"
-                            >Add {{checkIfCart(item)}}</vs-button
+                            >Add</vs-button
                           >
                         </div>
 
@@ -117,11 +205,11 @@
                             type="border"
                             icon-pack="feather"
                             icon="icon-plus"
-                          > {{checkIfCart(item)}}</vs-button>
-                         
+                          ></vs-button>
+
                           <vs-input
                             class="px-1"
-                            :value="checkIfCart(item).qty"
+                            :value="checkIfCart(tr).qty"
                             disabled
                           ></vs-input>
                           <vs-button
@@ -206,17 +294,18 @@
                 </template>
 
                 <template>
-                  <vs-tr class="text-xs">
-                    <vs-td> Burger </vs-td>
+                  <vs-tr class="text-xs" v-for="item in itemsCarts" :key="item.id">
+                  <!-- <vs-tr class="text-xs"> -->
+                    <vs-td> {{item.name}} </vs-td>
 
                     <vs-td> Double patty </vs-td>
 
-                    <vs-td> 5 </vs-td>
+                    <vs-td> {{item.qty}} </vs-td>
 
-                    <vs-td> 25.00 </vs-td>
+                    <vs-td> {{item.price}} </vs-td>
                   </vs-tr>
 
-                  <vs-tr class="text-xs">
+                  <!-- <vs-tr class="text-xs">
                     <vs-td> Lemonda </vs-td>
 
                     <vs-td> Single patty </vs-td>
@@ -224,7 +313,7 @@
                     <vs-td> 6 </vs-td>
 
                     <vs-td> 30.00 </vs-td>
-                  </vs-tr>
+                  </vs-tr> -->
                 </template>
               </vs-table>
             </div>
@@ -335,6 +424,8 @@ export default {
     categories: [],
     itemsCarts: [],
     slectedCategory: "",
+    isGrid: false,
+    isList: true,
     isDinein: false,
     isTakeOut: true,
     slectedTable: null,
@@ -391,16 +482,18 @@ export default {
 
     itemAddToCart(item) {
       let theitem = this.itemsCarts.filter((arr) => arr.id == item.id);
-      console.log(theitem);
+      console.log('1 ', theitem);
       if (theitem.length == 0) {
         item["qty"] = 1;
         this.itemsCarts.push(item);
+
+        console.log('2 ', this.itemsCarts);
       }
     },
 
     checkIfCart(item) {
       let theitem = this.itemsCarts.find((arr) => arr == item);
-      console.log(theitem);
+      console.log('3 ', theitem);
       return theitem ? theitem : false;
     },
 
@@ -453,214 +546,214 @@ export default {
   },
 
   created() {
-    this.getTime();
     this.getFood();
     this.getCategorys();
+    this.getTime();
   },
 };
 </script>
 
 
 <style lang="scss" >
-#data-list-thumb-view-alt {
-  .vs-con-table {
-    .product-name {
-      max-width: 23rem;
-    }
+  #data-list-thumb-view-alt {
+    .vs-con-table {
+      .product-name {
+        max-width: 23rem;
+      }
 
-    .vs-table--header {
-      display: flex;
-      flex-wrap: wrap-reverse;
-      margin-left: 1.5rem;
-      margin-right: 1.5rem;
-      > span {
+      .vs-table--header {
         display: flex;
-        flex-grow: 1;
-      }
-
-      .vs-table--search {
-        padding-top: 0;
-
-        .vs-table--search-input {
-          padding: 0.9rem 2.5rem;
-          font-size: 1rem;
-
-          & + i {
-            left: 1rem;
-          }
-
-          &:focus + i {
-            left: 1rem;
-          }
+        flex-wrap: wrap-reverse;
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+        > span {
+          display: flex;
+          flex-grow: 1;
         }
-      }
-    }
 
-    .vs-table {
-      border-collapse: separate;
-      // border-spacing: 0 1.3rem;
-      // padding: 0 1rem;
+        .vs-table--search {
+          padding-top: 0;
 
-      tr {
-        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-        td {
-          padding: 10px;
-          &:first-child {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-          }
-          &:last-child {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-          }
-          &.img-container {
-            // width: 1rem;
-            // background: #fff;
+          .vs-table--search-input {
+            padding: 0.9rem 2.5rem;
+            font-size: 1rem;
 
-            span {
-              display: flex;
-              justify-content: flex-start;
+            & + i {
+              left: 1rem;
             }
 
-            .product-img {
-              height: 50px;
-              width: 50px !important;
+            &:focus + i {
+              left: 1rem;
             }
           }
         }
-        td.td-check {
-          padding: 20px !important;
+      }
+
+      .vs-table {
+        border-collapse: separate;
+        // border-spacing: 0 1.3rem;
+        // padding: 0 1rem;
+
+        tr {
+          box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+          td {
+            padding: 10px;
+            &:first-child {
+              border-top-left-radius: 0;
+              border-bottom-left-radius: 0;
+            }
+            &:last-child {
+              border-top-right-radius: 0;
+              border-bottom-right-radius: 0;
+            }
+            &.img-container {
+              // width: 1rem;
+              // background: #fff;
+
+              span {
+                display: flex;
+                justify-content: flex-start;
+              }
+
+              .product-img {
+                height: 50px;
+                width: 50px !important;
+              }
+            }
+          }
+          td.td-check {
+            padding: 20px !important;
+          }
         }
       }
-    }
 
-    .vs-table--thead {
-      th {
-        padding-top: 0;
-        padding-bottom: 0;
+      .vs-table--thead {
+        th {
+          padding-top: 0;
+          padding-bottom: 0;
 
-        .vs-table-text {
-          text-transform: uppercase;
-          font-weight: 600;
+          .vs-table-text {
+            text-transform: uppercase;
+            font-weight: 600;
+          }
+        }
+        th.td-check {
+          padding: 0 15px !important;
+        }
+        tr {
+          background: none;
+          box-shadow: none;
         }
       }
-      th.td-check {
-        padding: 0 15px !important;
-      }
-      tr {
-        background: none;
-        box-shadow: none;
-      }
-    }
 
-    .vs-table--pagination {
-      justify-content: center;
+      .vs-table--pagination {
+        justify-content: center;
+      }
     }
   }
-}
 
-.vs-sidebar {
-  z-index: 100000;
-}
+  .vs-sidebar {
+    z-index: 100000;
+  }
 
-.sidebar-custom > .header-sidebar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  h4 {
+  .sidebar-custom > .header-sidebar {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     width: 100%;
-    > button {
-      margin-left: 10px;
+    h4 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      > button {
+        margin-left: 10px;
+      }
     }
   }
-}
 
-.footer-sidebar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  > button {
-    border: 0px solid rgba(0, 0, 0, 0) !important;
-    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
-    border-radius: 0px !important;
+  .footer-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    > button {
+      border: 0px solid rgba(0, 0, 0, 0) !important;
+      border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
+      border-radius: 0px !important;
+    }
   }
-}
 
-.sidebar-custom > .vs-sidebar-primary {
-  max-width: 400px !important;
-}
-
-// th:first-child .vs-table-text {
-//   justify-content: center !important;
-//   cursor: pointer;
-// }
-.vs-table--thead {
-  background-color: #32304e;
-  color: #fff;
-}
-
-.vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
-  padding: 10px 15px !important;
-}
-
-.product-img {
-  width: 150px !important;
-  // width: 100px !important;
-}
-
-.th .sort-th,
-th .vs-table-text {
-  justify-content: center !important;
-}
-
-.place-order {
-  position: sticky;
-  top: 900px;
-
-  background: #c4c4c4;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
-    inset 0px -3px 5px rgba(0, 0, 0, 0.38);
-  border-radius: 7px;
-}
-
-// table card styles
-.table-card {
-  margin: 4px 0 4px 12px;
-  width: 387px;
-  height: auto;
-  left: 1517px;
-  top: 258px;
-
-  background: #ffffff;
-  border: 1px solid #c4c4c4;
-  box-sizing: border-box;
-  border-radius: 9px;
-}
-
-// restaurant table styles
-.restaurant-tables {
-  width: 89px;
-  height: 63px;
-  left: 1544px;
-  top: 283px;
-
-  background: #ffffff;
-  border: 2px solid #c4c4c4;
-  box-sizing: border-box;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 5px;
-
-  // table number styles
-  .table-no {
-    width: 56.97px;
-    height: 59px;
+  .sidebar-custom > .vs-sidebar-primary {
+    max-width: 400px !important;
   }
-}
+
+  // th:first-child .vs-table-text {
+  //   justify-content: center !important;
+  //   cursor: pointer;
+  // }
+  .vs-table--thead {
+    background-color: #32304e;
+    color: #fff;
+  }
+
+  .vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
+    padding: 10px 15px !important;
+  }
+
+  .product-img {
+    width: 150px !important;
+    // width: 100px !important;
+  }
+
+  .th .sort-th,
+  th .vs-table-text {
+    justify-content: center !important;
+  }
+
+  .place-order {
+    position: sticky;
+    top: 900px;
+
+    background: #c4c4c4;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
+      inset 0px -3px 5px rgba(0, 0, 0, 0.38);
+    border-radius: 7px;
+  }
+
+  // table card styles
+  .table-card {
+    margin: 4px 0 4px 12px;
+    width: 387px;
+    height: auto;
+    left: 1517px;
+    top: 258px;
+
+    background: #ffffff;
+    border: 1px solid #c4c4c4;
+    box-sizing: border-box;
+    border-radius: 9px;
+  }
+
+  // restaurant table styles
+  .restaurant-tables {
+    width: 89px;
+    height: 63px;
+    left: 1544px;
+    top: 283px;
+
+    background: #ffffff;
+    border: 2px solid #c4c4c4;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+
+    // table number styles
+    .table-no {
+      width: 56.97px;
+      height: 59px;
+    }
+  }
 </style>
 

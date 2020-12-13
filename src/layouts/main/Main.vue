@@ -17,7 +17,9 @@
     <div
       id="content-area"
       :class="[
-        $router.currentRoute.path === '/neworder' ? 'content-area-alt' : contentAreaClass,
+        $router.currentRoute.path === '/neworder'
+          ? 'content-area-alt'
+          : contentAreaClass,
         { 'show-overlay': bodyOverlay },
       ]"
     >
@@ -146,7 +148,6 @@
                   class="shadow-lg btn-back-to-top"
                 />
               </back-to-top>
-
               <transition :name="routerTransition" mode="out-in">
                 <router-view
                   @changeRouteTitle="changeRouteTitle"
@@ -288,10 +289,14 @@ export default {
       }
     },
 
-    isDashboardOrRestaurent () {
-      if (this.$router.currentRoute.path === '/' || this.$router.currentRoute.path === '/order' ) return true;
+    isDashboardOrRestaurent() {
+      if (
+        this.$router.currentRoute.path === "/" ||
+        this.$router.currentRoute.path === "/order"
+      )
+        return true;
       return false;
-    }
+    },
   },
   created() {
     const color =
@@ -305,68 +310,68 @@ export default {
 </script>
 
 <style>
-.v-nav-menu .vs-sidebar--item .router-link-active {
-  /* background: linear-gradient(118deg, rgba(var(--vs-primary), 1), rgba(var(--vs-primary), 0.7)); */
-  background: #f8b843 !important;
-  font-weight: bold !important;
-}
-.vs-sidebar {
-  background: #31314e !important;
-}
+  .v-nav-menu .vs-sidebar--item .router-link-active {
+    /* background: linear-gradient(118deg, rgba(var(--vs-primary), 1), rgba(var(--vs-primary), 0.7)); */
+    background: #f8b843 !important;
+    font-weight: bold !important;
+  }
+  .vs-sidebar {
+    background: #31314e !important;
+  }
 
-.v-nav-menu .feather-icon {
-  color: #f8b843 !important;
-}
+  .v-nav-menu .feather-icon {
+    color: #f8b843 !important;
+  }
 
-.v-nav-menu .vs-sidebar--item .router-link-active .feather-icon {
-  color: #fff !important;
-}
+  .v-nav-menu .vs-sidebar--item .router-link-active .feather-icon {
+    color: #fff !important;
+  }
 
-.v-nav-menu .vs-sidebar--item a {
-  color: #f8b843 !important;
-  font-weight: 600 !important;
-}
+  .v-nav-menu .vs-sidebar--item a {
+    color: #f8b843 !important;
+    font-weight: 600 !important;
+  }
 
-.v-nav-menu .vs-sidebar--item.vs-sidebar-item-active {
-  border: none !important;
-  border-left: 7px solid rgb(255 255 255) !important;
-}
+  .v-nav-menu .vs-sidebar--item.vs-sidebar-item-active {
+    border: none !important;
+    border-left: 7px solid rgb(255 255 255) !important;
+  }
 
-.v-nav-menu .scroll-area-v-nav-menu > .vs-sidebar--item {
-  padding: 0 !important;
-}
+  .v-nav-menu .scroll-area-v-nav-menu > .vs-sidebar--item {
+    padding: 0 !important;
+  }
 
-.v-nav-menu .vs-sidebar--item a {
-  border-radius: 0px !important;
-}
+  .v-nav-menu .vs-sidebar--item a {
+    border-radius: 0px !important;
+  }
 
-.v-nav-menu .vs-sidebar--item .router-link-active {
-  box-shadow: 0px 0px 0px 0px rgba(var(--vs-primary), 0.7) !important;
-}
+  .v-nav-menu .vs-sidebar--item .router-link-active {
+    box-shadow: 0px 0px 0px 0px rgba(var(--vs-primary), 0.7) !important;
+  }
 
-.content-area-alt {
-  margin-left: 200px !important;
-  margin-right: 0px !important;
-}
+  .content-area-alt {
+    margin-left: 200px !important;
+    margin-right: 0px !important;
+  }
 
-.content-area-reduced {
-  margin-left: 200px !important;
-  margin-right: 325px !important;
-}
-.content-area-lg {
-  margin-left: 80px !important;
-  margin-right: 325px !important;
-}
-.vs-sidebar {
-  max-width: 200px !important;
-}
+  .content-area-reduced {
+    margin-left: 200px !important;
+    margin-right: 325px !important;
+  }
+  .content-area-lg {
+    margin-left: 80px !important;
+    margin-right: 325px !important;
+  }
+  .vs-sidebar {
+    max-width: 200px !important;
+  }
 
-.v-nav-menu .vs-sidebar.vs-sidebar-reduce {
-  max-width: 80px !important;
-}
+  .v-nav-menu .vs-sidebar.vs-sidebar-reduce {
+    max-width: 80px !important;
+  }
 
-.vs-sidebar.vs-sidebar-reduce:hover:not(.vs-sidebar-reduceNotHoverExpand) {
-  max-width: 200px !important;
-}
+  .vs-sidebar.vs-sidebar-reduce:hover:not(.vs-sidebar-reduceNotHoverExpand) {
+    max-width: 200px !important;
+  }
 </style>
 
