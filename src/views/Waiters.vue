@@ -36,7 +36,7 @@
                     ? currentPage * itemsPerPage
                     : waiters.length
                 }}
-                of {{ "queriedItems" }}</span
+                of {{ queriedItems }}</span
               >
               <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
             </div>
@@ -75,7 +75,7 @@
                   <div class="vx-row">
                     <!-- Avatar Col -->
                     <div class="vx-col flex" id="avatar-col">
-                      <div class="img-container mb-4">
+                      <div class="img-container mx-auto">
                         <img
                           :src="tr.image"
                           class="product-img"
@@ -89,7 +89,7 @@
                       </div>
 
                       <!-- Information - Col 1 -->
-                      <div class="ml-8" id="account-info-col-1">
+                      <div class="ml-8 pl-5" id="account-info-col-1">
                         <div class="waiter-name">
                           <strong>Name : </strong>
                           {{ tr.user.first_name }}
@@ -131,8 +131,8 @@
 <!-- style="width: 486px;" -->
 <!-- style="width: 261px;" -->
               <vs-td>
-                <!-- <div class="grid gap-x-8 gap-y-4 grid-cols-3"> -->
-                <div class="flex flex-wrap">
+                <div class="grid gap-x-0  gap-y-2 grid-cols-3">
+                <!-- <div class="flex flex-wrap"> -->
 
                   <div
                     class="waiter-table mr-2"
@@ -586,7 +586,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss">
   .waiter-table {
     width: 77px;
     height: 34px;
@@ -608,4 +608,150 @@ export default {
     font-size: 18px;
     line-height: 27px;
   }
+
+  #data-list-thumb-view {
+  .vs-con-table {
+    .product-name {
+      max-width: 23rem;
+    }
+
+    .vs-table--header {
+      display: flex;
+      flex-wrap: wrap-reverse;
+      margin-left: 1.5rem;
+      margin-right: 1.5rem;
+      > span {
+        display: flex;
+        flex-grow: 1;
+      }
+
+      .vs-table--search {
+        padding-top: 0;
+
+        .vs-table--search-input {
+          padding: 0.9rem 2.5rem;
+          font-size: 1rem;
+
+          & + i {
+            left: 1rem;
+          }
+
+          &:focus + i {
+            left: 1rem;
+          }
+        }
+      }
+    }
+
+    .vs-table {
+      border-collapse: separate;
+      border-spacing: 0 1.3rem;
+      padding: 0 1rem;
+
+      tr {
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+        td {
+          padding: 10px;
+          &:first-child {
+            border-top-left-radius: 0.5rem;
+            border-bottom-left-radius: 0.5rem;
+          }
+          &:last-child {
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+          }
+          &.img-container {
+            // width: 1rem;
+            // background: #fff;
+
+            span {
+              display: flex;
+              justify-content: flex-start;
+            }
+
+            .product-img {
+              height: 110px;
+            }
+          }
+        }
+        td.td-check {
+          padding: 20px !important;
+        }
+      }
+    }
+
+    .vs-table--thead {
+      th {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        .vs-table-text {
+          text-transform: uppercase;
+          font-weight: 600;
+        }
+      }
+      th.td-check {
+        padding: 0 15px !important;
+      }
+      tr {
+        background: none;
+        box-shadow: none;
+      }
+    }
+
+    .vs-table--pagination {
+      justify-content: center;
+    }
+  }
+}
+
+.vs-sidebar {
+  z-index: 100000;
+}
+
+.sidebar-custom > .header-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  h4 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    > button {
+      margin-left: 10px;
+    }
+  }
+}
+
+.footer-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  > button {
+    border: 0px solid rgba(0, 0, 0, 0) !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
+    border-radius: 0px !important;
+  }
+}
+
+.sidebar-custom > .vs-sidebar-primary {
+  max-width: 400px !important;
+}
+
+th:first-child .vs-table-text {
+  justify-content: center !important;
+  cursor: pointer;
+}
+.vs-table--thead {
+  background-color: #32304e;
+  color: #fff;
+}
+
+.vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
+  padding: 10px 15px !important;
+}
 </style>
