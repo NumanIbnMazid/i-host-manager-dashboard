@@ -92,45 +92,43 @@
                       <div class="ml-8 pl-5" id="account-info-col-1">
                         <div class="waiter-name">
                           <strong>Name : </strong>
-                          {{ tr.user.first_name }}
+                          {{ tr.name }}
                         </div>
 
                         <div class="waiter-phone" :title="tr.user.phone">
                           <strong>Phone : </strong>
-                          {{
-                           tr.user.phone
-                          }}
+                          {{ tr.phone }}
                         </div>
 
                         <div class="waiter-email">
                           <strong>Email : </strong>
-                          {{ tr.user.email }}
+                          {{ tr.email }}
                         </div>
 
                         <div class="waiter-shift-start">
                           <strong>Shift Start : </strong>
-                          {{ tr.user.shift_start }}
+                          {{ tr.shift_start }}
                         </div>
 
                         <div class="waiter-shift-end">
                           <strong>Shift End : </strong>
-                          {{ tr.user.shift_end }}
+                          {{ tr.shift_end }}
                         </div>
 
                         <div class="waiter-nid">
                           <strong>NID : </strong>
-                          {{ tr.user.nid }}
+                          {{ tr.nid }}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </vs-td>
-<!-- style="width: 486px;" -->
-<!-- style="width: 261px;" -->
+              <!-- style="width: 486px;" -->
+              <!-- style="width: 261px;" -->
               <vs-td>
-                <div class="grid gap-x-0  gap-y-2 grid-cols-3">
-                <!-- <div class="flex flex-wrap"> -->
+                <div class="grid gap-x-0 gap-y-2 grid-cols-3">
+                  <!-- <div class="flex flex-wrap"> -->
 
                   <div
                     class="waiter-table mr-2"
@@ -164,8 +162,6 @@
                       </p>
                     </div>
                   </div>
-
-                  
                 </div>
               </vs-td>
 
@@ -585,29 +581,29 @@ export default {
 </script>
 
 <style lang="scss">
-  .waiter-table {
-    width: 77px;
-    height: 34px;
-    left: 1085px;
-    top: 370px;
+.waiter-table {
+  width: 77px;
+  height: 34px;
+  left: 1085px;
+  top: 370px;
 
-    background: #31314e;
-    border-radius: 5px;
-  }
+  background: #31314e;
+  border-radius: 5px;
+}
 
-  .table-number {
-    color: #f8b843;
-  }
+.table-number {
+  color: #f8b843;
+}
 
-  .waiter-info {
-    font-family: Poppins;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 18px;
-    line-height: 27px;
-  }
+.waiter-info {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 27px;
+}
 
-  #data-list-thumb-view {
+#data-list-thumb-view {
   .vs-con-table {
     .product-name {
       max-width: 23rem;

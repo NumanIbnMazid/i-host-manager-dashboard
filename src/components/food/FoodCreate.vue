@@ -41,6 +41,8 @@
                 ref="cropper"
                 :guides="true"
                 :src="preview"
+                :aspectRatio="2 / 1"
+                :initialAspectRatio="2 / 1"
               ></vue-cropper>
 
               <span class="text-center" v-else

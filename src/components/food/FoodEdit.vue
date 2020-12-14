@@ -41,6 +41,8 @@
                 ref="cropper"
                 :src="tempImage"
                 :guides="true"
+                :aspectRatio="2 / 1"
+                :initialAspectRatio="2 / 1"
               ></vue-cropper>
 
               <!-- <span class="text-center" v-else

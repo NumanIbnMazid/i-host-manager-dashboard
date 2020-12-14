@@ -18,7 +18,7 @@
           class="mb-base"
           icon="CpuIcon"
           icon-right
-          statistic="৳ 1,20,000"
+          :statistic="`৳ ${cmSell}`"
           statisticTitle="Total Sell current month"
         />
       </div>
@@ -29,7 +29,7 @@
           class="mb-base"
           icon="ServerIcon"
           icon-right
-          statistic="3400"
+          :statistic="`${cmOrder}`"
           statisticTitle="Total Order current month"
           color="success"
         />
@@ -41,7 +41,7 @@
           class="mb-base"
           icon="ActivityIcon"
           icon-right
-          statistic="৳ 2,17,000"
+          :statistic="`৳ ${lmSell}`"
           statisticTitle="Total Sell last month"
           color="danger"
         />
@@ -53,7 +53,7 @@
           class="mb-base"
           icon="AlertOctagonIcon"
           icon-right
-          statistic="5300"
+          :statistic="`${lmOrder}`"
           statisticTitle="Total Order last month"
           color="warning"
         />
@@ -65,7 +65,7 @@
       <vx-card>
         <chartjs-component-bar-chart
           :height="150"
-          :data="data"
+          :data="weekChart"
           :options="options"
         ></chartjs-component-bar-chart>
       </vx-card>
@@ -93,30 +93,11 @@ export default {
     time: "",
     resturent_id: localStorage.getItem("resturent_id"),
     resturent: JSON.parse(localStorage.getItem("resturent")),
-    data: {
-      labels: [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ],
-      datasets: [
-        {
-          label: "Total Sale amount",
-          backgroundColor: [
-            "#3e95cd",
-            "#8e5ea2",
-            "#3cba9f",
-            "#e8c3b9",
-            "#c45850",
-          ],
-          data: [2478, 5267, 734, 784, 433],
-        },
-      ],
-    },
+    cmSell: 0,
+    cmOrder: 0,
+    lmSell: 0,
+    lmOrder: 0,
+    weekChart: "",
     options: {
       legend: { display: false },
       title: {
@@ -126,9 +107,57 @@ export default {
     },
   }),
 
-  methods: {},
+  methods: {
+    getDashboardData() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/dashboard_total_report/${this.resturent_id}`
+        )
+        .then((res) => {
+          res = res.data;
+          this.cmSell = res.data.current_month_total_sell;
+          this.cmOrder = res.data.current_month_total_order;
+          this.lmSell = res.data.last_month_total_sell;
+          this.lmOrder = res.data.last_month_total_order;
+          // this.weekChart.datasets[0].data = res.data.day_wise_income;
+          this.weekChart = {
+            labels: [
+              "Sunday",
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+            ],
+            datasets: [
+              {
+                label: "Total Sale amount",
+                backgroundColor: [
+                  "#27ae60",
+                  "#8e44ad",
+                  "#e67e22",
+                  "#1abc9c",
+                  "#34495e",
+                  "#c45850",
+                  "#f1c40f",
+                ],
+                data: res.data.day_wise_income,
+              },
+            ],
+          };
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+  },
 
   created() {},
+
+  mounted() {
+    this.getDashboardData();
+  },
 };
 </script>
 
