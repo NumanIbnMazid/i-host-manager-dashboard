@@ -52,10 +52,6 @@
               </tr>
 
               <tr>
-                <td class="font-semibold">Status</td>
-                <td>{{ status }}</td>
-              </tr>
-              <tr>
                 <td class="font-semibold">Tax Percentage</td>
                 <td>{{ tax_percentage }}</td>
               </tr>
@@ -68,9 +64,56 @@
                   <span v-if="service_charge_is_percentage">%</span>
                 </td>
               </tr>
+
               <tr>
                 <td class="font-semibold">Subscription Ends</td>
                 <td>{{ subscription_ends }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Subscription</td>
+                <td>{{ subscription }}</td>
+              </tr>
+
+              <!-- <tr>
+                <td class="font-semibold">Latitude</td>
+                <td>
+                  <vx-tooltip color="success" :text="latitude">
+                    {{
+                      latitude.length > 18
+                        ? `${latitude.substr(0, 18)}...`
+                        : latitude
+                    }}
+                  </vx-tooltip>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Longitude</td>
+                <td>
+                  <vx-tooltip :text="longitude">
+                    {{
+                      longitude.length > 18
+                        ? `${longitude.substr(0, 18)}...`
+                        : longitude
+                    }}
+                  </vx-tooltip>
+                </td>
+              </tr> -->
+
+              <tr>
+                <td class="font-semibold">Tax Percentage</td>
+                <td>{{ tax_percentage }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Trade Licence No</td>
+                <td>{{ trade_licence_no }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Vat Registration No</td>
+                <td>{{ vat_registration_no }}</td>
               </tr>
             </table>
           </div>
@@ -241,10 +284,10 @@
                   <vs-input
                     class="w-full"
                     icon-pack="feather"
-                    icon="icon-help-circle"
+                    icon="icon-calendar"
                     icon-no-border
-                    label="Status"
-                    v-model="status"
+                    label="Subscription Ends"
+                    v-model="subscription_ends"
                   />
                 </div>
               </div>
@@ -256,11 +299,38 @@
                     icon-pack="feather"
                     icon="icon-calendar"
                     icon-no-border
-                    label="Subscription Ends"
-                    v-model="subscription_ends"
+                    label="Tax Percentage"
+                    v-model="tax_percentage"
                   />
                 </div>
               </div>
+
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
+                  <vs-input
+                    class="w-full"
+                    icon-pack="feather"
+                    icon="icon-calendar"
+                    icon-no-border
+                    label="Trade Licence No"
+                    v-model="trade_licence_no"
+                  />
+                </div>
+              </div>
+
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
+                  <vs-input
+                    class="w-full"
+                    icon-pack="feather"
+                    icon="icon-calendar"
+                    icon-no-border
+                    label="Vat Registration No"
+                    v-model="vat_registration_no"
+                  />
+                </div>
+              </div>
+
               <div class="vx-row">
                 <div class="vx-col w-full flex">
                   <vs-button
@@ -291,10 +361,15 @@
   </div>
 </template>
 
-
 <script>
+import vSelect from "vue-select";
 import axios from "@/axios.js";
+
 export default {
+  components: {
+    "v-select": vSelect,
+  },
+
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
     resturent: JSON.parse(localStorage.getItem("resturent")),
@@ -309,8 +384,13 @@ export default {
     tax_percentage: "",
     created_at: "",
     website: "",
-    status: "",
+    latitude: "",
+    longitude: "",
+    subscription: "",
     subscription_ends: "",
+    tax_percentage: "",
+    trade_licence_no: "",
+    vat_registration_no: "",
     table: 0,
     start_date: "",
     end_date: "",
@@ -358,11 +438,17 @@ export default {
       this.tax_percentage = restaurant.tax_percentage;
       this.created_at = restaurant.created_at;
       this.website = restaurant.website;
-      this.status = restaurant.status;
       this.subscription_ends = restaurant.subscription_ends;
+      this.subscription = restaurant.subscription;
+      this.latitude = restaurant.latitude;
+      this.longitude = restaurant.longitude;
+      this.tax_percentage = restaurant.tax_percentage;
+      this.trade_licence_no = restaurant.trade_licence_no;
+      this.vat_registration_no = restaurant.vat_registration_no;
     },
 
     updateRestaurantGo() {
+      console.log("status ", this.status);
       let formData = new FormData();
       formData.append("name", this.name);
       formData.append("address", this.address);
@@ -374,6 +460,9 @@ export default {
       formData.append("tax_percentage", this.tax_percentage);
       formData.append("website", this.website);
       formData.append("subscription_ends", this.subscription_ends);
+      formData.append("tax_percentage", this.tax_percentage);
+      formData.append("trade_licence_no", this.trade_licence_no);
+      formData.append("vat_registration_no", this.vat_registration_no);
 
       if (this.logoPreview != "" && this.newLogo !== "") {
         formData.append("logo", this.newLogo);
@@ -390,8 +479,8 @@ export default {
           }
         )
         .then((res) => {
-          console.log(res);
           if (res.data.status) {
+            console.log("ur ", res.data.data);
             localStorage.setItem("resturent", JSON.stringify(res.data.data));
             this.$vs.notify({
               title: "Update Success",
