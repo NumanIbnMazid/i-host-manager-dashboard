@@ -7,13 +7,16 @@
 
       <!-- Avatar -->
       <div
-        class="md:w-12/12 sm:w-12/12 lg:w-4/12 mx-auto rounded"
-        style="border: 1px solid grey; overflow: hidden;"
+        class="md:w-12/12 sm:w-12/12 lg:w-4/12 mx-auto rounded pt-3"
+        style="border: 1px solid grey; overflow: hidden"
       >
         <!-- <div class="md:w-8/12 sm:w-12/12 lg:w-4/12 mx-auto border-dashed border-4 border-light-blue-500"> -->
         <div class="vx-row">
           <!-- Avatar Col -->
-          <div class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12" id="avatar-col">
+          <div
+            class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12"
+            id="avatar-col"
+          >
             <div class="img-container mb-4">
               <img :src="logo" class="rounded w-full" />
             </div>
@@ -23,7 +26,10 @@
         <div class="vx-row">
           <!-- Information - Col 1 -->
           <!-- <div class="vx-col pl-4 mx-auto mb-4" id="account-info-col-1"> -->
-          <div class="vx-col m-4 sm:w-8/12 md:w-6/12 lg:w-11/12 mx-auto" id="account-info-col-1">
+          <div
+            class="vx-col m-4 sm:w-8/12 md:w-6/12 lg:w-11/12 mx-auto"
+            id="account-info-col-1"
+          >
             <table>
               <tr>
                 <td class="font-semibold">Name</td>
@@ -32,24 +38,30 @@
 
               <tr>
                 <td class="font-semibold">Address</td>
-                <td>{{ address }}</td>
+                <td>
+                  <p>{{ address }}</p>
+                </td>
               </tr>
 
               <tr>
                 <td class="font-semibold">Website</td>
                 <td>
-                  <a
-                    class="text-success"
-                    :href="website"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    >{{ website }}</a
-                  >
+                  <p>
+                    <a
+                      class="text-success"
+                      :href="website"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      >{{ website }}</a
+                    >
+                  </p>
                 </td>
               </tr>
               <tr>
                 <td class="font-semibold">Created At</td>
-                <td>{{ created_at }}</td>
+                <td>
+                  <p>{{ created_at }}</p>
+                </td>
               </tr>
 
               <tr>
@@ -244,18 +256,7 @@
                   />
                 </div>
               </div>
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-dollar-sign"
-                    icon-no-border
-                    label="Tax Percentage"
-                    v-model="tax_percentage"
-                  />
-                </div>
-              </div>
+
               <div class="vx-row mb-6">
                 <div class="vx-col w-full">
                   <vs-input

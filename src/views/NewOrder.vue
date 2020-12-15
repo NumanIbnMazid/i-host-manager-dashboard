@@ -121,8 +121,8 @@
                         <strong>Price : </strong> {{ food.price }}
                       </p>
                       <!-- <p class="text-grey">{{ "card_1.subtitle_2" }}</p> -->
-                      <div class="flex justify-between flex-wrap">
-                        <!-- <vs-button
+
+                      <!-- <vs-button
                           class="mt-4 mr-2 shadow-lg"
                           type="gradient"
                           color="#7367F0"
@@ -130,6 +130,16 @@
                           >Download</vs-button
                         > -->
 
+                      <!-- <vs-button
+                          color="primary"
+                          type="border"
+                          icon-pack="feather"
+                          icon="icon-plus"
+                          class="w-full"
+                          @click="itemAddToCart(food)"
+                          >Add</vs-button
+                        > -->
+                      <div class="flex" v-if="!checkIfCart(food)">
                         <vs-button
                           color="primary"
                           type="border"
@@ -139,6 +149,30 @@
                           @click="itemAddToCart(food)"
                           >Add</vs-button
                         >
+                      </div>
+
+                      <div v-else class="flex">
+                        <vs-button
+                          color="primary"
+                          type="border"
+                          icon-pack="feather"
+                          icon="icon-minus"
+                          @click="decraseItem(food)"
+                        ></vs-button>
+
+                        <vs-input
+                          class="px-1 text-center"
+                          :value="checkIfCart(food).qty"
+                          :ref="`quantityItem-${food}`"
+                          @keyup="itemQtyAdd(food)"
+                        ></vs-input>
+                        <vs-button
+                          color="primary"
+                          type="border"
+                          icon-pack="feather"
+                          icon="icon-plus"
+                          @click="increaseItem(food)"
+                        ></vs-button>
                       </div>
                     </vx-card>
                   </div>
@@ -204,19 +238,22 @@
                             color="primary"
                             type="border"
                             icon-pack="feather"
-                            icon="icon-plus"
+                            icon="icon-minus"
+                            @click="decraseItem(tr)"
                           ></vs-button>
 
                           <vs-input
-                            class="px-1"
+                            class="px-1 text-center"
                             :value="checkIfCart(tr).qty"
-                            disabled
+                            :ref="`quantityItem-${tr}`"
+                            @keyup="itemQtyAdd(tr)"
                           ></vs-input>
                           <vs-button
                             color="primary"
                             type="border"
                             icon-pack="feather"
-                            icon="icon-minus"
+                            icon="icon-plus"
+                            @click="increaseItem(tr)"
                           ></vs-button>
                         </div>
                       </vs-td>
@@ -486,19 +523,33 @@ export default {
 
     itemAddToCart(item) {
       let theitem = this.itemsCarts.filter((arr) => arr.id == item.id);
-      console.log("1 ", theitem);
+      // console.log("1 ", theitem);
       if (theitem.length == 0) {
         item["qty"] = 1;
         this.itemsCarts.push(item);
 
-        console.log("2 ", this.itemsCarts);
+        // console.log("2 ", this.itemsCarts);
+      }
+    },
+    increaseItem(item) {
+      let theitem = this.itemsCarts.find((arr) => arr.id == item.id).qty++;
+    },
+
+    decraseItem(item) {
+      let theitem = this.itemsCarts.find((arr) => arr.id == item.id);
+      if (theitem.qty == 1) {
+        let index = this.itemsCarts.indexOf(theitem);
+        if (index > -1) {
+          this.itemsCarts.splice(index, 1);
+        }
+      } else {
+        theitem.qty--;
       }
     },
 
     checkIfCart(item) {
-      let theitem = this.itemsCarts.find((arr) => arr == item);
-      console.log("3 ", theitem);
-      return theitem ? theitem : false;
+      let theitem = this.itemsCarts.find((arr) => arr.id == item.id);
+      return theitem  ? theitem : false;
     },
 
     getFood() {
@@ -559,11 +610,14 @@ export default {
 
 
 <style lang="scss" >
-  #data-list-thumb-view-alt {
-    .vs-con-table {
-      .product-name {
-        max-width: 23rem;
-      }
+.vs-input--input {
+  text-align: center;
+}
+#data-list-thumb-view-alt {
+  .vs-con-table {
+    .product-name {
+      max-width: 23rem;
+    }
 
       .vs-table--header {
         display: flex;

@@ -18,7 +18,7 @@
 
     <div class="vx-row">
       <div
-        class="vx-col sm:w-3/12 w-full mb-2 p-2"
+        class="vx-col sm:w-2/12 w-full mb-2 p-2"
         v-for="(table, i) in tables"
         :key="i"
       >
@@ -570,7 +570,7 @@ export default {
       WinPrint.document.close();
       WinPrint.focus();
       WinPrint.print();
-      WinPrint.close();
+      // WinPrint.close();
     },
     downloadImg(id) {
       const imgSrc = document.querySelector("#table-qr-" + id + ">img").src;
