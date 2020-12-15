@@ -144,12 +144,14 @@
                 v-if="!logoPreview"
                 :src="logo"
                 class="rounded mx-auto"
+                style="width: 300px"
                 alt
               />
               <img
                 v-else
                 :src="logoPreview"
                 class="rounded mx-auto"
+                style="width: 300px"
                 alt
               />
 
@@ -163,7 +165,7 @@
               <div class="vx-row mt-4">
                 <div class="vx-col w-full text-center">
                   <vs-button
-                    class="mb-2 w-5/6 mx-auto"
+                    class="mb-2 w-4/6 mx-auto"
                     icon-pack="feather"
                     icon="icon-edit"
                     @click="$refs.logoInput.click()"
@@ -173,7 +175,7 @@
               </div>
             </div>
 
-            <div class="vx-col sm:w-6/12 md:w-8/12 lg:w-10/12 mx-auto mb-2">
+            <div class="vx-col sm:w-6/12 md:w-8/12 lg:w-6/12 mb-2">
               <div class="vx-row mb-6">
                 <div class="vx-col w-full">
                   <vs-input
