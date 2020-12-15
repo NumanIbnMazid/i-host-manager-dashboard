@@ -7,15 +7,15 @@
 
       <!-- Avatar -->
       <div
-        class="md:w-8/12 sm:w-12/12 lg:w-4/12 mx-auto rounded"
-        style="border: 1px solid grey"
+        class="md:w-12/12 sm:w-12/12 lg:w-4/12 mx-auto rounded"
+        style="border: 1px solid grey; overflow: hidden;"
       >
         <!-- <div class="md:w-8/12 sm:w-12/12 lg:w-4/12 mx-auto border-dashed border-4 border-light-blue-500"> -->
         <div class="vx-row">
           <!-- Avatar Col -->
-          <div class="vx-col mx-auto mt-4" id="avatar-col">
+          <div class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12" id="avatar-col">
             <div class="img-container mb-4">
-              <img :src="logo" class="rounded" style="width: 250px" />
+              <img :src="logo" class="rounded w-full" />
             </div>
           </div>
         </div>
@@ -138,19 +138,17 @@
       <vs-tabs>
         <vs-tab label="Restaurant" icon-pack="feather" icon="icon-home">
           <div class="vx-row mt-5">
-            <div class="vx-col sm:w-4/12 w-full mb-2">
+            <div class="vx-col sm:w-6/12 md:w-6/12 lg:w-6/12 mx-auto">
               <img
                 v-if="!logoPreview"
                 :src="logo"
-                style="width: 100%"
-                class="rounded"
+                class="rounded mx-auto"
                 alt
               />
               <img
                 v-else
                 :src="logoPreview"
-                style="width: 100%"
-                class="rounded"
+                class="rounded mx-auto"
                 alt
               />
 
@@ -164,7 +162,7 @@
               <div class="vx-row mt-4">
                 <div class="vx-col w-full text-center">
                   <vs-button
-                    class="mr-3 mb-2 w-full"
+                    class="mb-2 w-5/6 mx-auto"
                     icon-pack="feather"
                     icon="icon-edit"
                     @click="$refs.logoInput.click()"
@@ -173,7 +171,8 @@
                 </div>
               </div>
             </div>
-            <div class="vx-col sm:w-8/12 w-full mb-2">
+
+            <div class="vx-col sm:w-6/12 md:w-8/12 lg:w-10/12 mx-auto mb-2">
               <div class="vx-row mb-6">
                 <div class="vx-col w-full">
                   <vs-input

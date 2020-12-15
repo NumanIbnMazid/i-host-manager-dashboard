@@ -1,6 +1,7 @@
 <template>
   <div>
     <div id="data-list-list-view" class="data-list-container">
+      <span class="text-danger" v-if="!startDate || !endDate">Please fill up date fields...</span>
       <vs-table
         ref="table"
         v-model="selected"
@@ -17,12 +18,17 @@
             class="flex flex-wrap-reverse items-center data-list-btn-container"
           >
             <datepicker
+              class="m-2"
               placeholder="Start Date"
               v-model="startDate"
             ></datepicker>
-            <datepicker placeholder="End Date" v-model="endDate"></datepicker>
+            <datepicker
+              class="m-2"
+              placeholder="End Date"
+              v-model="endDate"
+            ></datepicker>
 
-            <vs-button @click="getData()">Click</vs-button>
+            <vs-button class="m-2" @click="getData()">Go</vs-button>
           </div>
 
           <!-- ITEMS PER PAGE -->
@@ -83,11 +89,23 @@
               </vs-td>
 
               <vs-td>
-                <p class="product-category" v-for="(foodExtra, indexNum) in tr.food_extra" :key="indexNum">{{foodExtra.name}} {{foodExtra.quatity}}</p>
+                <p
+                  class="product-category"
+                  v-for="(foodExtra, indexNum) in tr.food_extra"
+                  :key="indexNum"
+                >
+                  {{ foodExtra.name }} {{ foodExtra.quatity }}
+                </p>
               </vs-td>
 
               <vs-td>
-                <p class="product-category" v-for="(foodOption, indexNum) in tr.food_option" :key="indexNum">{{foodOption.name}} {{foodOption.quatity}}</p>
+                <p
+                  class="product-category"
+                  v-for="(foodOption, indexNum) in tr.food_option"
+                  :key="indexNum"
+                >
+                  {{ foodOption.name }} {{ foodOption.quatity }}
+                </p>
               </vs-td>
 
               <vs-td>
@@ -108,6 +126,7 @@
 <script>
 import Datepicker from "vuejs-datepicker";
 import axios from "@/axios.js";
+import moment from 'moment';
 export default {
   components: {
     Datepicker,
@@ -116,8 +135,8 @@ export default {
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
     orders: [],
-    startDate: "",
-    endDate: "",
+    startDate: moment().subtract(1, 'months').format(),
+    endDate: moment().format(),
     itemsPerPage: 10,
     selected: "",
     currentPage: 1,
@@ -127,18 +146,21 @@ export default {
 
   methods: {
     getData() {
+      console.log(this.startDate)
+      console.log(this.endDate)
       axios
         .post(`/restaurant_management/dashboard/food_report_by_date_range/`, {
           start_date: this.startDate,
           end_date: this.endDate,
+          restaurant_id: this.resturent_id
         })
         .then((res) => {
-          console.log('report data ', res.data.data);
+          console.log("report data ", res.data.data);
           this.orders = res.data.data;
           this.queriedItems = res.data.data.length;
         })
         .catch((err) => {
-          console.log('error report', err.response);
+          console.log("error report", err.response);
         });
     },
 
@@ -175,7 +197,7 @@ export default {
   },
 
   created() {
-    // this.getData();
+    this.getData();
   },
 };
 </script>
