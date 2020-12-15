@@ -22,7 +22,8 @@
 
         <div class="vx-row">
           <!-- Information - Col 1 -->
-          <div class="vx-col pl-4 mx-auto mb-4" id="account-info-col-1">
+          <!-- <div class="vx-col pl-4 mx-auto mb-4" id="account-info-col-1"> -->
+          <div class="vx-col m-4 sm:w-8/12 md:w-6/12 lg:w-11/12 mx-auto" id="account-info-col-1">
             <table>
               <tr>
                 <td class="font-semibold">Name</td>

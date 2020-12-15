@@ -135,7 +135,7 @@ export default {
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
     orders: [],
-    startDate: moment().subtract(1, 'months').format(),
+    startDate: moment().format('YYYY-MM-01'),
     endDate: moment().format(),
     itemsPerPage: 10,
     selected: "",
