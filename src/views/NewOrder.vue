@@ -548,9 +548,8 @@ export default {
     },
 
     checkIfCart(item) {
-      let theitem = this.itemsCarts.find((arr) => arr == item);
-      // console.log("3 ", theitem);
-      return theitem ? theitem : false;
+      let theitem = this.itemsCarts.find((arr) => arr.id == item.id);
+      return theitem  ? theitem : false;
     },
 
     getFood() {

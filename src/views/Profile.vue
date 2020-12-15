@@ -244,18 +244,7 @@
                   />
                 </div>
               </div>
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-dollar-sign"
-                    icon-no-border
-                    label="Tax Percentage"
-                    v-model="tax_percentage"
-                  />
-                </div>
-              </div>
+            
               <div class="vx-row mb-6">
                 <div class="vx-col w-full">
                   <vs-input
