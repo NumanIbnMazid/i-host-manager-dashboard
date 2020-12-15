@@ -87,9 +87,8 @@ const plugin = {
         // checking error status
         Vue.prototype.checkError = err => {
             if (err.response.status === 401) {
-                localStorage.removeItem("token");
-                localStorage.removeItem("resturent_id");
-                this.$router.push("/login").catch(() => {});
+                localStorage.clear()
+
                 window.location.href = "/login";
                 location.reload();
             }

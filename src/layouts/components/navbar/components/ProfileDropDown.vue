@@ -1,5 +1,8 @@
 <template>
-  <div class="the-navbar__user-meta flex items-center" v-if="activeUserInfo.displayName">
+  <div
+    class="the-navbar__user-meta flex items-center"
+    v-if="activeUserInfo.displayName"
+  >
     <div class="text-right leading-tight hidden sm:block">
       <!-- <p class="font-semibold">Sajal Khan</p> -->
       <p>Restaurant Manager</p>
@@ -72,14 +75,11 @@ export default {
       axios
         .post("/account_management/auth/logout/")
         .then((res) => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("resturent_id");
+          localStorage.clear();
           window.location.href = "/login";
         })
         .catch((err) => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("resturent_id");
-          window.location.href = "/login";
+          this.checkError(err);
         });
     },
   },
