@@ -92,13 +92,11 @@ export default {
         .post("/account_management/auth/logout/")
         .then((res) => {
           localStorage.clear();
+          window.location.href = "/login";
         })
         .catch((err) => {
           this.checkError(err);
         });
-
-      window.location.href = "/login";
-      location.reload();
     },
   },
 };

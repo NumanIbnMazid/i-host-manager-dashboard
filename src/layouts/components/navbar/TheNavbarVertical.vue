@@ -32,7 +32,7 @@
 // import Bookmarks from "./components/Bookmarks.vue";
 // import SearchBar from "./components/SearchBar.vue";
 import NotificationDropDown from "./components/NotificationDropDown.vue";
-import ProfileDropDown from "./components/ProfileDropDown.vue";
+// import ProfileDropDown from "./components/ProfileDropDown.vue";
 
 export default {
   name: "the-navbar-vertical",
@@ -46,7 +46,7 @@ export default {
     // Bookmarks,
     // SearchBar,
     NotificationDropDown,
-    ProfileDropDown,
+    // ProfileDropDown,
   },
   computed: {
     navbarColorLocal() {

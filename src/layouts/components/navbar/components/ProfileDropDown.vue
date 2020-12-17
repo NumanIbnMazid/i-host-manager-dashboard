@@ -72,15 +72,18 @@ export default {
   },
   methods: {
     logout() {
-      axios
-        .post("/account_management/auth/logout/")
-        .then((res) => {
-          localStorage.clear();
-          window.location.href = "/login";
-        })
-        .catch((err) => {
-          this.checkError(err);
-        });
+      console.log('I am here');
+      // axios
+      //   .post("/account_management/auth/logout/")
+      //   .then((res) => {
+      //     console.log('lores ', res);
+      //     localStorage.clear();
+      //     // window.location.href = "/login";
+      //   })
+      //   .catch((err) => {
+      //     console.log('error lores ', err.response);
+      //     this.checkError(err);
+      //   });
     },
   },
 };
