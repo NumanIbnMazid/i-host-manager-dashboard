@@ -1,7 +1,9 @@
 <template>
   <div>
     <div id="data-list-list-view" class="data-list-container">
-      <span class="text-danger" v-if="!startDate || !endDate">Please fill up date fields...</span>
+      <span class="text-danger" v-if="!startDate || !endDate"
+        >Please fill up date fields...</span
+      >
       <vs-table
         ref="table"
         v-model="selected"
@@ -72,8 +74,8 @@
           <vs-th sort-key="order_id">Name</vs-th>
           <vs-th>Food Extra</vs-th>
           <vs-th>Food Option</vs-th>
-          <vs-th>Price</vs-th>
           <vs-th>Qty</vs-th>
+          <vs-th>Price</vs-th>
         </template>
 
         <template slot-scope="{ data }">
@@ -109,11 +111,11 @@
               </vs-td>
 
               <vs-td>
-                <p class="product-category">{{ tr.price }}/-</p>
+                <p class="product-category">{{ tr.quantity }}</p>
               </vs-td>
 
               <vs-td>
-                <p class="product-category">{{ tr.quantity }}/-</p>
+                <p class="product-category">{{ tr.price }}/-</p>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -126,7 +128,7 @@
 <script>
 import Datepicker from "vuejs-datepicker";
 import axios from "@/axios.js";
-import moment from 'moment';
+import moment from "moment";
 export default {
   components: {
     Datepicker,
@@ -135,7 +137,7 @@ export default {
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
     orders: [],
-    startDate: moment().format('YYYY-MM-01'),
+    startDate: moment().format("YYYY-MM-01"),
     endDate: moment().format(),
     itemsPerPage: 10,
     selected: "",
@@ -146,13 +148,13 @@ export default {
 
   methods: {
     getData() {
-      console.log(this.startDate)
-      console.log(this.endDate)
+      console.log(this.startDate);
+      console.log(this.endDate);
       axios
         .post(`/restaurant_management/dashboard/food_report_by_date_range/`, {
           start_date: this.startDate,
           end_date: this.endDate,
-          restaurant_id: this.resturent_id
+          restaurant_id: this.resturent_id,
         })
         .then((res) => {
           console.log("report data ", res.data.data);
@@ -203,7 +205,7 @@ export default {
 </script>
 
 <style scoped>
-  td {
-    border-top: 10px solid #f8f8f8;
-  }
+td {
+  border-top: 10px solid #f8f8f8;
+}
 </style>
