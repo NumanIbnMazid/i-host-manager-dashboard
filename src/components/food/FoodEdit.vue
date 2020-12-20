@@ -41,8 +41,8 @@
                 ref="cropper"
                 :src="tempImage"
                 :guides="true"
-                :aspectRatio="2 / 1"
-                :initialAspectRatio="2 / 1"
+                :aspectRatio="1 / 1"
+                :initialAspectRatio="1 / 1"
               ></vue-cropper>
 
               <!-- <span class="text-center" v-else
@@ -722,5 +722,8 @@ export default {
 .slect-type > li {
   float: left;
   margin: 10px;
+}
+.vs-input--input {
+  text-align: left;
 }
 </style>
