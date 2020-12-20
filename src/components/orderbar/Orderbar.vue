@@ -129,32 +129,18 @@ export default {
     profilePage() {
       this.$router.push("/profile/setting").catch(() => {});
     },
-
-    logout() {
-      axios
-        .post("/account_management/auth/logout/")
-        .then((res) => {
-          console.log(res);
-          localStorage.removeItem("token");
-          localStorage.removeItem("resturent_id");
-          localStorage.removeItem("resturent");
-          localStorage.removeItem("user");
-          localStorage.removeItem("staff_info");
-        })
-        .catch((err) => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("resturent_id");
-          localStorage.removeItem("resturent");
-          localStorage.removeItem("user");
-          localStorage.removeItem("staff_info");
-          console.log("log out error ", err);
-        });
-
-      // localStorage.removeItem("token");
-      // localStorage.removeItem("resturent_id");
-
-      this.$router.push("/login").catch(() => {});
-    },
+// TODO: Logout problem
+    // logout() {
+    //   axios
+    //     .post("/account_management/auth/logout/")
+    //     .then((res) => {
+    //       localStorage.clear();
+    //       window.location.href = "/login";
+    //     })
+    //     .catch((err) => {
+    //       this.checkError(err);
+    //     });
+    // },
   },
 
   created() {
@@ -203,11 +189,11 @@ export default {
   }
 
   /* table.order-table tbody tr {
-                        padding: 6px 4px;
-                        border-top: 1px solid #ddd;
-                        border-bottom: 1px solid #ddd;
-                        margin: 10px 0px !important;
-                      } */
+                            padding: 6px 4px;
+                            border-top: 1px solid #ddd;
+                            border-bottom: 1px solid #ddd;
+                            margin: 10px 0px !important;
+                          } */
 
   .order-box {
     padding: 5px 0px;

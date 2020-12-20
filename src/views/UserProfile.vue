@@ -91,24 +91,12 @@ export default {
       axios
         .post("/account_management/auth/logout/")
         .then((res) => {
-          console.log(res);
-          localStorage.removeItem("token");
-          localStorage.removeItem("resturent_id");
-          localStorage.removeItem("resturent");
-          localStorage.removeItem("user");
-          localStorage.removeItem("staff_info");
+          localStorage.clear();
+          window.location.href = "/login";
         })
         .catch((err) => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("resturent_id");
-          localStorage.removeItem("resturent");
-          localStorage.removeItem("user");
-          localStorage.removeItem("staff_info");
-          console.log("log out error ", err);
+          this.checkError(err);
         });
-
-      window.location.href = "/login";
-      location.reload();
     },
   },
 };
