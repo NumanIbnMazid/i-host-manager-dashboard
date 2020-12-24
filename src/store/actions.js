@@ -1,34 +1,25 @@
-/*=========================================================================================
-  File Name: actions.js
-  Description: Vuex Store - actions
-  ----------------------------------------------------------------------------------------
-  Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-==========================================================================================*/
-
+import axios from "@/axios.js";
 const actions = {
-
     // /////////////////////////////////////////////
     // COMPONENTS
     // /////////////////////////////////////////////
 
     // Vertical NavMenu
     updateVerticalNavMenuWidth({ commit }, width) {
-      commit('UPDATE_VERTICAL_NAV_MENU_WIDTH', width)
+        commit("UPDATE_VERTICAL_NAV_MENU_WIDTH", width);
     },
 
     // VxAutoSuggest
     updateStarredPage({ commit }, payload) {
-      commit('UPDATE_STARRED_PAGE', payload)
+        commit("UPDATE_STARRED_PAGE", payload);
     },
 
     // The Navbar
     arrangeStarredPagesLimited({ commit }, list) {
-      commit('ARRANGE_STARRED_PAGES_LIMITED', list)
+        commit("ARRANGE_STARRED_PAGES_LIMITED", list);
     },
     arrangeStarredPagesMore({ commit }, list) {
-      commit('ARRANGE_STARRED_PAGES_MORE', list)
+        commit("ARRANGE_STARRED_PAGES_MORE", list);
     },
 
     // /////////////////////////////////////////////
@@ -36,10 +27,10 @@ const actions = {
     // /////////////////////////////////////////////
 
     toggleContentOverlay({ commit }) {
-      commit('TOGGLE_CONTENT_OVERLAY')
+        commit("TOGGLE_CONTENT_OVERLAY");
     },
     updateTheme({ commit }, val) {
-      commit('UPDATE_THEME', val)
+        commit("UPDATE_THEME", val);
     },
 
     // /////////////////////////////////////////////
@@ -47,8 +38,52 @@ const actions = {
     // /////////////////////////////////////////////
 
     updateUserInfo({ commit }, payload) {
-      commit('UPDATE_USER_INFO', payload)
-    }
-}
+        commit("UPDATE_USER_INFO", payload);
+    },
 
-export default actions
+    getOrderData({ commit }) {
+        let updateSocket;
+        let resturent_id = localStorage.getItem("resturent_id");
+
+        function connectSocket() {
+            updateSocket = new WebSocket(
+                `ws://production.i-host.com.bd/ws/dashboard/${resturent_id}/`
+            );
+
+            updateSocket.onmessage = function(e) {
+                let res = JSON.parse(e.data);
+
+                commit("GET_ORDERS_DATA", res.data);
+                // vm.queriedItems = res.list.length;
+
+                console.log("Received a message from the socket:", e.data);
+            };
+            updateSocket.onclose = function(e) {
+                console.error("Chat socket closed unexpectedly; reconnecting");
+                setTimeout(connectSocket, 1000);
+            };
+            updateSocket.onopen = function(e) {
+                console.log("Socket connected; sending a ping");
+                updateSocket.send(resturent_id);
+            };
+        }
+        connectSocket();
+
+        // axios
+        //     .get(
+        //         `/restaurant_management/dashboard/restaurant/${resturent_id}/order_item_list/`
+        //     )
+        //     .then((res) => {
+        //         console.log("datas ", res.data.data);
+        //         // this.orderDisburse(res.data.data);
+        //         commit("GET_ORDERS_DATA", res.data.data);
+        //     })
+        //     .catch((err) => {
+        //         console.log("eroil ", err.response);
+        //         // this.showActionMessage("error", err);
+        //         // this.checkError(err);
+        //     });
+    }
+};
+
+export default actions;

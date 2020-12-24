@@ -271,7 +271,7 @@
                 class="bg-pl"
                 icon-pack="feather"
                 icon="icon-arrow-left"
-                @click="cancelOrder(order.id)"
+                @click="revertOrder(order.id)"
               ></vs-button>
             </vx-tooltip>
 
@@ -1077,6 +1077,10 @@ export default {
         });
     },
 
+    revertOrder(order_id) {
+      
+    },
+
     cancelOrderItem(order_id, item_id) {
       axios
         .post("/restaurant_management/dashboard/order/cart/cancel_items/", {
@@ -1756,8 +1760,10 @@ export default {
       WinPrint.print();
       // WinPrint.close();
     },
-    playSound () {
-      var audio = new Audio("https://ihost-space.sgp1.digitaloceanspaces.com/music/ring.mp3");
+    playSound() {
+      var audio = new Audio(
+        "https://ihost-space.sgp1.digitaloceanspaces.com/music/ring.mp3"
+      );
       audio.play();
     },
 
@@ -1774,13 +1780,17 @@ export default {
           vm.orderDisburse(res.data);
           vm.playSound();
 
-           if(vm.orderToVarify.length > 0){
-              vm.orderToVarify = res.data.find(order => order.id == vm.orderToVarify.id);
-           }
+          if (vm.orderToVarify.length > 0) {
+            vm.orderToVarify = res.data.find(
+              (order) => order.id == vm.orderToVarify.id
+            );
+          }
 
-           if(vm.orderToServed.length > 0){
-              vm.orderToServed = res.data.find(order => order.id == vm.orderToServed.id);
-           }
+          if (vm.orderToServed.length > 0) {
+            vm.orderToServed = res.data.find(
+              (order) => order.id == vm.orderToServed.id
+            );
+          }
 
           // vm.queriedItems = res.list.length;
 

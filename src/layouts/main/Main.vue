@@ -300,6 +300,10 @@ export default {
     this.updateNavbarColor(color);
     this.setNavMenuVisibility(this.$store.state.mainLayoutType);
   },
+
+  mounted(){
+    this.$store.dispatch("getOrderData");
+  }
 };
 </script>
 

@@ -33,7 +33,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(order, i) in orders" :key="i">
+            <tr v-for="(order, i) in ordersData" :key="i" v-show="order.status">
               <td class="text-center">
                 <div class="order-box first-box">#{{ order.id }}</div>
               </td>
@@ -70,6 +70,7 @@ import axios from "@/axios.js";
 import moment from "moment";
 
 import UserProfile from "../../views/UserProfile";
+import { mapGetters } from "vuex";
 export default {
   components: {
     UserProfile,
@@ -83,6 +84,10 @@ export default {
     total_sell: "",
     date: "",
   }),
+
+  // watch:{
+
+  // },
 
   methods: {
     getTodaysTotalSell() {
@@ -129,7 +134,7 @@ export default {
     profilePage() {
       this.$router.push("/profile/setting").catch(() => {});
     },
-// TODO: Logout problem
+    // TODO: Logout problem
     // logout() {
     //   axios
     //     .post("/account_management/auth/logout/")
@@ -144,81 +149,86 @@ export default {
   },
 
   created() {
-    this.getOrderItemList();
+    // this.getOrderItemList();
     this.getDate();
     this.getTodaysTotalSell();
+  
+  },
+  computed: {
+    ...mapGetters(["ordersData"])
+
   },
 };
 </script>
 
 <style >
-  .new-sidebar .vs-sidebar {
-    max-width: 325px !important;
-    background: #ffffff !important;
-    position: fixed;
-    height: 100% !important;
-    top: 0;
-    z-index: 1;
-  }
+.new-sidebar .vs-sidebar {
+  max-width: 325px !important;
+  background: #ffffff !important;
+  position: fixed;
+  height: 100% !important;
+  top: 0;
+  z-index: 1;
+}
 
-  .vs-sidebar--header {
-    border-bottom: 0px !important;
-  }
+.vs-sidebar--header {
+  border-bottom: 0px !important;
+}
 
-  .vs-sidebar-primary .vs-sidebar-item-active {
-    border-right: 0px !important;
-  }
-  .vs-sidebar--item a {
-    opacity: 1 !important;
-  }
+.vs-sidebar-primary .vs-sidebar-item-active {
+  border-right: 0px !important;
+}
+.vs-sidebar--item a {
+  opacity: 1 !important;
+}
 
-  .order-table {
-    border-collapse: collapse;
-  }
+.order-table {
+  border-collapse: collapse;
+}
 
-  table.order-table th {
-    padding: 6px 4px;
-  }
+table.order-table th {
+  padding: 6px 4px;
+}
 
-  table.order-table th:first-child {
-    border-radius: 3px 0px 0px 3px;
-  }
+table.order-table th:first-child {
+  border-radius: 3px 0px 0px 3px;
+}
 
-  table.order-table th:last-child {
-    border-radius: 0px 3px 3px 0px;
-  }
+table.order-table th:last-child {
+  border-radius: 0px 3px 3px 0px;
+}
 
-  /* table.order-table tbody tr {
+/* table.order-table tbody tr {
                             padding: 6px 4px;
                             border-top: 1px solid #ddd;
                             border-bottom: 1px solid #ddd;
                             margin: 10px 0px !important;
                           } */
 
-  .order-box {
-    padding: 5px 0px;
-    margin: 3px 0px;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-  }
-  .first-box {
-    border-left: 1px solid #ddd;
-    border-radius: 2px 0px 0px 2px;
-  }
+.order-box {
+  padding: 5px 0px;
+  margin: 3px 0px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+.first-box {
+  border-left: 1px solid #ddd;
+  border-radius: 2px 0px 0px 2px;
+}
 
-  .last-box {
-    border-right: 1px solid #ddd;
-    border-radius: 0px 2px 2px 0px;
-  }
+.last-box {
+  border-right: 1px solid #ddd;
+  border-radius: 0px 2px 2px 0px;
+}
 
-  .con-vs-chip {
-    font-size: 8px;
-    min-height: 20px;
-  }
-  .status-chip {
-    border: 1px solid #ddd;
-    /* margin: 1px; */
-    padding: 2px 3px;
-  }
+.con-vs-chip {
+  font-size: 8px;
+  min-height: 20px;
+}
+.status-chip {
+  border: 1px solid #ddd;
+  /* margin: 1px; */
+  padding: 2px 3px;
+}
 </style>
 
