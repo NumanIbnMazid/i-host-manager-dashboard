@@ -263,6 +263,20 @@
 
             <vx-tooltip
               class="ml-2 my-auto"
+              color="pl"
+              text="Return to food serve"
+              v-if="order.status && order.status == '4_CREATE_INVOICE'"
+            >
+              <vs-button
+                class="bg-pl"
+                icon-pack="feather"
+                icon="icon-arrow-left"
+                @click="cancelOrder(order.id)"
+              ></vs-button>
+            </vx-tooltip>
+
+            <vx-tooltip
+              class="ml-2 my-auto"
               color="danger"
               text="Cancel"
               v-if="
@@ -580,7 +594,7 @@
       <vs-table :data="orderToServed.ordered_items">
         <template slot="thead">
           <vs-th class="text-center">Check</vs-th>
-          <vs-th class="text-center">Item Id.</vs-th>
+          <vs-th class="text-center">Item Id</vs-th>
           <vs-th class="text-center">Name</vs-th>
           <vs-th class="text-center">Qty</vs-th>
           <vs-th class="text-center">Options</vs-th>
@@ -737,6 +751,7 @@ export default {
     VxTimeline,
     "v-select": vSelect,
   },
+  //sabbir
   data: () => ({
     time: "",
     resturent_id: localStorage.getItem("resturent_id"),
@@ -875,6 +890,43 @@ export default {
         .catch((err) => console.log("orderaa error ", err.response));
     },
 
+    orderDisburse(orders) {
+      let orderItemList = orders;
+      this.ordersData = orders;
+
+      console.log("order data ", this.ordersData);
+      // total order active status
+      this.orderActiveNow = orderItemList.filter((el) => el.status).length;
+
+      // total table scanned
+      this.tableScanned = this.calculateLength(
+        orderItemList,
+        "0_ORDER_INITIALIZED"
+      );
+
+      // total user confirmed
+      this.userConfirmed = this.calculateLength(
+        orderItemList,
+        "1_ORDER_PLACED"
+      );
+
+      // total kitchen
+      this.kitchen = this.calculateLength(orderItemList, "2_ORDER_CONFIRMED");
+
+      // total food serve
+      this.foodServed = this.calculateLength(orderItemList, "3_IN_TABLE");
+      this.invoiceCreated = this.calculateLength(
+        orderItemList,
+        "4_CREATE_INVOICE"
+      );
+
+      // total payment done
+      this.paymentDone = this.calculateLength(orderItemList, "4_PAID");
+
+      // total cancel orders
+      this.cancelOrders = this.calculateLength(orderItemList, "5_CANCELLED");
+    },
+
     getRestaurantOrderItemList() {
       axios
         .get(
@@ -882,47 +934,7 @@ export default {
         )
         .then((res) => {
           console.log("roil ", res);
-
-          let orderItemList = res.data.data;
-          this.ordersData = res.data.data;
-
-          console.log("order data ", this.ordersData);
-          // total order active status
-          this.orderActiveNow = orderItemList.filter((el) => el.status).length;
-
-          // total table scanned
-          this.tableScanned = this.calculateLength(
-            orderItemList,
-            "0_ORDER_INITIALIZED"
-          );
-
-          // total user confirmed
-          this.userConfirmed = this.calculateLength(
-            orderItemList,
-            "1_ORDER_PLACED"
-          );
-
-          // total kitchen
-          this.kitchen = this.calculateLength(
-            orderItemList,
-            "2_ORDER_CONFIRMED"
-          );
-
-          // total food serve
-          this.foodServed = this.calculateLength(orderItemList, "3_IN_TABLE");
-          this.invoiceCreated = this.calculateLength(
-            orderItemList,
-            "4_CREATE_INVOICE"
-          );
-
-          // total payment done
-          this.paymentDone = this.calculateLength(orderItemList, "4_PAID");
-
-          // total cancel orders
-          this.cancelOrders = this.calculateLength(
-            orderItemList,
-            "5_CANCELLED"
-          );
+          this.orderDisburse(res.data.data);
         })
         .catch((err) => {
           console.log("eroil ", err.response);
@@ -1744,42 +1756,52 @@ export default {
       WinPrint.print();
       // WinPrint.close();
     },
+    playSound () {
+      var audio = new Audio("https://ihost-space.sgp1.digitaloceanspaces.com/music/ring.mp3");
+      audio.play();
+    },
 
-    // webSocket() {
-    //   let updateSocket;
-    //   let vm = this;
-    //   function connectSocket() {
-    //     updateSocket = new WebSocket(
-    //       // `ws://800b93cf9f0c.ngrok.io/ws/dashboard/${vm.resturent_id}/`
-    //       `ws://d8abaa95fbe0.ngrok.io/ws/dashboard/1/`
-    //     );
-    //     // console.log(updateSocket);
-    //     updateSocket.onmessage = function (e) {
-    //       let res = JSON.parse(e.data);
+    webSocket() {
+      let updateSocket;
+      let vm = this;
+      function connectSocket() {
+        updateSocket = new WebSocket(
+          `ws://production.i-host.com.bd/ws/dashboard/${vm.resturent_id}/`
+        );
+        // console.log(updateSocket);
+        updateSocket.onmessage = function (e) {
+          let res = JSON.parse(e.data);
+          vm.orderDisburse(res.data);
+          vm.playSound();
 
-    //       // vm.ordersData = res.data;
+           if(vm.orderToVarify.length > 0){
+              vm.orderToVarify = res.data.find(order => order.id == vm.orderToVarify.id);
+           }
 
-    //       // vm.orders = res.list;
-    //       // vm.queriedItems = res.list.length;
+           if(vm.orderToServed.length > 0){
+              vm.orderToServed = res.data.find(order => order.id == vm.orderToServed.id);
+           }
 
-    //       // vm.ordersData =
-    //       console.log("Received a message from the socket:", e.data);
-    //     };
-    //     updateSocket.onclose = function (e) {
-    //       console.error("Chat socket closed unexpectedly; reconnecting");
-    //       setTimeout(connectSocket, 1000);
-    //     };
-    //     updateSocket.onopen = function (e) {
-    //       console.log("Socket connected; sending a ping");
-    //       updateSocket.send(1);
-    //     };
-    //   }
-    //   connectSocket();
-    // },
+          // vm.queriedItems = res.list.length;
+
+          console.log("Received a message from the socket:", e.data);
+        };
+        updateSocket.onclose = function (e) {
+          console.error("Chat socket closed unexpectedly; reconnecting");
+          setTimeout(connectSocket, 1000);
+        };
+        updateSocket.onopen = function (e) {
+          console.log("Socket connected; sending a ping");
+          updateSocket.send(vm.resturent_id);
+        };
+      }
+      connectSocket();
+    },
   },
 
   created() {
     this.getTime();
+    this.webSocket();
 
     // setInterval(() => {
     this.getRestaurantOrderItemList();

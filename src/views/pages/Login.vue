@@ -110,8 +110,8 @@ export default {
               localStorage.setItem("resturent_id", rstrnt[0].restaurant.id);
             }
 
-            this.$router.push("/");
-            // window.location.href = "/";
+            // this.$router.push("/");
+            window.location.href = "/";
           } else {
             this.$vs.notify({
               title: "Login Failed",
