@@ -128,6 +128,11 @@
                 <td class="font-semibold">Vat Registration No</td>
                 <td>{{ vat_registration_no }}</td>
               </tr>
+
+              <tr>
+                <td class="font-semibold">Vat Registration No</td>
+                <td>{{ vat_registration_no }}</td>
+              </tr>
             </table>
           </div>
         </div>

@@ -132,7 +132,7 @@
     <vs-divider />
 
     <!-- order details -->
-    <div class="vx-row">
+    <div class="vx-row order-manger-area">
       <vs-collapse
         v-for="(order, j) in ordersData"
         :key="j"
@@ -1744,6 +1744,38 @@ export default {
       WinPrint.print();
       // WinPrint.close();
     },
+
+    // webSocket() {
+    //   let updateSocket;
+    //   let vm = this;
+    //   function connectSocket() {
+    //     updateSocket = new WebSocket(
+    //       // `ws://800b93cf9f0c.ngrok.io/ws/dashboard/${vm.resturent_id}/`
+    //       `ws://d8abaa95fbe0.ngrok.io/ws/dashboard/1/`
+    //     );
+    //     // console.log(updateSocket);
+    //     updateSocket.onmessage = function (e) {
+    //       let res = JSON.parse(e.data);
+
+    //       // vm.ordersData = res.data;
+
+    //       // vm.orders = res.list;
+    //       // vm.queriedItems = res.list.length;
+
+    //       // vm.ordersData =
+    //       console.log("Received a message from the socket:", e.data);
+    //     };
+    //     updateSocket.onclose = function (e) {
+    //       console.error("Chat socket closed unexpectedly; reconnecting");
+    //       setTimeout(connectSocket, 1000);
+    //     };
+    //     updateSocket.onopen = function (e) {
+    //       console.log("Socket connected; sending a ping");
+    //       updateSocket.send(1);
+    //     };
+    //   }
+    //   connectSocket();
+    // },
   },
 
   created() {
@@ -1757,21 +1789,27 @@ export default {
 </script>
 
 <style >
-  header.vs-collapse-item--header {
-    padding: 0px !important;
-  }
-  .open-item {
-    position: absolute;
-    z-index: 999;
-    width: 22.3%;
-  }
-  .mb-base {
-    margin-bottom: 0.5rem !important;
-  }
+header.vs-collapse-item--header {
+  padding: 0px !important;
+}
+.open-item {
+  position: absolute;
+  z-index: 999;
+  width: 22.3%;
+}
+.mb-base {
+  margin-bottom: 0.5rem !important;
+}
 
-  .status-icon {
-    width: 100% !important;
-    height: 100%;
-  }
+.status-icon {
+  width: 100% !important;
+  height: 100%;
+}
+
+.order-manger-area {
+  max-height: 60vh;
+  height: 60vh;
+  overflow-y: scroll;
+}
 </style>
 
