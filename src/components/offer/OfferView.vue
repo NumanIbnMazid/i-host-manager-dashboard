@@ -20,7 +20,7 @@
         <div class="flex flex-wrap-reverse items-center">
           <div
             class="p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary"
-            @click="$router.push('/food/create')"
+            @click="popupActive = !popupActive"
           >
             <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
             <span class="ml-2 text-base text-primary">Add New</span>
@@ -147,13 +147,159 @@
         </tbody>
       </template>
     </vs-table>
+
+    <!-- NEW OFFER POPUP FORM -->
+    <vs-popup class="holamundo" title="New Offer" :active.sync="popupActive">
+      <vs-row>
+        <div class="vx-col sm:w-8/12 w-full mb-2 mx-auto">
+          <img
+            :src="newOffer.iamge"
+            v-if="!newOffer.logoPreview"
+            style="width: 100%"
+            class="rounded"
+            alt
+          />
+          <img
+            v-else
+            :src="newOffer.logoPreview"
+            style="width: 100%"
+            class="rounded"
+            alt
+          />
+
+          <input
+            type="file"
+            class="hidden"
+            @change="newImgAdd"
+            ref="logoInput"
+            accept="image/*"
+          />
+
+          <div class="vx-row mt-4">
+            <div class="vx-col w-full">
+              <vs-button
+                class="mr-5 mb-2 w-full"
+                icon-pack="feather"
+                icon="icon-edit"
+                @click="$refs.logoInput.click()"
+                >Upload image</vs-button
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- name -->
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-user"
+            label="Name"
+            v-model="newOffer.name"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <!-- description -->
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-file-text  "
+            label="Description"
+            v-model="newOffer.description"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <!-- url field -->
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-link"
+            label="URL"
+            v-model="newOffer.url"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <!-- start date field -->
+        <div class="w-full mt-2">
+          <!-- <vs-input
+            icon-pack="feather"
+            icon="icon-clock"
+            label="Start Date"
+            v-model="newOffer.start_date"
+            class="mt-5 w-full"
+            type="date"
+            v-validate="'required'"
+          /> -->
+          <label for="" class="vs-input--label">Start Date</label>
+          <datepicker
+            icon-pack="feather"
+            icon="icon-clock"
+            label="Start Date"
+            class="mt-2 w-full"
+            placeholder="End Date"
+            v-model="newOffer.start_date"
+          ></datepicker>
+        </div>
+
+        <!-- end date field -->
+        <div class="w-full mt-2">
+          <!-- <vs-input
+            icon-pack="feather"
+            icon="icon-clock"
+            label="End Date"
+            v-model="newOffer.end_date"
+            class="mt-5 w-full"
+            type="date"
+            v-validate="'required'"
+          /> -->
+          <label for="" class="vs-input--label">End Date</label>
+          <datepicker
+            icon-pack="feather"
+            icon="icon-clock"
+            label="End Date"
+            class="mt-2 w-full"
+            placeholder="Start Date"
+            v-model="newOffer.end_date"
+          ></datepicker>
+        </div>
+
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-dollar-sign"
+            label="Amount"
+            v-model="newOffer.amount"
+            class="mt-5 w-full"
+            type="text"
+            v-validate="'required'"
+          />
+        </div>
+
+        <vs-button class="mb-2 w-full mt-5" @click="createNewDiscountOffer()"
+          >Save</vs-button
+        >
+      </vs-row>
+    </vs-popup>
   </div>
 </template>
 
 <script>
 import axios from "@/axios.js";
+import Datepicker from "vuejs-datepicker";
+import moment from "moment";
 export default {
   name: "OfferView",
+  components: {
+    Datepicker,
+  },
   data() {
     return {
       resturent_id: localStorage.getItem("resturent_id"),
@@ -162,6 +308,18 @@ export default {
       limit: 10,
       offset: 1,
       all_discount_offers: null,
+      popupActive: false,
+
+      newOffer: {
+        logoPreview: null,
+        image: null,
+        name: null,
+        description: null,
+        url: null,
+        start_date: null,
+        end_date: null,
+        amount: null,
+      },
     };
   },
   methods: {
@@ -177,8 +335,26 @@ export default {
         .catch((err) => console.log("error offer ", err.response));
     },
 
+    createNewDiscountOffer() {
+      // console.log("sd ", moment(this.newOffer.start_date).format("YYYY-MM-DD"));
+      // console.log("ed ", moment(this.newOffer.end_date).format("YYYY-MM-DD"));
+      axios
+        .post("/restaurant_management/dashboard/restaurant/create_discount/", {
+          name: this.newOffer.name,
+          description: this.newOffer.description,
+          url: this.newOffer.url,
+          start_date: moment(this.newOffer.start_date).format("YYYY-MM-DD"),
+          end_date: moment(this.newOffer.end_date).format("YYYY-MM-DD"),
+          amount: this.newOffer.amount,
+          restaurant: this.resturent_id,
+          image: this.newOffer.logoPreview,
+        })
+        .then((res) => console.log("cnd ", res))
+        .catch((err) => console.log("cnd err ", err.response));
+    },
+
     deleteADiscount(discount_id) {
-      console.log('aa ', this.all_discount_offers.results)
+      console.log("aa ", this.all_discount_offers.results);
       axios
         .delete(
           `/restaurant_management/dashboard/delete_discount/${discount_id}`
@@ -194,6 +370,21 @@ export default {
           }
         })
         .catch((err) => console.log("error offer ", err.response));
+    },
+
+    // checking image size
+    newImgAdd(input) {
+      if (input.target.files && input.target.files[0]) {
+        const reader = new FileReader();
+        reader.readAsDataURL(input.target.files[0]);
+
+        reader.onload = (e) => {
+          let img = new Image();
+          img.src = e.target.result;
+          this.newOffer.logoPreview = e.target.result;
+          this.newOffer.image = "";
+        };
+      }
     },
   },
   created() {
