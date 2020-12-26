@@ -20,7 +20,10 @@
         <div class="flex flex-wrap-reverse items-center">
           <div
             class="p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary"
-            @click="popupActive = !popupActive"
+            @click="
+              popupActive = !popupActive;
+              discountOfferFormActionMethod = createNewDiscountOffer;
+            "
           >
             <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
             <span class="ml-2 text-base text-primary">Add New</span>
@@ -67,9 +70,7 @@
         <vs-th class="text-center">URL</vs-th>
         <vs-th class="text-center">Start Date</vs-th>
         <vs-th class="text-center">End Date</vs-th>
-        <!-- <vs-th class="text-center">End Date</vs-th> -->
         <vs-th class="text-center">Amount</vs-th>
-        <!-- <vs-th class="text-center">Amount</vs-th> -->
         <vs-th class="text-center">Restaurant</vs-th>
         <vs-th class="text-center">Action</vs-th>
       </template>
@@ -84,7 +85,7 @@
             </vs-td>
 
             <vs-td class="img-container">
-              <img :src="tr.image" class="product-img w-1/2" />
+              <img :src="tr.image" class="product-img w-1/6" />
             </vs-td>
 
             <vs-td>
@@ -134,7 +135,7 @@
               <feather-icon
                 icon="EditIcon"
                 svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                @click="$router.push(`/food/edit/${tr.id}`)"
+                @click="updateDiscountOfferGo(tr)"
               />
               <feather-icon
                 icon="TrashIcon"
@@ -229,44 +230,26 @@
 
         <!-- start date field -->
         <div class="w-full mt-2">
-          <!-- <vs-input
-            icon-pack="feather"
-            icon="icon-clock"
-            label="Start Date"
-            v-model="newOffer.start_date"
-            class="mt-5 w-full"
-            type="date"
-            v-validate="'required'"
-          /> -->
           <label for="" class="vs-input--label">Start Date</label>
           <datepicker
             icon-pack="feather"
             icon="icon-clock"
             label="Start Date"
             class="mt-2 w-full"
-            placeholder="End Date"
+            placeholder="Start Date"
             v-model="newOffer.start_date"
           ></datepicker>
         </div>
 
         <!-- end date field -->
         <div class="w-full mt-2">
-          <!-- <vs-input
-            icon-pack="feather"
-            icon="icon-clock"
-            label="End Date"
-            v-model="newOffer.end_date"
-            class="mt-5 w-full"
-            type="date"
-            v-validate="'required'"
-          /> -->
           <label for="" class="vs-input--label">End Date</label>
           <datepicker
             icon-pack="feather"
             icon="icon-clock"
             label="End Date"
             class="mt-2 w-full"
-            placeholder="Start Date"
+            placeholder="End Date"
             v-model="newOffer.end_date"
           ></datepicker>
         </div>
@@ -283,7 +266,9 @@
           />
         </div>
 
-        <vs-button class="mb-2 w-full mt-5" @click="createNewDiscountOffer()"
+        <vs-button
+          class="mb-2 w-full mt-5"
+          @click="discountOfferFormActionMethod"
           >Save</vs-button
         >
       </vs-row>
@@ -309,6 +294,7 @@ export default {
       offset: 1,
       all_discount_offers: null,
       popupActive: false,
+      discountOfferFormActionMethod: null,
 
       newOffer: {
         logoPreview: null,
@@ -336,21 +322,69 @@ export default {
     },
 
     createNewDiscountOffer() {
-      // console.log("sd ", moment(this.newOffer.start_date).format("YYYY-MM-DD"));
-      // console.log("ed ", moment(this.newOffer.end_date).format("YYYY-MM-DD"));
       axios
         .post("/restaurant_management/dashboard/restaurant/create_discount/", {
           name: this.newOffer.name,
           description: this.newOffer.description,
           url: this.newOffer.url,
-          start_date: moment(this.newOffer.start_date).format("YYYY-MM-DD"),
-          end_date: moment(this.newOffer.end_date).format("YYYY-MM-DD"),
+          start_date:
+            moment(this.newOffer.start_date).format("YYYY-MM-DD") + "T00:00",
+          end_date:
+            moment(this.newOffer.end_date).format("YYYY-MM-DD") + "T00:00",
           amount: this.newOffer.amount,
           restaurant: this.resturent_id,
           image: this.newOffer.logoPreview,
         })
-        .then((res) => console.log("cnd ", res))
-        .catch((err) => console.log("cnd err ", err.response));
+        .then((res) => {
+          if (res.data.status) {
+            this.all_discount_offers.results.push(res.data.data);
+            this.$vs.notify({
+              title: "Offer",
+              text: "Offer Created Successfully!",
+              iconPack: "feather",
+              icon: "icon-alert-circle",
+              color: "success",
+              position: "top-right",
+            });
+
+            this.popupActive = !this.popupActive;
+          } else {
+            const errors = res.data.error.error_details;
+            for (const property in errors) {
+              this.$vs.notify({
+                text: errors[property][0],
+                color: "danger",
+                position: "top-right",
+              });
+            }
+          }
+        })
+        .catch((err) =>
+          this.$vs.notify({
+            text: "Something went wrong!",
+            color: "danger",
+            position: "top-right",
+          })
+        );
+    },
+    updateDiscountOfferGo(offer) {
+      this.newOffer.logoPreview = offer.image;
+      this.newOffer.image = offer.image;
+      this.newOffer.name = offer.name;
+      this.newOffer.description = offer.description;
+      this.newOffer.url = offer.url;
+      this.newOffer.start_date = offer.start_date;
+      this.newOffer.end_date = offer.end_date;
+      this.newOffer.amount = offer.amount;
+      this.discountOfferFormActionMethod = this.updateDiscountOffer;
+      this.popupActive = !this.popupActive;
+    },
+
+    updateDiscountOffer(offerId) {
+      // axios.patch(
+      //   `/restaurant_management/dashboard/update_discount/${offerId}`,
+      //   this.newOffer
+      // );
     },
 
     deleteADiscount(discount_id) {
