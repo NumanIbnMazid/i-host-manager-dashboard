@@ -85,34 +85,9 @@
 
               <tr>
                 <td class="font-semibold">Subscription</td>
-                <td>{{ subscription }}</td>
+                <td>{{ subscription.title }}</td>
               </tr>
-
-              <!-- <tr>
-                <td class="font-semibold">Latitude</td>
-                <td>
-                  <vx-tooltip color="success" :text="latitude">
-                    {{
-                      latitude.length > 18
-                        ? `${latitude.substr(0, 18)}...`
-                        : latitude
-                    }}
-                  </vx-tooltip>
-                </td>
-              </tr>
-
-              <tr>
-                <td class="font-semibold">Longitude</td>
-                <td>
-                  <vx-tooltip :text="longitude">
-                    {{
-                      longitude.length > 18
-                        ? `${longitude.substr(0, 18)}...`
-                        : longitude
-                    }}
-                  </vx-tooltip>
-                </td>
-              </tr> -->
+              
 
               <tr>
                 <td class="font-semibold">Tax Percentage</td>
@@ -122,11 +97,6 @@
               <tr>
                 <td class="font-semibold">Trade Licence No</td>
                 <td>{{ trade_licence_no }}</td>
-              </tr>
-
-              <tr>
-                <td class="font-semibold">Vat Registration No</td>
-                <td>{{ vat_registration_no }}</td>
               </tr>
 
               <tr>

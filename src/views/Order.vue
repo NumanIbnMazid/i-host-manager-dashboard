@@ -265,7 +265,10 @@
               class="ml-2 my-auto"
               color="pl"
               text="Return to food serve"
-              v-if="order.status && order.status == '4_CREATE_INVOICE'"
+              v-if="
+                (order.status && order.status == '4_CREATE_INVOICE') ||
+                order.status == '3_IN_TABLE'
+              "
             >
               <vs-button
                 class="bg-pl"
@@ -425,6 +428,16 @@
               ></vs-checkbox>
 
               <span
+                v-if="data[i].status === '3_IN_TABLE'"
+                class="badge bg-gn text-white rounded"
+                >Served</span
+              >
+              <span
+                v-if="data[i].status === '1_ORDER_PLACED'"
+                class="text-danger"
+                >Not Verified</span
+              >
+              <span
                 v-if="data[i].status === '4_CANCELLED'"
                 class="badge bg-danger text-white rounded"
                 >Canceled</span
@@ -432,7 +445,7 @@
               <span
                 v-if="data[i].status === '0_ORDER_INITIALIZED'"
                 class="text-yl"
-                >Item In Cart</span
+                >Item Carts by user</span
               >
             </vs-td>
 
@@ -744,6 +757,7 @@ import VxTimeline from "@/components/timeline/VxTimeline";
 import vSelect from "vue-select";
 import axios from "@/axios.js";
 import moment from "moment";
+// import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -963,12 +977,13 @@ export default {
       return true;
     },
     checkAllCanceled(orderItemList) {
-      let totalLength = orderItemList.filter(
-        (item) => item.status === "4_CANCELLED"
-      ).length;
+      if (orderItemList) {
+        let totalLength = orderItemList.filter(
+          (item) => item.status === "4_CANCELLED"
+        ).length;
 
-      if (orderItemList.length == totalLength) true;
-
+        if (orderItemList.length == totalLength) true;
+      }
       return false;
     },
 
@@ -1075,10 +1090,6 @@ export default {
           this.showActionMessage("error", err);
           this.checkError(err);
         });
-    },
-
-    revertOrder(order_id) {
-      
     },
 
     cancelOrderItem(order_id, item_id) {
@@ -1760,6 +1771,27 @@ export default {
       WinPrint.print();
       // WinPrint.close();
     },
+
+    revertOrder(order_id) {
+      axios
+        .post(
+          `/restaurant_management/dashboard/order/revert_back_to_in_table/`,
+          {
+            order_id,
+          }
+        )
+        .then((res) => {
+          if (res.data.status) {
+            this.ordersData = this.ordersData.map((order) =>
+              order.id === order_id ? { ...res.data.data } : order
+            );
+          }
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          console.log(err);
+        });
+    },
     playSound() {
       var audio = new Audio(
         "https://ihost-space.sgp1.digitaloceanspaces.com/music/ring.mp3"
@@ -1777,8 +1809,11 @@ export default {
         // console.log(updateSocket);
         updateSocket.onmessage = function (e) {
           let res = JSON.parse(e.data);
-          vm.orderDisburse(res.data);
-          vm.playSound();
+
+          if (res.data != vm.ordersData) {
+            vm.orderDisburse(res.data);
+            vm.playSound();
+          }
 
           if (vm.orderToVarify.length > 0) {
             vm.orderToVarify = res.data.find(
@@ -1817,6 +1852,9 @@ export default {
     this.getRestaurantOrderItemList();
     // }, 5000);
   },
+  // computed: {
+  //   ...mapGetters(["ordersData"]),
+  // },
 };
 </script>
 
