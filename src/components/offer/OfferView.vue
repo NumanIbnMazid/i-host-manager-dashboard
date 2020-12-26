@@ -318,7 +318,11 @@ export default {
           this.all_discount_offers = res.data.data;
           console.log("offer res ", res.data.data);
         })
-        .catch((err) => console.log("error offer ", err.response));
+        .catch((err) => {
+          console.log("error offer ", err.response);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
     },
 
     createNewDiscountOffer() {
