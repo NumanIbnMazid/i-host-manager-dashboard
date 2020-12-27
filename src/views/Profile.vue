@@ -44,6 +44,13 @@
               </tr>
 
               <tr>
+                <td class="font-semibold">Phone number</td>
+                <td>
+                  <p>{{ phone }}</p>
+                </td>
+              </tr>
+
+              <tr>
                 <td class="font-semibold">Website</td>
                 <td>
                   <p>
@@ -87,7 +94,6 @@
                 <td class="font-semibold">Subscription</td>
                 <td>{{ subscription.title }}</td>
               </tr>
-              
 
               <tr>
                 <td class="font-semibold">Tax Percentage</td>
@@ -102,6 +108,23 @@
               <tr>
                 <td class="font-semibold">Vat Registration No</td>
                 <td>{{ vat_registration_no }}</td>
+              </tr>
+              <tr>
+                <td class="font-semibold">Payment type</td>
+                <td>
+                  <span v-for="pt in payment_type" :key="pt.id"
+                    >{{ pt.name }} <br
+                  /></span>
+                </td>
+              </tr>
+              <tr>
+                <td class="font-semibold">Subscription Plan</td>
+                <td>{{ subscription.code }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Subscription end date</td>
+                <td>{{ subscription_ends }}</td>
               </tr>
             </table>
           </div>
@@ -189,14 +212,18 @@
               </div>
               <div class="vx-row mb-6">
                 <div class="vx-col w-full">
-                  <!-- <vs-input
+                  <vs-input
                     class="w-full"
                     icon-pack="feather"
-                    icon="icon-dollar-sign"
+                    icon="icon-map"
                     icon-no-border
-                    label="Service Charge Is Percentage"
-                    v-model="service_charge_is_percentage"
-                  /> -->
+                    label="Phone number"
+                    v-model="phone"
+                  />
+                </div>
+              </div>
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
                   <ul class="flex">
                     <label for=""> Service Charge Is Percentage </label>
                     <li class="ml-4">
@@ -237,35 +264,10 @@
                   <vs-input
                     class="w-full"
                     icon-pack="feather"
-                    icon="icon-calendar"
-                    icon-no-border
-                    label="Created At"
-                    v-model="created_at"
-                  />
-                </div>
-              </div>
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
                     icon="icon-link"
                     icon-no-border
                     label="Website"
                     v-model="website"
-                  />
-                </div>
-              </div>
-
-              <div class="vx-row mb-6">
-                <div class="vx-col w-full">
-                  <vs-input
-                    class="w-full"
-                    icon-pack="feather"
-                    icon="icon-calendar"
-                    icon-no-border
-                    label="Subscription Ends"
-                    v-model="subscription_ends"
                   />
                 </div>
               </div>
@@ -305,6 +307,20 @@
                     icon-no-border
                     label="Vat Registration No"
                     v-model="vat_registration_no"
+                  />
+                </div>
+              </div>
+
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
+                  <label for class="text-sm">Accepted payment(s)</label>
+                  <v-select
+                    label="name"
+                    class="w-full"
+                    multiple
+                    v-model="payment_type"
+                    :options="payments"
+                    :reduce="(payments) => payments.id"
                   />
                 </div>
               </div>
@@ -354,6 +370,7 @@ export default {
     showEditField: false,
     name: "",
     address: "",
+    phone: "",
     logo: "",
     newLogo: "",
     logoPreview: "",
@@ -380,6 +397,10 @@ export default {
     vat_reg_no: "",
     old_password: "",
     new_password: "",
+    payment_type: "",
+    subscription: "",
+
+    payments: [],
   }),
 
   methods: {
@@ -408,6 +429,7 @@ export default {
       console.log("res ", restaurant);
       this.name = restaurant.name;
       this.logo = restaurant.logo;
+      this.phone = restaurant.phone;
       this.logoPreview = restaurant.logoPreview;
       this.address = restaurant.address;
       this.service_charge_is_percentage =
@@ -423,38 +445,44 @@ export default {
       this.tax_percentage = restaurant.tax_percentage;
       this.trade_licence_no = restaurant.trade_licence_no;
       this.vat_registration_no = restaurant.vat_registration_no;
+      this.payment_type = restaurant.payment_type;
     },
 
     updateRestaurantGo() {
-      console.log("status ", this.status);
-      let formData = new FormData();
-      formData.append("name", this.name);
-      formData.append("address", this.address);
-      formData.append(
-        "service_charge_is_percentage",
-        this.service_charge_is_percentage === "1" ? true : false
-      );
-      formData.append("service_charge", this.service_charge);
-      formData.append("tax_percentage", this.tax_percentage);
-      formData.append("website", this.website);
-      formData.append("subscription_ends", this.subscription_ends);
-      formData.append("tax_percentage", this.tax_percentage);
-      formData.append("trade_licence_no", this.trade_licence_no);
-      formData.append("vat_registration_no", this.vat_registration_no);
+      let payment_type = this.payment_type.map((pt) => (pt.name ? pt.id : pt));
+
+      let updateData = {
+        name: this.name,
+        address: this.address,
+        phone: this.phone,
+        service_charge_is_percentage: this.service_charge_is_percentage,
+        service_charge: this.service_charge,
+        tax_percentage: this.tax_percentage,
+        website: this.website,
+        vat_registration_no: this.vat_registration_no,
+        trade_licence_no: this.trade_licence_no,
+        payment_type: payment_type,
+      };
 
       if (this.logoPreview != "" && this.newLogo !== "") {
-        formData.append("logo", this.newLogo);
+        updateData = {
+          name: this.name,
+          address: this.address,
+          phone: this.phone,
+          service_charge_is_percentage: this.service_charge_is_percentage,
+          service_charge: this.service_charge,
+          tax_percentage: this.tax_percentage,
+          website: this.website,
+          vat_registration_no: this.vat_registration_no,
+          trade_licence_no: this.trade_licence_no,
+          payment_type: payment_type,
+          logo: this.logoPreview,
+        };
       }
-
       axios
         .patch(
           `/restaurant_management/dashboard/restaurant/${this.resturent_id}/`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
+          updateData
         )
         .then((res) => {
           if (res.data.status) {
@@ -487,10 +515,27 @@ export default {
           this.checkError(err);
         });
     },
+    getAllPaymentsOptions() {
+      axios
+        .get(`/restaurant_management/dashboard/payment_type/`)
+        .then((res) => {
+          this.payments = res.data.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$vs.notify({
+            title: "Error",
+            text: "Something went wrong!",
+            color: "danger",
+            position: "top-right",
+          });
+        });
+    },
   },
 
   created() {
     this.getRestaurant();
+    this.getAllPaymentsOptions();
   },
 };
 </script>
