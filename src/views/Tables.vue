@@ -264,7 +264,7 @@
             label="Table No"
             v-model="table_no"
             class="mt-5 w-full"
-            type="text"
+            type="number"
             v-validate="'required'"
           />
         </div>
@@ -625,7 +625,6 @@ export default {
     },
 
     removeWaiterFromTable(waiterId, tableId) {
-      console.log("rwft ", waiterId, tableId);
       axios
         .post(`/restaurant_management/dashboard/table/${tableId}/staff_remove/`, {
           staff_list: [waiterId],
