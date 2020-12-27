@@ -85,15 +85,7 @@
                 </td>
               </tr>
 
-              <tr>
-                <td class="font-semibold">Subscription Ends</td>
-                <td>{{ subscription_ends }}</td>
-              </tr>
-
-              <tr>
-                <td class="font-semibold">Subscription</td>
-                <td>{{ subscription.title }}</td>
-              </tr>
+              
 
               <tr>
                 <td class="font-semibold">Tax Percentage</td>
@@ -119,7 +111,7 @@
               </tr>
               <tr>
                 <td class="font-semibold">Subscription Plan</td>
-                <td>{{ subscription.code }}</td>
+                <td>{{ subscription.title }}</td>
               </tr>
 
               <tr>

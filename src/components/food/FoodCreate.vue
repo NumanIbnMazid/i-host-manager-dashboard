@@ -43,6 +43,10 @@
                 :src="preview"
                 :aspectRatio="1 / 1"
                 :initialAspectRatio="1 / 1"
+                :fixed="true"
+                :outputSize="1"
+                :autoCropWidth="200"
+                :autoCropHeight="200"
               ></vue-cropper>
 
               <span class="text-center" v-else
