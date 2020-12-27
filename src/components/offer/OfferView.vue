@@ -85,7 +85,7 @@
             </vs-td>
 
             <vs-td class="img-container">
-              <img :src="tr.image" class="product-img w-1/6" />
+              <img :src="tr.image" class="product-img" />
             </vs-td>
 
             <vs-td>
@@ -150,12 +150,12 @@
     </vs-table>
 
     <!-- NEW OFFER POPUP FORM -->
-    <vs-popup class="holamundo" title="New Offer" :active.sync="popupActive">
+    <vs-popup class="holamundo" title="Discount Offer" :active.sync="popupActive">
       <vs-row>
         <div class="vx-col sm:w-8/12 w-full mb-2 mx-auto">
           <img
-            :src="newOffer.iamge"
             v-if="!newOffer.logoPreview"
+            :src="newOffer.iamge"
             style="width: 100%"
             class="rounded"
             alt
@@ -297,6 +297,7 @@ export default {
       discountOfferFormActionMethod: null,
 
       newOffer: {
+        id: null,
         logoPreview: null,
         image: null,
         name: null,
@@ -352,16 +353,7 @@ export default {
             });
 
             this.popupActive = !this.popupActive;
-          } else {
-            const errors = res.data.error.error_details;
-            for (const property in errors) {
-              this.$vs.notify({
-                text: errors[property][0],
-                color: "danger",
-                position: "top-right",
-              });
-            }
-          }
+          } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) =>
           this.$vs.notify({
@@ -372,8 +364,8 @@ export default {
         );
     },
     updateDiscountOfferGo(offer) {
+      this.newOffer.id = offer.id;
       this.newOffer.logoPreview = offer.image;
-      this.newOffer.image = offer.image;
       this.newOffer.name = offer.name;
       this.newOffer.description = offer.description;
       this.newOffer.url = offer.url;
@@ -384,11 +376,20 @@ export default {
       this.popupActive = !this.popupActive;
     },
 
+    // TODO:
     updateDiscountOffer(offerId) {
-      // axios.patch(
-      //   `/restaurant_management/dashboard/update_discount/${offerId}`,
-      //   this.newOffer
-      // );
+      axios
+        .patch(
+          `/restaurant_management/dashboard/update_discount/${this.newOffer.id}`,
+          this.newOffer
+        )
+        .then((res) => {
+          console.log("ures1 ", res);
+          if (res.data.status) {
+            console.log("ures ", res);
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => console.log("u err ", err.response));
     },
 
     deleteADiscount(discount_id) {
@@ -405,9 +406,19 @@ export default {
             );
 
             this.all_discount_offers.results = updatedOffers;
-          }
+          } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => console.log("error offer ", err.response));
+    },
+
+    showErrorLog(errorList) {
+      for (const error in errorList) {
+        this.$vs.notify({
+          text: errorList[error][0],
+          color: "danger",
+          position: "top-right",
+        });
+      }
     },
 
     // checking image size
@@ -430,3 +441,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .product-img {
+    height: 80px;
+    width: auto;
+    border-radius: 5px;
+  }
+</style>
