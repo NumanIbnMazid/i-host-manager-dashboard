@@ -279,7 +279,7 @@
           />
         </div>
 
-        <div class="w-full">
+        <!-- <div class="w-full">
           <vs-input
             label="Restaurant Id"
             v-model="resturent_id"
@@ -287,7 +287,7 @@
             type="text"
             disabled
           />
-        </div>
+        </div> -->
 
         <vs-button class="mb-2 w-full mt-5" @click="addTable()"
           >Add New</vs-button
@@ -322,7 +322,7 @@
           />
         </div>
 
-        <div class="w-full">
+        <!-- <div class="w-full">
           <vs-input
             label="Restaurant Id"
             v-model="resturent_id"
@@ -330,7 +330,7 @@
             type="text"
             disabled
           />
-        </div>
+        </div> -->
 
         <vs-button class="mb-2 w-full mt-5" @click="editTable()"
           >Save Changes</vs-button
