@@ -414,7 +414,7 @@ export default {
     showErrorLog(errorList) {
       for (const error in errorList) {
         this.$vs.notify({
-          text: errorList[error][0],
+          text: `${error} :  ${errorList[error][0]}`,
           color: "danger",
           position: "top-right",
         });
