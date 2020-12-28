@@ -104,6 +104,27 @@ const router = new Router({
                     beforeEnter: requireAuth
                 },
                 {
+                    path: "/report/date-wise",
+                    name: "DateReport",
+                    component: () =>
+                        import ("./views/Report.vue"),
+                    beforeEnter: requireAuth
+                },
+                {
+                    path: "/report/top",
+                    name: "TopReport",
+                    component: () =>
+                        import ("./views/Report.vue"),
+                    beforeEnter: requireAuth
+                },
+                {
+                    path: "/report/waiter-wise",
+                    name: "WaiterReport",
+                    component: () =>
+                        import ("./views/Report.vue"),
+                    beforeEnter: requireAuth
+                },
+                {
                     path: "/profile/setting",
                     name: "profile-setting",
                     component: () =>
