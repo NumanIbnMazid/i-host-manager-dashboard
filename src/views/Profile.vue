@@ -3,33 +3,18 @@
     <!-- restaurent info -->
     <vx-card class="mb-base" v-show="!showEditField">
       <!-- restaurent name -->
-      <h3 class="text-center mb-4 pb-4">{{ resturent.name }}</h3>
+      <h3 class="mb-4 pb-4">{{ resturent.name }}</h3>
 
-      <!-- Avatar -->
-      <div
-        class="md:w-12/12 sm:w-12/12 lg:w-4/12 mx-auto rounded pt-3"
-        style="border: 1px solid grey; overflow: hidden"
-      >
-        <!-- <div class="md:w-8/12 sm:w-12/12 lg:w-4/12 mx-auto border-dashed border-4 border-light-blue-500"> -->
-        <div class="vx-row">
-          <!-- Avatar Col -->
-          <div
-            class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12"
-            id="avatar-col"
-          >
-            <div class="img-container mb-4">
-              <img :src="logo" class="rounded w-full" />
-            </div>
+      <div class="vx-row">
+        <div
+          class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12 flex space-x-20"
+          id="avatar-col"
+        >
+          <!-- Avatar -->
+          <div class="img-container m-4">
+            <img :src="logo" class="rounded w-64" />
           </div>
-        </div>
-
-        <div class="vx-row">
-          <!-- Information - Col 1 -->
-          <!-- <div class="vx-col pl-4 mx-auto mb-4" id="account-info-col-1"> -->
-          <div
-            class="vx-col m-4 sm:w-8/12 md:w-6/12 lg:w-11/12 mx-auto"
-            id="account-info-col-1"
-          >
+          <div id="account-info-col-1">
             <table>
               <tr>
                 <td class="font-semibold">Name</td>
@@ -85,8 +70,6 @@
                 </td>
               </tr>
 
-              
-
               <tr>
                 <td class="font-semibold">Tax Percentage</td>
                 <td>{{ tax_percentage }}</td>
@@ -101,28 +84,11 @@
                 <td class="font-semibold">Vat Registration No</td>
                 <td>{{ vat_registration_no }}</td>
               </tr>
-              <tr>
-                <td class="font-semibold">Payment type</td>
-                <td>
-                  <span v-for="pt in payment_type" :key="pt.id"
-                    >{{ pt.name }} <br
-                  /></span>
-                </td>
-              </tr>
-              <tr>
-                <td class="font-semibold">Subscription Plan</td>
-                <td>{{ subscription.title }}</td>
-              </tr>
-
-              <tr>
-                <td class="font-semibold">Subscription end date</td>
-                <td>{{ subscription_ends }}</td>
-              </tr>
             </table>
           </div>
         </div>
       </div>
-      <!-- /edit button -->
+      <!-- edit button -->
       <div
         class="w-full object-right-bottom flex flex-row-reverse"
         id="account-manage-buttons"
@@ -137,6 +103,146 @@
       </div>
     </vx-card>
 
+    <!-- PAYMENT INFORMATION -->
+    <vx-card class="mb-base" v-show="!showEditField">
+      <!-- restaurent name -->
+      <h3 class="mb-4 pb-4">Payment Information</h3>
+
+      <div class="vx-row">
+        <div
+          class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12 flex space-x-20"
+          id="avatar-col"
+        >
+          <!-- Avatar -->
+          <div class="w-1/6" v-for="pt in payment_type" :key="pt.id">
+            <vx-card>
+              <div class="option-logo">
+                <img class="payment-logo w-28" :src="pt.image" :alt="pt.name" />
+              </div>
+              <hr />
+              <h3 class="text-center py-1">{{ pt.name }}</h3>
+              <hr />
+            </vx-card>
+          </div>
+        </div>
+      </div>
+    </vx-card>
+
+    <!-- Subscription Plan INFORMATION -->
+    <vx-card class="mb-base" v-show="!showEditField">
+      <!-- restaurent name -->
+      <h3 class="mb-4 pb-4">Subscription Plan</h3>
+
+      <div class="vx-row">
+        <div
+          class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12 flex space-x-20"
+          id="avatar-col"
+        >
+          <!-- Avatar -->
+          <div class="img-container m-4">
+            <img :src="subscription.image" class="rounded w-64" />
+          </div>
+          <div id="account-info-col-1">
+            <h2>Package Details</h2>
+            <hr>
+            <table>
+              <tr>
+                <td class="font-semibold">Title</td>
+                <td>{{ subscription.title }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Code</td>
+                <td>{{ subscription.code }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Details</td>
+                <td>
+                  <p>{{ subscription.details }}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Bi Report</td>
+                <td>{{ subscription.bi_report }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Allow Popup</td>
+                <td>{{ subscription.allow_popup }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Table Limit</td>
+                <td>{{ subscription.table_limit }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Waiter Limit</td>
+                <td>{{ subscription.waiter_limit }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Manager Limit</td>
+                <td>
+                  <p>{{ subscription.manager_limit }}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Restaurant Limit</td>
+                <td>
+                  <p>{{ subscription.restaurant_limit }}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold pr-3">Subscription End</td>
+                <td>{{ subscription_ends }}</td>
+              </tr>
+            </table>
+          </div>
+
+          <hr>
+
+          <!-- test -->
+          <div id="account-info-col-1">
+            <h2>Available</h2>
+            <hr>
+            <table>
+              <tr>
+                <td class="font-semibold">Table</td>
+                <td>{{ subscription.table_limit }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Waiter</td>
+                <td>{{ subscription.waiter_limit }}</td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Manager</td>
+                <td>
+                  <p>{{ subscription.manager_limit }}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold pr-3">Restaurant</td>
+                <td>
+                  <p>{{ subscription.restaurant_limit }}</p>
+                </td>
+              </tr>
+
+             
+            </table>
+          </div>
+        </div>
+      </div>
+    </vx-card>
+
+    <!-- update page -->
     <vx-card :title="resturent.name" v-show="showEditField">
       <vs-tabs>
         <vs-tab label="Restaurant" icon-pack="feather" icon="icon-home">
@@ -418,6 +524,7 @@ export default {
 
     getRestaurant() {
       let restaurant = JSON.parse(localStorage.getItem("resturent"));
+      // axios.get(`/restaurant_management/dashboard/restaurant/${restaurant.id}/`)
       console.log("res ", restaurant);
       this.name = restaurant.name;
       this.logo = restaurant.logo;
@@ -532,5 +639,16 @@ export default {
 };
 </script>
 
-<style>
+<style lang="css">
+  .vx-card {
+    /* width: 35%; */
+  }
+  .option-logo {
+    display: flex;
+    justify-content: center;
+  }
+  .payment-logo {
+    height: 70px;
+    width: 80%;
+  }
 </style>
