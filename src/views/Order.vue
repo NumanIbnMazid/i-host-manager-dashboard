@@ -1804,7 +1804,7 @@ export default {
       let vm = this;
       function connectSocket() {
         updateSocket = new WebSocket(
-          `ws://production.i-host.com.bd/ws/dashboard/${vm.resturent_id}/`
+          `ws://b9bf2244ef22.ngrok.io/ws/dashboard/${vm.resturent_id}/`
         );
         // console.log(updateSocket);
         updateSocket.onmessage = function (e) {
