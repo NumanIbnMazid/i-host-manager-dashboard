@@ -1,5 +1,25 @@
 <template>
   <div>
+    <div class="flex">
+      <div class="pt-5 pl-1 mb-4 mr-auto rounded-lg cursor-pointer">
+        <span class="text-lg text-primary justify-between"
+          ><b>Total Sell Today</b></span
+        >
+      </div>
+      <div
+        class="p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary"
+      >
+        <span class="ml-2 text-base text-primary"
+          >Total Order: ৳ {{ totalAmount }}</span
+        >
+      </div>
+      <div
+        class="p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary"
+      >
+        <span class="ml-2 text-base text-primary">Total: {{ totalOrder }}</span>
+      </div>
+    </div>
+
     <vs-table class="p-0" ref="table" :data="orders">
       <template slot="thead">
         <th>Order Number</th>
@@ -15,7 +35,7 @@
         <tbody>
           <vs-tr :data="tr" v-for="(tr, i) in data" :key="i">
             <vs-td
-              ><p>{{ tr.order }}</p></vs-td
+              ><p>#{{ tr.order }}</p></vs-td
             >
             <vs-td
               ><p>{{ tr.order_info.table }}</p></vs-td
@@ -51,20 +71,27 @@ export default {
     resturent_id: localStorage.getItem("resturent_id"),
     orders: [],
     limit: 10,
+    totalOrder: 0,
+    totalAmount: 0,
   }),
 
   methods: {
     getTodaysOrder() {
+      // this.$vs.loading();
       axios
-        .get(
-          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/invoice_history/?limit=${this.limit}`
+        .post(
+          `/restaurant_management/dashboard/invoice_all_report/${this.resturent_id}/`
         )
         .then((res) => {
           this.orders = res.data.data.results;
+          this.totalOrder = res.data.data.total_order;
+          this.totalAmount = res.data.data.total_amaount;
+          this.$vs.loading.close();
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
+          // this.$vs.loading.close();
         });
     },
 
