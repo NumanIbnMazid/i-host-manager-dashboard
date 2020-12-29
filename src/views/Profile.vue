@@ -144,7 +144,7 @@
           </div>
           <div id="account-info-col-1">
             <h2>Package Details</h2>
-            <hr>
+            <hr />
             <table>
               <tr>
                 <td class="font-semibold">Title</td>
@@ -204,12 +204,12 @@
             </table>
           </div>
 
-          <hr>
+          <hr />
 
           <!-- test -->
           <div id="account-info-col-1">
             <h2>Available</h2>
-            <hr>
+            <hr />
             <table>
               <tr>
                 <td class="font-semibold">Table</td>
@@ -234,8 +234,6 @@
                   <p>{{ subscription.restaurant_limit }}</p>
                 </td>
               </tr>
-
-             
             </table>
           </div>
         </div>
@@ -524,27 +522,37 @@ export default {
 
     getRestaurant() {
       let restaurant = JSON.parse(localStorage.getItem("resturent"));
-      // axios.get(`/restaurant_management/dashboard/restaurant/${restaurant.id}/`)
-      console.log("res ", restaurant);
-      this.name = restaurant.name;
-      this.logo = restaurant.logo;
-      this.phone = restaurant.phone;
-      this.logoPreview = restaurant.logoPreview;
-      this.address = restaurant.address;
-      this.service_charge_is_percentage =
-        restaurant.service_charge_is_percentage;
-      this.service_charge = restaurant.service_charge;
-      this.tax_percentage = restaurant.tax_percentage;
-      this.created_at = restaurant.created_at;
-      this.website = restaurant.website;
-      this.subscription_ends = restaurant.subscription_ends;
-      this.subscription = restaurant.subscription;
-      this.latitude = restaurant.latitude;
-      this.longitude = restaurant.longitude;
-      this.tax_percentage = restaurant.tax_percentage;
-      this.trade_licence_no = restaurant.trade_licence_no;
-      this.vat_registration_no = restaurant.vat_registration_no;
-      this.payment_type = restaurant.payment_type;
+      axios
+        .get(`/restaurant_management/dashboard/restaurant/${restaurant.id}/`)
+        .then((res) => {
+          if (res.data.status) {
+            restaurant = res.data.data;
+            this.name = restaurant.name;
+            this.logo = restaurant.logo;
+            this.phone = restaurant.phone;
+            this.logoPreview = restaurant.logoPreview;
+            this.address = restaurant.address;
+            this.service_charge_is_percentage =
+              restaurant.service_charge_is_percentage;
+            this.service_charge = restaurant.service_charge;
+            this.tax_percentage = restaurant.tax_percentage;
+            this.created_at = restaurant.created_at;
+            this.website = restaurant.website;
+            this.subscription_ends = restaurant.subscription_ends;
+            this.subscription = restaurant.subscription;
+            this.latitude = restaurant.latitude;
+            this.longitude = restaurant.longitude;
+            this.tax_percentage = restaurant.tax_percentage;
+            this.trade_licence_no = restaurant.trade_licence_no;
+            this.vat_registration_no = restaurant.vat_registration_no;
+            this.payment_type = restaurant.payment_type;
+            JSON.setItem("resturent", JSON.stringify(restaurant));
+          }
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
     },
 
     updateRestaurantGo() {
