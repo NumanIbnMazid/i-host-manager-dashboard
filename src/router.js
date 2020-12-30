@@ -137,6 +137,12 @@ const router = new Router({
                         import ("@/views/NewOrder.vue")
                 },
                 {
+                    path: "/notificaiton",
+                    name: "notificaiton",
+                    component: () =>
+                        import ("@/views/Notification.vue")
+                },
+                {
                     path: "/test",
                     name: "test",
                     component: () =>

@@ -1,17 +1,11 @@
 <template>
   <div id="data-list-thumb-view" class="data-list-container">
-    <div class="flex flex-wrap-reverse items-center data-list-btn-container">
-      <vs-input class="m-2" placeholder="Limit Per Page" v-model="limit" />
-      <vs-input class="m-2" placeholder="Offset" v-model="offset" />
-
-      <vs-button class="m-2" @click="getAllDiscountList()">Go</vs-button>
-    </div>
     <vs-table
       ref="table"
       pagination
       :max-items="itemsPerPage"
       search
-      :data="all_discount_offers.results"
+      :data="notifications"
     >
       <div
         slot="header"
@@ -22,8 +16,8 @@
             class="p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary"
             @click="
               popupActive = !popupActive;
-              newOffer = {};
-              discountOfferFormActionMethod = createNewDiscountOffer;
+              newNotification = {};
+              notificaionFormActionMethod = createNewNotificaion;
             "
           >
             <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
@@ -38,11 +32,9 @@
             <span class="mr-2"
               >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} -
               {{
-                all_discount_offers.results.length -
-                  currentPage * itemsPerPage >
-                0
+                notifications.length - currentPage * itemsPerPage > 0
                   ? currentPage * itemsPerPage
-                  : all_discount_offers.results.length
+                  : notifications.length
               }}
               of {{ queriedItems }}</span
             >
@@ -66,12 +58,8 @@
       <template slot="thead">
         <vs-th class="text-center">Sl</vs-th>
         <vs-th class="text-center">Image</vs-th>
-        <vs-th class="text-center">Name</vs-th>
-        <vs-th class="text-center">Description</vs-th>
-        <vs-th class="text-center">URL</vs-th>
-        <vs-th class="text-center">Start Date</vs-th>
-        <vs-th class="text-center">End Date</vs-th>
-        <vs-th class="text-center">Amount</vs-th>
+        <vs-th class="text-center">Title</vs-th>
+        <vs-th class="text-center">Body</vs-th>
         <vs-th class="text-center">Restaurant</vs-th>
         <vs-th class="text-center">Action</vs-th>
       </template>
@@ -90,13 +78,13 @@
             </vs-td>
 
             <vs-td>
-              <p class="product-name font-medium truncate">{{ tr.name }}</p>
+              <p class="product-name font-medium truncate">{{ tr.title }}</p>
             </vs-td>
 
             <vs-td>
               <vx-tooltip position="bottom">
                 <p class="product-name font-medium truncate">
-                  {{ tr.description }}
+                  {{ tr.body }}
                 </p>
               </vx-tooltip>
             </vs-td>
@@ -104,32 +92,9 @@
             <vs-td>
               <vx-tooltip :text="tr.url" position="bottom">
                 <p class="product-name font-medium truncate">
-                  {{ tr.url }}
+                  {{ tr.restaurant }}
                 </p>
               </vx-tooltip>
-            </vs-td>
-
-            <vs-td>
-              <p class="product-name font-medium truncate">
-                {{ tr.start_date }}
-              </p>
-            </vs-td>
-
-            <vs-td>
-              <p class="product-name font-medium truncate">
-                {{ tr.end_date }}
-              </p>
-            </vs-td>
-
-            <vs-td class="text-center">
-              <p class="product-name font-medium truncate">
-                {{ tr.amount }}
-              </p>
-            </vs-td>
-            <vs-td class="text-center">
-              <p class="product-name font-medium truncate">
-                {{ tr.restaurant }}
-              </p>
             </vs-td>
 
             <vs-td class="whitespace-no-wrap">
@@ -142,7 +107,7 @@
                 icon="TrashIcon"
                 svgClasses="w-5 h-5 hover:text-danger stroke-current"
                 class="ml-2"
-                @click="confirmAction(deleteADiscount, [tr.id])"
+                @click="confirmAction(deleteANotificaion, [tr.id])"
               />
             </vs-td>
           </vs-tr>
@@ -150,20 +115,16 @@
       </template>
     </vs-table>
 
-    <!-- NEW OFFER POPUP FORM -->
-    <vs-popup class="holamundo" title="Discount Offer" :active.sync="popupActive">
+    <!-- NEW NOTIFICATION POPUP FORM -->
+    <vs-popup
+      class="holamundo"
+      title="Discount Offer"
+      :active.sync="popupActive"
+    >
       <vs-row>
         <div class="vx-col sm:w-8/12 w-full mb-2 mx-auto">
           <img
-            v-if="!newOffer.logoPreview"
-            :src="newOffer.iamge"
-            style="width: 100%"
-            class="rounded"
-            alt
-          />
-          <img
-            v-else
-            :src="newOffer.logoPreview"
+            :src="newNotification.logoPreview"
             style="width: 100%"
             class="rounded"
             alt
@@ -190,86 +151,33 @@
           </div>
         </div>
 
-        <!-- name -->
+        <!-- title -->
         <div class="w-full">
           <vs-input
             icon-pack="feather"
             icon="icon-user"
-            label="Name"
-            v-model="newOffer.name"
+            label="Title"
+            v-model="newNotification.title"
             class="mt-5 w-full"
             type="text"
             v-validate="'required'"
           />
         </div>
 
-        <!-- description -->
+        <!-- body -->
         <div class="w-full">
           <vs-input
             icon-pack="feather"
             icon="icon-file-text  "
-            label="Description"
-            v-model="newOffer.description"
+            label="Body"
+            v-model="newNotification.body"
             class="mt-5 w-full"
             type="text"
             v-validate="'required'"
           />
         </div>
 
-        <!-- url field -->
-        <div class="w-full">
-          <vs-input
-            icon-pack="feather"
-            icon="icon-link"
-            label="URL"
-            v-model="newOffer.url"
-            class="mt-5 w-full"
-            type="text"
-            v-validate="'required'"
-          />
-        </div>
-
-        <!-- start date field -->
-        <div class="w-full mt-2">
-          <label for="" class="vs-input--label">Start Date</label>
-          <datepicker
-            icon-pack="feather"
-            icon="icon-clock"
-            label="Start Date"
-            class="mt-2 w-full"
-            placeholder="Start Date"
-            v-model="newOffer.start_date"
-          ></datepicker>
-        </div>
-
-        <!-- end date field -->
-        <div class="w-full mt-2">
-          <label for="" class="vs-input--label">End Date</label>
-          <datepicker
-            icon-pack="feather"
-            icon="icon-clock"
-            label="End Date"
-            class="mt-2 w-full"
-            placeholder="End Date"
-            v-model="newOffer.end_date"
-          ></datepicker>
-        </div>
-
-        <div class="w-full">
-          <vs-input
-            icon-pack="feather"
-            icon="icon-dollar-sign"
-            label="Amount"
-            v-model="newOffer.amount"
-            class="mt-5 w-full"
-            type="text"
-            v-validate="'required'"
-          />
-        </div>
-
-        <vs-button
-          class="mb-2 w-full mt-5"
-          @click="discountOfferFormActionMethod"
+        <vs-button class="mb-2 w-full mt-5" @click="notificaionFormActionMethod"
           >Save</vs-button
         >
       </vs-row>
@@ -293,57 +201,42 @@ export default {
       currentPage: 5,
       limit: 10,
       offset: 1,
-      all_discount_offers: null,
+      notifications: [],
       popupActive: false,
-      discountOfferFormActionMethod: null,
+      notificaionFormActionMethod: null,
 
-      newOffer: {
+      newNotification: {
         id: null,
-        logoPreview: null,
+        logoPreview: "",
         image: null,
-        name: null,
-        description: null,
-        url: null,
-        start_date: null,
-        end_date: null,
-        amount: null,
+        title: null,
+        body: null,
       },
     };
   },
+
   methods: {
-    getAllDiscountList() {
+    getNotifications() {
       axios
-        .get(
-          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/discount_list/?limit=${this.limit}&offset=${this.offset}`
-        )
-        .then((res) => {
-          this.all_discount_offers = res.data.data;
-          console.log("offer res ", res.data.data);
-        })
+        .get("/account_management/customer_notification/")
+        .then((res) => (this.notifications = res.data.data))
         .catch((err) => {
-          console.log("error offer ", err.response);
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
     },
 
-    createNewDiscountOffer() {
+    createNewNotificaion() {
       axios
-        .post("/restaurant_management/dashboard/restaurant/create_discount/", {
-          name: this.newOffer.name,
-          description: this.newOffer.description,
-          url: this.newOffer.url,
-          start_date:
-            moment(this.newOffer.start_date).format("YYYY-MM-DD") + "T00:00",
-          end_date:
-            moment(this.newOffer.end_date).format("YYYY-MM-DD") + "T00:00",
-          amount: this.newOffer.amount,
+        .post("/account_management/customer_notification/", {
+          image: this.newNotification.logoPreview,
+          title: this.newNotification.title,
+          body: this.newNotification.body,
           restaurant: this.resturent_id,
-          image: this.newOffer.logoPreview,
         })
         .then((res) => {
           if (res.data.status) {
-            this.all_discount_offers.results.push(res.data.data);
+            this.notifications.push(res.data.data);
             this.$vs.notify({
               title: "Offer",
               text: "Offer Created Successfully!",
@@ -364,52 +257,38 @@ export default {
           })
         );
     },
-    updateDiscountOfferGo(offer) {
-      this.newOffer.id = offer.id;
-      this.newOffer.logoPreview = offer.image;
-      this.newOffer.name = offer.name;
-      this.newOffer.description = offer.description;
-      this.newOffer.url = offer.url;
-      this.newOffer.start_date = offer.start_date;
-      this.newOffer.end_date = offer.end_date;
-      this.newOffer.amount = offer.amount;
-      this.discountOfferFormActionMethod = this.updateDiscountOffer;
+    updateNotificaionGo(notification) {
+      this.newNotification.id = notification.id;
+      this.newNotification.logoPreview = notification.image;
+      this.newNotification.title = notification.title;
+      this.newNotification.body = notification.body;
+      this.notificaionFormActionMethod = this.updateDiscountOffer;
       this.popupActive = !this.popupActive;
     },
 
     // TODO:
-    updateDiscountOffer(offerId) {
-      axios
-        .patch(
-          `/restaurant_management/dashboard/update_discount/${this.newOffer.id}`,
-          this.newOffer
-        )
-        .then((res) => {
-          console.log("ures1 ", res);
-          if (res.data.status) {
-            console.log("ures ", res);
-          } else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => console.log("u err ", err.response));
-    },
+    updateNotificaion() {},
 
-    deleteADiscount(discount_id) {
-      console.log("aa ", this.all_discount_offers.results);
+    deleteANotificaion(notificaion_id) {
       axios
-        .delete(
-          `/restaurant_management/dashboard/delete_discount/${discount_id}`
-        )
+        .delete(`/account_management/customer_notification/${notificaion_id}`)
         .then((res) => {
-          console.log("offer deleted ", res.data);
           if (res.data.status) {
-            const updatedOffers = this.all_discount_offers.results.filter(
-              (discount) => discount.id !== discount_id
+            console.log("offer deleted ", res.data);
+            console.log("nid ", notificaion_id);
+            console.log("n ", this.notifications);
+
+            // filter
+            const leftNotifications = this.notifications;
+            this.notifications = leftNotifications.filter(
+              (ln) => ln.id !== notificaion_id
             );
-
-            this.all_discount_offers.results = updatedOffers;
           } else this.showErrorLog(res.data.error.error_details);
         })
-        .catch((err) => console.log("error offer ", err.response));
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
     },
 
     showErrorLog(errorList) {
@@ -431,14 +310,14 @@ export default {
         reader.onload = (e) => {
           let img = new Image();
           img.src = e.target.result;
-          this.newOffer.logoPreview = e.target.result;
-          this.newOffer.image = "";
+          this.newNotification.image = null;
+          this.newNotification.logoPreview = e.target.result;
         };
       }
     },
   },
   created() {
-    this.getAllDiscountList();
+    this.getNotifications();
   },
 };
 </script>
@@ -450,3 +329,26 @@ export default {
     border-radius: 5px;
   }
 </style>
+
+
+
+
+
+
+// import axios from "@/axios.js";
+// export default {
+//   data() {
+//     return {
+//       notifications: null,
+//     };
+//   },
+
+//   methods: {
+//   },
+
+//   created() {
+//     this.getNotifications();
+//   },
+// };
+
+

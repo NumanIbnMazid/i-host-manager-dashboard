@@ -51,5 +51,11 @@ export default [{
         name: "New Order",
         slug: "neworder",
         icon: "CheckSquareIcon",
+    },
+    {
+        url: "/notificaiton",
+        name: "Notificaion",
+        slug: "notificaion",
+        icon: "MessageCircleIcon",
     }
 ]
