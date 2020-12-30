@@ -81,6 +81,7 @@ import axios from "@/axios.js";
 import moment from "moment";
 
 import ChartjsComponentBarChart from "@/components/ChartjsComponentBarChart.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -93,11 +94,8 @@ export default {
     time: "",
     resturent_id: localStorage.getItem("resturent_id"),
     resturent: JSON.parse(localStorage.getItem("resturent")),
-    cmSell: 0,
-    cmOrder: 0,
-    lmSell: 0,
-    lmOrder: 0,
-    weekChart: "",
+
+    // weekChart: "",
     options: {
       legend: { display: false },
       title: {
@@ -107,56 +105,58 @@ export default {
     },
   }),
 
-  methods: {
-    getDashboardData() {
-      axios
-        .get(
-          `/restaurant_management/dashboard/dashboard_total_report/${this.resturent_id}`
-        )
-        .then((res) => {
-          res = res.data;
-          this.cmSell = res.data.current_month_total_sell;
-          this.cmOrder = res.data.current_month_total_order;
-          this.lmSell = res.data.last_month_total_sell;
-          this.lmOrder = res.data.last_month_total_order;
-          // this.weekChart.datasets[0].data = res.data.day_wise_income;
-          this.weekChart = {
-            labels: [
-              "Sunday",
-              "Monday",
-              "Tuesday",
-              "Wednesday",
-              "Thursday",
-              "Friday",
-              "Saturday",
-            ],
-            datasets: [
-              {
-                label: "Total Sale amount",
-                backgroundColor: [
-                  "#27ae60",
-                  "#8e44ad",
-                  "#e67e22",
-                  "#1abc9c",
-                  "#34495e",
-                  "#c45850",
-                  "#f1c40f",
-                ],
-                data: res.data.day_wise_income,
-              },
-            ],
-          };
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
+  methods: {},
+
+  beforecreated() {
+    this.$store.dispatch("getMonthWeekData");
   },
 
-  created() {},
+  beforeMounted() {
+    this.$store.dispatch("getMonthWeekData");
+  },
 
-  mounted() {
-    this.getDashboardData();
+  computed: {
+    ...mapGetters(["monthWeekData"]),
+    cmSell() {
+      return this.monthWeekData && this.monthWeekData.current_month_total_sell;
+    },
+    cmOrder() {
+      return this.monthWeekData && this.monthWeekData.current_month_total_order;
+    },
+    lmSell() {
+      return this.monthWeekData && this.monthWeekData.last_month_total_sell;
+    },
+    lmOrder() {
+      return this.monthWeekData && this.monthWeekData.last_month_total_order;
+    },
+    weekChart() {
+      return {
+        labels: [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ],
+        datasets: [
+          {
+            label: "Total Sale amount",
+            backgroundColor: [
+              "#27ae60",
+              "#8e44ad",
+              "#e67e22",
+              "#1abc9c",
+              "#34495e",
+              "#c45850",
+              "#f1c40f",
+            ],
+            data: this.monthWeekData && this.monthWeekData.day_wise_income,
+          },
+        ],
+      };
+    },
   },
 };
 </script>

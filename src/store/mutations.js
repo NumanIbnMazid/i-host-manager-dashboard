@@ -124,7 +124,13 @@ const mutations = {
 
     GET_ORDERS_DATA(state, ordersData) {
         state.ordersData = ordersData;
-    }
+    },
+    GET_TODAY_DATA(state, todayData) {
+        state.todayData = todayData;
+    },
+    GET_MONTH_WEEK_DATA(state, monthWeekData) {
+        state.monthWeekData = monthWeekData;
+    },
 };
 
 export default mutations;

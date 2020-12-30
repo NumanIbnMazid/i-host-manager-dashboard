@@ -83,6 +83,37 @@ const actions = {
         //         // this.showActionMessage("error", err);
         //         // this.checkError(err);
         //     });
+    },
+
+    getTodayData({ commit }) {
+        let resturent_id = localStorage.getItem("resturent_id");
+        axios
+            .get(
+                `/restaurant_management/dashboard/restaurant/${resturent_id}/today_sell/`
+            )
+            .then(res => {
+                if (res.data.status) {
+                    commit("GET_TODAY_DATA", res.data.data);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    },
+    getMonthWeekData({ commit }) {
+        let resturent_id = localStorage.getItem("resturent_id");
+        axios
+            .get(
+                `/restaurant_management/dashboard/dashboard_total_report/${resturent_id}`
+            )
+            .then(res => {
+                if (res.data.status) {
+                    commit("GET_MONTH_WEEK_DATA", res.data.data);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
     }
 };
 

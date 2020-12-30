@@ -12,7 +12,25 @@
         v-model="endDate"
       ></datepicker>
 
-      <vs-button class="m-2" @click="getTodaysOrder()">Go</vs-button>
+      <v-select
+        label="name"
+        multiple
+        v-model="category"
+        :options="categories"
+        :reduce="(categories) => categories.id"
+        style="min-width: 200px"
+      />
+      <vs-button
+        class="m-2"
+        @click="
+          getAllOrder();
+          search = true;
+        "
+        >Go</vs-button
+      >
+      <vs-button class="m-2" color="danger" v-if="search" @click="resetFilter()"
+        >Reset</vs-button
+      >
     </div>
 
     <vs-table class="p-0" ref="table" :data="orders">
@@ -52,6 +70,8 @@
         </tbody>
       </template>
     </vs-table>
+    <br>
+    <vs-pagination :total="Math.ceil(total/10)" v-model="currentx"></vs-pagination>
   </div>
 </template>
 
@@ -59,37 +79,68 @@
 import axios from "@/axios.js";
 import moment from "moment";
 import Datepicker from "vuejs-datepicker";
+import vSelect from "vue-select";
 
 export default {
   components: {
     Datepicker,
+    vSelect,
   },
 
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
+    search: false,
+    currentx: 1,
     orders: [],
+    total: [],
+    categories: [],
     limit: 10,
     startDate: moment().format("YYYY-MM-01"),
     endDate: moment().format(),
+    category: [],
   }),
 
   methods: {
-    getTodaysOrder() {
+    getAllOrder() {
       axios
         .post(
-          `/restaurant_management/dashboard/invoice_all_report/${this.resturent_id}/`,
+          `/restaurant_management/dashboard/invoice_all_report/${this.resturent_id}/?limit=100&offset=0`,
           {
-            start_date: moment(this.startDate).format('Y-M-D'),
-            end_date: moment(this.endDate).format('Y-M-D'),
+            start_date: moment(this.startDate).format("Y-M-D"),
+            end_date: moment(this.endDate).format("Y-M-D"),
+            category: this.category,
           }
         )
         .then((res) => {
           this.orders = res.data.data.results;
+          this.total = res.data.data.total_order;
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
+    },
+    getCategorys() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/category_list/${this.resturent_id}`
+        )
+        .then((res) => {
+          if (res.data.status) this.categories = res.data.data;
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+
+    resetFilter() {
+      this.startDate = moment().format("YYYY-MM-01");
+      this.endDate = moment().format();
+      this.category = [];
+      this.search = false;
+
+      this.getAllOrder();
     },
 
     dateFromat(date) {
@@ -98,7 +149,8 @@ export default {
   },
 
   created() {
-    this.getTodaysOrder();
+    this.getAllOrder();
+    this.getCategorys();
   },
 };
 </script>

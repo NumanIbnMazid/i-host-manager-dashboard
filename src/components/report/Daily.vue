@@ -43,7 +43,7 @@
             <vs-td
               ><p>{{ dateFromat(tr.order_info.created_at) }}</p>
             </vs-td>
-            <vs-td><p>-</p> </vs-td>
+            <vs-td><p>{{ tr.order_info.customer ? tr.order_info.customer.name : '-'  }}</p> </vs-td>
             <vs-td
               ><p>{{ tr.order_info.waiter.name }}</p>
             </vs-td>
@@ -80,7 +80,7 @@ export default {
       // this.$vs.loading();
       axios
         .post(
-          `/restaurant_management/dashboard/invoice_all_report/${this.resturent_id}/`
+          `/restaurant_management/dashboard/invoice_all_report/${this.resturent_id}/?limit=100&offset=0`
         )
         .then((res) => {
           this.orders = res.data.data.results;

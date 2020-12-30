@@ -7,9 +7,9 @@
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 
-import navbarSearchAndPinList from "@/layouts/components/navbar/navbarSearchAndPinList"
-import themeConfig from "@/../themeConfig.js"
-import colors from "@/../themeConfig.js"
+import navbarSearchAndPinList from "@/layouts/components/navbar/navbarSearchAndPinList";
+import themeConfig from "@/../themeConfig.js";
+import colors from "@/../themeConfig.js";
 
 // /////////////////////////////////////////////
 // Helper
@@ -23,28 +23,26 @@ const userDefaults = {
     photoURL: require("@/assets/images/portrait/small/avatar-s-11.jpg"), // From Auth
     status: "online",
     userRole: "admin"
-}
-
+};
 
 // Check if device is touch device
 // This is used to remove perfect scrollbar from touch devices
 // Using Dynamic components
 const is_touch_device = () => {
-    var prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
+    var prefixes = " -webkit- -moz- -o- -ms- ".split(" ");
     var mq = function(query) {
         return window.matchMedia(query).matches;
-    }
+    };
 
-    if (('ontouchstart' in window) || window.DocumentTouch) {
+    if ("ontouchstart" in window || window.DocumentTouch) {
         return true;
     }
 
     // include the 'heartz' as a way to have a non matching MQ to help terminate the join
     // https://git.io/vznFH
-    var query = ['(', prefixes.join('touch-enabled),('), 'heartz', ')'].join('');
+    var query = ["(", prefixes.join("touch-enabled),("), "heartz", ")"].join("");
     return mq(query);
-}
-
+};
 
 // /////////////////////////////////////////////
 // State
@@ -61,7 +59,9 @@ const state = {
     verticalNavMenuWidth: "default",
     verticalNavMenuItemsMin: false,
     scrollY: 0,
-    starredPages: navbarSearchAndPinList["pages"].data.filter((page) => page.is_bookmarked),
+    starredPages: navbarSearchAndPinList["pages"].data.filter(
+        page => page.is_bookmarked
+    ),
     theme: themeConfig.theme || "light",
     themePrimaryColor: colors.primary,
 
@@ -69,6 +69,8 @@ const state = {
     // Note: Above breakpoint state is for internal use of sidebar & navbar component
     windowWidth: null,
     ordersData: [],
-}
+    todayData: null,
+    monthWeekData: null
+};
 
-export default state
+export default state;

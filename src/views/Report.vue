@@ -14,11 +14,11 @@
             <div class="flex">
               <div class="w-1/2">
                 <span>Today Sale</span>
-                <h3>৳ 878900</h3>
+                <h3>৳ {{ todayData.total_sell }}</h3>
               </div>
               <div class="w-1/2 text-right mr-2">
                 <span>Today Order</span>
-                <h3>90</h3>
+                <h3>{{ todayData.total_order }}</h3>
               </div>
             </div>
             <chartjs-component-area-chart
@@ -41,11 +41,14 @@
           >
             <div class="flex">
               <div class="w-1/2">
-                <span>Date wise sales report</span>
+                <span>Date wise sales report</span> <br />
+                <span
+                  >Current month sale: <b> ৳{{ cmSell }} </b></span
+                >
               </div>
               <div class="w-1/2 text-right mr-2">
-                <span>Last 30 days order</span>
-                <h3>90</h3>
+                <span>Current month order</span>
+                <h3>{{ cmOrder }}</h3>
               </div>
             </div>
             <chartjs-component-area-chart
@@ -69,11 +72,13 @@
               <div class="w-1/2">
                 <span>Top items</span>
                 <div class="my-auto mt-5">
-                  <h6 class="text-sm text-success my-1">#1 Chicken Pizza</h6>
-                  <h6 class="text-sm text-warning my-1">#2 Beef Burger</h6>
-                  <h6 class="text-sm text-danger my-1">#3 Chicken Pizza</h6>
-                  <h6 class="text-sm text-grey my-1">#4 Chicken Pizza</h6>
-                  <h6 class="text-sm text-bl my-1">#5 Chicken Pizza</h6>
+                  <h6
+                    class="text-sm text-success my-1"
+                    v-for="(item, i) in topItems"
+                    :key="i"
+                  >
+                    #{{ i + 1 }} {{ item.name }}
+                  </h6>
                 </div>
               </div>
               <div class="w-1/2 text-right mr-2 mt-5 mb-5 pb-2">
@@ -159,6 +164,9 @@ import Daily from "@/components/report/Daily.vue";
 import DateWise from "@/components/report/DateWise.vue";
 import TopItem from "@/components/report/TopItem.vue";
 import WaiterWise from "@/components/report/WaiterWise.vue";
+import moment from "moment";
+
+import { mapGetters } from "vuex";
 export default {
   components: {
     Daily,
@@ -170,6 +178,7 @@ export default {
   },
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
+    topItems: [],
     showReport: "today",
     monthChart: {
       labels: [
@@ -194,22 +203,7 @@ export default {
         },
       ],
     },
-    weekChart: {
-      labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-      datasets: [
-        {
-          label: "Total Sale amount",
-          backgroundColor: ["rgba(36, 112, 183, 0.3)"],
-          data: [5818.8, 4000, 7644, 0, 0, 0, 0],
-        },
-      ],
-    },
     options: {
-      // elements: {
-      //   line: {
-      //     tension: 0,
-      //   },
-      // },
       legend: { display: false },
       title: {
         display: false,
@@ -235,10 +229,58 @@ export default {
         ],
       },
     },
+
+    getTopItem() {
+      axios
+        .post(
+          `/restaurant_management/dashboard/top_food_items_by_date_range/${this.resturent_id}/?limit=5&offset=0`,
+          {
+            start_date: "2020-01-01", //moment(this.startDate).format("Y-M-D"),
+            end_date: moment().format("Y-M-D"),
+          }
+        )
+        .then((res) => {
+          this.topItems = res.data.data.results;
+          // this.total = res.data.data.total_order;
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
   }),
   methods: {},
 
-  created() {},
+  created() {
+    this.getTopItem();
+  },
+  computed: {
+    ...mapGetters(["todayData", "monthWeekData"]),
+    cmSell() {
+      return this.monthWeekData && this.monthWeekData.current_month_total_sell;
+    },
+    cmOrder() {
+      return this.monthWeekData && this.monthWeekData.current_month_total_order;
+    },
+    lmSell() {
+      return this.monthWeekData && this.monthWeekData.last_month_total_sell;
+    },
+    lmOrder() {
+      return this.monthWeekData && this.monthWeekData.last_month_total_order;
+    },
+    weekChart() {
+      return {
+        labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        datasets: [
+          {
+            label: "Total Sale amount",
+            backgroundColor: ["rgba(36, 112, 183, 0.3)"],
+            data: this.monthWeekData && this.monthWeekData.day_wise_income,
+          },
+        ],
+      };
+    },
+  },
 };
 </script>
 

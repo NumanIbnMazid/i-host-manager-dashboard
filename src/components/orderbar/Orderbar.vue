@@ -12,7 +12,7 @@
 
     <vs-sidebar-item index="1">
       <div class="mx-10 py-4 w-full text-center bg-primary rounded shadow-md">
-        <h1 class="text-white">{{ total_sell }} ৳</h1>
+        <h1 class="text-white">{{ todayData.total_sell }} ৳</h1>
         <p class="text-ihosts"><b> Total Sell Today </b></p>
       </div>
     </vs-sidebar-item>
@@ -90,27 +90,6 @@ export default {
   // },
 
   methods: {
-    getTodaysTotalSell() {
-      axios
-        .get(
-          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/today_sell/`
-        )
-        .then((res) => {
-          if (res.data.status) {
-            this.total_sell = res.data.data.total_sell;
-          } else {
-            this.showActionMessage(
-              "error",
-              "Something went wrong getting total sell!"
-            );
-          }
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err);
-          this.checkError(err);
-        });
-    },
-
     getOrderItemList() {
       axios
         .get(
@@ -151,11 +130,9 @@ export default {
   created() {
     // this.getOrderItemList();
     this.getDate();
-    this.getTodaysTotalSell();
-  
   },
   computed: {
-    ...mapGetters(["ordersData"])
+    ...mapGetters(["ordersData", "todayData"]),
   },
 };
 </script>

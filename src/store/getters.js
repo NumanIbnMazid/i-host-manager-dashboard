@@ -29,6 +29,12 @@ const getters = {
 
     ordersData: state => {
         return state.ordersData;
+    },
+    todayData: state => {
+        return state.todayData;
+    },
+    monthWeekData: state => {
+        return state.monthWeekData;
     }
 };
 
