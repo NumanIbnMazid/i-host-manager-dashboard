@@ -458,7 +458,18 @@
             </vs-td>
 
             <vs-td class="text-center" :data="data[i].quantity">
-              {{ data[i].quantity }}
+              <vs-input
+                class="w-16"
+                color="rgb(213, 14, 151)"
+                type="number"
+                min="1"
+                label-placeholder="Quantity"
+                v-model="data[i].quantity"
+                @change="
+                  updateFoodQuantity(data[i], orderToVarify.ordered_items)
+                "
+                >{{ data[i].quantity }}</vs-input
+              >
             </vs-td>
 
             <vs-td class="text-center" :data="data[i].food_option">
@@ -661,7 +672,18 @@
             </vs-td>
 
             <vs-td class="text-center" :data="data[i].quantity">
-              {{ data[i].quantity }}
+              <vs-input
+                class="w-16"
+                color="green"
+                type="number"
+                min="1"
+                label-placeholder="Quantity"
+                v-model="data[i].quantity"
+                @change="
+                  updateFoodQuantity(data[i], orderToServed.ordered_items)
+                "
+                >{{ data[i].quantity }}</vs-input
+              >
             </vs-td>
 
             <vs-td class="text-center" :data="data[i].food_option">
@@ -757,6 +779,7 @@ import VxTimeline from "@/components/timeline/VxTimeline";
 import vSelect from "vue-select";
 import axios from "@/axios.js";
 import moment from "moment";
+import ChangeTimeDurationDropdownVue from "../components/ChangeTimeDurationDropdown.vue";
 // import { mapGetters } from "vuex";
 
 export default {
@@ -901,7 +924,34 @@ export default {
             this.selectedFood = "";
           } else this.showActionMessage("error", "New Item Add Failed!");
         })
-        .catch((err) => console.log("orderaa error ", err.response));
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+
+          // checking error code
+          this.checkError(err);
+        });
+    },
+
+    updateFoodQuantity(food, objectToUpdate) {
+      axios
+        .patch(
+          `/restaurant_management/dashboard/order/cart/items/${food.id}/`,
+          {
+            quantity: food.quantity,
+            food_option: food.food_option.id,
+            food_order: food.food_order,
+            food_extra: food.food_extra.map((fe) => fe.id),
+          }
+        )
+        .then((res) => {
+          objectToUpdate = res.data.data.ordered_items;
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+
+          // checking error code
+          this.checkError(err);
+        });
     },
 
     orderDisburse(orders) {
