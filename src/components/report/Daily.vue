@@ -29,6 +29,7 @@
         <th>Waiter Name</th>
         <th>Price</th>
         <th>Discount Price</th>
+        <th>Action</th>
       </template>
 
       <template slot-scope="{ data }">
@@ -43,7 +44,11 @@
             <vs-td
               ><p>{{ dateFromat(tr.order_info.created_at) }}</p>
             </vs-td>
-            <vs-td><p>{{ tr.order_info.customer ? tr.order_info.customer.name : '-'  }}</p> </vs-td>
+            <vs-td
+              ><p>
+                {{ tr.order_info.customer ? tr.order_info.customer.name : "-" }}
+              </p>
+            </vs-td>
             <vs-td
               ><p>{{ tr.order_info.waiter.name }}</p>
             </vs-td>
@@ -53,19 +58,31 @@
             <vs-td
               ><p>{{ tr.order_info.price.discount_amount }}</p>
             </vs-td>
+            <vs-td>
+              <vs-button @click="showDetailsInfo(tr.order_info)"
+                >Show Details</vs-button
+              >
+            </vs-td>
           </vs-tr>
         </tbody>
       </template>
     </vs-table>
+    <ItemDetails
+      :showOrder="showOrder"
+      :showDetailsPopup="showDetailsPopup"
+    ></ItemDetails>
   </div>
 </template>
 
 <script>
 import axios from "@/axios.js";
 import moment from "moment";
+import ItemDetails from "@/components/report/ItemDetails.vue";
 
 export default {
-  components: {},
+  components: {
+    ItemDetails,
+  },
 
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
@@ -73,6 +90,8 @@ export default {
     limit: 10,
     totalOrder: 0,
     totalAmount: 0,
+    showOrder: [],
+    showDetailsPopup: false,
   }),
 
   methods: {
@@ -97,6 +116,10 @@ export default {
 
     dateFromat(date) {
       return moment(date).format("D-M-Y h:mm:ss");
+    },
+    showDetailsInfo(orderInfo) {
+      this.showOrder = orderInfo;
+      this.showDetailsPopup = true;
     },
   },
 

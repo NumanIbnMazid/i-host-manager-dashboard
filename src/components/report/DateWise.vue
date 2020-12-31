@@ -42,6 +42,7 @@
         <th>Waiter Name</th>
         <th>Price</th>
         <th>Discount Price</th>
+        <th>Action</th>
       </template>
 
       <template slot-scope="{ data }">
@@ -61,17 +62,30 @@
               ><p>{{ tr.order_info.waiter.name }}</p>
             </vs-td>
             <vs-td
-              ><p>{{ tr.order_info.price.grand_total_price }}</p>
+              ><p>৳{{ tr.order_info.price.grand_total_price }}</p>
             </vs-td>
             <vs-td
-              ><p>{{ tr.order_info.price.discount_amount }}</p>
+              ><p>৳{{ tr.order_info.price.discount_amount }}</p>
+            </vs-td>
+            <vs-td>
+              <vs-button @click="showDetailsInfo(tr.order_info)"
+                >Show Details</vs-button
+              >
             </vs-td>
           </vs-tr>
         </tbody>
       </template>
     </vs-table>
-    <br>
-    <vs-pagination :total="Math.ceil(total/10)" v-model="currentx"></vs-pagination>
+    <br />
+    <vs-pagination
+      :total="Math.ceil(total / 10)"
+      v-model="currentx"
+    ></vs-pagination>
+
+    <ItemDetails
+      :showOrder="showOrder"
+      :showDetailsPopup="showDetailsPopup"
+    ></ItemDetails>
   </div>
 </template>
 
@@ -81,10 +95,13 @@ import moment from "moment";
 import Datepicker from "vuejs-datepicker";
 import vSelect from "vue-select";
 
+import ItemDetails from "@/components/report/ItemDetails.vue";
+
 export default {
   components: {
     Datepicker,
     vSelect,
+    ItemDetails,
   },
 
   data: () => ({
@@ -98,6 +115,8 @@ export default {
     startDate: moment().format("YYYY-MM-01"),
     endDate: moment().format(),
     category: [],
+    showOrder: [],
+    showDetailsPopup: false,
   }),
 
   methods: {
@@ -141,6 +160,10 @@ export default {
       this.search = false;
 
       this.getAllOrder();
+    },
+    showDetailsInfo(orderInfo) {
+      this.showOrder = orderInfo;
+      this.showDetailsPopup = true;
     },
 
     dateFromat(date) {
