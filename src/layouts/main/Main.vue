@@ -304,7 +304,6 @@ export default {
   mounted(){
     this.$store.dispatch("getOrderData");
     this.$store.dispatch("getTodayData");
-    this.$store.dispatch("getMonthWeekData");
   }
 };
 </script>

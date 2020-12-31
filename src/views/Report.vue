@@ -283,6 +283,9 @@ export default {
     this.getTopItem();
     this.getTopWaiter();
   },
+  mounted() {
+    this.$store.dispatch("getMonthWeekData");
+  },
   computed: {
     ...mapGetters(["todayData", "monthWeekData"]),
     cmSell() {

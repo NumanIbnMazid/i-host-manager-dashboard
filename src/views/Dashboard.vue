@@ -107,11 +107,7 @@ export default {
 
   methods: {},
 
-  beforecreated() {
-    this.$store.dispatch("getMonthWeekData");
-  },
-
-  beforeMounted() {
+  mounted() {
     this.$store.dispatch("getMonthWeekData");
   },
 
