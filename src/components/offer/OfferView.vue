@@ -22,7 +22,7 @@
             class="p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary"
             @click="
               popupActive = !popupActive;
-              newOffer = {logoPreview:null};
+              newOffer = { logoPreview: null };
               discountOfferFormActionMethod = createNewDiscountOffer;
             "
           >
@@ -111,13 +111,13 @@
 
             <vs-td>
               <p class="product-name font-medium truncate">
-                {{ tr.start_date }}
+                {{ formattDate(tr.start_date) }}
               </p>
             </vs-td>
 
             <vs-td>
               <p class="product-name font-medium truncate">
-                {{ tr.end_date }}
+                {{ formattDate(tr.end_date) }}
               </p>
             </vs-td>
 
@@ -151,7 +151,11 @@
     </vs-table>
 
     <!-- NEW OFFER POPUP FORM -->
-    <vs-popup class="holamundo" title="Discount Offer" :active.sync="popupActive">
+    <vs-popup
+      class="holamundo"
+      title="Discount Offer"
+      :active.sync="popupActive"
+    >
       <vs-row>
         <div class="vx-col sm:w-8/12 w-full mb-2 mx-auto">
           <img
@@ -435,6 +439,10 @@ export default {
           this.newOffer.image = "";
         };
       }
+    },
+
+    formattDate(date) {
+      return moment(date).format("YYYY-MM-DD");
     },
   },
   created() {

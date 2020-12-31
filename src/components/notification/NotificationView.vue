@@ -188,7 +188,6 @@
 <script>
 import axios from "@/axios.js";
 import Datepicker from "vuejs-datepicker";
-import moment from "moment";
 export default {
   name: "NotificationView",
   components: {
