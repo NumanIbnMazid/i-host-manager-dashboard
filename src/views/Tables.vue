@@ -8,7 +8,11 @@
         <!-- ACTION - DROPDOWN -->
         <div
           class="p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary"
-          @click="popupActive = true"
+          @click="
+            popupActive = true;
+            table_id = null;
+            name = null;
+          "
         >
           <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
           <span class="ml-2 text-base text-primary">Add New</span>
@@ -229,7 +233,11 @@
                   ]);
                 "
               >
-                <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" class="ml-2"/>
+                <feather-icon
+                  icon="TrashIcon"
+                  svgClasses="h-4 w-4"
+                  class="ml-2"
+                />
                 <span class="text-danger m-1">Remove From Table</span>
               </div>
             </div>
@@ -425,9 +433,11 @@ export default {
     },
 
     getTables() {
-      console.log('table func called!!')
+      console.log("table func called!!");
       axios
-        .get(`/restaurant_management/dashboard/restaurant/${this.resturent_id}/tables/`)
+        .get(
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/tables/`
+        )
         .then((res) => {
           console.log("tables ", res.data.data);
           this.tables = res.data.data;
@@ -626,9 +636,12 @@ export default {
 
     removeWaiterFromTable(waiterId, tableId) {
       axios
-        .post(`/restaurant_management/dashboard/table/${tableId}/staff_remove/`, {
-          staff_list: [waiterId],
-        })
+        .post(
+          `/restaurant_management/dashboard/table/${tableId}/staff_remove/`,
+          {
+            staff_list: [waiterId],
+          }
+        )
         .then((res) => {
           // updating tables object
           this.tables = this.tables.map((table) =>

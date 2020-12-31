@@ -16,7 +16,7 @@
             class="p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary"
             @click="
               popupActive = !popupActive;
-              newNotification = {};
+              newNotification = { logoPreview: null, image: null };
               notificaionFormActionMethod = createNewNotificaion;
             "
           >
@@ -101,7 +101,7 @@
               <feather-icon
                 icon="EditIcon"
                 svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                @click="updateDiscountOfferGo(tr)"
+                @click="updateNotificaionGo(tr)"
               />
               <feather-icon
                 icon="TrashIcon"
@@ -190,7 +190,7 @@ import axios from "@/axios.js";
 import Datepicker from "vuejs-datepicker";
 import moment from "moment";
 export default {
-  name: "OfferView",
+  name: "NotificationView",
   components: {
     Datepicker,
   },
@@ -246,6 +246,14 @@ export default {
               position: "top-right",
             });
 
+            this.newNotification = {
+              id: null,
+              logoPreview: "",
+              image: null,
+              title: null,
+              body: null,
+            };
+
             this.popupActive = !this.popupActive;
           } else this.showErrorLog(res.data.error.error_details);
         })
@@ -257,27 +265,62 @@ export default {
           })
         );
     },
+
     updateNotificaionGo(notification) {
       this.newNotification.id = notification.id;
       this.newNotification.logoPreview = notification.image;
       this.newNotification.title = notification.title;
       this.newNotification.body = notification.body;
-      this.notificaionFormActionMethod = this.updateDiscountOffer;
+      this.notificaionFormActionMethod = this.updateNotificaion;
       this.popupActive = !this.popupActive;
     },
 
-    // TODO:
-    updateNotificaion() {},
+    updateNotificaion() {
+      const body = {
+        title: this.newNotification.title,
+        body: this.newNotification.body,
+        restaurant: this.resturent_id,
+      };
+
+      if (this.newNotification.image) {
+        console.log("1111");
+        body.image = this.newNotification.logoPreview;
+      }
+      console.log(this.newNotification.image);
+
+      axios
+        .patch(
+          `/account_management/customer_notification/${this.newNotification.id}/`,
+          body
+        )
+        .then((res) => {
+          console.log("body ", body);
+          console.log("res ", res.data);
+          if (res.data.status) {
+            const updatedNotifications = this.notifications.map(
+              (notification) =>
+                notification.id === this.newNotification.id
+                  ? { ...res.data.data }
+                  : notification
+            );
+
+            this.notifications = updatedNotifications;
+
+            this.popupActive = false;
+            this.showActionMessage("success", "Notification updated!");
+          }
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
 
     deleteANotificaion(notificaion_id) {
       axios
         .delete(`/account_management/customer_notification/${notificaion_id}`)
         .then((res) => {
           if (res.data.status) {
-            console.log("offer deleted ", res.data);
-            console.log("nid ", notificaion_id);
-            console.log("n ", this.notifications);
-
             // filter
             const leftNotifications = this.notifications;
             this.notifications = leftNotifications.filter(
@@ -310,7 +353,7 @@ export default {
         reader.onload = (e) => {
           let img = new Image();
           img.src = e.target.result;
-          this.newNotification.image = null;
+          this.newNotification.image = e.target.result;
           this.newNotification.logoPreview = e.target.result;
         };
       }
@@ -329,26 +372,3 @@ export default {
     border-radius: 5px;
   }
 </style>
-
-
-
-
-
-
-// import axios from "@/axios.js";
-// export default {
-//   data() {
-//     return {
-//       notifications: null,
-//     };
-//   },
-
-//   methods: {
-//   },
-
-//   created() {
-//     this.getNotifications();
-//   },
-// };
-
-
