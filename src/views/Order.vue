@@ -1878,7 +1878,6 @@ header.vs-collapse-item--header {
 
 .order-manger-area {
   max-height: 60vh;
-  height: 60vh;
   overflow-y: scroll;
 }
 </style>

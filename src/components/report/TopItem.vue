@@ -36,7 +36,7 @@
     <vs-table class="p-0" ref="table" :data="orders">
       <template slot="thead">
         <th>Rank</th>
-        <th>Item Name</th>
+        <th style="text-align: left !important;padding-left: 10.2% !important;">Item Name</th>
         <th>Category</th>
         <th>Quantity</th>
         <th>Total Sell</th>
@@ -48,15 +48,15 @@
             <vs-td
               ><p>{{ i+1 }}</p></vs-td
             >
-            <vs-td
-              ><p>{{ tr.name }}</p></vs-td
+            <vs-td class="text-left"
+              ><p class="ml-5" style="padding-left: 20%">{{ tr.name }}</p></vs-td
             >
             <vs-td><p>-</p> </vs-td>
             <vs-td
               ><p>{{ tr.quantity }}</p>
             </vs-td>
             <vs-td
-              ><p>{{ tr.price }}</p>
+              ><p>৳{{ tr.price }}</p>
             </vs-td>
           </vs-tr>
         </tbody>

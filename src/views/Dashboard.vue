@@ -152,7 +152,10 @@ export default {
               "#c45850",
               "#f1c40f",
             ],
-            data: this.monthWeekData && this.monthWeekData.day_wise_income,
+            data:
+              this.monthWeekData &&
+              this.monthWeekData.week_data &&
+              this.monthWeekData.week_data.day_wise_income,
           },
         ],
       };
