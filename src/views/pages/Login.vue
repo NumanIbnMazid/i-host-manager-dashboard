@@ -58,7 +58,9 @@
                     <vs-checkbox v-model="checkbox_remember_me" class="mb-3"
                       >Remember Me</vs-checkbox
                     >
-                    <router-link to>Forgot Password?</router-link>
+                    <router-link to="/forgotpassword"
+                      >Forgot Password?</router-link
+                    >
                   </div>
                   <vs-button type="border">Register</vs-button>
                   <vs-button class="float-right" @click="getRestaurant()"
@@ -142,20 +144,20 @@ export default {
 </script>
 
 <style lang="scss">
-#page-login {
-  .social-login-buttons {
-    .bg-facebook {
-      background-color: #1551b1;
-    }
-    .bg-twitter {
-      background-color: #00aaff;
-    }
-    .bg-google {
-      background-color: #4285f4;
-    }
-    .bg-github {
-      background-color: #333;
+  #page-login {
+    .social-login-buttons {
+      .bg-facebook {
+        background-color: #1551b1;
+      }
+      .bg-twitter {
+        background-color: #00aaff;
+      }
+      .bg-google {
+        background-color: #4285f4;
+      }
+      .bg-github {
+        background-color: #333;
+      }
     }
   }
-}
 </style>
