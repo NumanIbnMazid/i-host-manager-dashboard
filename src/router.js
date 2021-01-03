@@ -161,6 +161,12 @@ const router = new Router({
                         import ("@/views/pages/Login.vue")
                 },
                 {
+                    path: "/forgotpassword",
+                    name: "forgotpassword",
+                    component: () =>
+                        import ("@/views/pages/ForgotPassword.vue")
+                },
+                {
                     path: "/error-404",
                     name: "page-error-404",
                     component: () =>

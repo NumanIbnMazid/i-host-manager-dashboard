@@ -376,7 +376,7 @@
               title="Add"
               icon-pack="feather"
               icon="icon-plus"
-              @click="addOrderedItems(orderToVarify.id, '1_ORDER_PLACED')"
+              @click="addOrderedItems(orderToVarify, '1_ORDER_PLACED')"
             ></vs-button>
           </div>
         </div>
@@ -591,7 +591,7 @@
               title="Add"
               icon-pack="feather"
               icon="icon-plus"
-              @click="addOrderedItems(orderToServed.id, '2_ORDER_CONFIRMED')"
+              @click="addOrderedItems(orderToServed, '2_ORDER_CONFIRMED')"
             ></vs-button>
           </div>
         </div>
@@ -900,14 +900,15 @@ export default {
     },
 
     // adding food order to order cart
-    addOrderedItems(orderId, status) {
+    addOrderedItems(orderToProcess, status) {
+      console.log('orderToProcess1 ', orderToProcess)
       axios
         .post("/restaurant_management/dashboard/order/cart/items/", [
           {
             quantity: this.quantity,
             status,
             food_option: this.selectedOption.id,
-            food_order: orderId,
+            food_order: orderToProcess.id,
             food_extra: this.selectedFoodExtras,
           },
         ])
@@ -916,9 +917,11 @@ export default {
           if (res.data.status) {
             this.ordersData.map(
               (order) =>
-                order.id === orderId &&
+                order.id === orderToProcess.id &&
                 order.ordered_items.push(res.data.data[0])
             );
+
+            orderToProcess.ordered_items.push(res.data.data[0])
 
             // clear food state after add item to cart
             this.selectedFood = "";
@@ -1909,26 +1912,26 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 
-.order-manger-area {
-  max-height: 60vh;
-  overflow-y: scroll;
-}
+  .order-manger-area {
+    max-height: 60vh;
+    overflow-y: scroll;
+  }
 </style>
 
