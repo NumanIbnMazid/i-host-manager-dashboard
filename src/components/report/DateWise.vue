@@ -12,12 +12,20 @@
         v-model="endDate"
       ></datepicker>
 
-      <v-select
+      <!-- <v-select
         label="name"
         multiple
         v-model="category"
         :options="categories"
         :reduce="(categories) => categories.id"
+        style="min-width: 200px"
+      /> -->
+      <v-select
+        label="name"
+        multiple
+        v-model="waiter"
+        :options="waiters"
+        :reduce="(waiters) => waiters.id"
         style="min-width: 200px"
       />
       <vs-button
@@ -105,16 +113,18 @@ export default {
   },
 
   data: () => ({
-    resturent_id: localStorage.getItem("resturent_id"),
+    restaurant_id: localStorage.getItem("resturent_id"),
     search: false,
     currentx: 1,
     orders: [],
     total: [],
     categories: [],
+    waiters: [],
     limit: 10,
     startDate: moment().format("YYYY-MM-01"),
     endDate: moment().format(),
     category: [],
+    waiter: [],
     showOrder: [],
     showDetailsPopup: false,
   }),
@@ -123,11 +133,12 @@ export default {
     getAllOrder() {
       axios
         .post(
-          `/restaurant_management/dashboard/invoice_all_report/${this.resturent_id}/?limit=100&offset=0`,
+          `/restaurant_management/dashboard/invoice_all_report/${this.restaurant_id}/?limit=100&offset=0`,
           {
             start_date: moment(this.startDate).format("Y-M-D"),
             end_date: moment(this.endDate).format("Y-M-D"),
-            category: this.category,
+            // category: this.category,
+            waiter: this.waiter,
           }
         )
         .then((res) => {
@@ -142,10 +153,23 @@ export default {
     getCategorys() {
       axios
         .get(
-          `/restaurant_management/dashboard/category_list/${this.resturent_id}`
+          `/restaurant_management/dashboard/category_list/${this.restaurant_id}`
         )
         .then((res) => {
           if (res.data.status) this.categories = res.data.data;
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+    getWaiter() {
+      axios
+        .get(
+          `/account_management/restaurant/${this.restaurant_id}/waiter_info/`
+        )
+        .then((res) => {
+          if (res.data.status) this.waiters = res.data.data;
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
@@ -156,7 +180,7 @@ export default {
     resetFilter() {
       this.startDate = moment().format("YYYY-MM-01");
       this.endDate = moment().format();
-      this.category = [];
+      this.waiter = [];
       this.search = false;
 
       this.getAllOrder();
@@ -173,7 +197,8 @@ export default {
 
   created() {
     this.getAllOrder();
-    this.getCategorys();
+    // this.getCategorys();
+    this.getWaiter();
   },
 };
 </script>
