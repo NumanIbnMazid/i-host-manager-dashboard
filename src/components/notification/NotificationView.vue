@@ -60,6 +60,7 @@
         <vs-th class="text-center">Image</vs-th>
         <vs-th class="text-center">Title</vs-th>
         <vs-th class="text-center">Body</vs-th>
+        <vs-th class="text-center">Food</vs-th>
         <vs-th class="text-center">Restaurant</vs-th>
         <vs-th class="text-center">Action</vs-th>
       </template>
@@ -85,6 +86,14 @@
               <vx-tooltip position="bottom">
                 <p class="product-name font-medium truncate">
                   {{ tr.body }}
+                </p>
+              </vx-tooltip>
+            </vs-td>
+
+            <vs-td>
+              <vx-tooltip position="bottom">
+                <p class="product-name font-medium truncate">
+                  {{ tr.data ? tr.data.foodName : 'null' }}
                 </p>
               </vx-tooltip>
             </vs-td>
@@ -171,9 +180,22 @@
             icon="icon-file-text  "
             label="Body"
             v-model="newNotification.body"
-            class="mt-5 w-full"
+            class="mt-5 mb-5 w-full"
             type="text"
             v-validate="'required'"
+          />
+        </div>
+
+        <!-- food -->
+        <div class="w-full">
+          <label for=""><small>Food</small></label>
+          <v-select
+            label="name"
+            class="w-full"
+            v-model="newNotification.food"
+            :options="food"
+            :reduce="(food) => food"
+            :value="food.id"
           />
         </div>
 
@@ -188,14 +210,17 @@
 <script>
 import axios from "@/axios.js";
 import Datepicker from "vuejs-datepicker";
+import vSelect from "vue-select";
 export default {
   name: "NotificationView",
   components: {
     Datepicker,
+    vSelect,
   },
   data() {
     return {
       resturent_id: localStorage.getItem("resturent_id"),
+      food: [],
       itemsPerPage: 5,
       currentPage: 5,
       limit: 10,
@@ -210,6 +235,7 @@ export default {
         image: null,
         title: null,
         body: null,
+        food: null,
       },
     };
   },
@@ -225,13 +251,32 @@ export default {
         });
     },
 
+    getFood() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
+        )
+        .then((res) => {
+          this.food = res.data.data;
+          console.log("res ", this.food);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     createNewNotificaion() {
+      // console.log(this.newNotification.food)
       axios
         .post("/account_management/customer_notification/", {
           image: this.newNotification.logoPreview,
           title: this.newNotification.title,
           body: this.newNotification.body,
           restaurant: this.resturent_id,
+          data: {
+            foodId: this.newNotification.food.id,
+            foodName: this.newNotification.food.name,
+          },
         })
         .then((res) => {
           if (res.data.status) {
@@ -360,6 +405,7 @@ export default {
   },
   created() {
     this.getNotifications();
+    this.getFood();
   },
 };
 </script>
