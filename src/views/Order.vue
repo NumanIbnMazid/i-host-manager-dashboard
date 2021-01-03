@@ -1868,16 +1868,18 @@ export default {
             vm.playSound();
           }
 
-          if (vm.orderToVarify.length > 0) {
+          if (vm.varifyPopup) {
             vm.orderToVarify = res.data.find(
               (order) => order.id == vm.orderToVarify.id
             );
+            console.log('jj')
           }
 
-          if (vm.orderToServed.length > 0) {
+          if (vm.markAsServedPopup) {
             vm.orderToServed = res.data.find(
               (order) => order.id == vm.orderToServed.id
             );
+            console.log('kk')
           }
 
           // vm.queriedItems = res.list.length;
