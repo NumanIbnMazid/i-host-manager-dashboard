@@ -12,6 +12,12 @@ export default [
     icon: "ShoppingCartIcon"
   },
   {
+    url: "/shaff",
+    name: "Shaff",
+    slug: "shaff",
+    icon: "MenuIcon"
+  },
+  {
     url: "/restaurant",
     name: "Restaurant",
     slug: "resturent",
@@ -43,8 +49,8 @@ export default [
   },
   {
     url: "/notificaiton",
-    name: "Notificaion",
-    slug: "notificaion",
+    name: "Notification",
+    slug: "notification",
     icon: "MessageCircleIcon"
   },
   {

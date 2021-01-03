@@ -11,126 +11,6 @@
       </div>
     </div>
 
-    <div class="vx-row">
-      <div class="vx-col md:w-1/4">
-        <vs-card class="bg-primary text-center my-auto py-10">
-          <h1 class="text-white py-3" style="font-size: 4rem">
-            <b>{{ this.orderActiveNow }}</b>
-          </h1>
-          <h4 class="text-ihosts">Active Order Now</h4>
-        </vs-card>
-      </div>
-
-      <div class="vx-col" style="width: 75%">
-        <div class="vx-row">
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/1.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-bl" style="font-size: 2.5rem">
-                    <b> {{ this.tableScanned }}</b>
-                  </h1>
-                  <p class="mx-auto text-bl text-lg">Table Scanned</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/2.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-ihosts" style="font-size: 2.5rem">
-                    <b> {{ this.userConfirmed }}</b>
-                  </h1>
-                  <p class="mx-auto text-ihosts text-lg">User Confirmed</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/3.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-rd" style="font-size: 2.5rem">
-                    <b> {{ this.kitchen }}</b>
-                  </h1>
-                  <p class="mx-auto text-rd text-lg">In Kitchen</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <!-- Food Served -->
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/4.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-pl" style="font-size: 2.5rem">
-                    <b> {{ this.foodServed }}</b>
-                  </h1>
-                  <p class="mx-auto text-pl text-lg">Food Served</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/5.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-hostm" style="font-size: 2.5rem">
-                    <b> {{ this.invoiceCreated }}</b>
-                  </h1>
-                  <p class="mx-auto text-hostm text-lg">Create Invoice</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <!-- Cancel -->
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/6.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-gn" style="font-size: 2.5rem">
-                    <b> {{ this.paymentDone }}</b>
-                  </h1>
-                  <p class="mx-auto text-gn text-lg">Payment Done</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-        </div>
-      </div>
-    </div>
-    <vs-divider />
-
     <!-- order details -->
     <div class="vx-row order-manger-area">
       <vs-collapse
@@ -174,12 +54,6 @@
                     />
                     <path d="M0 4.07144H38V6.78573H0V4.07144Z" fill="white" />
                   </svg>
-                  <!-- <br />
-                  <b class="text-white text-sm">{{
-                    order.table_name.length > 10
-                      ? order.table_name.substr(0, 9) + "..."
-                      : order.table_name
-                  }}</b> -->
                 </div>
                 <div
                   v-if="!order.status"
@@ -188,10 +62,7 @@
                   No Order
                 </div>
                 <div v-else class="w-3/4 p-2 ml-2 pt-0 my-auto">
-                  <!-- <vs-progress
-                    :percent="orderPercent(order.status, 'per')"
-                    :color="orderPercent(order.status, 'color')"
-                  ></vs-progress> -->
+    
                   <div class="flex w-full mt-4">
                     <div class="w-3/5">
                       <p class="text-sm leading-none">Order ID</p>
@@ -261,7 +132,7 @@
               >Collect Payment</vs-button
             >
 
-            <vx-tooltip
+            <!-- <vx-tooltip
               class="ml-2 my-auto"
               color="pl"
               text="Return to food serve"
@@ -276,7 +147,7 @@
                 icon="icon-arrow-left"
                 @click="revertOrder(order.id)"
               ></vs-button>
-            </vx-tooltip>
+            </vx-tooltip> -->
 
             <vx-tooltip
               class="ml-2 my-auto"
@@ -481,7 +352,9 @@
               </span>
             </vs-td>
 
-            <vs-td :data="data[i].price"> ৳{{ data[i].price }} </vs-td>
+            <vs-td :data="data[i].food_option.price">
+              ৳{{ data[i].food_option.price }}
+            </vs-td>
           </vs-tr>
         </template>
       </vs-table>
@@ -692,7 +565,9 @@
                 {{ data[i].food_option.name }}
               </span>
             </vs-td>
-            <vs-td :data="data[i].price"> ৳{{ data[i].price }} </vs-td>
+            <vs-td :data="data[i].food_option.price">
+              ৳{{ data[i].food_option.price }}
+            </vs-td>
             <vs-td>
               <span
                 v-if="data[i].status != '4_CANCELLED'"
@@ -1360,12 +1235,11 @@ export default {
       let resLogo = document.querySelector("#res_logo").src;
 
       order.ordered_items.forEach((el) => {
-        if (el.status != "4_CANCELLED") {
-          itemDetail += `<tr class="service">
+        itemDetail += `<tr class="service">
                         <td class="tableitem itemname">
                             <p class="itemtext">${el.food_name}(<b>${
-            el.quantity
-          }</b>)</p>
+          el.quantity
+        }</b>)</p>
                         </td>
                         <td class="tableitem">
                             <p class="itemtext" style="text-align:center">${
@@ -1378,7 +1252,6 @@ export default {
                             }/-</p>
                         </td>
                     </tr>`;
-        }
       });
 
       WinPrint.document.write(`<!DOCTYPE html>
@@ -1866,18 +1739,16 @@ export default {
             vm.playSound();
           }
 
-          if (vm.varifyPopup) {
+          if (vm.orderToVarify.length > 0) {
             vm.orderToVarify = res.data.find(
               (order) => order.id == vm.orderToVarify.id
             );
-            console.log("jj");
           }
 
-          if (vm.markAsServedPopup) {
+          if (vm.orderToServed.length > 0) {
             vm.orderToServed = res.data.find(
               (order) => order.id == vm.orderToServed.id
             );
-            console.log("kk");
           }
 
           // vm.queriedItems = res.list.length;
@@ -1912,26 +1783,26 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 
-.order-manger-area {
-  max-height: 60vh;
-  overflow-y: scroll;
-}
+  .order-manger-area {
+    max-height: 60vh;
+    overflow-y: scroll;
+  }
 </style>
 

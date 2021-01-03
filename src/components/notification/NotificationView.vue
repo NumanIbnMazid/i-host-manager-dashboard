@@ -62,62 +62,49 @@
         <vs-th class="text-center">Body</vs-th>
         <vs-th class="text-center">Food</vs-th>
         <vs-th class="text-center">Restaurant</vs-th>
-        <vs-th class="text-center">Action</vs-th>
       </template>
 
       <template slot-scope="{ data }">
         <tbody>
           <vs-tr v-for="(tr, indextr) in data" :key="indextr">
             <vs-td>
-              <p class="product-name font-medium truncate text-center">
+              <p class="product-name font-medium truncate">
                 {{ itemsPerPage * (currentPage - 1) + indextr + 1 }}
               </p>
             </vs-td>
 
             <vs-td class="img-container">
-              <img :src="tr.image" class="product-img" />
-            </vs-td>
-
-            <vs-td>
-              <p class="product-name font-medium truncate">{{ tr.title }}</p>
+              <p class="mx-auto">
+                <img :src="tr.image" class="product-img" />
+              </p>
             </vs-td>
 
             <vs-td>
               <vx-tooltip position="bottom">
-                <p class="product-name font-medium truncate">
+              <p class="product-name font-medium truncate">
+                {{ tr.title }}
+              </p>
+              </vx-tooltip>
+            </vs-td>
+
+            <vs-td>
+              <vx-tooltip position="bottom">
+                <p class="product-name font-medium">
                   {{ tr.body }}
                 </p>
               </vx-tooltip>
             </vs-td>
 
             <vs-td>
-              <vx-tooltip position="bottom">
-                <p class="product-name font-medium truncate">
-                  {{ tr.data ? tr.data.foodName : 'null' }}
+                <p class="product-name font-medium">
+                  {{ tr.data ? tr.data.foodName : "null" }}
                 </p>
-              </vx-tooltip>
             </vs-td>
 
             <vs-td>
-              <vx-tooltip :text="tr.url" position="bottom">
-                <p class="product-name font-medium truncate">
+                <p class="product-name font-medium">
                   {{ tr.restaurant }}
                 </p>
-              </vx-tooltip>
-            </vs-td>
-
-            <vs-td class="whitespace-no-wrap">
-              <feather-icon
-                icon="EditIcon"
-                svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                @click="updateNotificaionGo(tr)"
-              />
-              <feather-icon
-                icon="TrashIcon"
-                svgClasses="w-5 h-5 hover:text-danger stroke-current"
-                class="ml-2"
-                @click="confirmAction(deleteANotificaion, [tr.id])"
-              />
             </vs-td>
           </vs-tr>
         </tbody>
@@ -310,73 +297,73 @@ export default {
         );
     },
 
-    updateNotificaionGo(notification) {
-      this.newNotification.id = notification.id;
-      this.newNotification.logoPreview = notification.image;
-      this.newNotification.title = notification.title;
-      this.newNotification.body = notification.body;
-      this.notificaionFormActionMethod = this.updateNotificaion;
-      this.popupActive = !this.popupActive;
-    },
+    // updateNotificaionGo(notification) {
+    //   this.newNotification.id = notification.id;
+    //   this.newNotification.logoPreview = notification.image;
+    //   this.newNotification.title = notification.title;
+    //   this.newNotification.body = notification.body;
+    //   this.notificaionFormActionMethod = this.updateNotificaion;
+    //   this.popupActive = !this.popupActive;
+    // },
 
-    updateNotificaion() {
-      const body = {
-        title: this.newNotification.title,
-        body: this.newNotification.body,
-        restaurant: this.resturent_id,
-      };
+    // updateNotificaion() {
+    //   const body = {
+    //     title: this.newNotification.title,
+    //     body: this.newNotification.body,
+    //     restaurant: this.resturent_id,
+    //   };
 
-      if (this.newNotification.image) {
-        console.log("1111");
-        body.image = this.newNotification.logoPreview;
-      }
-      console.log(this.newNotification.image);
+    //   if (this.newNotification.image) {
+    //     console.log("1111");
+    //     body.image = this.newNotification.logoPreview;
+    //   }
+    //   console.log(this.newNotification.image);
 
-      axios
-        .patch(
-          `/account_management/customer_notification/${this.newNotification.id}/`,
-          body
-        )
-        .then((res) => {
-          console.log("body ", body);
-          console.log("res ", res.data);
-          if (res.data.status) {
-            const updatedNotifications = this.notifications.map(
-              (notification) =>
-                notification.id === this.newNotification.id
-                  ? { ...res.data.data }
-                  : notification
-            );
+    //   axios
+    //     .patch(
+    //       `/account_management/customer_notification/${this.newNotification.id}/`,
+    //       body
+    //     )
+    //     .then((res) => {
+    //       console.log("body ", body);
+    //       console.log("res ", res.data);
+    //       if (res.data.status) {
+    //         const updatedNotifications = this.notifications.map(
+    //           (notification) =>
+    //             notification.id === this.newNotification.id
+    //               ? { ...res.data.data }
+    //               : notification
+    //         );
 
-            this.notifications = updatedNotifications;
+    //         this.notifications = updatedNotifications;
 
-            this.popupActive = false;
-            this.showActionMessage("success", "Notification updated!");
-          }
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
-        });
-    },
+    //         this.popupActive = false;
+    //         this.showActionMessage("success", "Notification updated!");
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       this.showActionMessage("error", err.response.statusText);
+    //       this.checkError(err);
+    //     });
+    // },
 
-    deleteANotificaion(notificaion_id) {
-      axios
-        .delete(`/account_management/customer_notification/${notificaion_id}`)
-        .then((res) => {
-          if (res.data.status) {
-            // filter
-            const leftNotifications = this.notifications;
-            this.notifications = leftNotifications.filter(
-              (ln) => ln.id !== notificaion_id
-            );
-          } else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
-        });
-    },
+    // deleteANotificaion(notificaion_id) {
+    //   axios
+    //     .delete(`/account_management/customer_notification/${notificaion_id}`)
+    //     .then((res) => {
+    //       if (res.data.status) {
+    //         // filter
+    //         const leftNotifications = this.notifications;
+    //         this.notifications = leftNotifications.filter(
+    //           (ln) => ln.id !== notificaion_id
+    //         );
+    //       } else this.showErrorLog(res.data.error.error_details);
+    //     })
+    //     .catch((err) => {
+    //       this.showActionMessage("error", err.response.statusText);
+    //       this.checkError(err);
+    //     });
+    // },
 
     showErrorLog(errorList) {
       for (const error in errorList) {
