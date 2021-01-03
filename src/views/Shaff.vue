@@ -11,126 +11,6 @@
       </div>
     </div>
 
-    <div class="vx-row">
-      <div class="vx-col md:w-1/4">
-        <vs-card class="bg-primary text-center my-auto py-10">
-          <h1 class="text-white py-3" style="font-size: 4rem">
-            <b>{{ this.orderActiveNow }}</b>
-          </h1>
-          <h4 class="text-ihosts">Active Order Now</h4>
-        </vs-card>
-      </div>
-
-      <div class="vx-col" style="width: 75%">
-        <div class="vx-row">
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/1.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-bl" style="font-size: 2.5rem">
-                    <b> {{ this.tableScanned }}</b>
-                  </h1>
-                  <p class="mx-auto text-bl text-lg">Table Scanned</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/2.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-ihosts" style="font-size: 2.5rem">
-                    <b> {{ this.userConfirmed }}</b>
-                  </h1>
-                  <p class="mx-auto text-ihosts text-lg">User Confirmed</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/3.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-rd" style="font-size: 2.5rem">
-                    <b> {{ this.kitchen }}</b>
-                  </h1>
-                  <p class="mx-auto text-rd text-lg">In Kitchen</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <!-- Food Served -->
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/4.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-pl" style="font-size: 2.5rem">
-                    <b> {{ this.foodServed }}</b>
-                  </h1>
-                  <p class="mx-auto text-pl text-lg">Food Served</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/5.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-hostm" style="font-size: 2.5rem">
-                    <b> {{ this.invoiceCreated }}</b>
-                  </h1>
-                  <p class="mx-auto text-hostm text-lg">Create Invoice</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-
-          <!-- Cancel -->
-          <div class="vx-col w-full sm:w-1/2 md:w-1/3">
-            <vs-card>
-              <vs-row>
-                <vs-col vs-w="3">
-                  <img class="status-icon" src="../assets/icon/6.png" alt="" />
-                </vs-col>
-
-                <vs-col vs-w="9" class="text-center">
-                  <h1 class="mx-auto text-gn" style="font-size: 2.5rem">
-                    <b> {{ this.paymentDone }}</b>
-                  </h1>
-                  <p class="mx-auto text-gn text-lg">Payment Done</p>
-                </vs-col>
-              </vs-row>
-            </vs-card>
-          </div>
-        </div>
-      </div>
-    </div>
-    <vs-divider />
-
     <!-- order details -->
     <div class="vx-row order-manger-area">
       <vs-collapse
@@ -174,12 +54,6 @@
                     />
                     <path d="M0 4.07144H38V6.78573H0V4.07144Z" fill="white" />
                   </svg>
-                  <!-- <br />
-                  <b class="text-white text-sm">{{
-                    order.table_name.length > 10
-                      ? order.table_name.substr(0, 9) + "..."
-                      : order.table_name
-                  }}</b> -->
                 </div>
                 <div
                   v-if="!order.status"
@@ -188,10 +62,7 @@
                   No Order
                 </div>
                 <div v-else class="w-3/4 p-2 ml-2 pt-0 my-auto">
-                  <!-- <vs-progress
-                    :percent="orderPercent(order.status, 'per')"
-                    :color="orderPercent(order.status, 'color')"
-                  ></vs-progress> -->
+    
                   <div class="flex w-full mt-4">
                     <div class="w-3/5">
                       <p class="text-sm leading-none">Order ID</p>
@@ -261,7 +132,7 @@
               >Collect Payment</vs-button
             >
 
-            <vx-tooltip
+            <!-- <vx-tooltip
               class="ml-2 my-auto"
               color="pl"
               text="Return to food serve"
@@ -276,7 +147,7 @@
                 icon="icon-arrow-left"
                 @click="revertOrder(order.id)"
               ></vs-button>
-            </vx-tooltip>
+            </vx-tooltip> -->
 
             <vx-tooltip
               class="ml-2 my-auto"
@@ -901,7 +772,7 @@ export default {
 
     // adding food order to order cart
     addOrderedItems(orderToProcess, status) {
-      console.log('orderToProcess1 ', orderToProcess)
+      console.log("orderToProcess1 ", orderToProcess);
       axios
         .post("/restaurant_management/dashboard/order/cart/items/", [
           {
@@ -921,7 +792,7 @@ export default {
                 order.ordered_items.push(res.data.data[0])
             );
 
-            orderToProcess.ordered_items.push(res.data.data[0])
+            orderToProcess.ordered_items.push(res.data.data[0]);
 
             // clear food state after add item to cart
             this.selectedFood = "";
