@@ -68,7 +68,7 @@
                         :src="`${waiter.image}`"
                         @click="detailsWaiterInfo(waiter, table)"
                       /> -->
-                      <vs-chip
+                      <!-- <vs-chip
                         :style="`background-color: rgb(${getRandomInt(
                           0,
                           255
@@ -77,13 +77,12 @@
                           255
                         )}); color: white; margin-top: 5px; font-size: 10px;
                         scrollbar-color: red yellow;`"
-                      >
-                        <vs-avatar
-                          :src="`${waiter.image}`"
-                          @click="detailsWaiterInfo(waiter, table)"
-                        />
-                        {{ waiter.first_name }}
-                      </vs-chip>
+                      > -->
+                      <vs-avatar
+                        :src="`${waiter.image}`"
+                        @click="detailsWaiterInfo(waiter, table)"
+                      />
+                      <!-- </vs-chip> -->
                       <!-- <div v-if="i % 2 === 0">
                         <br />
                         hellow
@@ -101,8 +100,9 @@
                   </div>
 
                   <!-- action buttons -->
-                  <div class="vx-row w-full m-0" style="width: 100% !important">
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/5 ml-4">
+                  <!-- <div class="vx-row w-full m-0" style="width: 90% !important"> -->
+                    <div class="flex flex-row mr-2">
+                    <div class="v-col w-full sm:w-1/4 md:w-1/4 lg:w-1/4">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
@@ -113,7 +113,7 @@
                       ></vs-button>
                     </div>
 
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/5">
+                    <div class="v-col w-full sm:w-1/4 md:w-1/4 lg:w-1/4">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
@@ -124,7 +124,7 @@
                       ></vs-button>
                     </div>
 
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/4">
+                    <div class="v-col w-full sm:w-1/4 md:w-1/4 lg:w-1/4">
                       <vs-button
                         color="primary"
                         icon-pack="feather"
@@ -141,13 +141,13 @@
                     </div>
 
                     <!-- table delete button -->
-                    <div class="v-col w-full sm:w-1/1 md:w-1/1 lg:w-1/4 ml-1">
+                    <div class="v-col w-full sm:w-1/4 md:w-1/4 lg:w-1/4 ml-1">
                       <vs-button
                         color="danger"
                         icon-pack="feather"
                         icon="icon-trash"
                         type="gradient"
-                        class="mt-2 mr-4 lg:ml-2 md:ml-0 sm:ml-0 w-full"
+                        class="mt-2 mr-2 lg:ml-2 md:ml-0 sm:ml-0 w-full"
                         @click="confirmAction(deleteTable, [table.id])"
                       ></vs-button>
                     </div>
@@ -306,7 +306,7 @@
     <!-- add new table popup form -->
     <vs-popup
       class="holamundo"
-      title="Add new table"
+      title="Table"
       :active.sync="tableEditPopupActive"
     >
       <vs-row>
@@ -349,7 +349,7 @@
     <!-- popup form for assign waiter to a table -->
     <vs-popup
       class="holamundo"
-      title="Add new table"
+      title="Table"
       :active.sync="assignWaiterPopupActive"
     >
       <vs-row>
@@ -367,7 +367,7 @@
           />
         </div>
 
-        <div class="w-full">
+        <!-- <div class="w-full">
           <vs-input
             label="Table No"
             v-model="table_id"
@@ -376,7 +376,7 @@
             v-validate="'required'"
             disabled
           />
-        </div>
+        </div> -->
 
         <vs-button class="mb-2 w-full mt-5" @click="assignStaff(table_id)"
           >Assign Waiter</vs-button
