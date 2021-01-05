@@ -481,9 +481,7 @@
               </span>
             </vs-td>
 
-            <vs-td :data="data[i].food_option.price">
-              ৳{{ data[i].food_option.price }}
-            </vs-td>
+            <vs-td :data="data[i].price"> ৳{{ data[i].price }} </vs-td>
           </vs-tr>
         </template>
       </vs-table>
@@ -694,9 +692,7 @@
                 {{ data[i].food_option.name }}
               </span>
             </vs-td>
-            <vs-td :data="data[i].food_option.price">
-              ৳{{ data[i].food_option.price }}
-            </vs-td>
+            <vs-td :data="data[i].price"> ৳{{ data[i].price }} </vs-td>
             <vs-td>
               <span
                 v-if="data[i].status != '4_CANCELLED'"
@@ -768,8 +764,8 @@
         </vx-tooltip>
       </div>
     </vs-popup>
-
-    <!-- <img id="res_logo" :src="resturent.logo" alt="" style="display: none" /> -->
+    <!-- Please dont' touch my below  code 😡😡😡😡-->
+    <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
   </div>
 </template>
 
@@ -901,7 +897,7 @@ export default {
 
     // adding food order to order cart
     addOrderedItems(orderToProcess, status) {
-      console.log('orderToProcess1 ', orderToProcess)
+      console.log("orderToProcess1 ", orderToProcess);
       axios
         .post("/restaurant_management/dashboard/order/cart/items/", [
           {
@@ -921,7 +917,7 @@ export default {
                 order.ordered_items.push(res.data.data[0])
             );
 
-            orderToProcess.ordered_items.push(res.data.data[0])
+            orderToProcess.ordered_items.push(res.data.data[0]);
 
             // clear food state after add item to cart
             this.selectedFood = "";
@@ -1364,11 +1360,12 @@ export default {
       let resLogo = document.querySelector("#res_logo").src;
 
       order.ordered_items.forEach((el) => {
-        itemDetail += `<tr class="service">
+        if (el.status != "4_CANCELLED") {
+          itemDetail += `<tr class="service">
                         <td class="tableitem itemname">
                             <p class="itemtext">${el.food_name}(<b>${
-          el.quantity
-        }</b>)</p>
+            el.quantity
+          }</b>)</p>
                         </td>
                         <td class="tableitem">
                             <p class="itemtext" style="text-align:center">${
@@ -1381,6 +1378,7 @@ export default {
                             }/-</p>
                         </td>
                     </tr>`;
+        }
       });
 
       WinPrint.document.write(`<!DOCTYPE html>
@@ -1872,14 +1870,14 @@ export default {
             vm.orderToVarify = res.data.find(
               (order) => order.id == vm.orderToVarify.id
             );
-            console.log('jj')
+            console.log("jj");
           }
 
           if (vm.markAsServedPopup) {
             vm.orderToServed = res.data.find(
               (order) => order.id == vm.orderToServed.id
             );
-            console.log('kk')
+            console.log("kk");
           }
 
           // vm.queriedItems = res.list.length;
@@ -1914,26 +1912,26 @@ export default {
 </script>
 
 <style >
-  header.vs-collapse-item--header {
-    padding: 0px !important;
-  }
-  .open-item {
-    position: absolute;
-    z-index: 999;
-    width: 22.3%;
-  }
-  .mb-base {
-    margin-bottom: 0.5rem !important;
-  }
+header.vs-collapse-item--header {
+  padding: 0px !important;
+}
+.open-item {
+  position: absolute;
+  z-index: 999;
+  width: 22.3%;
+}
+.mb-base {
+  margin-bottom: 0.5rem !important;
+}
 
-  .status-icon {
-    width: 100% !important;
-    height: 100%;
-  }
+.status-icon {
+  width: 100% !important;
+  height: 100%;
+}
 
-  .order-manger-area {
-    max-height: 60vh;
-    overflow-y: scroll;
-  }
+.order-manger-area {
+  max-height: 60vh;
+  overflow-y: scroll;
+}
 </style>
 

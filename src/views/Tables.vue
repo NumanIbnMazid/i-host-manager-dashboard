@@ -408,7 +408,7 @@ export default {
     table_id: "",
     name: "",
 
-    colorCode: Math.floor(Math.random() * (255 - 0)) + 0,
+    colorCode: "#ddd", //Math.floor(Math.random() * (255 - 0)) + 0,
     detailWaiter: {
       tableName: "",
       tableId: "",
@@ -429,7 +429,8 @@ export default {
   methods: {
     // random code
     getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min)) + min;
+      // return Math.floor(Math.random() * (max - min)) + min;
+      return "#ddd";
     },
 
     getTables() {
@@ -678,30 +679,30 @@ export default {
 </script>
 
 <style scoped>
-  .waiters-avater {
-    overflow-x: auto;
-    scrollbar-width: 2px;
-    scrollbar-color: red yellow;
-  }
+.waiters-avater {
+  overflow-x: auto;
+  scrollbar-width: 2px;
+  scrollbar-color: red yellow;
+}
 
-  /* width */
-  ::-webkit-scrollbar {
-    height: 4px; /* height of horizontal scrollbar ← You're missing this */
-    /* width of vertical scrollbar */
-    border: 1px solid #d5d5d5;
-  }
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #000 !important;
-  }
+/* width */
+::-webkit-scrollbar {
+  height: 4px; /* height of horizontal scrollbar ← You're missing this */
+  /* width of vertical scrollbar */
+  border: 1px solid #d5d5d5;
+}
+/* Track */
+::-webkit-scrollbar-track {
+  background: #000 !important;
+}
 
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888;
-  }
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
 
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #000;
-  }
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #000;
+}
 </style>
