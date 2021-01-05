@@ -12,9 +12,9 @@ export default [
     icon: "ShoppingCartIcon"
   },
   {
-    url: "/shaff",
-    name: "Shaff",
-    slug: "shaff",
+    url: "/chef",
+    name: "Chef",
+    slug: "chef",
     icon: "MenuIcon"
   },
   {

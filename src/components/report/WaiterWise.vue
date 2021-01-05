@@ -27,7 +27,7 @@
     <vs-table class="p-0" ref="table" :data="waiters">
       <template slot="thead">
         <th>Rank</th>
-        <th style="text-align: left !important">Item Name</th>
+        <th style="text-align: left !important">Waiter Name</th>
         <th>Total Order Serve</th>
         <th>Total Order Amount</th>
         <!-- <th>Total Sell</th> -->

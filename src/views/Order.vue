@@ -764,8 +764,8 @@
         </vx-tooltip>
       </div>
     </vs-popup>
-
-    <!-- <img id="res_logo" :src="resturent.logo" alt="" style="display: none" /> -->
+    <!-- Please dont' touch my below  code 😡😡😡😡-->
+    <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
   </div>
 </template>
 

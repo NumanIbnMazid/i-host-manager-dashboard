@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="chef-page">
     <div class="vx-row mb-10">
       <div class="vx-col md:w-1/2">
         <h1 class="text-grey-dark">Order Dashboard</h1>
@@ -1782,7 +1782,11 @@ export default {
 };
 </script>
 
-<style >
+<style scoped>
+.chef-page{
+  padding: 20px;
+  margin: 20px;
+}
   header.vs-collapse-item--header {
     padding: 0px !important;
   }

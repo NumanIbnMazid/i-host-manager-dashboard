@@ -151,9 +151,9 @@ const router = new Router({
           component: () => import("@/views/pages/Error404.vue")
         },
         {
-          path: "/shaff",
-          name: "shaff",
-          component: () => import("@/views/Shaff.vue")
+          path: "/chef",
+          name: "chef",
+          component: () => import("@/views/Chef.vue")
         }
       ]
     },
