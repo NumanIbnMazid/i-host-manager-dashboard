@@ -339,15 +339,15 @@
                 <template>
                   <vs-tr
                     class="text-xs"
-                    v-for="item in itemsCarts"
+                    v-for="item in orderData.ordered_items"
                     :key="item.id"
                   >
                     <!-- <vs-tr class="text-xs"> -->
-                    <vs-td> {{ item.name }} </vs-td>
+                    <vs-td> {{ item.food_name }} </vs-td>
 
                     <vs-td> Double patty </vs-td>
 
-                    <vs-td> {{ item.qty }} </vs-td>
+                    <vs-td> {{ item.quantity }} </vs-td>
 
                     <vs-td> {{ item.price }} </vs-td>
                   </vs-tr>
@@ -475,6 +475,7 @@ export default {
     foods: [],
     search: "",
     tables: [],
+    orderData: { id: null, ordered_items: [] },
     categories: [],
     itemsCarts: [],
     slectedCategory: "",
@@ -486,10 +487,6 @@ export default {
   }),
 
   methods: {
-    testFunc() {
-      console.log("hellow world!");
-    },
-
     getTime() {
       setInterval(() => {
         this.time = moment().format("h:mm:ss A");
@@ -534,15 +531,61 @@ export default {
       this.getFood();
     },
 
-    itemAddToCart(item) {
-      let theitem = this.itemsCarts.filter((arr) => arr.id == item.id);
-      // console.log("1 ", theitem);
-      if (theitem.length == 0) {
-        item["qty"] = 1;
-        this.itemsCarts.push(item);
+    createTakeAwayOrder() {
+      axios
+        .post(
+          "/restaurant_management/dashboard/order/create_take_away_order/",
+          { restaurant: this.resturent_id }
+        )
+        .then((res) => {
+          console.log("res ", res.data);
+          this.orderData = res.data.data;
+        })
+        .catch((err) => {
+          console.log("err ", err.response);
+        });
+    },
 
-        // console.log("2 ", this.itemsCarts);
+    itemAddToCart(item) {
+      // console.log("object ", item);
+      // let theitem = this.itemsCarts.filter((arr) => arr.id == item.id);
+      // console.log("1 ", theitem);
+      // if (theitem.length == 0) {
+      //   item["qty"] = 1;
+      //   this.itemsCarts.push(item);
+      // }
+
+      // TODO: To be fixed =>  call add to cart first then call create take away funciton
+      if (this.orderData.id == null) {
+        console.log(1111);
+        this.createTakeAwayOrder();
       }
+
+      // id: 265
+      // ordered_items: Array(0)
+      // remarks: null
+      // status: "0_ORDER_INITIALIZED"
+      // table: null
+      console.log("odata ", this.orderData);
+      axios
+        .post("/restaurant_management/dashboard/order/cart/items/", [
+          {
+            quantity: 1,
+            status: this.orderData.status,
+            food_option: item.food_options[0].id,
+            food_order: this.orderData.id, // order id
+            food_extras: item.food_extras.map((extra) => extra.type_id),
+          },
+        ])
+        .then((res) => {
+          if (res.data.status) {
+            console.log("oci ", res.data);
+            this.orderData.ordered_items.push(res.data.data[0]);
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          console.log("err oci ", err.response);
+        });
     },
     increaseItem(item) {
       let theitem = this.itemsCarts.find((arr) => arr.id == item.id).qty++;
@@ -611,9 +654,20 @@ export default {
           this.checkError(err);
         });
     },
+
+    showErrorLog(errorList) {
+      for (const error in errorList) {
+        this.$vs.notify({
+          text: `${error} :  ${errorList[error][0]}`,
+          color: "danger",
+          position: "top-right",
+        });
+      }
+    },
   },
 
   created() {
+    // this.createTakeAwayOrder();
     this.getFood();
     this.getCategorys();
     this.getTime();
@@ -623,210 +677,210 @@ export default {
 
 
 <style lang="scss" >
-.vs-input--input {
-  text-align: center;
-}
-#data-list-thumb-view-alt {
-  .vs-con-table {
-    .product-name {
-      max-width: 23rem;
-    }
+  .vs-input--input {
+    text-align: center;
+  }
+  #data-list-thumb-view-alt {
+    .vs-con-table {
+      .product-name {
+        max-width: 23rem;
+      }
 
-    .vs-table--header {
-      display: flex;
-      flex-wrap: wrap-reverse;
-      margin-left: 1.5rem;
-      margin-right: 1.5rem;
-      > span {
+      .vs-table--header {
         display: flex;
-        flex-grow: 1;
-      }
-
-      .vs-table--search {
-        padding-top: 0;
-
-        .vs-table--search-input {
-          padding: 0.9rem 2.5rem;
-          font-size: 1rem;
-
-          & + i {
-            left: 1rem;
-          }
-
-          &:focus + i {
-            left: 1rem;
-          }
+        flex-wrap: wrap-reverse;
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+        > span {
+          display: flex;
+          flex-grow: 1;
         }
-      }
-    }
 
-    .vs-table {
-      border-collapse: separate;
-      // border-spacing: 0 1.3rem;
-      // padding: 0 1rem;
+        .vs-table--search {
+          padding-top: 0;
 
-      tr {
-        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-        td {
-          padding: 10px;
-          &:first-child {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-          }
-          &:last-child {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-          }
-          &.img-container {
-            // width: 1rem;
-            // background: #fff;
+          .vs-table--search-input {
+            padding: 0.9rem 2.5rem;
+            font-size: 1rem;
 
-            span {
-              display: flex;
-              justify-content: flex-start;
+            & + i {
+              left: 1rem;
             }
 
-            .product-img {
-              height: 50px;
-              width: 50px !important;
+            &:focus + i {
+              left: 1rem;
             }
           }
         }
-        td.td-check {
-          padding: 20px !important;
+      }
+
+      .vs-table {
+        border-collapse: separate;
+        // border-spacing: 0 1.3rem;
+        // padding: 0 1rem;
+
+        tr {
+          box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+          td {
+            padding: 10px;
+            &:first-child {
+              border-top-left-radius: 0;
+              border-bottom-left-radius: 0;
+            }
+            &:last-child {
+              border-top-right-radius: 0;
+              border-bottom-right-radius: 0;
+            }
+            &.img-container {
+              // width: 1rem;
+              // background: #fff;
+
+              span {
+                display: flex;
+                justify-content: flex-start;
+              }
+
+              .product-img {
+                height: 50px;
+                width: 50px !important;
+              }
+            }
+          }
+          td.td-check {
+            padding: 20px !important;
+          }
         }
       }
-    }
 
-    .vs-table--thead {
-      th {
-        padding-top: 0;
-        padding-bottom: 0;
+      .vs-table--thead {
+        th {
+          padding-top: 0;
+          padding-bottom: 0;
 
-        .vs-table-text {
-          text-transform: uppercase;
-          font-weight: 600;
+          .vs-table-text {
+            text-transform: uppercase;
+            font-weight: 600;
+          }
+        }
+        th.td-check {
+          padding: 0 15px !important;
+        }
+        tr {
+          background: none;
+          box-shadow: none;
         }
       }
-      th.td-check {
-        padding: 0 15px !important;
-      }
-      tr {
-        background: none;
-        box-shadow: none;
-      }
-    }
 
-    .vs-table--pagination {
-      justify-content: center;
+      .vs-table--pagination {
+        justify-content: center;
+      }
     }
   }
-}
 
-.vs-sidebar {
-  z-index: 100000;
-}
+  .vs-sidebar {
+    z-index: 100000;
+  }
 
-.sidebar-custom > .header-sidebar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  h4 {
+  .sidebar-custom > .header-sidebar {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     width: 100%;
-    > button {
-      margin-left: 10px;
+    h4 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      > button {
+        margin-left: 10px;
+      }
     }
   }
-}
 
-.footer-sidebar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  > button {
-    border: 0px solid rgba(0, 0, 0, 0) !important;
-    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
-    border-radius: 0px !important;
+  .footer-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    > button {
+      border: 0px solid rgba(0, 0, 0, 0) !important;
+      border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
+      border-radius: 0px !important;
+    }
   }
-}
 
-.sidebar-custom > .vs-sidebar-primary {
-  max-width: 400px !important;
-}
-
-// th:first-child .vs-table-text {
-//   justify-content: center !important;
-//   cursor: pointer;
-// }
-.vs-table--thead {
-  background-color: #32304e;
-  color: #fff;
-}
-
-.vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
-  padding: 10px 15px !important;
-}
-
-.product-img {
-  width: 150px !important;
-  // width: 100px !important;
-}
-
-.th .sort-th,
-th .vs-table-text {
-  justify-content: center !important;
-}
-
-.place-order {
-  position: fixed;
-  // top: 900px;
-  bottom: 10px;
-  width: 21.5% !important;
-
-  background: #c4c4c4;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
-    inset 0px -3px 5px rgba(0, 0, 0, 0.38);
-  // border-radius: 7px;
-}
-
-// table card styles
-.table-card {
-  margin: 4px 0 4px 12px;
-  width: 387px;
-  height: auto;
-  left: 1517px;
-  top: 258px;
-
-  background: #ffffff;
-  border: 1px solid #c4c4c4;
-  box-sizing: border-box;
-  border-radius: 9px;
-}
-
-// restaurant table styles
-.restaurant-tables {
-  width: 89px;
-  height: 63px;
-  left: 1544px;
-  top: 283px;
-
-  background: #ffffff;
-  border: 2px solid #c4c4c4;
-  box-sizing: border-box;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 5px;
-
-  // table number styles
-  .table-no {
-    width: 56.97px;
-    height: 59px;
+  .sidebar-custom > .vs-sidebar-primary {
+    max-width: 400px !important;
   }
-}
+
+  // th:first-child .vs-table-text {
+  //   justify-content: center !important;
+  //   cursor: pointer;
+  // }
+  .vs-table--thead {
+    background-color: #32304e;
+    color: #fff;
+  }
+
+  .vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
+    padding: 10px 15px !important;
+  }
+
+  .product-img {
+    width: 150px !important;
+    // width: 100px !important;
+  }
+
+  .th .sort-th,
+  th .vs-table-text {
+    justify-content: center !important;
+  }
+
+  .place-order {
+    position: fixed;
+    // top: 900px;
+    bottom: 10px;
+    width: 21.5% !important;
+
+    background: #c4c4c4;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
+      inset 0px -3px 5px rgba(0, 0, 0, 0.38);
+    // border-radius: 7px;
+  }
+
+  // table card styles
+  .table-card {
+    margin: 4px 0 4px 12px;
+    width: 387px;
+    height: auto;
+    left: 1517px;
+    top: 258px;
+
+    background: #ffffff;
+    border: 1px solid #c4c4c4;
+    box-sizing: border-box;
+    border-radius: 9px;
+  }
+
+  // restaurant table styles
+  .restaurant-tables {
+    width: 89px;
+    height: 63px;
+    left: 1544px;
+    top: 283px;
+
+    background: #ffffff;
+    border: 2px solid #c4c4c4;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+
+    // table number styles
+    .table-no {
+      width: 56.97px;
+      height: 59px;
+    }
+  }
 </style>
 

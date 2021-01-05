@@ -11,31 +11,60 @@
 
     <style>
         /* width */
-        
-         ::-webkit-scrollbar {
+
+        ::-webkit-scrollbar {
             width: 6px;
         }
+
         /* Track */
-        
-         ::-webkit-scrollbar-track {
+
+        ::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
+
         /* Handle */
-        
-         ::-webkit-scrollbar-thumb {
+
+        ::-webkit-scrollbar-thumb {
             background: #888;
         }
+
         /* Handle on hover */
-        
-         ::-webkit-scrollbar-thumb:hover {
+
+        ::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        /* offline or online alert */
+        .connection-alert {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            z-index: 9999;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 200;
+            padding: 1.6rem 2rem;
+            -webkit-box-shadow: 0 4rem 4rem rgba(0, 0, 0, 0.25);
+            box-shadow: 0 2rem 3rem rgba(0, 0, 0, 0.25);
+        }
+
+        .alert--connected {
+            background-color: #20bf6b;
+        }
+
+        .alert--disconnected {
+            background-color: #eb4d4b;
+        }
+
     </style>
 </head>
 
 <body>
     <noscript>
-      <strong>We're sorry but I host doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+        <strong>We're sorry but I host doesn't work properly without JavaScript enabled. Please enable it to
+            continue.</strong>
     </noscript>
     <div id="loading-bg">
         <div class="loading-logo">
@@ -51,6 +80,7 @@
 
     </div>
     <!-- built files will be auto injected -->
+    <script src="./offline/offline.js"></script>
 </body>
 
 </html>

@@ -190,12 +190,12 @@
                 </td>
               </tr>
 
-              <tr>
+              <!-- <tr>
                 <td class="font-semibold">Restaurant Limit</td>
                 <td>
                   <p>{{ subscription.restaurant_limit }}</p>
                 </td>
-              </tr>
+              </tr> -->
 
               <tr>
                 <td class="font-semibold pr-3">Subscription End</td>
@@ -228,12 +228,12 @@
                 </td>
               </tr>
 
-              <tr>
+              <!-- <tr>
                 <td class="font-semibold pr-3">Restaurant</td>
                 <td>
                   <p>{{ subscription.restaurant_limit }}</p>
                 </td>
-              </tr>
+              </tr> -->
             </table>
           </div>
         </div>
