@@ -146,9 +146,9 @@
                           icon-pack="feather"
                           icon="icon-plus"
                           class="w-full"
-                          @click="itemAddToCart(food)"
                           >Add</vs-button
                         >
+                        <!-- @click="itemAddToCart(food)" -->
                       </div>
 
                       <div v-else class="flex">
@@ -157,22 +157,22 @@
                           type="border"
                           icon-pack="feather"
                           icon="icon-minus"
-                          @click="decraseItem(food)"
                         ></vs-button>
+                        <!-- @click="decraseItem(food)" -->
 
                         <vs-input
                           class="px-1 text-center"
-                          :value="checkIfCart(food).qty"
+                          :value="checkIfCart(food).quantity"
                           :ref="`quantityItem-${food}`"
-                          @keyup="itemQtyAdd(food)"
                         ></vs-input>
+                        <!-- @keyup="itemQtyAdd(food)" -->
                         <vs-button
                           color="primary"
                           type="border"
                           icon-pack="feather"
                           icon="icon-plus"
-                          @click="increaseItem(food)"
                         ></vs-button>
+                        <!-- @click="increaseItem(food)" -->
                       </div>
                     </vx-card>
                   </div>
@@ -185,7 +185,7 @@
                   <vs-th class="text-center">Image</vs-th>
                   <vs-th>Name</vs-th>
                   <vs-th>Price</vs-th>
-                  <vs-th>Price</vs-th>
+                  <vs-th>Ingredients</vs-th>
                   <vs-th>Action</vs-th>
                 </template>
 
@@ -244,7 +244,7 @@
 
                           <vs-input
                             class="px-1 text-center"
-                            :value="checkIfCart(tr).qty"
+                            :value="checkIfCart(tr).quantity"
                             :ref="`quantityItem-${tr}`"
                             @keyup="itemQtyAdd(tr)"
                           ></vs-input>
@@ -330,10 +330,10 @@
             <div class="table-card">
               <vs-table>
                 <template slot="thead">
-                  <vs-th class="text-xs">Variant</vs-th>
                   <vs-th class="text-xs">Item</vs-th>
                   <vs-th class="text-xs">Qty</vs-th>
                   <vs-th class="text-xs">Amount</vs-th>
+                  <vs-th class="text-xs">Action</vs-th>
                 </template>
 
                 <template>
@@ -345,11 +345,20 @@
                     <!-- <vs-tr class="text-xs"> -->
                     <vs-td> {{ item.food_name }} </vs-td>
 
-                    <vs-td> Double patty </vs-td>
-
                     <vs-td> {{ item.quantity }} </vs-td>
 
                     <vs-td> {{ item.price }} </vs-td>
+
+                    <vs-td>
+                      <vx-tooltip class="mx-auto" color="danger" text="Cancel">
+                        <vs-button
+                          class="ml-4 w-8 h-8"
+                          color="danger"
+                          icon-pack="feather"
+                          icon="icon-x-circle"
+                          @click="cancelOrder(item.id)"
+                        ></vs-button> </vx-tooltip
+                    ></vs-td>
                   </vs-tr>
 
                   <!-- <vs-tr class="text-xs">
@@ -531,8 +540,8 @@ export default {
       this.getFood();
     },
 
-    createTakeAwayOrder() {
-      axios
+    async createTakeAwayOrder() {
+      await axios
         .post(
           "/restaurant_management/dashboard/order/create_take_away_order/",
           { restaurant: this.resturent_id }
@@ -540,34 +549,21 @@ export default {
         .then((res) => {
           console.log("res ", res.data);
           this.orderData = res.data.data;
+          localStorage.setItem("orderData", JSON.stringify(res.data.data));
         })
         .catch((err) => {
           console.log("err ", err.response);
         });
     },
 
-    itemAddToCart(item) {
-      // console.log("object ", item);
-      // let theitem = this.itemsCarts.filter((arr) => arr.id == item.id);
-      // console.log("1 ", theitem);
-      // if (theitem.length == 0) {
-      //   item["qty"] = 1;
-      //   this.itemsCarts.push(item);
-      // }
-
-      // TODO: To be fixed =>  call add to cart first then call create take away funciton
+    async itemAddToCart(item) {
       if (this.orderData.id == null) {
         console.log(1111);
-        this.createTakeAwayOrder();
+        await this.createTakeAwayOrder();
       }
 
-      // id: 265
-      // ordered_items: Array(0)
-      // remarks: null
-      // status: "0_ORDER_INITIALIZED"
-      // table: null
-      console.log("odata ", this.orderData);
-      axios
+      console.log("odata 2 ", this.orderData);
+      await axios
         .post("/restaurant_management/dashboard/order/cart/items/", [
           {
             quantity: 1,
@@ -581,31 +577,98 @@ export default {
           if (res.data.status) {
             console.log("oci ", res.data);
             this.orderData.ordered_items.push(res.data.data[0]);
+            // checkIfCart(res.data.data[0])
+            console.log("order data cart ", this.orderData);
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
           console.log("err oci ", err.response);
         });
     },
+
+    updateCartItem(item) {
+      axios
+        .patch(
+          `/restaurant_management/dashboard/order/cart/items/${item.id}/`,
+          { quantity: item.quantity }
+        )
+        .then((res) => {
+          console.log("qty update ", res.data);
+          if (res.data.status) {
+            this.orderData = res.data.data;
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+
     increaseItem(item) {
-      let theitem = this.itemsCarts.find((arr) => arr.id == item.id).qty++;
+      let theItem = this.orderData.ordered_items.find(
+        (arr) => arr.food_option.food === item.id
+      );
+      theItem.quantity += 1;
+      this.updateCartItem(theItem);
     },
 
     decraseItem(item) {
-      let theitem = this.itemsCarts.find((arr) => arr.id == item.id);
-      if (theitem.qty == 1) {
-        let index = this.itemsCarts.indexOf(theitem);
+      let theItem = this.orderData.ordered_items.find(
+        (arr) => arr.food_option.food === item.id
+      );
+      if (theItem.quantity == 1) {
+        let index = this.itemsCarts.indexOf(theItem);
         if (index > -1) {
           this.itemsCarts.splice(index, 1);
         }
       } else {
-        theitem.qty--;
+        theItem.quantity--;
       }
+
+      this.updateCartItem(theItem);
     },
 
     checkIfCart(item) {
-      let theitem = this.itemsCarts.find((arr) => arr.id == item.id);
-      return theitem ? theitem : false;
+      console.log("item ", item);
+      console.log("oi ", this.orderData.ordered_items);
+      let theItem = this.orderData.ordered_items.find(
+        (arr) => arr.food_option.food === item.id
+      );
+      // console.log('theItem ', this.orderData.ordered_items, theItem)
+      return theItem ? theItem : false;
+    },
+
+    getOrderedItems(orderId) {
+      axios
+        .get(`/restaurant_management/dashboard/order/create_order/${orderId}/`)
+        .then((res) => {
+          console.log("get or ", res.data);
+          this.orderData = res.data.data;
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+
+    cancelOrder(itemId) {
+      console.log("order to cancel ", itemId);
+      axios
+        .post("/restaurant_management/dashboard/order/cart/cancel_items/", {
+          order_id: this.orderData.id,
+          food_items: [itemId],
+        })
+        .then((res) => {
+          if (res.data.status) {
+            // this.orderData = res.data.data;
+            console.log("can or ", res.data);
+            this.showActionMessage("success", "Item Cancel!");
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
     },
 
     getFood() {
@@ -633,12 +696,12 @@ export default {
           if (res.data.status) this.categories = res.data.data;
         })
         .catch((err) => {
-          console.error(err);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
         });
     },
 
     getTables() {
-      console.log("table func called!!");
       axios
         .get(
           `/restaurant_management/dashboard/restaurant/${this.resturent_id}/tables/`
@@ -667,10 +730,12 @@ export default {
   },
 
   created() {
+    // console.log("od ", JSON.parse(localStorage.getItem("orderData")).id);
     // this.createTakeAwayOrder();
     this.getFood();
     this.getCategorys();
-    this.getTime();
+    this.getOrderedItems(JSON.parse(localStorage.getItem("orderData")).id);
+    // this.getTime();
   },
 };
 </script>
