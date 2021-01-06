@@ -314,6 +314,8 @@
                   isDinein = !isDinein;
                   isTakeOut = false;
                   getTables();
+                  cancelOrder();
+                  isInvoice = false;
                 "
                 >Dine In</vs-button
               >
@@ -356,7 +358,7 @@
                           color="danger"
                           icon-pack="feather"
                           icon="icon-x-circle"
-                          @click="cancelOrder(item.id)"
+                          @click="cancelOrderItem(item.id)"
                         ></vs-button> </vx-tooltip
                     ></vs-td>
                   </vs-tr>
@@ -452,8 +454,22 @@
 
           <!-- place order btn -->
           <div class="place-order w-2/3 mx-auto mt-4 text-center">
-            <vs-button color="primary" class="text-3xl text-white" type="flat"
+            <vs-button
+              v-if="!isInvoice"
+              color="primary"
+              class="text-3xl text-white"
+              type="flat"
+              @click="placeOrder()"
               >Place Order</vs-button
+            >
+
+            <vs-button
+              v-else
+              color="primary"
+              class="text-3xl text-white"
+              type="flat"
+              @click="createInvoice(orderData.id)"
+              >Create Invoice</vs-button
             >
           </div>
         </div>
@@ -493,6 +509,7 @@ export default {
     isDinein: false,
     isTakeOut: true,
     slectedTable: null,
+    isInvoice: false,
   }),
 
   methods: {
@@ -595,7 +612,15 @@ export default {
         .then((res) => {
           console.log("qty update ", res.data);
           if (res.data.status) {
-            this.orderData = res.data.data;
+            const updatedOrders = res.data.data.ordered_items.map((orderItem) =>
+              orderItem.id === item.id
+                ? { ...orderItem, quantity: item.quantity }
+                : orderItem
+            );
+
+            this.orderData.ordered_items = updatedOrders.filter(
+              (order) => order.status !== "4_CANCELLED"
+            );
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
@@ -643,7 +668,17 @@ export default {
         .get(`/restaurant_management/dashboard/order/create_order/${orderId}/`)
         .then((res) => {
           console.log("get or ", res.data);
-          this.orderData = res.data.data;
+          if (res.data.status) {
+            const data = res.data.data;
+
+            const leftItems = data.ordered_items.filter(
+              (item) => item.status !== "4_CANCELLED"
+            );
+
+            data.ordered_items = leftItems;
+
+            this.orderData = data;
+          }
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
@@ -651,7 +686,22 @@ export default {
         });
     },
 
-    cancelOrder(itemId) {
+    cancelOrder() {
+      axios
+        .post("/restaurant_management/dashboard/order/cancel_order/", {
+          order_id: this.orderData.id,
+        })
+        .then((res) => {
+          console.log("order can ", res);
+          this.orderData = { id: null, ordered_items: [] };
+          localStorage.setItem();
+        })
+        .catch((err) => {
+          console.log("order can error ", err.response);
+        });
+    },
+
+    cancelOrderItem(itemId) {
       console.log("order to cancel ", itemId);
       axios
         .post("/restaurant_management/dashboard/order/cart/cancel_items/", {
@@ -660,7 +710,18 @@ export default {
         })
         .then((res) => {
           if (res.data.status) {
-            // this.orderData = res.data.data;
+            console.log("can data ", res.data.data);
+
+            const resData = res.data.data;
+
+            const leftItems = resData.ordered_items.filter(
+              (item) => item.status !== "4_CANCELLED"
+            );
+
+            resData.ordered_items = leftItems;
+
+            this.orderData = resData;
+
             console.log("can or ", res.data);
             this.showActionMessage("success", "Item Cancel!");
           } else this.showErrorLog(res.data.error.error_details);
@@ -669,6 +730,70 @@ export default {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
+    },
+
+    confirmOrder(order_id, food_items) {
+      axios
+        .post("/restaurant_management/dashboard/order/status/confirm/", {
+          order_id,
+          food_items,
+        })
+        .then((res) => {
+          console.log("co ", res.data);
+        })
+        .catch((err) => {
+          console.log("err co ", err.response);
+        });
+    },
+
+    inTable(order_id, food_items) {
+      axios
+        .post("/restaurant_management/dashboard/order/status/in_table/", {
+          order_id,
+          food_items,
+        })
+        .then((res) => {
+          if (res.data.status) this.isInvoice = !this.isInvoice;
+          console.log("in table ", res.data);
+          console.log("In voice created!!!!! ");
+        })
+        .catch((err) => {
+          console.log("error in table ", err.response);
+        });
+    },
+
+    createInvoice(order_id) {
+      axios
+        .post("/restaurant_management/dashboard/order/create_invoice/", {
+          order_id,
+        })
+        .then((res) => {
+          console.log("invoice ", res.data);
+          this.isInvoice = !this.isInvoice;
+        })
+        .catch((err) => {
+          console.log("error invoice ", err.response);
+        });
+    },
+
+    placeOrder() {
+      console.log("object ", this.orderData);
+      if (this.orderData.ordered_items.length > 0) {
+        axios
+          .post("/restaurant_management/dashboard/order/placed_status/", {
+            order_id: this.orderData.id,
+          })
+          .then((res) => {
+            console.log("place order ", res);
+            const foodItems = res.data.data.ordered_items
+              .filter((item) => item.status === "1_ORDER_PLACED")
+              .map((item) => item.id);
+            console.log("foodItems", foodItems);
+            this.confirmOrder(this.orderData.id, foodItems);
+            this.inTable(this.orderData.id, foodItems);
+          })
+          .catch((err) => console.log("po error ", err.response));
+      } else this.showActionMessage("error", "Please Select Order First!!");
     },
 
     getFood() {
