@@ -19,28 +19,22 @@
             <!-- list btn -->
             <vs-button
               class="col-end-12 m-2 mr-0"
-              :color="isList ? 'primary' : 'secondary'"
+              :color="!isGrid ? 'secondary' : 'primary'"
               type="filled"
               icon-pack="feather"
               icon="icon-list"
-              @click="
-                isGrid = false;
-                isList = true;
-              "
+              @click="isGrid = false"
               >List</vs-button
             >
 
             <!-- grid btn -->
             <vs-button
               class="col-end-13 m-2 ml-0"
-              :color="isGrid ? 'primary' : 'secondary'"
+              :color="isGrid ? 'secondary' : 'primary'"
               type="filled"
               icon-pack="feather"
               icon="icon-grid"
-              @click="
-                isGrid = true;
-                isList = false;
-              "
+              @click="isGrid = true"
               >Grid</vs-button
             >
           </div>
@@ -216,7 +210,7 @@
               </div>
 
               <!-- foods table view -->
-              <vs-table class="p-0" ref="table" :data="foods" v-if="isList">
+              <vs-table class="p-0" ref="table" :data="foods" v-if="!isGrid">
                 <template slot="thead">
                   <vs-th class="text-center">Image</vs-th>
                   <vs-th>Name</vs-th>
@@ -437,8 +431,11 @@
                           : 'bg-success'
                         : 'bg-grey'
                     "
-                    @click=" table.is_occupied ? null : (slectedTable = table.id,
-                      dinein_selected_table_id = table.id)
+                    @click="
+                      table.is_occupied
+                        ? null
+                        : ((slectedTable = table.id),
+                          (dinein_selected_table_id = table.id))
                     "
                   >
                     <div class="table-svg">
@@ -549,7 +546,6 @@ export default {
     itemsCarts: [],
     slectedCategory: "",
     isGrid: true,
-    isList: true,
     isDinein: false,
     isTakeOut: true,
     slectedTable: null,
