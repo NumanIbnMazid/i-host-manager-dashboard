@@ -213,18 +213,18 @@
             <table>
               <tr>
                 <td class="font-semibold">Table</td>
-                <td>{{ subscription.table_limit }}</td>
+                <td>{{ available.table }}</td>
               </tr>
 
               <tr>
                 <td class="font-semibold">Waiter</td>
-                <td>{{ subscription.waiter_limit }}</td>
+                <td>{{ available.waiter }}</td>
               </tr>
 
               <tr>
                 <td class="font-semibold">Manager</td>
                 <td>
-                  <p>{{ subscription.manager_limit }}</p>
+                  <p>{{ available.manager }}</p>
                 </td>
               </tr>
 
@@ -495,6 +495,7 @@ export default {
     new_password: "",
     payment_type: "",
     subscription: "",
+    available: { waiter: 3, manager: 3, table: 20 },
 
     payments: [],
   }),
@@ -638,25 +639,42 @@ export default {
           });
         });
     },
+
+    usageLeft() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/remaining_subscription_feathers/${this.resturent_id}/`
+        )
+        .then((res) => {
+          console.log(res.data.data);
+          this.available = res.data.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
   },
 
   created() {
     this.getRestaurant();
     this.getAllPaymentsOptions();
+    this.usageLeft();
   },
 };
 </script>
 
 <style lang="css">
-  .vx-card {
-    /* width: 35%; */
-  }
-  .option-logo {
-    display: flex;
-    justify-content: center;
-  }
-  .payment-logo {
-    height: 70px;
-    width: 80%;
-  }
+.vx-card {
+  /* width: 35%; */
+}
+.option-logo {
+  display: flex;
+  justify-content: center;
+}
+.payment-logo {
+  height: 70px;
+  width: 80%;
+}
 </style>
