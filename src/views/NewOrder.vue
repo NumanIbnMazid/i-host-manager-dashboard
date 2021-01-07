@@ -146,9 +146,9 @@
                           icon-pack="feather"
                           icon="icon-plus"
                           class="w-full"
+                          @click="itemAddToCart(food)"
                           >Add</vs-button
                         >
-                        <!-- @click="itemAddToCart(food)" -->
                       </div>
 
                       <div v-else class="flex">
@@ -157,22 +157,58 @@
                           type="border"
                           icon-pack="feather"
                           icon="icon-minus"
+                          @click="decraseItem(food)"
                         ></vs-button>
-                        <!-- @click="decraseItem(food)" -->
 
                         <vs-input
                           class="px-1 text-center"
                           :value="checkIfCart(food).quantity"
                           :ref="`quantityItem-${food}`"
+                          @keyup="itemQtyAdd(food)"
                         ></vs-input>
-                        <!-- @keyup="itemQtyAdd(food)" -->
                         <vs-button
                           color="primary"
                           type="border"
                           icon-pack="feather"
                           icon="icon-plus"
+                          @click="increaseItem(food)"
                         ></vs-button>
-                        <!-- @click="increaseItem(food)" -->
+
+                        <!-- <div class="flex" v-if="!checkIfCart(tr)">
+                          <vs-button
+                            color="primary"
+                            type="border"
+                            icon-pack="feather"
+                            icon="icon-plus"
+                            class="w-full"
+                            @click="itemAddToCart(tr)"
+                            >Add</vs-button
+                          >
+                        </div>
+
+                        <div v-else class="flex">
+                          <vs-button
+                            color="primary"
+                            type="border"
+                            icon-pack="feather"
+                            icon="icon-minus"
+                            @click="decraseItem(tr)"
+                          ></vs-button>
+
+                          <vs-input
+                            class="px-1 text-center"
+                            :value="checkIfCart(tr).quantity"
+                            :ref="`quantityItem-${tr}`"
+                            @keyup="itemQtyAdd(tr)"
+                          ></vs-input>
+                          <vs-button
+                            color="primary"
+                            type="border"
+                            icon-pack="feather"
+                            icon="icon-plus"
+                            @click="increaseItem(tr)"
+                          ></vs-button>
+                        </div> -->
                       </div>
                     </vx-card>
                   </div>
@@ -185,7 +221,6 @@
                   <vs-th class="text-center">Image</vs-th>
                   <vs-th>Name</vs-th>
                   <vs-th>Price</vs-th>
-                  <vs-th>Ingredients</vs-th>
                   <vs-th>Action</vs-th>
                 </template>
 
@@ -208,15 +243,6 @@
                       <vs-td>
                         <p class="product-name font-medium truncate">
                           {{ tr.price }}
-                        </p>
-                      </vs-td>
-
-                      <vs-td class="text-center">
-                        <p
-                          class="product-name font-medium truncate"
-                          :title="tr.ingredients"
-                        >
-                          {{ tr.ingredients }}
                         </p>
                       </vs-td>
 
@@ -411,9 +437,8 @@
                           : 'bg-success'
                         : 'bg-grey'
                     "
-                    @click="
-                      slectedTable = table.id;
-                      dinein_selected_table_id = table.id;
+                    @click=" table.is_occupied ? null : (slectedTable = table.id,
+                      dinein_selected_table_id = table.id)
                     "
                   >
                     <div class="table-svg">
@@ -523,7 +548,7 @@ export default {
     categories: [],
     itemsCarts: [],
     slectedCategory: "",
-    isGrid: false,
+    isGrid: true,
     isList: true,
     isDinein: false,
     isTakeOut: true,
@@ -603,8 +628,7 @@ export default {
 
     async itemAddToCart(item) {
       if (this.isDinein && this.dinein_selected_table_id === null) {
-        this.showActionMessage("error", "Please Select Table First!!");
-        return;
+        return this.showActionMessage("error", "Please Select Table First!!");
       }
       if (this.orderData.id == null) {
         console.log(1111);
@@ -763,7 +787,8 @@ export default {
             this.showActionMessage("success", "Item Cancel!");
 
             if (resData.ordered_items.length < 1)
-              localStorage.setItem("orderData", null);
+              this.orderData = { id: null, ordered_items: [] };
+            localStorage.setItem("orderData", null);
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {

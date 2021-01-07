@@ -230,7 +230,7 @@ export default {
   methods: {
     getNotifications() {
       axios
-        .get("/account_management/customer_notification/")
+        .get(`/account_management/customer_notification_by_restaurant/${this.resturent_id}/`)
         .then((res) => (this.notifications = res.data.data))
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
