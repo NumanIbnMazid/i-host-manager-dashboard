@@ -209,7 +209,7 @@
                     <div class="w-2/5 text-center mr-3">
                       <p class="text-sm leading-none">Amount</p>
                       <p class="text-base leading-none font-bold">
-                        ৳{{ parseInt(order.price.total_price) }}
+                        ৳{{order.price.grand_total_price }}
                       </p>
                     </div>
                   </div>
