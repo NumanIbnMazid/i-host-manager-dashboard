@@ -1425,10 +1425,11 @@ export default {
   // table card styles
   .table-card {
     margin: 4px 0 4px 12px;
-    width: 387px;
-    height: auto;
+    width: 386px;
+    max-height: 700px;
     left: 1517px;
     top: 258px;
+    overflow: scroll;
 
     background: #ffffff;
     border: 1px solid #c4c4c4;

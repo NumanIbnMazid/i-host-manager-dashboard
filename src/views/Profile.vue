@@ -71,11 +71,6 @@
               </tr>
 
               <tr>
-                <td class="font-semibold">Tax Percentage</td>
-                <td>{{ tax_percentage }}</td>
-              </tr>
-
-              <tr>
                 <td class="font-semibold">Trade Licence No</td>
                 <td>{{ trade_licence_no }}</td>
               </tr>
