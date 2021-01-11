@@ -132,7 +132,7 @@
 
                   <div
                     class="waiter-table mr-2"
-                    v-for="(table, index) in tr.tables"
+                    v-for="(table, index) in tr.table_no"
                     :key="index"
                   >
                     <div class="table-svg flex">
@@ -410,7 +410,7 @@ export default {
       if (this.user.logoPreview != "") {
         formData.append("image", this.user.image);
       }
-
+console.log('formData ', formData);
       axios
         .post(`/account_management/restaurant/create_waiter/`, formData, {
           headers: { "Content-Type": "multipart/form-data" },

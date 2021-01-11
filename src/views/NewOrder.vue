@@ -383,22 +383,9 @@
                         ></vs-button> </vx-tooltip
                     ></vs-td>
                   </vs-tr>
-
-                  <!-- <vs-tr class="text-xs">
-                    <vs-td> Lemonda </vs-td>
-
-                    <vs-td> Single patty </vs-td>
-
-                    <vs-td> 6 </vs-td>
-
-                    <vs-td> 30.00 </vs-td>
-                  </vs-tr> -->
                 </template>
               </vs-table>
             </div>
-            <!-- <vs-button class="mx-auto" @click="slectedTable = null"
-              >Change Table</vs-button
-            > -->
             <div
               class="w-full m-0 p-0"
               v-if="slectedTable"
@@ -483,7 +470,7 @@
             <vs-button
               v-if="isConfirmPayment"
               color="primary"
-              class="text-3xl text-white"
+              class="text-3xl text-white w-full"
               type="flat"
               @click="confirmPaymentOrder()"
               >Collect Cash</vs-button
@@ -492,7 +479,7 @@
               <vs-button
                 v-if="!isInvoice"
                 color="primary"
-                class="text-3xl text-white"
+                class="text-3xl text-white w-full"
                 type="flat"
                 @click="placeOrder()"
                 >Place Order</vs-button
@@ -501,7 +488,7 @@
               <vs-button
                 v-else
                 color="primary"
-                class="text-3xl text-white"
+                class="text-3xl text-white w-full"
                 type="flat"
                 @click="createInvoice(orderData.id)"
                 >Create Invoice</vs-button
