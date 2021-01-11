@@ -27,6 +27,6 @@ window.addEventListener('offline', () =>
   showConnectionStatus(
     'disconnected',
     'You are offline some functionality may be unavailable! Trying to connect...',
-    60
+    3600
   )
 );
