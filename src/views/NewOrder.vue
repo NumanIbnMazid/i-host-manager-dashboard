@@ -427,6 +427,66 @@
             </div>
           </div>
 
+          <div
+            class="price-details table-card mt-5 w-2/3"
+            v-if="orderData.price"
+          >
+            <h6 class="text-ihostm m-2">Price Details</h6>
+            <hr />
+            <table class="m-2">
+              <tr>
+                <td class="font-semibold">Payable Amount :</td>
+                <td>
+                  <p>{{ orderData.price.payable_amount }}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Tax Amount :</td>
+                <td>
+                  <p>{{ orderData.price.tax_amount }}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Tax Percentage :</td>
+                <td>
+                  <p>{{ orderData.price.tax_percentage }}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Service Charge :</td>
+                <td>
+                  <p>{{ orderData.price.service_charge }}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Service Base Amount :</td>
+                <td>
+                  <p>
+                    {{ orderData.price.service_charge_base_amount }}
+                    {{
+                      orderData.price.service_charge_is_percentage ? "%" : "৳"
+                    }}
+                  </p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Discount Amount :</td>
+                <td>
+                  <p>{{ orderData.price.discount_amount }}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Grand Total Price :</td>
+                <td>{{ orderData.price.grand_total_price }}</td>
+              </tr>
+            </table>
+          </div>
           <!-- place order btn -->
           <div class="place-order w-2/3 mx-auto m-2 text-center bg-white">
             <vs-button
@@ -521,7 +581,7 @@ export default {
     search: "",
     tables: [],
     dinein_selected_table_id: null,
-    orderData: { id: null, ordered_items: [] },
+    orderData: { id: null, ordered_items: [], price: null },
     categories: [],
     itemsCarts: [],
     slectedCategory: "",
@@ -735,7 +795,7 @@ export default {
         .then((res) => {
           console.log("order can ", res);
           if (res.data.status) {
-            this.orderData = { id: null, ordered_items: [] };
+            this.orderData = { id: null, ordered_items: [], price: null };
             localStorage.setItem("orderData", null);
             this.dinein_selected_table_id = null;
           }
@@ -770,7 +830,7 @@ export default {
             this.showActionMessage("success", "Item Cancel!");
 
             if (resData.ordered_items.length < 1)
-              this.orderData = { id: null, ordered_items: [] };
+              this.orderData = { id: null, ordered_items: [], price: null };
             localStorage.setItem("orderData", null);
           } else this.showErrorLog(res.data.error.error_details);
         })
@@ -791,6 +851,7 @@ export default {
             this.isBtnLoading = false;
             this.isInvoice = !this.isInvoice;
             console.log("in table ", res.data);
+            this.orderData = res.data.data;
             console.log("In voice created!!!!! ");
             this.showActionMessage("success", "Order Confirmed!");
           } else this.showErrorLog(res.data.error.error_details);
@@ -813,7 +874,7 @@ export default {
             // is dine in selected
             if (this.isDinein && this.dinein_selected_table_id !== null) {
               this.isBtnLoading = false;
-              this.orderData = { id: null, ordered_items: [] };
+              this.orderData = { id: null, ordered_items: [], price: null };
               localStorage.setItem("orderData", this.orderData);
               this.showActionMessage(
                 "success",
@@ -840,7 +901,7 @@ export default {
         .then((res) => {
           console.log("cPorder  ", res.data);
           if (res.data.status && res.data.data.status === "5_PAID") {
-            this.orderData = { id: null, ordered_items: [] };
+            this.orderData = { id: null, ordered_items: [], price: null };
             localStorage.setItem("orderData", null);
             this.showActionMessage("success", res.data.data.status_details);
             this.isConfirmPayment = false;
@@ -864,6 +925,7 @@ export default {
             console.log("invoice 1 ", res.data);
             this.isInvoice = !this.isInvoice;
             this.isConfirmPayment = true;
+            this.orderData = res.data.data;
             this.printRecipt(res.data.data);
             this.isBtnLoading = false;
           } else this.showErrorLog(res.data.error.error_details);
@@ -1454,4 +1516,3 @@ export default {
     }
   }
 </style>
-
