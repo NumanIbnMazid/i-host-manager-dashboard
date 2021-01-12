@@ -167,42 +167,6 @@
                           icon="icon-plus"
                           @click="increaseItem(food)"
                         ></vs-button>
-
-                        <!-- <div class="flex" v-if="!checkIfCart(tr)">
-                          <vs-button
-                            color="primary"
-                            type="border"
-                            icon-pack="feather"
-                            icon="icon-plus"
-                            class="w-full"
-                            @click="itemAddToCart(tr)"
-                            >Add</vs-button
-                          >
-                        </div>
-
-                        <div v-else class="flex">
-                          <vs-button
-                            color="primary"
-                            type="border"
-                            icon-pack="feather"
-                            icon="icon-minus"
-                            @click="decraseItem(tr)"
-                          ></vs-button>
-
-                          <vs-input
-                            class="px-1 text-center"
-                            :value="checkIfCart(tr).quantity"
-                            :ref="`quantityItem-${tr}`"
-                            @keyup="itemQtyAdd(tr)"
-                          ></vs-input>
-                          <vs-button
-                            color="primary"
-                            type="border"
-                            icon-pack="feather"
-                            icon="icon-plus"
-                            @click="increaseItem(tr)"
-                          ></vs-button>
-                        </div> -->
                       </div>
                     </vx-card>
                   </div>
@@ -226,9 +190,7 @@
                       v-for="(tr, indextr) in data"
                     >
                       <vs-td style="width: 10%">
-                        <!-- <p class="img-container font-medium"> -->
                         <img :src="tr.image" class="product-img" />
-                        <!-- </p> -->
                       </vs-td>
                       <vs-td>
                         <p>{{ tr.name }}</p>
@@ -351,7 +313,7 @@
             v-if="isTakeOut || (isDinein && slectedTable)"
           >
             <div class="table-card">
-              <vs-table>
+              <vs-table class="take-out-table-header">
                 <template slot="thead">
                   <vs-th class="text-xs">Item</vs-th>
                   <vs-th class="text-xs">Qty</vs-th>
@@ -466,32 +428,52 @@
           </div>
 
           <!-- place order btn -->
-          <div class="place-order w-2/3 mx-auto mt-4 text-center">
+          <div class="place-order w-2/3 mx-auto m-2 text-center bg-white">
             <vs-button
               v-if="isConfirmPayment"
               color="primary"
-              class="text-3xl text-white w-full"
+              class="bg-warning m-2 text-white w-full text-2xl"
               type="flat"
               @click="confirmPaymentOrder()"
-              >Collect Cash</vs-button
+              :disabled="isBtnLoading ? true : false"
+              ><dollar-sign-icon
+                size="0.8x"
+                class="custom-class"
+              ></dollar-sign-icon>
+              Collect Cash</vs-button
             >
-            <div v-if="!isConfirmPayment">
+            <div
+              v-if="!isConfirmPayment"
+              class="bg-warning m-2"
+              style="border-radius: 15px"
+            >
               <vs-button
                 v-if="!isInvoice"
                 color="primary"
-                class="text-3xl text-white w-full"
+                class="text-2xl text-white w-full"
                 type="flat"
+                :disabled="isBtnLoading ? true : false"
                 @click="placeOrder()"
-                >Place Order</vs-button
+              >
+                <check-square-icon
+                  size="0.8x"
+                  class="custom-class"
+                ></check-square-icon>
+                Place Order</vs-button
               >
 
               <vs-button
                 v-else
                 color="primary"
-                class="text-3xl text-white w-full"
+                class="text-2xl text-white w-full"
                 type="flat"
                 @click="createInvoice(orderData.id)"
-                >Create Invoice</vs-button
+                :disabled="isBtnLoading ? true : false"
+                ><file-text-icon
+                  size="0.8x"
+                  class="custom-class"
+                ></file-text-icon>
+                Create Invoice</vs-button
               >
             </div>
           </div>
@@ -508,6 +490,12 @@
 <script>
 import axios from "@/axios.js";
 import moment from "moment";
+
+// icons
+import { CheckSquareIcon } from "vue-feather-icons";
+import { FileTextIcon } from "vue-feather-icons";
+import { DollarSignIcon } from "vue-feather-icons";
+
 import { Hooper, Slide, Navigation as HooperNavigation } from "hooper";
 import "hooper/dist/hooper.css";
 
@@ -519,6 +507,11 @@ export default {
     Slide,
     HooperNavigation,
     UserProfile,
+
+    // icons
+    CheckSquareIcon,
+    FileTextIcon,
+    DollarSignIcon,
   },
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
@@ -537,6 +530,7 @@ export default {
     isTakeOut: true,
     slectedTable: null,
     isInvoice: false,
+    isBtnLoading: false,
     isConfirmPayment: false,
   }),
 
@@ -601,8 +595,10 @@ export default {
         )
         .then((res) => {
           console.log("res ", res.data);
-          this.orderData = res.data.data;
-          localStorage.setItem("orderData", JSON.stringify(res.data.data));
+          if (res.data.status) {
+            this.orderData = res.data.data;
+            localStorage.setItem("orderData", JSON.stringify(res.data.data));
+          } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
           console.log("err ", err.response);
@@ -617,6 +613,8 @@ export default {
         console.log(1111);
         await this.createTakeAwayOrder();
       }
+
+      console.log("itemm ", item);
 
       console.log("odata 2 ", this.orderData);
       await axios
@@ -719,6 +717,8 @@ export default {
             this.orderData = data;
 
             if (data.status === "3_IN_TABLE") this.isInvoice = true;
+            if (data.status === "4_CREATE_INVOICE")
+              this.isConfirmPayment = true;
           }
         })
         .catch((err) => {
@@ -788,6 +788,7 @@ export default {
         })
         .then((res) => {
           if (res.data.status) {
+            this.isBtnLoading = false;
             this.isInvoice = !this.isInvoice;
             console.log("in table ", res.data);
             console.log("In voice created!!!!! ");
@@ -800,6 +801,7 @@ export default {
     },
 
     confirmOrder(order_id, food_items) {
+      this.isBtnLoading = true;
       axios
         .post("/restaurant_management/dashboard/order/status/confirm/", {
           order_id,
@@ -810,8 +812,9 @@ export default {
           if (res.data.status) {
             // is dine in selected
             if (this.isDinein && this.dinein_selected_table_id !== null) {
+              this.isBtnLoading = false;
               this.orderData = { id: null, ordered_items: [] };
-              localStorage.setItem("orderData", null);
+              localStorage.setItem("orderData", this.orderData);
               this.showActionMessage(
                 "success",
                 `Order Confirmed At Table No ${this.dinein_selected_table_id}`
@@ -829,19 +832,19 @@ export default {
     },
 
     confirmPaymentOrder() {
+      this.isBtnLoading = true;
       axios
         .post("/restaurant_management/dashboard/order/confirm_payment/", {
           order_id: this.orderData.id,
         })
         .then((res) => {
           console.log("cPorder  ", res.data);
-          if (res.data.status) {
-            if (res.data.data.status === "5_PAID") {
-              this.orderData = { id: null, ordered_items: [] };
-              localStorage.setItem("orderData", null);
-              this.showActionMessage("success", res.data.data.status_details);
-              this.isConfirmPayment = false;
-            }
+          if (res.data.status && res.data.data.status === "5_PAID") {
+            this.orderData = { id: null, ordered_items: [] };
+            localStorage.setItem("orderData", null);
+            this.showActionMessage("success", res.data.data.status_details);
+            this.isConfirmPayment = false;
+            this.isBtnLoading = false;
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
@@ -850,6 +853,7 @@ export default {
     },
 
     createInvoice(order_id) {
+      this.isBtnLoading = true;
       axios
         .post("/restaurant_management/dashboard/order/create_invoice/", {
           order_id,
@@ -861,6 +865,7 @@ export default {
             this.isInvoice = !this.isInvoice;
             this.isConfirmPayment = true;
             this.printRecipt(res.data.data);
+            this.isBtnLoading = false;
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
@@ -869,6 +874,7 @@ export default {
     },
 
     placeOrder() {
+      this.isBtnLoading = true;
       console.log("object ", this.orderData);
       if (this.orderData.ordered_items.length > 0) {
         axios
@@ -1403,25 +1409,29 @@ export default {
     bottom: 10px;
     width: 21.5% !important;
 
-    background: #c4c4c4;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
-      inset 0px -3px 5px rgba(0, 0, 0, 0.38);
-    // border-radius: 7px;
+    background: #f1f1f1;
+    // box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
+    //   inset 0px -3px 5px rgba(0, 0, 0, 0.38);
+    // border-radius: 15px;
   }
 
   // table card styles
   .table-card {
-    margin: 4px 0 4px 12px;
-    width: 386px;
+    margin: 4px 0 4px 6px;
+    width: 99%;
     max-height: 700px;
     left: 1517px;
     top: 258px;
-    overflow: scroll;
+    // overflow: hidden;
 
     background: #ffffff;
     border: 1px solid #c4c4c4;
     box-sizing: border-box;
     border-radius: 9px;
+  }
+
+  .take-out-table-header {
+    overflow-x: hidden;
   }
 
   // restaurant table styles

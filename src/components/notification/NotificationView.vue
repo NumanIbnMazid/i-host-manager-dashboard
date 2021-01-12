@@ -81,9 +81,9 @@
 
             <vs-td>
               <vx-tooltip position="bottom">
-              <p class="product-name font-medium truncate">
-                {{ tr.title }}
-              </p>
+                <p class="product-name font-medium truncate">
+                  {{ tr.title }}
+                </p>
               </vx-tooltip>
             </vs-td>
 
@@ -96,15 +96,15 @@
             </vs-td>
 
             <vs-td>
-                <p class="product-name font-medium">
-                  {{ tr.data ? tr.data.foodName : "null" }}
-                </p>
+              <p class="product-name font-medium">
+                {{ tr.data ? tr.data.foodName : "null" }}
+              </p>
             </vs-td>
 
             <vs-td>
-                <p class="product-name font-medium">
-                  {{ tr.restaurant }}
-                </p>
+              <p class="product-name font-medium">
+                {{ tr.restaurant }}
+              </p>
             </vs-td>
           </vs-tr>
         </tbody>
@@ -186,7 +186,7 @@
           />
         </div>
 
-        <vs-button class="mb-2 w-full mt-5" @click="notificaionFormActionMethod"
+        <vs-button class="mb-2 w-full mt-5" @click="createNewNotificaion()"
           >Save</vs-button
         >
       </vs-row>
@@ -214,7 +214,7 @@ export default {
       offset: 1,
       notifications: [],
       popupActive: false,
-      notificaionFormActionMethod: null,
+      notificaionFormActionMethod: this.createNewNotificaion,
 
       newNotification: {
         id: null,
@@ -230,7 +230,9 @@ export default {
   methods: {
     getNotifications() {
       axios
-        .get(`/account_management/customer_notification_by_restaurant/${this.resturent_id}/`)
+        .get(
+          `/account_management/customer_notification_by_restaurant/${this.resturent_id}/`
+        )
         .then((res) => (this.notifications = res.data.data))
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
@@ -266,6 +268,7 @@ export default {
           },
         })
         .then((res) => {
+          console.log("nnnnn ", res.data.data);
           if (res.data.status) {
             this.notifications.push(res.data.data);
             this.$vs.notify({
