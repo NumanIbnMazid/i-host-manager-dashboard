@@ -345,6 +345,15 @@
                         ></vs-button> </vx-tooltip
                     ></vs-td>
                   </vs-tr>
+                  <vs-tr v-if="subTotal">
+                    <vs-td></vs-td>
+
+                    <vs-td></vs-td>
+
+                    <vs-td class="text-s">{{ subTotal }} /= </vs-td>
+
+                    <vs-td> </vs-td>
+                  </vs-tr>
                 </template>
               </vs-table>
             </div>
@@ -427,8 +436,9 @@
             </div>
           </div>
 
+          <!-- price details -->
           <div
-            class="price-details table-card mt-5 w-2/3"
+            class="price-details table-card mt-5 w-full"
             v-if="orderData.price"
           >
             <h6 class="text-ihostm m-2">Price Details</h6>
@@ -589,10 +599,25 @@ export default {
     isDinein: false,
     isTakeOut: true,
     slectedTable: null,
+    subTotal: 0,
     isInvoice: false,
     isBtnLoading: false,
     isConfirmPayment: false,
   }),
+
+  watch: {
+
+    // TODO: watch have to solve for orderData
+    orderData: function (newValue, oldValue) {
+      this.subTotal = orderData.ordered_items.reduce(
+        (sum, item) => sum + item.price,
+          0
+        );
+        console.log("1 this.subTotal ", newValue);
+      //     if (val !== oldVal) {
+      // }
+    },
+  },
 
   methods: {
     getTime() {
@@ -715,6 +740,7 @@ export default {
                 : orderItem
             );
 
+            // update order data state
             this.orderData.ordered_items = updatedOrders.filter(
               (order) => order.status !== "4_CANCELLED"
             );
@@ -751,8 +777,8 @@ export default {
     },
 
     checkIfCart(item) {
-      console.log("item ", item);
-      console.log("oi ", this.orderData.ordered_items);
+      // console.log("item ", item);
+      // console.log("oi ", this.orderData.ordered_items);
       let theItem = this.orderData.ordered_items.find(
         (arr) => arr.food_option.food === item.id
       );
@@ -825,12 +851,11 @@ export default {
             resData.ordered_items = leftItems;
 
             this.orderData = resData;
-
-            console.log("can or ", res.data);
             this.showActionMessage("success", "Item Cancel!");
 
             if (resData.ordered_items.length < 1)
               this.orderData = { id: null, ordered_items: [], price: null };
+            this.subTotal = 0;
             localStorage.setItem("orderData", null);
           } else this.showErrorLog(res.data.error.error_details);
         })
@@ -875,6 +900,7 @@ export default {
             if (this.isDinein && this.dinein_selected_table_id !== null) {
               this.isBtnLoading = false;
               this.orderData = { id: null, ordered_items: [], price: null };
+              this.subTotal = 0;
               localStorage.setItem("orderData", this.orderData);
               this.showActionMessage(
                 "success",
@@ -902,6 +928,7 @@ export default {
           console.log("cPorder  ", res.data);
           if (res.data.status && res.data.data.status === "5_PAID") {
             this.orderData = { id: null, ordered_items: [], price: null };
+            this.subTotal = 0;
             localStorage.setItem("orderData", null);
             this.showActionMessage("success", res.data.data.status_details);
             this.isConfirmPayment = false;

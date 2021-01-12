@@ -661,9 +661,6 @@ export default {
 </script>
 
 <style lang="css">
-.vx-card {
-  /* width: 35%; */
-}
 .option-logo {
   display: flex;
   justify-content: center;
