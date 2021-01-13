@@ -20,12 +20,25 @@
         :reduce="(categories) => categories.id"
         style="min-width: 200px"
       /> -->
+
       <v-select
+        placeholder="Select Waiter "
         label="name"
         multiple
         v-model="waiter"
         :options="waiters"
         :reduce="(waiters) => waiters.id"
+        style="min-width: 200px"
+      />
+
+      <v-select
+        placeholder="Select Item"
+        label="name"
+        class="m-2"
+        multiple
+        v-model="item"
+        :options="foods"
+        :reduce="(foods) => foods.id"
         style="min-width: 200px"
       />
       <vs-button
@@ -124,6 +137,8 @@ export default {
     startDate: moment().format("YYYY-MM-01"),
     endDate: moment().format(),
     category: [],
+    item: [],
+    foods: [],
     waiter: [],
     showOrder: [],
     showDetailsPopup: false,
@@ -131,6 +146,13 @@ export default {
 
   methods: {
     getAllOrder() {
+      console.log({
+        start_date: moment(this.startDate).format("Y-M-D"),
+        end_date: moment(this.endDate).format("Y-M-D"),
+        // category: this.category,
+        waiter: this.waiter,
+        item: this.item,
+      });
       axios
         .post(
           `/restaurant_management/dashboard/invoice_all_report/${this.restaurant_id}/?limit=100&offset=0`,
@@ -139,6 +161,7 @@ export default {
             end_date: moment(this.endDate).format("Y-M-D"),
             // category: this.category,
             waiter: this.waiter,
+            item: this.item,
           }
         )
         .then((res) => {
@@ -150,6 +173,21 @@ export default {
           this.checkError(err);
         });
     },
+
+    getFood() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/restaurant/${this.restaurant_id}/foods/`
+        )
+        .then((res) => {
+          console.log("foods ", res);
+          if (res.data.status) this.foods = res.data.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     getCategorys() {
       axios
         .get(
@@ -197,23 +235,24 @@ export default {
 
   created() {
     this.getAllOrder();
-    // this.getCategorys();
     this.getWaiter();
+    this.getFood();
+    // this.getCategorys();
   },
 };
 </script>
 
 <style scoped>
-td {
-  border-top: 10px solid #f8f8f8;
-  text-align: center;
-}
-th {
-  text-align: center !important;
-  background-color: #31314e;
-  color: #fff !important;
-}
-th .vs-table-text {
-  justify-content: center !important;
-}
+  td {
+    border-top: 10px solid #f8f8f8;
+    text-align: center;
+  }
+  th {
+    text-align: center !important;
+    background-color: #31314e;
+    color: #fff !important;
+  }
+  th .vs-table-text {
+    justify-content: center !important;
+  }
 </style>
