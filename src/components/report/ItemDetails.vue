@@ -6,7 +6,20 @@
   >
     <!-- food select form -->
     <div class="food-select-form">
-      <div class="vx-row text-sm">
+      <vs-button
+        v-if="showUpdateBtn"
+        class="m-2 float-right"
+        color="success"
+        type="border"
+        title="Update Order"
+        icon-pack="feather"
+        :disabled="isBtnLoading ? true : false"
+        @click="orderRevertInTable(showOrder.id)"
+        icon="icon-edit"
+        >Make Update</vs-button
+      >
+
+      <div class="vx-row text-sm" v-if="enableFoodForm">
         <div class="vx-col w-3/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
           <small>Food Name</small>
           <v-select
@@ -62,9 +75,9 @@
             type="border"
             title="Add"
             icon-pack="feather"
+            @click="addOrderedItems(showOrder, '3_IN_TABLE')"
             icon="icon-plus"
           ></vs-button>
-          <!-- @click="addOrderedItems(orderToVarify, '1_ORDER_PLACED')" -->
         </div>
       </div>
     </div>
@@ -126,14 +139,72 @@ export default {
       selectedFood: "",
       foods: [],
       foodOptions: [],
-      selectedOption: [],
+      selectedOption: null,
       selectedFoodExtraTypes: [],
       foodExtraTypes: [],
       quantity: 0,
+      isBtnLoading: false,
+      showUpdateBtn: true,
+      enableFoodForm: false,
     };
   },
 
   methods: {
+    // order revert
+    orderRevertInTable(order_id) {
+      this.isBtnLoading = true;
+      axios
+        .post(
+          "/restaurant_management/dashboard/order/revert_back_to_in_table/",
+          { order_id }
+        )
+        .then((res) => {
+          console.log("rr ", res);
+          if (res.data.status) {
+            this.isBtnLoading = false;
+            this.enableFoodForm = !this.enableFoodForm;
+            this.showUpdateBtn = !this.showUpdateBtn;
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => console.log("rr err ", err.response));
+    },
+
+    // adding food order to order cart
+    addOrderedItems(orderToProcess, status) {
+      console.log("showOrder ", this.showOrder);
+      axios
+        .post("/restaurant_management/dashboard/order/cart/items/", [
+          {
+            quantity: this.quantity,
+            status,
+            food_option: this.selectedOption.id,
+            food_order: orderToProcess.id,
+            food_extra: this.selectedFoodExtraTypes,
+          },
+        ])
+        .then((res) => {
+          // real time ui update (data object update)
+          console.log("new item added", res.data);
+
+          if (res.data.status) {
+            //   this.ordersData.map(
+            //     (order) =>
+            //       order.id === orderToProcess.id &&
+            //       order.ordered_items.push(res.data.data[0])
+            //   );
+            orderToProcess.ordered_items.push(res.data.data[0]);
+            //   // clear food state after add item to cart
+            //   this.selectedFood = "";
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+
+          // checking error code
+          this.checkError(err);
+        });
+    },
+
     // getting food names
     getFoodNames() {
       axios
@@ -163,9 +234,20 @@ export default {
         this.foodExtraTypes = food.food_extras;
       }
     },
+
+    showErrorLog(errorList) {
+      for (const error in errorList) {
+        this.$vs.notify({
+          text: `${error} :  ${errorList[error][0]}`,
+          color: "danger",
+          position: "top-right",
+        });
+      }
+    },
   },
 
   created() {
+    console.log("showOrder ", this.showOrder);
     this.getFoodNames();
   },
 };

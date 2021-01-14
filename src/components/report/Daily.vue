@@ -119,7 +119,7 @@ export default {
     },
     showDetailsInfo(orderInfo) {
       this.showOrder = orderInfo;
-      this.showDetailsPopup = true;
+      this.showDetailsPopup = !this.showDetailsPopup;
     },
   },
 

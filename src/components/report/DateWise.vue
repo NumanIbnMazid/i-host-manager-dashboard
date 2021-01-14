@@ -89,9 +89,7 @@
               ><p>৳{{ tr.order_info.price.discount_amount }}</p>
             </vs-td>
             <vs-td>
-              <vs-button @click="showDetailsInfo(tr.order_info)"
-                >Show Details</vs-button
-              >
+              <vs-button @click="showDetailsInfo(tr.order_info)">Show Details</vs-button>
             </vs-td>
           </vs-tr>
         </tbody>
@@ -167,6 +165,7 @@ export default {
         .then((res) => {
           this.orders = res.data.data.results;
           this.total = res.data.data.total_order;
+          console.log('this.orders ', this.orders)
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
@@ -201,6 +200,7 @@ export default {
           this.checkError(err);
         });
     },
+
     getWaiter() {
       axios
         .get(
