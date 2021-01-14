@@ -39,7 +39,7 @@
               ><p>#{{ tr.order }}</p></vs-td
             >
             <vs-td
-              ><p>{{ tr.order_info.table }}</p></vs-td
+              ><p>{{ tr.order_info.table_no }}</p></vs-td
             >
             <vs-td
               ><p>{{ dateFromat(tr.order_info.created_at) }}</p>

@@ -305,7 +305,9 @@
             </div>
           </div>
           <div class="w-full mt-2 p-0" v-if="slectedTable">
-            <h4 class="text-center p-0 m-0">Table No: {{ slectedTable }}</h4>
+            <h4 class="text-center p-0 m-0">
+              Table No: {{ selectedTableNum }}
+            </h4>
           </div>
           <!-- take out information table -->
           <div
@@ -384,6 +386,7 @@
                       table.is_occupied
                         ? null
                         : ((slectedTable = table.id),
+                          (selectedTableNum = table.table_no),
                           (dinein_selected_table_id = table.id))
                     "
                   >
@@ -450,7 +453,7 @@
               </tr>
 
               <tr>
-                <td class="font-semibold">Tax Percentage :</td>
+                <td class="font-semibold">Vat Percentage :</td>
                 <td>
                   <p>{{ orderData.price.tax_percentage }}</p>
                 </td>
@@ -590,6 +593,7 @@ export default {
     isDinein: false,
     isTakeOut: true,
     slectedTable: null,
+    selectedTableNum: null,
     isInvoice: false,
     isBtnLoading: false,
     isConfirmPayment: false,

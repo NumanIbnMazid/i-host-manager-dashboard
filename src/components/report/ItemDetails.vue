@@ -4,6 +4,71 @@
     :title="`Order #${showOrder.id}`"
     :active.sync="showDetailsPopup"
   >
+    <!-- food select form -->
+    <div class="food-select-form">
+      <div class="vx-row text-sm">
+        <div class="vx-col w-3/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
+          <small>Food Name</small>
+          <v-select
+            label="name"
+            v-model="selectedFood"
+            :options="foods"
+            :reduce="(foods) => foods.id"
+            :dir="$vs.rtl ? 'rtl' : 'ltr'"
+          />
+        </div>
+
+        <div
+          class="vx-col w-3/12 mb-4 ml-0 pl-1 mr-0 pr-1"
+          @click="getFoodOptions()"
+        >
+          <small>Food Option</small>
+          <v-select
+            label="name"
+            v-model="selectedOption"
+            :options="foodOptions"
+            :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            ><template v-if="!selectedFood" #no-options="{}">
+              <span class="text-danger"> Please select food first. </span>
+            </template></v-select
+          >
+        </div>
+
+        <div class="vx-col w-3/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+          <small>Food Extra</small>
+          <v-select
+            label="type_name"
+            multiple
+            v-model="selectedFoodExtraTypes"
+            :options="foodExtraTypes"
+            :dir="$vs.rtl ? 'rtl' : 'ltr'"
+          />
+        </div>
+
+        <div class="vx-col w-2/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+          <vs-input
+            class="w-10/12"
+            color="rgb(213, 14, 151)"
+            type="number"
+            min="1"
+            label-placeholder="Quantity"
+            v-model="quantity"
+          />
+        </div>
+
+        <div class="vx-col w-1/12 pl-0 mt-5">
+          <vs-button
+            color="success"
+            type="border"
+            title="Add"
+            icon-pack="feather"
+            icon="icon-plus"
+          ></vs-button>
+          <!-- @click="addOrderedItems(orderToVarify, '1_ORDER_PLACED')" -->
+        </div>
+      </div>
+    </div>
+
     <vs-table :data="showOrder.ordered_items">
       <template slot="thead">
         <vs-th class="text-center">Item Id</vs-th>
@@ -45,22 +110,78 @@
 </template>
 
 <script>
+import axios from "@/axios.js";
+import vSelect from "vue-select";
+
 export default {
   props: ["showOrder", "showDetailsPopup"],
+
+  components: {
+    "v-select": vSelect,
+  },
+
+  data() {
+    return {
+      resturent_id: localStorage.getItem("resturent_id"),
+      selectedFood: "",
+      foods: [],
+      foodOptions: [],
+      selectedOption: [],
+      selectedFoodExtraTypes: [],
+      foodExtraTypes: [],
+      quantity: 0,
+    };
+  },
+
+  methods: {
+    // getting food names
+    getFoodNames() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
+        )
+        .then((res) => {
+          console.log("foods ", res);
+          if (res.data.status) this.foods = res.data.data;
+          else this.showActionMessage("error", "Failed to get foods name!");
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+
+          // checking error code
+          this.checkError(err);
+        });
+    },
+
+    getFoodOptions() {
+      if (this.selectedFood !== "") {
+        const food = this.foods.filter(
+          (food) => food.id === this.selectedFood
+        )[0];
+
+        this.foodOptions = food.food_options;
+        this.foodExtraTypes = food.food_extras;
+      }
+    },
+  },
+
+  created() {
+    this.getFoodNames();
+  },
 };
 </script>
 
 <style scoped>
-td {
-  border-top: 10px solid #f8f8f8;
-  text-align: center;
-}
-th {
-  text-align: center !important;
-  background-color: #31314e;
-  color: #fff !important;
-}
-th .vs-table-text {
-  justify-content: center !important;
-}
+  td {
+    border-top: 10px solid #f8f8f8;
+    text-align: center;
+  }
+  th {
+    text-align: center !important;
+    background-color: #31314e;
+    color: #fff !important;
+  }
+  th .vs-table-text {
+    justify-content: center !important;
+  }
 </style>

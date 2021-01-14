@@ -529,7 +529,7 @@
       :title="`Order #${orderToServed.id} | Table No: ${orderToServed.table_no}`"
       :active.sync="markAsServedPopup"
     >
-      <!-- food select form -->
+    
       <!-- food select form -->
       <div class="food-select-form">
         <div class="vx-row text-sm">

@@ -57,7 +57,7 @@
               </tr>
 
               <tr>
-                <td class="font-semibold">Tax Percentage</td>
+                <td class="font-semibold">Vat Percentage</td>
                 <td>{{ tax_percentage }}</td>
               </tr>
 
@@ -370,7 +370,7 @@
                     icon-pack="feather"
                     icon="icon-calendar"
                     icon-no-border
-                    label="Tax Percentage"
+                    label="Vat Percentage"
                     v-model="tax_percentage"
                   />
                 </div>
