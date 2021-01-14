@@ -235,6 +235,22 @@ export default {
       }
     },
 
+    createInvoice(order_id) {
+      axios
+        .post("/restaurant_management/apps/customer/order/create_invoice/", {
+          order_id,
+        })
+        .then((res) => {
+          console.log("invoice ", res);
+          if (res.data.status) {
+            console.log("invoice 1 ", res);
+          }
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+        });
+    },
+
     showErrorLog(errorList) {
       for (const error in errorList) {
         this.$vs.notify({

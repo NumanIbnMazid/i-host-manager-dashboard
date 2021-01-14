@@ -7,7 +7,7 @@
 
       <div class="vx-row">
         <div
-          class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12 flex space-x-20"
+          class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12 flex flex-wrap space-x-20"
           id="avatar-col"
         >
           <!-- Avatar -->
@@ -105,11 +105,11 @@
 
       <div class="vx-row">
         <div
-          class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12 flex space-x-20"
+          class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12 flex flex-wrap"
           id="avatar-col"
         >
           <!-- Avatar -->
-          <div class="w-1/6" v-for="pt in payment_type" :key="pt.id">
+          <div class="w-1/5 m-2" v-for="pt in payment_type" :key="pt.id">
             <vx-card>
               <div class="option-logo">
                 <img class="payment-logo w-28" :src="pt.image" :alt="pt.name" />
@@ -130,7 +130,7 @@
 
       <div class="vx-row">
         <div
-          class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12 flex space-x-20"
+          class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12 flex flex-wrap space-x-20"
           id="avatar-col"
         >
           <!-- Avatar -->
