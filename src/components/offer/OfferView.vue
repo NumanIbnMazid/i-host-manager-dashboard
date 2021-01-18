@@ -103,7 +103,7 @@
             <vs-td>
               <vx-tooltip :text="tr.description" position="top">
                 <p class="product-name font-medium truncate">
-                  {{ truncate(tr.description, 10) }}
+                  {{ truncate(tr.description, 15) }}
                 </p>
               </vx-tooltip>
             </vs-td>
@@ -111,7 +111,7 @@
             <vs-td>
               <vx-tooltip :text="tr.url" position="bottom">
                 <p class="product-name font-medium truncate">
-                  <a :href="tr.url" target="__blank">{{truncate(tr.url, 15)}}</a>
+                  <a :href="tr.url" target="__blank">{{truncate(tr.url)}}</a>
                 </p>
               </vx-tooltip>
             </vs-td>
@@ -165,7 +165,7 @@
 
             <vs-td class="text-center">
               <p class="product-name font-medium truncate">
-                {{ tr.food }}
+                {{ truncate(tr.food_name) }}
               </p>
             </vs-td>
 

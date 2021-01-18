@@ -134,7 +134,7 @@ const plugin = {
     };
 
     // truncate long sentence
-    Vue.prototype.truncate = (str, n) =>
+    Vue.prototype.truncate = (str, n = 10) =>
       str.length > n ? str.substr(0, n) + "...." : str;
   }
 };
