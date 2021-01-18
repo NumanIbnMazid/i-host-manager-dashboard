@@ -132,6 +132,10 @@ const plugin = {
         }
       });
     };
+
+    // truncate long sentence
+    Vue.prototype.truncate = (str, n) =>
+      str.length > n ? str.substr(0, n) + "...." : str;
   }
 };
 

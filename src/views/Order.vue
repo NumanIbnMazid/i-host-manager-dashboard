@@ -194,9 +194,9 @@
                   ></vs-progress> -->
                   <div class="flex w-full mt-4">
                     <div class="w-3/5">
-                      <p class="text-sm leading-none">Order ID</p>
+                      <p class="t]ext-sm leading-none">Order ID</p>
                       <p class="text-sm leading-none font-medium">
-                        #{{ order.id }}
+                        #{{ order.order_no }}
                       </p>
                       <p
                         :class="`text-xs leading-none text-${selectColor(
@@ -1545,7 +1545,7 @@ export default {
         </div>
         <div id="bot">
             <center>
-                <h2>Order # ${order.invoice.id}</h2>
+                <h2>Order # ${order.order_no}</h2>
                 <h2>Table No: ${order.table_no}</h2>
                 <h2>Waiter: ${order.waiter.name}</h2>
                 <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
@@ -1788,7 +1788,7 @@ export default {
             <div class="info">
                 <center>
                     <h2>${this.resturent.name}</h2>
-                    <h2>Order # ${order.id}</h2>
+                    <h2>Order # ${order.order_no}</h2>
                     <h2>Table No: ${order.table_no}</h2>
                     <h2>Waiter: Rakib Hasan</h2>
                     <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>

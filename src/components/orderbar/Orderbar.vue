@@ -35,7 +35,7 @@
           <tbody>
             <tr v-for="(order, i) in ordersData" :key="i" v-show="order.status">
               <td class="text-center">
-                <div class="order-box first-box">#{{ order.id }}</div>
+                <div class="order-box first-box">#{{ order.order_no }}</div>
               </td>
               <td class="text-center">
                 <div class="order-box">

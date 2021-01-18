@@ -73,6 +73,11 @@
         <vs-th class="text-center">End Date</vs-th>
         <vs-th class="text-center">Amount</vs-th>
         <vs-th class="text-center">Restaurant</vs-th>
+        <vs-th class="text-center">Clickable</vs-th>
+        <vs-th class="text-center">Is Popup</vs-th>
+        <vs-th class="text-center">Is Slider</vs-th>
+        <vs-th class="text-center">Serial No</vs-th>
+        <vs-th class="text-center">Food</vs-th>
         <vs-th class="text-center">Action</vs-th>
       </template>
 
@@ -90,13 +95,15 @@
             </vs-td>
 
             <vs-td>
-              <p class="product-name font-medium truncate">{{ tr.name }}</p>
+              <vx-tooltip :text="tr.name" position="top">
+                <p class="product-name font-medium truncate">{{ truncate(tr.name, 10) }}</p>
+              </vx-tooltip>
             </vs-td>
 
             <vs-td>
-              <vx-tooltip position="bottom">
+              <vx-tooltip :text="tr.description" position="top">
                 <p class="product-name font-medium truncate">
-                  {{ tr.description }}
+                  {{ truncate(tr.description, 10) }}
                 </p>
               </vx-tooltip>
             </vs-td>
@@ -104,7 +111,7 @@
             <vs-td>
               <vx-tooltip :text="tr.url" position="bottom">
                 <p class="product-name font-medium truncate">
-                  {{ tr.url }}
+                  <a :href="tr.url" target="__blank">{{truncate(tr.url, 15)}}</a>
                 </p>
               </vx-tooltip>
             </vs-td>
@@ -129,6 +136,36 @@
             <vs-td class="text-center">
               <p class="product-name font-medium truncate">
                 {{ tr.restaurant }}
+              </p>
+            </vs-td>
+
+            <vs-td class="text-center">
+              <p class="product-name font-medium truncate">
+                {{ tr.clickable }}
+              </p>
+            </vs-td>
+
+            <vs-td class="text-center">
+              <p class="product-name font-medium truncate">
+                {{ tr.is_popup }}
+              </p>
+            </vs-td>
+
+            <vs-td class="text-center">
+              <p class="product-name font-medium truncate">
+                {{ tr.is_slider }}
+              </p>
+            </vs-td>
+
+            <vs-td class="text-center">
+              <p class="product-name font-medium truncate">
+                {{ tr.serial_no }}
+              </p>
+            </vs-td>
+
+            <vs-td class="text-center">
+              <p class="product-name font-medium truncate">
+                {{ tr.food }}
               </p>
             </vs-td>
 
