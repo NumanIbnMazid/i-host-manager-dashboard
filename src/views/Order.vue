@@ -209,7 +209,7 @@
                     <div class="w-2/5 text-center mr-3">
                       <p class="text-sm leading-none">Amount</p>
                       <p class="text-base leading-none font-bold">
-                        ৳{{order.price.grand_total_price }}
+                        ৳{{ order.price.grand_total_price }}
                       </p>
                     </div>
                   </div>
@@ -529,7 +529,6 @@
       :title="`Order #${orderToServed.id} | Table No: ${orderToServed.table_no}`"
       :active.sync="markAsServedPopup"
     >
-    
       <!-- food select form -->
       <div class="food-select-form">
         <div class="vx-row text-sm">
@@ -717,7 +716,13 @@
       <!-- action buttons -->
 
       <div class="action-buttons flex mt-4 float-right">
-        <vx-tooltip color="warning" text="Confirm All" class="mr-2">
+        <!-- v-if="isAllOrderCanceled(orderToServed.id, orderToServed.ordered_items)" -->
+        <vx-tooltip
+          v-if="!checkAllCanceled(orderToServed.ordered_items)"
+          color="warning"
+          text="Confirm All"
+          class="mr-2"
+        >
           <vs-button
             v-if="selectedItemForVarify.length > 0"
             color="warning"
@@ -733,7 +738,12 @@
         </vx-tooltip>
 
         <!-- confirm all -->
-        <vx-tooltip color="success" text="Confirm All" class="mr-2">
+        <vx-tooltip
+          v-if="!checkAllCanceled(orderToServed.ordered_items)"
+          color="success"
+          text="Confirm All"
+          class="mr-2"
+        >
           <vs-button
             color="success"
             type="border"
@@ -744,12 +754,17 @@
                 'in_kitchen'
               )
             "
-            >Serve All</vs-button
+            >Serve All
+            {{ checkAllCanceled(orderToServed.ordered_items) }}</vs-button
           >
         </vx-tooltip>
 
         <!-- Serve selected -->
-        <vx-tooltip color="primary" text="Confirm Selects">
+        <vx-tooltip
+          v-if="!checkAllCanceled(orderToServed.ordered_items)"
+          color="primary"
+          text="Confirm Selects"
+        >
           <vs-button
             color="primary"
             type="border"
@@ -911,11 +926,11 @@ export default {
         .then((res) => {
           // real time ui update (data object update)
           if (res.data.status) {
-            this.ordersData.map(
-              (order) =>
-                order.id === orderToProcess.id &&
-                order.ordered_items.push(res.data.data[0])
-            );
+            // this.ordersData.map(
+            //   (order) =>
+            //     order.id === orderToProcess.id &&
+            //     order.ordered_items.push(res.data.data[0])
+            // );
 
             orderToProcess.ordered_items.push(res.data.data[0]);
 
@@ -1025,13 +1040,16 @@ export default {
 
       return true;
     },
+    
     checkAllCanceled(orderItemList) {
       if (orderItemList) {
         let totalLength = orderItemList.filter(
           (item) => item.status === "4_CANCELLED"
         ).length;
 
-        if (orderItemList.length == totalLength) true;
+        if (orderItemList.length == totalLength) {
+          return true;
+        }
       }
       return false;
     },
@@ -1152,8 +1170,11 @@ export default {
             this.ordersData = this.ordersData.map((order) =>
               order.id === order_id ? { ...res.data.data } : order
             );
-
+            // if(!this.checkAllCanceled(res.data.data.order_item)){
             this.orderToServed = res.data.data;
+            // }else{
+            //   this.orderToServed = [];
+            // }
           }
         })
         .catch((err) => {
@@ -1198,6 +1219,7 @@ export default {
     },
 
     cancelOrder(order_id) {
+      console.log("cancelOrder(order_id) ", order_id);
       axios
         .post("/restaurant_management/dashboard/order/cancel_order/", {
           order_id,
@@ -1218,6 +1240,22 @@ export default {
     varifyConfirm(order) {
       this.varifyPopup = true;
       this.orderToVarify = order;
+    },
+
+    isAllOrderCanceled(order_id = "", ordered_items = []) {
+      let isCanceled = ordered_items.some(
+        (item) => item.status === "2_ORDER_CONFIRMED"
+      );
+
+      // if (!isCanceled) this.orderToServed = [];
+      if (!isCanceled) console.log("!isCanceled ", !isCanceled);
+      // if (!isCanceled) {
+      // this.ordersData = this.ordersData.map((order) =>
+      //   order.id === order_id ? { ...order, status: "" } : order
+      // );
+      // }
+
+      return isCanceled;
     },
 
     orderStatusData(status) {
@@ -1912,26 +1950,26 @@ export default {
 </script>
 
 <style >
-header.vs-collapse-item--header {
-  padding: 0px !important;
-}
-.open-item {
-  position: absolute;
-  z-index: 999;
-  width: 22.3%;
-}
-.mb-base {
-  margin-bottom: 0.5rem !important;
-}
+  header.vs-collapse-item--header {
+    padding: 0px !important;
+  }
+  .open-item {
+    position: absolute;
+    z-index: 999;
+    width: 22.3%;
+  }
+  .mb-base {
+    margin-bottom: 0.5rem !important;
+  }
 
-.status-icon {
-  width: 100% !important;
-  height: 100%;
-}
+  .status-icon {
+    width: 100% !important;
+    height: 100%;
+  }
 
-.order-manger-area {
-  max-height: 60vh;
-  overflow-y: scroll;
-}
+  .order-manger-area {
+    max-height: 60vh;
+    overflow-y: scroll;
+  }
 </style>
 

@@ -96,7 +96,9 @@
 
             <vs-td>
               <vx-tooltip :text="tr.name" position="top">
-                <p class="product-name font-medium truncate">{{ truncate(tr.name, 10) }}</p>
+                <p class="product-name font-medium truncate">
+                  {{ truncate(tr.name, 10) }}
+                </p>
               </vx-tooltip>
             </vs-td>
 
@@ -111,7 +113,7 @@
             <vs-td>
               <vx-tooltip :text="tr.url" position="bottom">
                 <p class="product-name font-medium truncate">
-                  <a :href="tr.url" target="__blank">{{truncate(tr.url)}}</a>
+                  <a :href="tr.url" target="__blank">{{ truncate(tr.url) }}</a>
                 </p>
               </vx-tooltip>
             </vs-td>
@@ -308,6 +310,81 @@
           />
         </div>
 
+        <div class="mt-5 w-full">
+          <label for=""><small>Clickable</small></label>
+          <v-select
+            icon-pack="feather"
+            icon="icon-edit"
+            label="name"
+            v-model="newOffer.clickable"
+            class="w-full"
+            :options="[true, false]"
+            v-validate="'required'"
+          />
+        </div>
+
+        <div class="mt-5 w-full">
+          <label for=""><small>Is Popup</small></label>
+          <v-select
+            icon-pack="feather"
+            icon="icon-edit"
+            label="name"
+            v-model="newOffer.is_popup"
+            class="w-full"
+            :options="[true, false]"
+            v-validate="'required'"
+          />
+        </div>
+
+        <div class="mt-5 w-full">
+          <label for=""><small>Is Slider</small></label>
+          <v-select
+            icon-pack="feather"
+            icon="icon-edit"
+            label="name"
+            v-model="newOffer.is_slider"
+            class="w-full"
+            :options="[true, false]"
+            v-validate="'required'"
+          />
+        </div>
+
+        <div class="mt-5 w-full" @click="getFoodNames()">
+          <label for=""><small>Food</small></label>
+          <v-select
+            label="name"
+            class="w-full"
+            v-model="newOffer.food"
+            v-validate="'required'"
+            :options="foods"
+            :reduce="(foods) => foods.id"
+            :dir="$vs.rtl ? 'rtl' : 'ltr'"
+          />
+        </div>
+        <!-- 
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-edit"
+            label="Food"
+            class="mt-5 w-full"
+            type="text"
+          />
+        </div> -->
+
+        <div class="w-full">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-edit"
+            label="Serial No"
+            v-model="newOffer.serial_no"
+            class="mt-5 w-full"
+            type="number"
+            min="0"
+            v-validate="'required'"
+          />
+        </div>
+
         <vs-button
           class="mb-2 w-full mt-5"
           @click="discountOfferFormActionMethod"
@@ -320,12 +397,14 @@
 
 <script>
 import axios from "@/axios.js";
+import vSelect from "vue-select";
 import Datepicker from "vuejs-datepicker";
 import moment from "moment";
 export default {
   name: "OfferView",
   components: {
     Datepicker,
+    vSelect,
   },
   data() {
     return {
@@ -337,6 +416,7 @@ export default {
       all_discount_offers: null,
       popupActive: false,
       discountOfferFormActionMethod: null,
+      foods: [],
 
       newOffer: {
         id: null,
@@ -348,6 +428,11 @@ export default {
         start_date: null,
         end_date: null,
         amount: null,
+        clickable: null,
+        is_popup: null,
+        is_slider: null,
+        food: null,
+        serial_no: null,
       },
     };
   },
@@ -381,6 +466,11 @@ export default {
           amount: this.newOffer.amount,
           restaurant: this.resturent_id,
           image: this.newOffer.logoPreview,
+          clickable: this.newOffer.clickable,
+          is_popup: this.newOffer.is_popup,
+          is_slider: this.newOffer.is_slider,
+          food: this.newOffer.food,
+          serial_no: this.newOffer.serial_no,
         })
         .then((res) => {
           if (res.data.status) {
@@ -414,6 +504,12 @@ export default {
       this.newOffer.start_date = offer.start_date;
       this.newOffer.end_date = offer.end_date;
       this.newOffer.amount = offer.amount;
+
+      this.newOffer.clickable = offer.clickable;
+      this.newOffer.is_popup = offer.is_popup;
+      this.newOffer.is_slider = offer.is_slider;
+      this.newOffer.food = offer.food;
+      this.newOffer.serial_no = offer.serial_no;
       this.discountOfferFormActionMethod = this.updateDiscountOffer;
       this.popupActive = !this.popupActive;
     },
@@ -432,6 +528,25 @@ export default {
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => console.log("u err ", err.response));
+    },
+
+    // getting food names
+    getFoodNames() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
+        )
+        .then((res) => {
+          console.log("foods ", res);
+          if (res.data.status) this.foods = res.data.data;
+          else this.showActionMessage("error", "Failed to get foods name!");
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+
+          // checking error code
+          this.checkError(err);
+        });
     },
 
     deleteADiscount(discount_id) {
