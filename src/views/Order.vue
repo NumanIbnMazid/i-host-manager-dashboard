@@ -754,8 +754,7 @@
                 'in_kitchen'
               )
             "
-            >Serve All
-            {{ checkAllCanceled(orderToServed.ordered_items) }}</vs-button
+            >Serve All</vs-button
           >
         </vx-tooltip>
 

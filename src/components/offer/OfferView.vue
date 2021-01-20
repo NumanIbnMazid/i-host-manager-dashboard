@@ -71,7 +71,7 @@
         <vs-th class="text-center">URL</vs-th>
         <vs-th class="text-center">Start Date</vs-th>
         <vs-th class="text-center">End Date</vs-th>
-        <vs-th class="text-center">Amount</vs-th>
+        <vs-th class="text-center">Amount (%)</vs-th>
         <!-- <vs-th class="text-center">Restaurant</vs-th> -->
         <vs-th class="text-center">Clickable</vs-th>
         <vs-th class="text-center">Is Popup</vs-th>
@@ -136,7 +136,7 @@
 
             <vs-td class="text-center">
               <p class="product-name font-medium truncate">
-                {{ tr.amount }}
+                {{ tr.amount }}%
               </p>
             </vs-td>
 
