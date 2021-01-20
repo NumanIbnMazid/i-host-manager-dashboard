@@ -72,7 +72,7 @@
         <vs-th class="text-center">Start Date</vs-th>
         <vs-th class="text-center">End Date</vs-th>
         <vs-th class="text-center">Amount</vs-th>
-        <vs-th class="text-center">Restaurant</vs-th>
+        <!-- <vs-th class="text-center">Restaurant</vs-th> -->
         <vs-th class="text-center">Clickable</vs-th>
         <vs-th class="text-center">Is Popup</vs-th>
         <vs-th class="text-center">Is Slider</vs-th>
@@ -97,6 +97,7 @@
             <vs-td>
               <vx-tooltip :text="tr.name" position="top">
                 <p class="product-name font-medium truncate">
+                  <!-- {{ tr.name }} -->
                   {{ truncate(tr.name, 10) }}
                 </p>
               </vx-tooltip>
@@ -113,7 +114,10 @@
             <vs-td>
               <vx-tooltip :text="tr.url" position="bottom">
                 <p class="product-name font-medium truncate">
-                  <a :href="tr.url" target="__blank">{{ truncate(tr.url) }}</a>
+                  <a :href="tr.url" target="__blank">
+                  
+                    {{ truncate(tr.url) }}
+                  </a>
                 </p>
               </vx-tooltip>
             </vs-td>
@@ -135,11 +139,12 @@
                 {{ tr.amount }}
               </p>
             </vs-td>
-            <vs-td class="text-center">
+
+            <!-- <vs-td class="text-center">
               <p class="product-name font-medium truncate">
                 {{ tr.restaurant }}
               </p>
-            </vs-td>
+            </vs-td> -->
 
             <vs-td class="text-center">
               <p class="product-name font-medium truncate">
@@ -198,14 +203,6 @@
       <vs-row>
         <div class="vx-col sm:w-8/12 w-full mb-2 mx-auto">
           <img
-            v-if="!newOffer.logoPreview"
-            :src="newOffer.iamge"
-            style="width: 100%"
-            class="rounded"
-            alt
-          />
-          <img
-            v-else
             :src="newOffer.logoPreview"
             style="width: 100%"
             class="rounded"
@@ -413,7 +410,7 @@ export default {
       currentPage: 5,
       limit: 10,
       offset: 1,
-      all_discount_offers: null,
+      all_discount_offers: { results: [] },
       popupActive: false,
       discountOfferFormActionMethod: null,
       foods: [],
@@ -453,19 +450,20 @@ export default {
         });
     },
 
+    // TODO: new discount offer add problem
     createNewDiscountOffer() {
       axios
         .post("/restaurant_management/dashboard/restaurant/create_discount/", {
           name: this.newOffer.name,
           description: this.newOffer.description,
           url: this.newOffer.url,
+          image: this.newOffer.logoPreview,
           start_date:
             moment(this.newOffer.start_date).format("YYYY-MM-DD") + "T00:00",
           end_date:
             moment(this.newOffer.end_date).format("YYYY-MM-DD") + "T00:00",
           amount: this.newOffer.amount,
           restaurant: this.resturent_id,
-          image: this.newOffer.logoPreview,
           clickable: this.newOffer.clickable,
           is_popup: this.newOffer.is_popup,
           is_slider: this.newOffer.is_slider,
@@ -516,15 +514,41 @@ export default {
 
     // TODO:
     updateDiscountOffer(offerId) {
+      const body = {
+        name: this.newOffer.name,
+        description: this.newOffer.description,
+        url: this.newOffer.url,
+        start_date:
+          moment(this.newOffer.start_date).format("YYYY-MM-DD") + "T00:00",
+        end_date:
+          moment(this.newOffer.end_date).format("YYYY-MM-DD") + "T00:00",
+        amount: this.newOffer.amount,
+        restaurant: this.resturent_id,
+        clickable: this.newOffer.clickable,
+        is_popup: this.newOffer.is_popup,
+        is_slider: this.newOffer.is_slider,
+        food: this.newOffer.food,
+        serial_no: this.newOffer.serial_no,
+      };
+
+      if (this.newOffer.image) {
+        body.image = this.newOffer.logoPreview;
+      }
+
       axios
         .patch(
           `/restaurant_management/dashboard/update_discount/${this.newOffer.id}`,
-          this.newOffer
+          body
         )
         .then((res) => {
           console.log("ures1 ", res);
           if (res.data.status) {
             console.log("ures ", res);
+            const updateDiscountOffers = this.all_discount_offers.results.map(offer => offer.id === this.newOffer.id ? {...res.data.data} : offer);
+
+            this.all_discount_offers.results = updateDiscountOffers;
+            this.showActionMessage('success', 'Offer Updated!')
+            this.popupActive = !this.popupActive;
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => console.log("u err ", err.response));
@@ -588,7 +612,7 @@ export default {
           let img = new Image();
           img.src = e.target.result;
           this.newOffer.logoPreview = e.target.result;
-          this.newOffer.image = "";
+          this.newOffer.image = e.target.result;
         };
       }
     },

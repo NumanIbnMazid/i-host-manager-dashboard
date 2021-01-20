@@ -66,22 +66,29 @@ Array.prototype.sum = function(prop) {
 const plugin = {
   install() {
     // global alert message
-    Vue.prototype.showActionMessage = (type, msg) => {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        onOpen: toast => {
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        }
-      });
+    Vue.prototype.showActionMessage = (type, msg, stay = false) => {
+      if (!stay) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          onOpen: toast => {
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          }
+        });
 
-      Toast.fire({
-        icon: type,
-        title: msg
-      });
+        Toast.fire({
+          icon: type,
+          title: msg
+        });
+      } else {
+        Swal.fire({
+          icon: type,
+          title: msg
+        });
+      }
     };
 
     // checking error status
@@ -135,7 +142,7 @@ const plugin = {
 
     // truncate long sentence
     Vue.prototype.truncate = (str, n = 10) =>
-      str.length > n ? str.substr(0, n) + "...." : str;
+      str ? (str.length > n ? str.substr(0, n) + "...." : str) : "N/A";
   }
 };
 

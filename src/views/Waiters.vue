@@ -437,7 +437,7 @@ console.log('formData ', formData);
             this.user.image = "";
             this.user.logoPreview = "";
             this.user.password = "";
-            this.showActionMessage("success", "Waiter Created Successfully!");
+            this.showActionMessage("success", res.data.msg, true);
           }
         })
         .catch((err) => {
