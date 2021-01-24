@@ -120,6 +120,11 @@ const router = new Router({
           component: () => import("@/views/NewOrder.vue")
         },
         {
+          path: "/take-away-orders",
+          name: "take-away-orders",
+          component: () => import("@/views/TakeAwayOrders.vue")
+        },
+        {
           path: "/notificaiton",
           name: "notificaiton",
           component: () => import("@/views/Notification.vue")

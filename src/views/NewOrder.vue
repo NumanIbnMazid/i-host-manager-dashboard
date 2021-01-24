@@ -296,6 +296,7 @@
                 @click="
                   isDinein = !isDinein;
                   isTakeOut = false;
+                  isTakeAwayOrderList = false;
                   getTables();
                   cancelOrder();
                   isInvoice = false;
@@ -491,6 +492,7 @@
               </tr>
             </table>
           </div>
+
           <!-- place order btn -->
           <div class="place-order w-2/3 mx-auto m-2 text-center bg-white">
             <vs-button
@@ -545,7 +547,7 @@
       </div>
     </vs-row>
 
-    <!-- Please dont' touch my below  code 😡😡😡😡-->
+    <!-- Please don't remove below  code -->
     <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
   </div>
 </template>

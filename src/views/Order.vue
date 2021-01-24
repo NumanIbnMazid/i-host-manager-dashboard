@@ -274,7 +274,7 @@
                 class="bg-pl"
                 icon-pack="feather"
                 icon="icon-arrow-left"
-                @click="revertOrder(order.id)"
+                @click="confirmAction(revertOrder, [order.id])"
               ></vs-button>
             </vx-tooltip>
 

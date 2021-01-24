@@ -63,5 +63,11 @@ export default [{
         name: "New Order",
         slug: "neworder",
         icon: "CheckSquareIcon"
+    },
+    {
+        url: "/take-away-orders",
+        name: "Take Away Order",
+        slug: "takeawayorder",
+        icon: "LogOutIcon"
     }
 ];
