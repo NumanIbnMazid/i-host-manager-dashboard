@@ -96,7 +96,7 @@
                     <vx-card>
                       <div slot="no-body">
                         <img
-                          style="height: 176px; width: auto"
+                          style="height: 176px; width: 100%"
                           :src="food.image"
                           alt="content-img"
                           class="responsive card-img-top"
