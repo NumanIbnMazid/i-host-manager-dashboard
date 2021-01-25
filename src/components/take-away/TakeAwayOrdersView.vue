@@ -100,8 +100,8 @@
                 svgClasses="w-5 h-5 m-3 hover:text-primary stroke-current"
                 title="View Order"
                 @click="
-                  foodDetailPpopupActive = true;
-                  selectedFood = tr;
+                  orderDetailPopupActive = true;
+                  selectedOrder = tr;
                 "
               />
               <feather-icon
@@ -117,105 +117,137 @@
       </template>
     </vs-table>
 
-    <!-- food detail info popup -->
+    <!-- order detail info popup -->
     <vs-popup
       class="holamundo w-full"
-      :title="`${selectedFood.name} Details`"
-      :active.sync="foodDetailPpopupActive"
+      :title="`Order Details`"
+      :active.sync="orderDetailPopupActive"
     >
       <template>
         <div class="con-expand-users w-full">
-          <div class="con-btns-user flex items-center justify-between">
+          <!-- <div class="con-btns-user flex items-center justify-between">
             <img
               class="rounded mx-auto"
               style="height: 180px"
-              :src="selectedFood.image"
+              :src="selectedOrder.image"
             />
-          </div>
+          </div> -->
 
           <table class="mx-auto mt-4 center">
             <tr>
-              <td class="font-semibold">Name :</td>
-              <td>{{ selectedFood.name }}</td>
+              <td class="font-semibold">Order No :</td>
+              <td>{{ selectedOrder.order_no }}</td>
             </tr>
 
             <tr>
-              <td class="font-semibold">Category :</td>
+              <td class="font-semibold">Status Details :</td>
               <td>
-                <p>
-                  {{
-                    selectedFood.category ? selectedFood.category.name : null
-                  }}
-                </p>
+                <p>{{ selectedOrder.status_details }}</p>
               </td>
             </tr>
 
+            <!-- price details -->
             <tr>
-              <td class="font-semibold">Price :</td>
               <td>
-                <p>{{ selectedFood.price }}</p>
+                <div
+                  class="price-details table-card mt-5 w-full"
+                  v-if="selectedOrder.price"
+                >
+                  <td class="text-ihostm m-2">Price Details</td>
+                  <hr />
+                  <table class="m-2">
+                    <tr>
+                      <td class="font-semibold">Payable Amount :</td>
+                      <td>
+                        <p>{{ selectedOrder.price.payable_amount }}</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="font-semibold">Tax Amount :</td>
+                      <td>
+                        <p>{{ selectedOrder.price.tax_amount }}</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="font-semibold">Vat Percentage :</td>
+                      <td>
+                        <p>{{ selectedOrder.price.tax_percentage }}</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="font-semibold">Service Charge :</td>
+                      <td>
+                        <p>{{ selectedOrder.price.service_charge }}</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="font-semibold">Service Base Amount :</td>
+                      <td>
+                        <p>
+                          {{ selectedOrder.price.service_charge_base_amount }}
+                          {{
+                            selectedOrder.price.service_charge_is_percentage
+                              ? "%"
+                              : "৳"
+                          }}
+                        </p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="font-semibold">Discount Amount :</td>
+                      <td>
+                        <p>{{ selectedOrder.price.discount_amount }}</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="font-semibold">Grand Total Price :</td>
+                      <td>{{ selectedOrder.price.grand_total_price }}</td>
+                    </tr>
+                  </table>
+                </div>
               </td>
             </tr>
 
-            <tr>
-              <td class="font-semibold">Description :</td>
-              <td>
-                {{
-                  selectedFood.description &&
-                  selectedFood.description.length > 10
-                    ? selectedFood.description.substr(0, 10) + "..."
-                    : selectedFood.description
-                }}
-              </td>
-            </tr>
-            <tr>
-              <td class="font-semibold">Ingredients :</td>
-              <td>
-                <p>
-                  {{
-                    selectedFood.ingredients &&
-                    selectedFood.ingredients.length > 10
-                      ? selectedFood.ingredients.substr(0, 10) + "..."
-                      : selectedFood.ingredients
-                  }}
-                </p>
-              </td>
-            </tr>
-
-            <tr>
+            <!-- <tr>
               <td class="font-semibold">Options :</td>
               <td class="flex">
-                <span v-for="(opt, i) in selectedFood.food_options" :key="i">
+                <span v-for="(opt, i) in selectedOrder.food_options" :key="i">
                   <vs-chip>
                     <b>{{ opt.option_type.name }}: </b>
                     {{ opt.name }}</vs-chip
                   >
                 </span>
               </td>
-            </tr>
+            </tr> -->
 
-            <tr>
+            <!-- <tr>
               <td class="font-semibold">Extra Type :</td>
               <td class="flex">
-                <span v-for="(opt, i) in selectedFood.food_extras" :key="i">
+                <span v-for="(opt, i) in selectedOrder.food_extras" :key="i">
                   <vs-chip> {{ opt.type_name }}</vs-chip>
                 </span>
               </td>
-            </tr>
+            </tr> -->
 
-            <tr>
+            <!-- <tr>
               <td class="font-semibold">Top :</td>
-              <td>{{ selectedFood.is_top ? "Yes" : "No" }}</td>
-            </tr>
+              <td>{{ selectedOrder.is_top ? "Yes" : "No" }}</td>
+            </tr> -->
 
-            <tr>
+            <!-- <tr>
               <td class="font-semibold">Recommended :</td>
               <td>
                 <p>
-                  {{ selectedFood.is_recommended ? "Yes" : "No" }}
+                  {{ selectedOrder.is_recommended ? "Yes" : "No" }}
                 </p>
               </td>
-            </tr>
+            </tr> -->
           </table>
         </div>
       </template>
@@ -239,8 +271,8 @@ export default {
       isMounted: false,
       active: false,
       popupActive: false,
-      selectedFood: {},
-      foodDetailPpopupActive: false,
+      selectedOrder: { price: {} },
+      orderDetailPopupActive: false,
     };
   },
   computed: {
