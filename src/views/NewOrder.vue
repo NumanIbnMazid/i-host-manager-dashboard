@@ -884,8 +884,11 @@ export default {
               localStorage.setItem("orderData", this.orderData);
               this.showActionMessage(
                 "success",
-                `Order Confirmed At Table No ${this.dinein_selected_table_id}`
+                `Order Confirmed At Table  No ${this.dinein_selected_table_id}`
               );
+              this.isTakeOut = !this.isTakeOut;
+              this.isDinein = false;
+              this.slectedTable = null;
               return;
             }
 
