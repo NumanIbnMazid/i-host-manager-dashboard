@@ -1039,7 +1039,7 @@ export default {
 
       return true;
     },
-    
+
     checkAllCanceled(orderItemList) {
       if (orderItemList) {
         let totalLength = orderItemList.filter(
@@ -1366,22 +1366,16 @@ export default {
       switch (status) {
         case "0_ORDER_INITIALIZED":
           return pending;
-          break;
         case "1_ORDER_PLACED":
           return recived;
-          break;
         case "2_ORDER_CONFIRMED":
           return approve;
-          break;
         case "3_IN_TABLE":
           return serve;
-          break;
         case "4_PAID":
           return paid;
-          break;
         default:
           return [];
-          break;
       }
     },
     //sabbir

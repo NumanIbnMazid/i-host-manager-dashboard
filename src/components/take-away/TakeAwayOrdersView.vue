@@ -84,7 +84,7 @@
 
             <vs-td>
               <p class="product-name font-medium truncate">
-                {{ tr.price.grand_total_price }}
+                {{ tr.price.payable_amount }}
               </p>
             </vs-td>
 
@@ -249,6 +249,17 @@
               </td>
             </tr> -->
           </table>
+          <br />
+
+          <div class="flex flex-wrap-reverse items-center">
+            <div
+              class="p-3 mb-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary mx-auto"
+            >
+              <!-- @click="$router.push('/food/create')" -->
+              <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
+              <span class="ml-2 text-base text-primary">Add New</span>
+            </div>
+          </div>
         </div>
       </template>
     </vs-popup>
