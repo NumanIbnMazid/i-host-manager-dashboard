@@ -257,7 +257,7 @@
             >
               <!-- @click="$router.push('/food/create')" -->
               <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
-              <span class="ml-2 text-base text-primary">Add New</span>
+              <span class="ml-2 text-base text-primary">?? ??</span>
             </div>
           </div>
         </div>
@@ -284,6 +284,7 @@ export default {
       popupActive: false,
       selectedOrder: { price: {} },
       orderDetailPopupActive: false,
+      isBtnLoading: false
     };
   },
   computed: {
@@ -305,6 +306,71 @@ export default {
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
+        });
+    },
+
+    inTable(order_id, food_items) {
+      this.isBtnLoading = true;
+      axios
+        .post("/restaurant_management/dashboard/order/status/in_table/", {
+          order_id,
+          food_items,
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.isBtnLoading = false;
+            this.isInvoice = !this.isInvoice;
+            console.log("in table ", res.data);
+            this.orderData = res.data.data;
+            console.log("In voice created!!!!! ");
+            this.showActionMessage("success", "Order Confirmed!");
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          console.log("error in table ", err.response);
+        });
+    },
+
+    confirmPaymentOrder() {
+      this.isBtnLoading = true;
+      axios
+        .post("/restaurant_management/dashboard/order/confirm_payment/", {
+          order_id: this.orderData.id,
+        })
+        .then((res) => {
+          console.log("cPorder  ", res.data);
+          if (res.data.status && res.data.data.status === "5_PAID") {
+            this.orderData = { id: null, ordered_items: [], price: null };
+            localStorage.setItem("orderData", null);
+            this.showActionMessage("success", res.data.data.status_details);
+            this.isConfirmPayment = false;
+            this.isBtnLoading = false;
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          console.log("err co ", err.response);
+        });
+    },
+
+    createInvoice(order_id) {
+      this.isBtnLoading = true;
+      axios
+        .post("/restaurant_management/dashboard/order/create_invoice/", {
+          order_id,
+        })
+        .then((res) => {
+          console.log("invoice ", res.data);
+          if (res.data.status) {
+            console.log("invoice 1 ", res.data);
+            this.isInvoice = !this.isInvoice;
+            this.isConfirmPayment = true;
+            this.orderData = res.data.data;
+            this.printRecipt(res.data.data);
+            this.isBtnLoading = false;
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          console.log("error invoice ", err.response);
         });
     },
 

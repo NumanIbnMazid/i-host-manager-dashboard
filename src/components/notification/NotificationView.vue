@@ -62,6 +62,7 @@
         <vs-th class="text-center">Body</vs-th>
         <vs-th class="text-center">Food</vs-th>
         <vs-th class="text-center">Restaurant</vs-th>
+        <vs-th class="text-center">Action</vs-th>
       </template>
 
       <template slot-scope="{ data }">
@@ -105,6 +106,15 @@
               <p class="product-name font-medium">
                 {{ tr.restaurant }}
               </p>
+            </vs-td>
+
+            <vs-td>
+              <feather-icon
+                icon="TrashIcon"
+                svgClasses="w-5 h-5 hover:text-danger stroke-current"
+                class="ml-2"
+                @click="confirmAction(deleteANotificaion, [tr.id])"
+              />
             </vs-td>
           </vs-tr>
         </tbody>
@@ -350,23 +360,23 @@ export default {
     //     });
     // },
 
-    // deleteANotificaion(notificaion_id) {
-    //   axios
-    //     .delete(`/account_management/customer_notification/${notificaion_id}`)
-    //     .then((res) => {
-    //       if (res.data.status) {
-    //         // filter
-    //         const leftNotifications = this.notifications;
-    //         this.notifications = leftNotifications.filter(
-    //           (ln) => ln.id !== notificaion_id
-    //         );
-    //       } else this.showErrorLog(res.data.error.error_details);
-    //     })
-    //     .catch((err) => {
-    //       this.showActionMessage("error", err.response.statusText);
-    //       this.checkError(err);
-    //     });
-    // },
+    deleteANotificaion(notificaion_id) {
+      axios
+        .delete(`/account_management/customer_notification/${notificaion_id}`)
+        .then((res) => {
+          if (res.data.status) {
+            // filter
+            const leftNotifications = this.notifications;
+            this.notifications = leftNotifications.filter(
+              (ln) => ln.id !== notificaion_id
+            );
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
 
     showErrorLog(errorList) {
       for (const error in errorList) {
