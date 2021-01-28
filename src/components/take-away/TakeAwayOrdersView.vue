@@ -252,23 +252,53 @@
           <br />
 
           <div class="flex flex-wrap-reverse items-center">
-            <div
-              class="p-3 mb-4 rounded-lg cursor-pointer flex items-center justify-between text-lg font-medium text-base text-primary border border-solid border-primary mx-auto"
+            <!-- <vs-button
+              v-if="confirmOrder"
+              color="dark"
+              class="text-1xl text-white w-64 bg-black mx-auto"
+              type="flat"
+              @click="inTable(selectedOrder)"
+              :disabled="isBtnLoading ? true : false"
             >
-              <!-- @click="$router.push('/food/create')" -->
-              <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
-              <span class="ml-2 text-base text-primary">?? ??</span>
-            </div>
+              Confirm Order</vs-button
+            > -->
+
+            <vs-button
+              v-if="isInvoiceCreated"
+              color="dark"
+              class="text-1xl text-white w-64 bg-black mx-auto"
+              type="flat"
+              @click="createInvoice(selectedOrder)"
+              :disabled="isBtnLoading ? true : false"
+            >
+              Create Invoice</vs-button
+            >
+
+            <vs-button
+              v-if="collectCash"
+              color="dark"
+              class="text-1xl text-white w-64 bg-black mx-auto"
+              type="flat"
+              @click="confirmPaymentOrder(selectedOrder)"
+              :disabled="isBtnLoading ? true : false"
+            >
+              Collect Cash</vs-button
+            >
           </div>
         </div>
       </template>
     </vs-popup>
+
+    <!-- Please don't remove below  code -->
+    <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
   </div>
 </template>
 
 <script>
 import vSelect from "vue-select";
 import axios from "@/axios.js";
+import moment from "moment";
+
 export default {
   components: {
     "v-select": vSelect,
@@ -276,6 +306,8 @@ export default {
   data() {
     return {
       resturent_id: localStorage.getItem("resturent_id"),
+      resturent: JSON.parse(localStorage.getItem("resturent")),
+      runningTakeAwayOrder: JSON.parse(localStorage.getItem("orderData")) || {},
       selected: [],
       takeAwayOrders: [],
       itemsPerPage: 10,
@@ -284,7 +316,11 @@ export default {
       popupActive: false,
       selectedOrder: { price: {} },
       orderDetailPopupActive: false,
-      isBtnLoading: false
+      isBtnLoading: false,
+
+      confirmOrder: false,
+      isInvoiceCreated: true,
+      collectCash: false,
     };
   },
   computed: {
@@ -309,21 +345,23 @@ export default {
         });
     },
 
-    inTable(order_id, food_items) {
+    inTable(order) {
       this.isBtnLoading = true;
+      const food_items = order.ordered_items.map((item) => item.id);
+      console.log("fsdfsd ", {
+        order_id: order.id,
+        food_items,
+      });
       axios
         .post("/restaurant_management/dashboard/order/status/in_table/", {
-          order_id,
+          order_id: order.id,
           food_items,
         })
         .then((res) => {
           if (res.data.status) {
             this.isBtnLoading = false;
-            this.isInvoice = !this.isInvoice;
-            console.log("in table ", res.data);
-            this.orderData = res.data.data;
-            console.log("In voice created!!!!! ");
-            this.showActionMessage("success", "Order Confirmed!");
+            this.confirmOrder = false;
+            this.isInvoiceCreated = true;
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
@@ -331,20 +369,28 @@ export default {
         });
     },
 
-    confirmPaymentOrder() {
+    confirmPaymentOrder(order) {
       this.isBtnLoading = true;
       axios
         .post("/restaurant_management/dashboard/order/confirm_payment/", {
-          order_id: this.orderData.id,
+          order_id: order.id,
         })
         .then((res) => {
-          console.log("cPorder  ", res.data);
-          if (res.data.status && res.data.data.status === "5_PAID") {
-            this.orderData = { id: null, ordered_items: [], price: null };
-            localStorage.setItem("orderData", null);
-            this.showActionMessage("success", res.data.data.status_details);
-            this.isConfirmPayment = false;
+          if (res.data.status) {
+            const leftTakeAwayOrders = this.takeAwayOrders.filter(
+              (takeAwayorder) => takeAwayorder.id !== order.id
+            );
+
+            // if the order is running then remove order from newOrder board
+            if (order.id === this.runningTakeAwayOrder.id) {
+              localStorage.removeItem("orderData");
+            }
+
+            this.takeAwayOrders = leftTakeAwayOrders;
+            this.isInvoiceCreated = false;
+            this.collectCash = true;
             this.isBtnLoading = false;
+            this.orderDetailPopupActive = false;
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
@@ -352,22 +398,25 @@ export default {
         });
     },
 
-    createInvoice(order_id) {
+    createInvoice(order) {
       this.isBtnLoading = true;
       axios
         .post("/restaurant_management/dashboard/order/create_invoice/", {
-          order_id,
+          order_id: order.id,
         })
         .then((res) => {
           console.log("invoice ", res.data);
           if (res.data.status) {
-            console.log("invoice 1 ", res.data);
-            this.isInvoice = !this.isInvoice;
-            this.isConfirmPayment = true;
-            this.orderData = res.data.data;
-            this.printRecipt(res.data.data);
+            console.log(1)
+            this.isInvoiceCreated = false;
+            this.collectCash = true;
             this.isBtnLoading = false;
-          } else this.showErrorLog(res.data.error.error_details);
+            this.printRecipt(res.data.data);
+            console.log(res.data.data)
+            console.log(2)
+            // this.showActionMessage("success", "Order Canceled!");
+          } 
+          // else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
           console.log("error invoice ", err.response);
@@ -394,6 +443,294 @@ export default {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
+    },
+
+    showErrorLog(errorList) {
+      for (const error in errorList) {
+        this.$vs.notify({
+          text: `${error} :  ${errorList[error][0]}`,
+          color: "danger",
+          position: "top-right",
+        });
+      }
+    },
+
+    printRecipt(order) {
+      console.log("order ", order);
+      const WinPrint = window.open(
+        "",
+        "",
+        "left=0,top=0,width=600,height=600,toolbar=0,scrollbars=0,status=0"
+      );
+
+      let itemDetail = "";
+      let resLogo = document.querySelector("#res_logo").src;
+
+      console.log('resLogo ', resLogo)
+
+      order.ordered_items.forEach((el) => {
+        if (el.status != "4_CANCELLED") {
+          itemDetail += `<tr class="service">
+                        <td class="tableitem itemname">
+                            <p class="itemtext">${el.food_name}(<b>${
+            el.quantity
+          }</b>)</p>
+                        </td>
+                        <td class="tableitem">
+                            <p class="itemtext" style="text-align:center">${
+                              el.food_option.price
+                            }/-</p>
+                        </td>
+                        <td class="tableitem price">
+                            <p class="itemtext">${
+                              el.food_option.price * el.quantity
+                            }/-</p>
+                        </td>
+                    </tr>`;
+        }
+      });
+
+      WinPrint.document.write(`<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #invoice-POS {
+            box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+            padding: 2mm;
+            margin: 0 auto;
+            width: 44mm;
+            background: #FFF;
+        }
+        
+        #invoice-POS ::selection {
+            background: #f31544;
+            color: #000;
+        }
+        
+        #invoice-POS ::moz-selection {
+            background: #f31544;
+            color: #000;
+        }
+        
+        #invoice-POS h1 {
+            font-size: 1.5em;
+            color: #222;
+        }
+        
+        #invoice-POS h2 {
+            font-size: .9em;
+        }
+        
+        #invoice-POS h3 {
+            font-size: 1.2em;
+            font-weight: 300;
+            line-height: 2em;
+        }
+        
+        #invoice-POS p {
+            font-size: .7em;
+            color: #000;
+            line-height: 1.2em;
+        }
+        /* #invoice-POS #top,
+        #invoice-POS #mid,
+        #invoice-POS #bot {
+            border-bottom: 1px solid #000;
+        } */
+        
+        #invoice-POS #top {
+            min-height: 77px;
+        }
+        
+        #invoice-POS #bot {
+            min-height: 50px;
+        }
+        
+        #invoice-POS #top .logo {
+            height: 60px;
+            width: 60px;
+        }
+        
+        #invoice-POS .info {
+            display: block;
+            margin-left: 0;
+        }
+        
+        #invoice-POS .title {
+            float: right;
+        }
+        
+        #invoice-POS .title p {
+            text-align: right;
+        }
+        
+        #invoice-POS table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        #invoice-POS .tabletitle {
+            font-size: .7em;
+            background: #EEE;
+        }
+        
+        #invoice-POS .service {
+            border-bottom: 1px solid #EEE;
+        }
+        
+        #invoice-POS .item {
+            width: 24mm;
+        }
+        
+        #invoice-POS .itemtext {
+            font-size: .7em;
+        }
+        
+        #invoice-POS #legalcopy {
+            margin-top: 5mm;
+        }
+        
+        .price>p,
+        .price>h2,
+        .payment>h2 {
+            float: right;
+            margin-right: 5px;
+        }
+        
+        .info {
+            padding: 5px 0px;
+        }
+        
+        .info>p {
+            text-align: center !important;
+        }
+        
+        .final {
+            border: 1px solid #000;
+            border-left: 0;
+            border-right: 0;
+        }
+        
+        .itemname>p {
+            margin-right: 5px;
+        }
+    </style>
+  
+</head>
+
+<body>
+    <div id="invoice-POS">
+        <center id="top">
+            <div class="logo">
+                <img src="${resLogo}" style="width: 100%;" alt="">
+            </div>
+
+            <div class="info">
+                <h2>${this.resturent.name}</h2>
+                <h2>Invoice</h2>
+            </div>
+        </center>
+        <div id="mid">
+            <div class="info">
+                <p>
+                    VAT Reg: ${this.resturent.tax_percentage}</br>
+                    Phone : 012938210983</br>
+                </p>
+            </div>
+        </div>
+        <div id="bot">
+            <center>
+                <h2>Order # ${order.invoice.id}</h2>
+                <h2>Table No: ${order.table_no}</h2>
+                <h2>Waiter: ${order.waiter.name}</h2>
+                <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
+            </center>
+            <div id="table">
+                <table>
+                    <tr class="tabletitle">
+                        <td class="item">
+                            <h2>Item</h2>
+                        </td>
+                        <td class="Hours">
+                            <h2>U.Price</h2>
+                        </td>
+                        <td class="Rate price">
+                            <h2>T.Price</h2>
+                        </td>
+                    </tr>
+
+                    ${itemDetail}
+
+                    <tr class="tabletitle">
+                        <td class="Rate">
+                            <h2>Total</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>${order.price.total_price}/-</h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle">
+                        <td class="Rate">
+                            <h2>Service Charge</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>${order.price.service_charge}/-</h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle">
+                        <td class="Rate">
+                            <h2>VAT (${order.price.tax_percentage}%)</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>${order.price.tax_amount}/-</h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle final">
+                        <td class="Rate">
+                            <h2>Net Total:</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>${order.price.grand_total_price}/-
+                            </h2>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="legalcopy">
+                <center>
+                    <p class="legal"><strong> Powerd by @i-host <br> <small>www.i-host.com.bd</small></strong>
+                    </p>
+                </center>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>`);
+
+      WinPrint.document.close();
+      WinPrint.focus();
+
+      WinPrint.print();
+      // WinPrint.close();
     },
   },
   created() {
