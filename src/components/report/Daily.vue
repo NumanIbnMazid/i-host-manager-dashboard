@@ -36,7 +36,7 @@
         <tbody>
           <vs-tr :data="tr" v-for="(tr, i) in data" :key="i">
             <vs-td
-              ><p>#{{ tr.order }}</p></vs-td
+              ><p>#{{ tr.order_info.order_no }}</p></vs-td
             >
             <vs-td
               ><p>{{ tr.order_info.table_no }}</p></vs-td
