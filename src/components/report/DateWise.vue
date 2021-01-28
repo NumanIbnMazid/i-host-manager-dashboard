@@ -189,6 +189,28 @@ export default {
         });
     },
 
+    updateFoodQuantity(food, objectToUpdate) {
+      axios
+        .patch(
+          `/restaurant_management/dashboard/order/cart/items/${food.id}/`,
+          {
+            quantity: food.quantity,
+            food_option: food.food_option.id,
+            food_order: food.food_order,
+            food_extra: food.food_extra.map((fe) => fe.id),
+          }
+        )
+        .then((res) => {
+          objectToUpdate = res.data.data.ordered_items;
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+
+          // checking error code
+          this.checkError(err);
+        });
+    },
+
     getCategorys() {
       axios
         .get(

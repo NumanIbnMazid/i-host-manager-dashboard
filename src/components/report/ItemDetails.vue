@@ -101,8 +101,17 @@
             {{ tr.food_name }}
           </vs-td>
 
+          <!-- TODO: quantity update => function parameter -->
           <vs-td class="text-center" :data="tr.quantity">
-            {{ tr.quantity }}
+            <input
+              type="number"
+              min="1"
+              v-model="quantity"
+              :value="tr.quantity"
+              @change="updateFoodQuantity(tr, orderToVarify.ordered_items)"
+              class="mt-5 w-12"
+              name="item-name"
+            />
           </vs-td>
 
           <vs-td class="text-center" :data="tr.food_option">
@@ -142,7 +151,7 @@ export default {
       selectedOption: null,
       selectedFoodExtraTypes: [],
       foodExtraTypes: [],
-      quantity: 0,
+      quantity: 1,
       isBtnLoading: false,
       showUpdateBtn: true,
       enableFoodForm: false,
