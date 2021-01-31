@@ -89,6 +89,7 @@
         <vs-th class="text-center">Qty</vs-th>
         <vs-th class="text-center">Options</vs-th>
         <vs-th class="text-center">Price</vs-th>
+        <vs-th class="text-center">Action</vs-th>
       </template>
 
       <template slot-scope="{ data }">
@@ -123,6 +124,16 @@
           </vs-td>
           <vs-td :data="tr.food_option.price">
             ৳{{ tr.food_option.price }}
+          </vs-td>
+
+          <vs-td>
+            <span
+              v-if="tr.status != '4_CANCELLED'"
+              class="badge rounded bg-rd text-white"
+              style="cursor: pointer"
+              @click="cancelOrderItem(showOrder.id, tr.id)"
+              >Cancel</span
+            >
           </vs-td>
         </vs-tr>
       </template>
@@ -176,6 +187,24 @@ export default {
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => console.log("rr err ", err.response));
+    },
+    
+    // cancel an item from an order
+    cancelOrderItem(order_id, item_id) {
+      axios
+        .post("/restaurant_management/dashboard/order/cart/cancel_items/", {
+          order_id,
+          food_items: [item_id],
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.showOrder = res.data.data;
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err);
+          this.checkError(err);
+        });
     },
 
     // food quantity update functionality
