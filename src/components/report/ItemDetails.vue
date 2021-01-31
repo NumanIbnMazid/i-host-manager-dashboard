@@ -106,9 +106,8 @@
             <input
               type="number"
               min="1"
-              v-model="quantity"
               :value="tr.quantity"
-              @change="updateFoodQuantity(tr, orderToVarify.ordered_items)"
+              @change="updateFoodQuantity(tr, showOrder.ordered_items)"
               class="mt-5 w-12"
               name="item-name"
             />
@@ -152,6 +151,7 @@ export default {
       selectedFoodExtraTypes: [],
       foodExtraTypes: [],
       quantity: 1,
+      itemQuantity: 1,
       isBtnLoading: false,
       showUpdateBtn: true,
       enableFoodForm: false,
@@ -176,6 +176,33 @@ export default {
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => console.log("rr err ", err.response));
+    },
+
+    // food quantity update functionality
+    updateFoodQuantity(food, objectToUpdate) {
+      console.log("food ", food);
+      axios
+        .patch(
+          `/restaurant_management/dashboard/order/cart/items/${food.id}/`,
+          {
+            quantity: ++food.quantity,
+            food_option: food.food_option.id,
+            food_order: food.food_order,
+            food_extra: food.food_extra.map((fe) => fe.id),
+          }
+        )
+        .then((res) => {
+          if (res.data.status) {
+            this.showOrder = res.data.data;
+            console.log("q update ", res, this.showOrder);
+          } else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+
+          // checking error code
+          this.checkError(err);
+        });
     },
 
     // adding food order to order cart
