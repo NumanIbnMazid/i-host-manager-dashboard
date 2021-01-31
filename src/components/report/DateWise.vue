@@ -89,9 +89,10 @@
               ><p>৳{{ tr.order_info.price.discount_amount }}</p>
             </vs-td>
             <vs-td>
-              <vs-button @click="showDetailsInfo(tr.order_info)"
+              <!-- <vs-button @click="showDetailsInfo(tr.order_info)"
                 >Show Details</vs-button
-              >
+              > -->
+              <ItemDetails :showOrder="tr.order_info"></ItemDetails>
             </vs-td>
           </vs-tr>
         </tbody>
@@ -103,10 +104,10 @@
       v-model="currentx"
     ></vs-pagination>
 
-    <ItemDetails
+    <!-- <ItemDetails
       :showOrder="showOrder"
-      :showDetailsPopup="showDetailsPopup"
-    ></ItemDetails>
+      :showDetailsPopup="showOrderDetailsPopup"
+    ></ItemDetails> -->
   </div>
 </template>
 
@@ -141,7 +142,7 @@ export default {
     foods: [],
     waiter: [],
     showOrder: [],
-    showDetailsPopup: false,
+    showOrderDetailsPopup: false,
   }),
 
   methods: {
@@ -247,10 +248,11 @@ export default {
 
       this.getAllOrder();
     },
-    showDetailsInfo(orderInfo) {
-      this.showOrder = orderInfo;
-      this.showDetailsPopup = true;
-    },
+
+    // showDetailsInfo(orderInfo) {
+    //   this.showOrder = orderInfo;
+    //   this.showOrderDetailsPopup = true;
+    // },
 
     dateFromat(date) {
       return moment(date).format("D-M-Y h:mm:ss");

@@ -1,144 +1,151 @@
 <template>
-  <vs-popup
-    class="holamundo"
-    :title="`Order #${showOrder.id}`"
-    :active.sync="showDetailsPopup"
-  >
-    <!-- food select form -->
-    <div class="food-select-form">
-      <vs-button
-        v-if="showUpdateBtn"
-        class="m-2 float-right"
-        color="success"
-        type="border"
-        title="Update Order"
-        icon-pack="feather"
-        :disabled="isBtnLoading ? true : false"
-        @click="orderRevertInTable(showOrder.id)"
-        icon="icon-edit"
-        >Make Update</vs-button
-      >
+  <div>
+    <!-- button -->
+    <vs-button title="Show Details" @click="showDetailsPopup = true"
+      >Show Details</vs-button>
 
-      <div class="vx-row text-sm" v-if="enableFoodForm">
-        <div class="vx-col w-3/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
-          <small>Food Name</small>
-          <v-select
-            label="name"
-            v-model="selectedFood"
-            :options="foods"
-            :reduce="(foods) => foods.id"
-            :dir="$vs.rtl ? 'rtl' : 'ltr'"
-          />
-        </div>
-
-        <div
-          class="vx-col w-3/12 mb-4 ml-0 pl-1 mr-0 pr-1"
-          @click="getFoodOptions()"
+    <!-- popup -->
+    <vs-popup
+      class="holamundo"
+      :title="`Order #${showOrder.id}`"
+      :active.sync="showDetailsPopup"
+    >
+      <!-- food select form -->
+      <div class="food-select-form">
+        <vs-button
+          v-if="showUpdateBtn"
+          class="m-2 float-right"
+          color="success"
+          type="border"
+          title="Update Order"
+          icon-pack="feather"
+          :disabled="isBtnLoading ? true : false"
+          @click="orderRevertInTable(showOrder.id)"
+          icon="icon-edit"
+          >Make Update</vs-button
         >
-          <small>Food Option</small>
-          <v-select
-            label="name"
-            v-model="selectedOption"
-            :options="foodOptions"
-            :dir="$vs.rtl ? 'rtl' : 'ltr'"
-            ><template v-if="!selectedFood" #no-options="{}">
-              <span class="text-danger"> Please select food first. </span>
-            </template></v-select
+
+        <div class="vx-row text-sm" v-if="enableFoodForm">
+          <div class="vx-col w-3/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
+            <small>Food Name</small>
+            <v-select
+              label="name"
+              v-model="selectedFood"
+              :options="foods"
+              :reduce="(foods) => foods.id"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+
+          <div
+            class="vx-col w-3/12 mb-4 ml-0 pl-1 mr-0 pr-1"
+            @click="getFoodOptions()"
           >
-        </div>
+            <small>Food Option</small>
+            <v-select
+              label="name"
+              v-model="selectedOption"
+              :options="foodOptions"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+              ><template v-if="!selectedFood" #no-options="{}">
+                <span class="text-danger"> Please select food first. </span>
+              </template></v-select
+            >
+          </div>
 
-        <div class="vx-col w-3/12 pl-0 ml-0 mb-4 mr-0 pr-1">
-          <small>Food Extra</small>
-          <v-select
-            label="type_name"
-            multiple
-            v-model="selectedFoodExtraTypes"
-            :options="foodExtraTypes"
-            :dir="$vs.rtl ? 'rtl' : 'ltr'"
-          />
-        </div>
+          <div class="vx-col w-3/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+            <small>Food Extra</small>
+            <v-select
+              label="type_name"
+              multiple
+              v-model="selectedFoodExtraTypes"
+              :options="foodExtraTypes"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
 
-        <div class="vx-col w-2/12 pl-0 ml-0 mb-4 mr-0 pr-1">
-          <vs-input
-            class="w-10/12"
-            color="rgb(213, 14, 151)"
-            type="number"
-            min="1"
-            label-placeholder="Quantity"
-            v-model="quantity"
-          />
-        </div>
-
-        <div class="vx-col w-1/12 pl-0 mt-5">
-          <vs-button
-            color="success"
-            type="border"
-            title="Add"
-            icon-pack="feather"
-            @click="addOrderedItems(showOrder, '3_IN_TABLE')"
-            icon="icon-plus"
-          ></vs-button>
-        </div>
-      </div>
-    </div>
-
-    <vs-table :data="showOrder.ordered_items">
-      <template slot="thead">
-        <vs-th class="text-center">Item Id</vs-th>
-        <vs-th class="text-center">Name</vs-th>
-        <vs-th class="text-center">Qty</vs-th>
-        <vs-th class="text-center">Options</vs-th>
-        <vs-th class="text-center">Price</vs-th>
-        <vs-th class="text-center">Action</vs-th>
-      </template>
-
-      <template slot-scope="{ data }">
-        <vs-tr class="text-center" :key="i" v-for="(tr, i) in data">
-          <vs-td :data="tr.id">
-            {{ tr.id }}
-          </vs-td>
-
-          <vs-td class="text-center" :data="tr.food_name">
-            {{ tr.food_name }}
-          </vs-td>
-
-          <!-- TODO: quantity update => function parameter -->
-          <vs-td class="text-center" :data="tr.quantity">
-            <input
+          <div class="vx-col w-2/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+            <vs-input
+              class="w-10/12"
+              color="rgb(213, 14, 151)"
               type="number"
               min="1"
-              :value="tr.quantity"
-              @change="updateFoodQuantity(tr, showOrder.ordered_items)"
-              class="mt-5 w-12"
-              name="item-name"
+              label-placeholder="Quantity"
+              v-model="quantity"
             />
-          </vs-td>
+          </div>
 
-          <vs-td class="text-center" :data="tr.food_option">
-            <span class="bg-gn p-1 rounded text-white">
-              <i v-if="tr.food_option.option_type.name != 'single_type'">
-                {{ tr.food_option.option_type.name }}:</i
+          <div class="vx-col w-1/12 pl-0 mt-5">
+            <vs-button
+              color="success"
+              type="border"
+              title="Add"
+              icon-pack="feather"
+              @click="addOrderedItems(showOrder, '3_IN_TABLE')"
+              icon="icon-plus"
+            ></vs-button>
+          </div>
+        </div>
+      </div>
+
+      <vs-table :data="showOrder.ordered_items">
+        <template slot="thead">
+          <vs-th class="text-center">Item Id</vs-th>
+          <vs-th class="text-center">Name</vs-th>
+          <vs-th class="text-center">Qty</vs-th>
+          <vs-th class="text-center">Options</vs-th>
+          <vs-th class="text-center">Price</vs-th>
+          <vs-th class="text-center">Action</vs-th>
+        </template>
+
+        <template slot-scope="{ data }">
+          <vs-tr class="text-center" :key="i" v-for="(tr, i) in data">
+            <vs-td :data="tr.id">
+              {{ tr.id }}
+            </vs-td>
+
+            <vs-td class="text-center" :data="tr.food_name">
+              {{ tr.food_name }}
+            </vs-td>
+
+            <!-- quantity update -->
+            <vs-td class="text-center" :data="tr.quantity">
+              <input
+                type="number"
+                min="1"
+                :value="tr.quantity"
+                @change="updateFoodQuantity(tr, showOrder.ordered_items)"
+                class="mt-5 w-12"
+                name="item-name"
+              />
+            </vs-td>
+
+            <vs-td class="text-center" :data="tr.food_option">
+              <span class="bg-gn p-1 rounded text-white">
+                <i v-if="tr.food_option.option_type.name != 'single_type'">
+                  {{ tr.food_option.option_type.name }}:</i
+                >
+                {{ tr.food_option.name }}
+              </span>
+            </vs-td>
+            <vs-td :data="tr.food_option.price">
+              ৳{{ tr.food_option.price }}
+            </vs-td>
+
+            <vs-td>
+              <span
+                v-if="tr.status != '4_CANCELLED'"
+                class="badge rounded bg-rd text-white"
+                style="cursor: pointer"
+                @click="cancelOrderItem(showOrder.id, tr.id)"
+                >Cancel</span
               >
-              {{ tr.food_option.name }}
-            </span>
-          </vs-td>
-          <vs-td :data="tr.food_option.price">
-            ৳{{ tr.food_option.price }}
-          </vs-td>
-
-          <vs-td>
-            <span
-              v-if="tr.status != '4_CANCELLED'"
-              class="badge rounded bg-rd text-white"
-              style="cursor: pointer"
-              @click="cancelOrderItem(showOrder.id, tr.id)"
-              >Cancel</span
-            >
-          </vs-td>
-        </vs-tr>
-      </template>
-    </vs-table>
-  </vs-popup>
+            </vs-td>
+          </vs-tr>
+        </template>
+      </vs-table>
+    </vs-popup>
+  </div>
 </template>
 
 <script>
@@ -146,7 +153,7 @@ import axios from "@/axios.js";
 import vSelect from "vue-select";
 
 export default {
-  props: ["showOrder", "showDetailsPopup"],
+  props: ["showOrder"],
 
   components: {
     "v-select": vSelect,
@@ -166,6 +173,7 @@ export default {
       isBtnLoading: false,
       showUpdateBtn: true,
       enableFoodForm: false,
+      showDetailsPopup: false,
     };
   },
 
@@ -188,7 +196,7 @@ export default {
         })
         .catch((err) => console.log("rr err ", err.response));
     },
-    
+
     // cancel an item from an order
     cancelOrderItem(order_id, item_id) {
       axios
@@ -330,6 +338,7 @@ export default {
   created() {
     console.log("showOrder ", this.showOrder);
     this.getFoodNames();
+    this.showDetailsPopup = false;
   },
 };
 </script>
