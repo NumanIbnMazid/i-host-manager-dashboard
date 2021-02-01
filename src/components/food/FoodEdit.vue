@@ -47,6 +47,7 @@
                 :outputSize="1"
                 :autoCropWidth="200"
                 :autoCropHeight="200"
+                :full="true"
               ></vue-cropper>
 
               <!-- <span class="text-center" v-else

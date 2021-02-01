@@ -45,8 +45,9 @@
                 :initialAspectRatio="1 / 1"
                 :fixed="true"
                 :outputSize="1"
-                :autoCropWidth="200"
-                :autoCropHeight="200"
+                :autoCropWidth="400"
+                :autoCropHeight="400"
+                :full="true"
               ></vue-cropper>
 
               <span class="text-center" v-else

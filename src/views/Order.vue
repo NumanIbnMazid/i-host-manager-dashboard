@@ -1380,7 +1380,7 @@ export default {
     },
     //sabbir
     printRecipt(order) {
-      console.log(order);
+      // console.log(order);
       const WinPrint = window.open(
         "",
         "",
@@ -1578,7 +1578,6 @@ export default {
             <center>
                 <h2>Order # ${order.order_no}</h2>
                 <h2>Table No: ${order.table_no}</h2>
-                <h2>Waiter: ${order.waiter.name}</h2>
                 <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
             </center>
             <div id="table">
