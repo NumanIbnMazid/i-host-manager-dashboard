@@ -347,7 +347,7 @@
         </div>
 
         <div class="mt-5 w-full" @click="getFoodNames()">
-          <label for=""><small>Food</small></label>
+          <label for=""><small>Featured Food</small></label>
           <v-select
             label="name"
             class="w-full"
