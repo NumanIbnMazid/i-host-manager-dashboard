@@ -334,6 +334,7 @@ export default {
 
   methods: {
     getTakeAwayOrderList() {
+      console.log('this.resturent_id ', this.resturent_id);
       axios
         .get(
           `/restaurant_management/dashboard/take_away_order/${this.resturent_id}/`
