@@ -82,7 +82,7 @@
                 class="w-full px-1"
                 placeholder="Search for item......"
                 v-model="search"
-                @keypress="findFooitem()"
+                @keyup="findFooitem()"
               ></vs-input>
 
               <!-- food grid view -->
@@ -609,19 +609,21 @@ export default {
     },
 
     findFooitem() {
-      axios
-        .get(
-          `/restaurant_management/dashboard/dashboard_food_search/${this.search}?restaurant=${this.resturent_id}`
-        )
-        .then((res) => {
-          console.log("food ", res);
-          this.foods = res.data.data;
-        })
-        .catch((err) => {
-          console.log("get food error ", err.response);
-          this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
-        });
+      if (this.search.length) {
+        axios
+          .get(
+            `/restaurant_management/dashboard/dashboard_food_search/${this.search}?restaurant=${this.resturent_id}`
+          )
+          .then((res) => {
+            console.log("food ", res);
+            this.foods = res.data.data;
+          })
+          .catch((err) => {
+            console.log("get food error ", err.response);
+            this.showActionMessage("error", err.response.statusText);
+            this.checkError(err);
+          });
+      }
     },
 
     findFooitemByCat(category_id) {
