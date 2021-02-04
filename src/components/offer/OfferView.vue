@@ -115,7 +115,6 @@
               <vx-tooltip :text="tr.url" position="bottom">
                 <p class="product-name font-medium truncate">
                   <a :href="tr.url" target="__blank">
-                  
                     {{ truncate(tr.url) }}
                   </a>
                 </p>
@@ -135,9 +134,7 @@
             </vs-td>
 
             <vs-td class="text-center">
-              <p class="product-name font-medium truncate">
-                {{ tr.amount }}%
-              </p>
+              <p class="product-name font-medium truncate">{{ tr.amount }}%</p>
             </vs-td>
 
             <!-- <vs-td class="text-center">
@@ -315,7 +312,7 @@
             label="name"
             v-model="newOffer.clickable"
             class="w-full"
-            :options="[true, false]"
+            :options="['true', 'false']"
             v-validate="'required'"
           />
         </div>
@@ -328,7 +325,7 @@
             label="name"
             v-model="newOffer.is_popup"
             class="w-full"
-            :options="[true, false]"
+            :options="['true', 'false']"
             v-validate="'required'"
           />
         </div>
@@ -341,7 +338,7 @@
             label="name"
             v-model="newOffer.is_slider"
             class="w-full"
-            :options="[true, false]"
+            :options="['true', 'false']"
             v-validate="'required'"
           />
         </div>
@@ -503,16 +500,17 @@ export default {
       this.newOffer.end_date = offer.end_date;
       this.newOffer.amount = offer.amount;
 
-      this.newOffer.clickable = offer.clickable;
-      this.newOffer.is_popup = offer.is_popup;
-      this.newOffer.is_slider = offer.is_slider;
+      // type casting boolean value to string coz of select input type
+      this.newOffer.clickable = offer.clickable.toString();
+      this.newOffer.is_popup = offer.is_popup.toString();
+      this.newOffer.is_slider = offer.is_slider.toString();
+
       this.newOffer.food = offer.food;
       this.newOffer.serial_no = offer.serial_no;
       this.discountOfferFormActionMethod = this.updateDiscountOffer;
       this.popupActive = !this.popupActive;
     },
 
-    // TODO:
     updateDiscountOffer(offerId) {
       const body = {
         name: this.newOffer.name,
@@ -544,10 +542,13 @@ export default {
           console.log("ures1 ", res);
           if (res.data.status) {
             console.log("ures ", res);
-            const updateDiscountOffers = this.all_discount_offers.results.map(offer => offer.id === this.newOffer.id ? {...res.data.data} : offer);
+            const updateDiscountOffers = this.all_discount_offers.results.map(
+              (offer) =>
+                offer.id === this.newOffer.id ? { ...res.data.data } : offer
+            );
 
             this.all_discount_offers.results = updateDiscountOffers;
-            this.showActionMessage('success', 'Offer Updated!')
+            this.showActionMessage("success", "Offer Updated!");
             this.popupActive = !this.popupActive;
           } else this.showErrorLog(res.data.error.error_details);
         })
