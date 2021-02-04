@@ -77,7 +77,8 @@
         <vs-th class="text-center">Is Popup</vs-th>
         <vs-th class="text-center">Is Slider</vs-th>
         <vs-th class="text-center">Serial No</vs-th>
-        <vs-th class="text-center">Food</vs-th>
+        <vs-th class="text-center">Featured Food</vs-th>
+        <vs-th class="text-center">Discounted Foods</vs-th>
         <vs-th class="text-center">Action</vs-th>
       </template>
 
@@ -170,6 +171,16 @@
             <vs-td class="text-center">
               <p class="product-name font-medium truncate">
                 {{ truncate(tr.food_name) }}
+              </p>
+            </vs-td>
+
+            <vs-td class="text-center">
+              <p
+                class="product-name font-medium truncate"
+                v-for="(food, index) in tr.food_name_list"
+                :key="index"
+              >
+                {{ food }}
               </p>
             </vs-td>
 
@@ -355,6 +366,21 @@
             :dir="$vs.rtl ? 'rtl' : 'ltr'"
           />
         </div>
+
+        <div class="mt-5 w-full" @click="getFoodNames()">
+          <label for=""><small>Discounted Foods</small></label>
+          <v-select
+            label="name"
+            class="w-full"
+            multiple
+            v-model="newOffer.food_id_list"
+            v-validate="'required'"
+            :options="foods"
+            :reduce="(foods) => foods.id"
+            :dir="$vs.rtl ? 'rtl' : 'ltr'"
+          />
+        </div>
+
         <!-- 
         <div class="w-full">
           <vs-input
@@ -426,6 +452,7 @@ export default {
         is_popup: null,
         is_slider: null,
         food: null,
+        food_id_list: [],
         serial_no: null,
       },
     };
@@ -447,6 +474,8 @@ export default {
         });
     },
 
+    // TODO: 177, 370 food id issue
+
     // TODO: new discount offer add problem
     createNewDiscountOffer() {
       axios
@@ -465,6 +494,7 @@ export default {
           is_popup: this.newOffer.is_popup,
           is_slider: this.newOffer.is_slider,
           food: this.newOffer.food,
+          food_id_list: this.newOffer.food_id_list,
           serial_no: this.newOffer.serial_no,
         })
         .then((res) => {
@@ -490,7 +520,9 @@ export default {
           })
         );
     },
+
     updateDiscountOfferGo(offer) {
+      console.log('offer ', offer);
       this.newOffer.id = offer.id;
       this.newOffer.logoPreview = offer.image;
       this.newOffer.name = offer.name;
@@ -506,6 +538,7 @@ export default {
       this.newOffer.is_slider = offer.is_slider.toString();
 
       this.newOffer.food = offer.food;
+      this.newOffer.food_id_list = offer.food_name_list;
       this.newOffer.serial_no = offer.serial_no;
       this.discountOfferFormActionMethod = this.updateDiscountOffer;
       this.popupActive = !this.popupActive;
@@ -526,6 +559,7 @@ export default {
         is_popup: this.newOffer.is_popup,
         is_slider: this.newOffer.is_slider,
         food: this.newOffer.food,
+        food_id_list: this.newOffer.food_id_list,
         serial_no: this.newOffer.serial_no,
       };
 
@@ -535,7 +569,7 @@ export default {
 
       axios
         .patch(
-          `/restaurant_management/dashboard/update_discount/${this.newOffer.id}`,
+          `/restaurant_management/dashboard/discount/${this.newOffer.id}`,
           body
         )
         .then((res) => {
