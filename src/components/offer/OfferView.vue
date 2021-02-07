@@ -177,7 +177,7 @@
             <vs-td class="text-center">
               <p
                 class="product-name font-medium truncate"
-                v-for="(food, index) in tr.food_name_list"
+                v-for="(food, index) in tr.food_detail_list.food_name_list"
                 :key="index"
               >
                 {{ food }}
@@ -499,7 +499,14 @@ export default {
         })
         .then((res) => {
           if (res.data.status) {
-            this.all_discount_offers.results.push(res.data.data);
+            let offers = this.all_discount_offers;
+            
+            offers.results.push(res.data.data);
+
+            this.all_discount_offers = offers;
+
+            this.popupActive = !this.popupActive;
+
             this.$vs.notify({
               title: "Offer",
               text: "Offer Created Successfully!",
@@ -508,8 +515,6 @@ export default {
               color: "success",
               position: "top-right",
             });
-
-            this.popupActive = !this.popupActive;
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) =>
@@ -522,7 +527,7 @@ export default {
     },
 
     updateDiscountOfferGo(offer) {
-      console.log('offer ', offer);
+      console.log("offer ", offer);
       this.newOffer.id = offer.id;
       this.newOffer.logoPreview = offer.image;
       this.newOffer.name = offer.name;
@@ -538,7 +543,7 @@ export default {
       this.newOffer.is_slider = offer.is_slider.toString();
 
       this.newOffer.food = offer.food;
-      this.newOffer.food_id_list = offer.food_name_list;
+      this.newOffer.food_id_list = offer.food_detail_list.food_id_list;
       this.newOffer.serial_no = offer.serial_no;
       this.discountOfferFormActionMethod = this.updateDiscountOffer;
       this.popupActive = !this.popupActive;
