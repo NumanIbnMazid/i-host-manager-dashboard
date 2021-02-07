@@ -59,18 +59,19 @@
               ><p>{{ tr.order_info.price.discount_amount }}</p>
             </vs-td>
             <vs-td>
-              <vs-button @click="showDetailsInfo(tr.order_info)"
+              <!-- <vs-button @click="showDetailsInfo(tr.order_info)"
                 >Show Details</vs-button
-              >
+              > -->
+              <ItemDetails :showOrder="tr.order_info"></ItemDetails>
             </vs-td>
           </vs-tr>
         </tbody>
       </template>
     </vs-table>
-    <ItemDetails
+    <!-- <ItemDetails
       :showOrder="showOrder"
       :showDetailsPopup="showDetailsPopup"
-    ></ItemDetails>
+    ></ItemDetails> -->
   </div>
 </template>
 

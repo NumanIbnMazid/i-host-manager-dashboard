@@ -432,7 +432,7 @@ export default {
       itemsPerPage: 5,
       currentPage: 5,
       limit: 10,
-      offset: 0,
+      offset: '0',
       all_discount_offers: { results: [] },
       popupActive: false,
       discountOfferFormActionMethod: null,
