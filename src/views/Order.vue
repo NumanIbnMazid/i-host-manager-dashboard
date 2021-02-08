@@ -1569,7 +1569,7 @@ export default {
         <div id="mid">
             <div class="info">
                 <p>
-                    VAT Reg: ${this.resturent.tax_percentage}</br>
+                    VAT Reg: ${this.resturent.vat_registration_no}</br>
                     Phone : 012938210983</br>
                 </p>
             </div>
