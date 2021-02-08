@@ -557,7 +557,7 @@
       <h4>Food Options</h4>
       <vs-table :data="selectedItem.food_options">
         <template slot="thead">
-          <vs-th class="text-center text-dark bg-aqua">Item Id</vs-th>
+          <!-- <vs-th class="text-center text-dark bg-aqua">Item Id</vs-th> -->
           <vs-th class="text-center text-dark bg-aqua">Name</vs-th>
           <vs-th class="text-center text-dark bg-aqua">Option Type</vs-th>
           <vs-th class="text-center text-dark bg-aqua">Price</vs-th>
@@ -566,9 +566,9 @@
 
         <template slot-scope="{ data }">
           <vs-tr class="text-center" :key="i" v-for="(tr, i) in data">
-            <vs-td :data="tr.id">
+            <!-- <vs-td :data="tr.id">
               {{ tr.id }}
-            </vs-td>
+            </vs-td> -->
 
             <vs-td class="text-center" :data="tr.name">
               {{ tr.name }}
@@ -578,43 +578,37 @@
               {{ tr.option_type.name }}
             </vs-td>
 
-            <vs-td :data="tr.price"> ৳{{ tr.price }} </vs-td>
+            <vs-td :data="tr.price"> ৳ {{ tr.price }} </vs-td>
 
             <vs-td>
-              <span>Add</span>
+              <vs-checkbox
+                color="success"
+                :value="tr.id"
+                v-model="addToCardItem.food_option"
+              ></vs-checkbox>
             </vs-td>
           </vs-tr>
         </template>
       </vs-table>
-
+      <br />
       <h4>Food Extras</h4>
-      <vs-table :data="selectedItem.food_options">
+      <vs-table :data="selectedItem.extras">
         <template slot="thead">
-          <vs-th class="text-center text-dark bg-aqua">Item Id</vs-th>
           <vs-th class="text-center text-dark bg-aqua">Name</vs-th>
-          <vs-th class="text-center text-dark bg-aqua">Option Type</vs-th>
           <vs-th class="text-center text-dark bg-aqua">Price</vs-th>
           <vs-th class="text-center text-dark bg-aqua">Action</vs-th>
         </template>
 
         <template slot-scope="{ data }">
           <vs-tr class="text-center" :key="i" v-for="(tr, i) in data">
-            <vs-td :data="tr.id">
-              {{ tr.id }}
-            </vs-td>
-
             <vs-td class="text-center" :data="tr.name">
               {{ tr.name }}
             </vs-td>
 
-            <vs-td class="text-center" :data="tr.option_type">
-              {{ tr.option_type.name }}
-            </vs-td>
-
-            <vs-td :data="tr.price"> ৳{{ tr.price }} </vs-td>
+            <vs-td :data="tr.price"> ৳ {{ tr.price }} </vs-td>
 
             <vs-td>
-              <span>Add</span>
+              <vs-checkbox color="success" v-model="checkBox2"></vs-checkbox>
             </vs-td>
           </vs-tr>
         </template>
@@ -772,22 +766,23 @@ export default {
       console.log("item ", item);
 
       // TODO: check extras and implement popup for food extras
-      const allextras = [];
-      console.log(
-        "extras ids ",
-        item.food_extras.map((extra) => {
-          extra.extras.map((extra) => allextras.push(extra));
-        })
+      let allextras = [];
+
+      item.food_extras.map((extra) =>
+        extra.extras.map((extra) => allextras.push(extra))
       );
+      this.selectedItem.extras = allextras;
+      console.log("allExtras ", allextras);
 
-      const ids = item.food_extras.map(({ extras }) => extras);
-      item.food_extras.map(({ extras }) => extras);
-      console.log("ids ", ids);
+      // const ids = item.food_extras.map(({ extras }) => extras);
+      // item.food_extras.map(({ extras }) => extras);
+      // console.log("ids ", ids);
 
-      console.log("all extrass ", allextras);
+      // console.log("all extrass ", allextras);
 
       if (item.food_options.length > 0 || item.food_extras.length > 0) {
         this.selectedItem = item;
+        this.selectedItem.extras = allextras;
         this.isActiveitemDetailPopup = !this.isActiveitemDetailPopup;
         return;
       }
