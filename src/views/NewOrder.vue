@@ -312,7 +312,7 @@
           </div>
           <!-- take out information table -->
           <div
-            class="table-info mt-1 pt-1"
+            class="table-info mt-1 pt-1 order-item-list-table"
             v-if="isTakeOut || (isDinein && slectedTable)"
           >
             <div class="table-card">
@@ -598,7 +598,7 @@
 
       <div class="food_extras mt-2 mb-2" v-if="selectedItem.extras.length">
         <h4 class="m-2">Food Extras</h4>
-        <!-- {{ selectedItem.extras }} -->
+
         <ul class="centerx">
           <li :key="i" v-for="(tr, i) in selectedItem.extras">
             <vs-checkbox v-model="addToCardItem.food_extras" :vs-value="tr.id"
@@ -607,27 +607,6 @@
           </li>
         </ul>
       </div>
-      <!-- <vs-table :data="selectedItem.extras">
-        <template slot="thead">
-          <vs-th class="text-center text-dark bg-aqua">Name</vs-th>
-          <vs-th class="text-center text-dark bg-aqua">Price</vs-th>
-          <vs-th class="text-center text-dark bg-aqua">Action</vs-th>
-        </template>
-
-        <template slot-scope="{ data }">
-          <vs-tr class="text-center" :key="i" v-for="(tr, i) in data">
-            <vs-td class="text-center" :data="tr.name">
-              {{ tr.name }}
-            </vs-td>
-
-            <vs-td :data="tr.price"> ৳ {{ tr.price }} </vs-td>
-
-            <vs-td>
-              <vs-checkbox color="success" v-model="checkBox2"></vs-checkbox>
-            </vs-td>
-          </vs-tr>
-        </template>
-      </vs-table> -->
 
       <div class="">
         <vs-button
@@ -757,7 +736,9 @@ export default {
     addItemToCardConfirm() {
       this.isActiveitemDetailPopup = !this.isActiveitemDetailPopup;
       this.itemAddToCart({
-        food_option: this.addToCardItem.food_option,
+        food_option:
+          this.addToCardItem.food_option ||
+          this.selectedItem.food_options[0].id,
         food_extras: this.addToCardItem.food_extras,
       });
     },
@@ -794,16 +775,19 @@ export default {
       item.food_extras.map((extra) =>
         extra.extras.map((extra) => allextras.push(extra))
       );
-      this.selectedItem.extras = allextras;
+      // this.selectedItem.extras = allextras;
 
-      if (item.food_options.length > 0 || item.food_extras.length > 0) {
+      if (item.food_options.length > 1 || item.food_extras.length > 1) {
         this.selectedItem = item;
         this.selectedItem.extras = allextras;
         this.isActiveitemDetailPopup = !this.isActiveitemDetailPopup;
         return;
       }
 
-      this.itemAddToCart({ food_option: "", food_extras: [] });
+      this.itemAddToCart({
+        food_option: item.food_options[0].id,
+        food_extras: allextras.map((extra) => extra.id),
+      });
     },
 
     async itemAddToCart(item) {
@@ -1447,6 +1431,10 @@ export default {
 
 
 <style lang="scss" >
+  .order-item-list-table {
+    max-height: 50%;
+    overflow: scroll;
+  }
   .item-qty > .vs-con-input > .vs-input--input {
     text-align: center;
   }
