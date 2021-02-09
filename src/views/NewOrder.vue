@@ -555,6 +555,7 @@
       :active.sync="isActiveitemDetailPopup"
     >
       <h4>Food Options</h4>
+
       <vs-table :data="selectedItem.food_options">
         <template slot="thead">
           <!-- <vs-th class="text-center text-dark bg-aqua">Item Id</vs-th> -->
@@ -581,18 +582,32 @@
             <vs-td :data="tr.price"> ৳ {{ tr.price }} </vs-td>
 
             <vs-td>
-              <vs-checkbox
+              <vs-button
+                class="mx-auto"
                 color="success"
-                :value="tr.id"
-                v-model="addToCardItem.food_option"
-              ></vs-checkbox>
+                type="flat"
+                icon-pack="feather"
+                icon="icon-check"
+                @click="addToCardItem.food_option = tr.id"
+              ></vs-button>
             </vs-td>
           </vs-tr>
         </template>
       </vs-table>
       <br />
-      <h4>Food Extras</h4>
-      <vs-table :data="selectedItem.extras">
+
+      <div class="food_extras mt-2 mb-2" v-if="selectedItem.extras.length">
+        <h4 class="m-2">Food Extras</h4>
+        <!-- {{ selectedItem.extras }} -->
+        <ul class="centerx">
+          <li :key="i" v-for="(tr, i) in selectedItem.extras">
+            <vs-checkbox v-model="addToCardItem.food_extras" :vs-value="tr.id"
+              >{{ tr.name }} (৳ {{ tr.price }})</vs-checkbox
+            >
+          </li>
+        </ul>
+      </div>
+      <!-- <vs-table :data="selectedItem.extras">
         <template slot="thead">
           <vs-th class="text-center text-dark bg-aqua">Name</vs-th>
           <vs-th class="text-center text-dark bg-aqua">Price</vs-th>
@@ -612,13 +627,14 @@
             </vs-td>
           </vs-tr>
         </template>
-      </vs-table>
+      </vs-table> -->
 
       <div class="">
         <vs-button
           color="primary"
           class="bg-warning m-2 text-white w-full text-2xl"
           type="flat"
+          @click="addItemToCardConfirm()"
         >
           Submit</vs-button
         >
@@ -634,6 +650,7 @@
 <script>
 import axios from "@/axios.js";
 import moment from "moment";
+import vSelect from "vue-select";
 
 // icons
 import { CheckSquareIcon } from "vue-feather-icons";
@@ -650,6 +667,7 @@ export default {
     Slide,
     HooperNavigation,
     UserProfile,
+    vSelect,
 
     // icons
     CheckSquareIcon,
@@ -679,13 +697,13 @@ export default {
     showOrder: null,
 
     isActiveitemDetailPopup: false,
-    selectedItem: {},
+    selectedItem: { extras: [] },
     addToCardItem: {
       quantity: 1,
       status: null,
-      food_option: null,
       food_order: null,
-      food_extras: null,
+      food_option: null,
+      food_extras: [],
     },
   }),
 
@@ -736,6 +754,14 @@ export default {
       this.getFood();
     },
 
+    addItemToCardConfirm() {
+      this.isActiveitemDetailPopup = !this.isActiveitemDetailPopup;
+      this.itemAddToCart({
+        food_option: this.addToCardItem.food_option,
+        food_extras: this.addToCardItem.food_extras,
+      });
+    },
+
     async createTakeAwayOrder() {
       let body = null;
       if (this.isDinein && this.dinein_selected_table_id) {
@@ -763,22 +789,12 @@ export default {
     },
 
     addToItemCardGo(item) {
-      console.log("item ", item);
-
-      // TODO: check extras and implement popup for food extras
       let allextras = [];
 
       item.food_extras.map((extra) =>
         extra.extras.map((extra) => allextras.push(extra))
       );
       this.selectedItem.extras = allextras;
-      console.log("allExtras ", allextras);
-
-      // const ids = item.food_extras.map(({ extras }) => extras);
-      // item.food_extras.map(({ extras }) => extras);
-      // console.log("ids ", ids);
-
-      // console.log("all extrass ", allextras);
 
       if (item.food_options.length > 0 || item.food_extras.length > 0) {
         this.selectedItem = item;
@@ -787,7 +803,7 @@ export default {
         return;
       }
 
-      this.itemAddToCart(item);
+      this.itemAddToCart({ food_option: "", food_extras: [] });
     },
 
     async itemAddToCart(item) {
@@ -808,9 +824,9 @@ export default {
           {
             quantity: 1,
             status: this.orderData.status,
-            food_option: item.food_options[0].id,
             food_order: this.orderData.id, // order id
-            food_extras: item.food_extras.map((extra) => extra.type_id),
+            food_option: item.food_option,
+            food_extras: item.food_extras,
           },
         ])
         .then((res) => {

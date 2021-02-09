@@ -342,7 +342,8 @@ export default {
         .then((res) => (this.takeAwayOrders = res.data.data))
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
+          // this.checkError(err);
+          this.$router.push("/login").catch(() => {});
         });
     },
 
