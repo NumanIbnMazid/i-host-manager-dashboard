@@ -275,6 +275,7 @@
         </template>
       </vs-table>
 
+      <!-- please don't remove below code. This for print recipt -->
       <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
     </div>
   </div>
