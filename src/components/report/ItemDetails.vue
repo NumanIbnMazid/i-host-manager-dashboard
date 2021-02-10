@@ -2,7 +2,8 @@
   <div>
     <!-- button -->
     <vs-button title="Show Details" @click="showDetailsPopup = true"
-      >Show Details</vs-button>
+      >Show Details</vs-button
+    >
 
     <!-- popup -->
     <vs-popup
@@ -53,7 +54,7 @@
             >
           </div>
 
-          <div class="vx-col w-3/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+          <div class="vx-col w-2/12 pl-0 ml-0 mb-4 mr-0 pr-1">
             <small>Food Extra</small>
             <v-select
               label="type_name"
@@ -75,14 +76,27 @@
             />
           </div>
 
-          <div class="vx-col w-1/12 pl-0 mt-5">
+          <div class="vx-col w-2/12 pl-0 mt-5 flex">
             <vs-button
               color="success"
+              class="mr-1"
               type="border"
               title="Add"
               icon-pack="feather"
               @click="addOrderedItems(showOrder, '3_IN_TABLE')"
               icon="icon-plus"
+            ></vs-button>
+
+            <vs-button
+              color="danger"
+              type="border"
+              title="Cancel"
+              icon-pack="feather"
+              @click="
+                showUpdateBtn = !showUpdateBtn;
+                enableFoodForm = !enableFoodForm;
+              "
+              icon="icon-x"
             ></vs-button>
           </div>
         </div>
@@ -95,7 +109,7 @@
           <vs-th class="text-center">Qty</vs-th>
           <vs-th class="text-center">Options</vs-th>
           <vs-th class="text-center">Price</vs-th>
-          <vs-th class="text-center">Action</vs-th>
+          <vs-th class="text-center" v-if="!showUpdateBtn">Action</vs-th>
         </template>
 
         <template slot-scope="{ data }">
@@ -111,11 +125,12 @@
             <!-- quantity update -->
             <vs-td class="text-center" :data="tr.quantity">
               <input
+                :disabled="showUpdateBtn ? true : false"
                 type="number"
                 min="1"
                 :value="tr.quantity"
                 @change="updateFoodQuantity(tr, showOrder.ordered_items)"
-                class="mt-5 w-12"
+                class="mt-5 w-12 text-center"
                 name="item-name"
               />
             </vs-td>
@@ -132,7 +147,7 @@
               ৳{{ tr.food_option.price }}
             </vs-td>
 
-            <vs-td>
+            <vs-td v-if="!showUpdateBtn">
               <span
                 v-if="tr.status != '4_CANCELLED'"
                 class="badge rounded bg-rd text-white"
