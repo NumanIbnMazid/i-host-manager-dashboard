@@ -153,7 +153,7 @@
                 class="badge rounded bg-rd text-white"
                 style="cursor: pointer"
                 @click="cancelOrderItem(showOrder.id, tr.id)"
-                >Cancel</span
+                >Cancel {{ tr.status }}</span
               >
             </vs-td>
           </vs-tr>
@@ -175,7 +175,7 @@ import vSelect from "vue-select";
 import moment from "moment";
 
 export default {
-  props: ["showOrder"],
+  props: ["showOrder", "cancelOrderItem"],
 
   components: {
     "v-select": vSelect,
@@ -221,6 +221,7 @@ export default {
     },
 
     // cancel an item from an order
+    // TODO: Cancel ordered item showing
     cancelOrderItem(order_id, item_id) {
       axios
         .post("/restaurant_management/dashboard/order/cart/cancel_items/", {
@@ -230,6 +231,12 @@ export default {
         .then((res) => {
           if (res.data.status) {
             this.showOrder = res.data.data;
+            const updatedOrders = this.orders.map((order) =>
+              order.id === order_id ? { ...res.data.data } : order
+            );
+            console.log("object ", res.data.data);
+
+            this.orders = updatedOrders;
           } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {

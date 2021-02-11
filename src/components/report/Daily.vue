@@ -62,7 +62,7 @@
               <!-- <vs-button @click="showDetailsInfo(tr.order_info)"
                 >Show Details</vs-button
               > -->
-              <ItemDetails :showOrder="tr.order_info"></ItemDetails>
+              <ItemDetails :showOrder="tr.order_info" :cancelOrderItem="cancelOrderItem"></ItemDetails>
             </vs-td>
           </vs-tr>
         </tbody>
@@ -114,6 +114,29 @@ export default {
           // this.$vs.loading.close();
         });
     },
+    cancelOrderItem(order_id, item_id) {
+      axios
+        .post("/restaurant_management/dashboard/order/cart/cancel_items/", {
+          order_id,
+          food_items: [item_id],
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.orders = this.orders.map((order) =>
+              order.id === order_id ? { ...res.data.data } : order
+            );
+            // if(!this.checkAllCanceled(res.data.data.order_item)){
+            // this.orderToServed = res.data.data;
+            // }else{
+            //   this.orderToServed = [];
+            // }
+          }
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err);
+          this.checkError(err);
+        });
+    },
 
     dateFromat(date) {
       return moment(date).format("D-M-Y h:mm:ss");
@@ -131,16 +154,16 @@ export default {
 </script>
 
 <style scoped>
-td {
-  border-top: 10px solid #f8f8f8;
-  text-align: center;
-}
-th {
-  text-align: center !important;
-  background-color: #31314e;
-  color: #fff !important;
-}
-th .vs-table-text {
-  justify-content: center !important;
-}
+  td {
+    border-top: 10px solid #f8f8f8;
+    text-align: center;
+  }
+  th {
+    text-align: center !important;
+    background-color: #31314e;
+    color: #fff !important;
+  }
+  th .vs-table-text {
+    justify-content: center !important;
+  }
 </style>
