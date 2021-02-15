@@ -777,7 +777,7 @@ export default {
       );
       // this.selectedItem.extras = allextras;
 
-      if (item.food_options.length > 1 || item.food_extras.length > 1) {
+      if (item.food_options.length > 1 || item.food_extras.length > 0) {
         this.selectedItem = item;
         this.selectedItem.extras = allextras;
         this.isActiveitemDetailPopup = !this.isActiveitemDetailPopup;
