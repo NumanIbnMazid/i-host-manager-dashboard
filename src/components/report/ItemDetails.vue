@@ -555,7 +555,7 @@ export default {
             <div class="info">
                 <p>
                     VAT Reg: ${this.resturent.vat_registration_no}</br>
-                    Phone : 012938210983</br>
+                    Phone : ${this.resturent.phone}</br>
                 </p>
             </div>
         </div>
