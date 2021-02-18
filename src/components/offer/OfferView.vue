@@ -175,13 +175,24 @@
             </vs-td>
 
             <vs-td class="text-center">
-              <p
+              <!-- <p
                 class="product-name font-medium truncate"
                 v-for="(food, index) in tr.food_detail_list.food_name_list"
                 :key="index"
               >
                 {{ food }}
-              </p>
+              </p> -->
+              <vx-tooltip
+                :text="tr.food_detail_list.food_name_list.toString()"
+                position="bottom"
+              >
+                <p class="product-name font-medium truncate">
+                  <!-- {{ tr.name }} -->
+                  {{
+                    truncate(tr.food_detail_list.food_name_list.toString(), 20)
+                  }}
+                </p>
+              </vx-tooltip>
             </vs-td>
 
             <vs-td class="whitespace-no-wrap">
@@ -432,7 +443,7 @@ export default {
       itemsPerPage: 5,
       currentPage: 5,
       limit: 10,
-      offset: '0',
+      offset: "0",
       all_discount_offers: { results: [] },
       popupActive: false,
       discountOfferFormActionMethod: null,
@@ -500,7 +511,7 @@ export default {
         .then((res) => {
           if (res.data.status) {
             let offers = this.all_discount_offers;
-            
+
             offers.results.push(res.data.data);
 
             this.all_discount_offers = offers;
@@ -668,9 +679,9 @@ export default {
 </script>
 
 <style scoped>
-  .product-img {
-    height: 80px;
-    width: auto;
-    border-radius: 5px;
-  }
+.product-img {
+  height: 80px;
+  width: auto;
+  border-radius: 5px;
+}
 </style>
