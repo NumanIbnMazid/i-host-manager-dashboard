@@ -1570,7 +1570,7 @@ export default {
             <div class="info">
                 <p>
                     VAT Reg: ${this.resturent.vat_registration_no}</br>
-                    Phone : 012938210983</br>
+                    Phone : ${this.resturent.phone}</br>
                 </p>
             </div>
         </div>
@@ -1942,26 +1942,26 @@ export default {
 </script>
 
 <style >
-  header.vs-collapse-item--header {
-    padding: 0px !important;
-  }
-  .open-item {
-    position: absolute;
-    z-index: 999;
-    width: 22.3%;
-  }
-  .mb-base {
-    margin-bottom: 0.5rem !important;
-  }
+header.vs-collapse-item--header {
+  padding: 0px !important;
+}
+.open-item {
+  position: absolute;
+  z-index: 999;
+  width: 22.3%;
+}
+.mb-base {
+  margin-bottom: 0.5rem !important;
+}
 
-  .status-icon {
-    width: 100% !important;
-    height: 100%;
-  }
+.status-icon {
+  width: 100% !important;
+  height: 100%;
+}
 
-  .order-manger-area {
-    max-height: 60vh;
-    overflow-y: scroll;
-  }
+.order-manger-area {
+  max-height: 60vh;
+  overflow-y: scroll;
+}
 </style>
 
