@@ -608,13 +608,32 @@ export default {
                             <h2>${order.price.tax_amount}/-</h2>
                         </td>
                     </tr>
-                    <tr class="tabletitle final">
+                     <tr class="tabletitle">
                         <td class="Rate">
                             <h2>Net Total:</h2>
                         </td>
                         <td></td>
                         <td class="payment">
                             <h2>${order.price.grand_total_price}/-
+                            </h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle">
+                        <td class="Rate">
+                            <h2>Discount Amount</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>(-) ${order.price.discount_amount}/-</h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle final">
+                        <td class="Rate">
+                            <h2>Net Total:</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>${order.price.payable_amount}/-
                             </h2>
                         </td>
                     </tr>

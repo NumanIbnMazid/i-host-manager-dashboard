@@ -136,13 +136,13 @@
       <vs-collapse
         v-for="(order, j) in ordersData"
         :key="j"
-        class="vx-col w-full md:w-1/4 mb-base"
+        class="vx-col md:w-1/3 mb-base"
         accordion
       >
         <vs-collapse-item
           icon-pack="feather"
           icon-arrow="icon-chevrons-down"
-          class="bg-white border-0 m-0 rounded op-block p-0 vs-con-loading__container mt-2"
+          class="bg-white border-0 m-0 rounded op-block p-0 vs-con-loading__container mt-2 "
           style="background-color: #ddd"
           :id="`div-with-loading-${order.id}`"
         >
@@ -152,7 +152,7 @@
             >
               <div class="flex w-full">
                 <div
-                  :class="`w-1/4 bg-${selectColor(order.status)} text-center`"
+                  :class="`w-1/3 bg-${selectColor(order.status)} text-center`"
                 >
                   <h2 class="text-white">
                     <b>{{ order.table_no }}</b>
@@ -1623,7 +1623,7 @@ export default {
                             <h2>${order.price.tax_amount}/-</h2>
                         </td>
                     </tr>
-                    <tr class="tabletitle final">
+                    <tr class="tabletitle">
                         <td class="Rate">
                             <h2>Net Total:</h2>
                         </td>
@@ -1633,6 +1633,26 @@ export default {
                             </h2>
                         </td>
                     </tr>
+                    <tr class="tabletitle">
+                        <td class="Rate">
+                            <h2>Discount Amount</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>(-) ${order.price.discount_amount}/-</h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle final">
+                        <td class="Rate">
+                            <h2>Net Total:</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>${order.price.payable_amount}/-
+                            </h2>
+                        </td>
+                    </tr>
+                    
                 </table>
             </div>
             <div id="legalcopy">
@@ -1948,7 +1968,7 @@ header.vs-collapse-item--header {
 .open-item {
   position: absolute;
   z-index: 999;
-  width: 22.3%;
+  width: 31%;
 }
 .mb-base {
   margin-bottom: 0.5rem !important;

@@ -334,7 +334,7 @@ export default {
 
   methods: {
     getTakeAwayOrderList() {
-      console.log('this.resturent_id ', this.resturent_id);
+      console.log("this.resturent_id ", this.resturent_id);
       axios
         .get(
           `/restaurant_management/dashboard/take_away_order/${this.resturent_id}/`
@@ -409,15 +409,15 @@ export default {
         .then((res) => {
           console.log("invoice ", res.data);
           if (res.data.status) {
-            console.log(1)
+            console.log(1);
             this.isInvoiceCreated = false;
             this.collectCash = true;
             this.isBtnLoading = false;
             this.printRecipt(res.data.data);
-            console.log(res.data.data)
-            console.log(2)
+            console.log(res.data.data);
+            console.log(2);
             // this.showActionMessage("success", "Order Canceled!");
-          } 
+          }
           // else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
@@ -468,7 +468,7 @@ export default {
       let itemDetail = "";
       let resLogo = document.querySelector("#res_logo").src;
 
-      console.log('resLogo ', resLogo)
+      console.log("resLogo ", resLogo);
 
       order.ordered_items.forEach((el) => {
         if (el.status != "4_CANCELLED") {
@@ -704,13 +704,32 @@ export default {
                             <h2>${order.price.tax_amount}/-</h2>
                         </td>
                     </tr>
-                    <tr class="tabletitle final">
+                    <tr class="tabletitle">
                         <td class="Rate">
                             <h2>Net Total:</h2>
                         </td>
                         <td></td>
                         <td class="payment">
                             <h2>${order.price.grand_total_price}/-
+                            </h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle">
+                        <td class="Rate">
+                            <h2>Discount Amount</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>(-) ${order.price.discount_amount}/-</h2>
+                        </td>
+                    </tr>
+                    <tr class="tabletitle final">
+                        <td class="Rate">
+                            <h2>Net Total:</h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>${order.price.payable_amount}/-
                             </h2>
                         </td>
                     </tr>
@@ -745,149 +764,149 @@ export default {
 </script>
 
 <style lang="scss" >
-  #data-list-thumb-view {
-    .vs-con-table {
-      .product-name {
-        max-width: 23rem;
-      }
+#data-list-thumb-view {
+  .vs-con-table {
+    .product-name {
+      max-width: 23rem;
+    }
 
-      .vs-table--header {
+    .vs-table--header {
+      display: flex;
+      flex-wrap: wrap-reverse;
+      margin-left: 1.5rem;
+      margin-right: 1.5rem;
+      > span {
         display: flex;
-        flex-wrap: wrap-reverse;
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
-        > span {
-          display: flex;
-          flex-grow: 1;
-        }
-
-        .vs-table--search {
-          padding-top: 0;
-
-          .vs-table--search-input {
-            padding: 0.9rem 2.5rem;
-            font-size: 1rem;
-
-            & + i {
-              left: 1rem;
-            }
-
-            &:focus + i {
-              left: 1rem;
-            }
-          }
-        }
+        flex-grow: 1;
       }
 
-      .vs-table {
-        border-collapse: separate;
-        border-spacing: 0 1.3rem;
-        padding: 0 1rem;
+      .vs-table--search {
+        padding-top: 0;
 
-        tr {
-          box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-          td {
-            padding: 10px;
-            &:first-child {
-              border-top-left-radius: 0.5rem;
-              border-bottom-left-radius: 0.5rem;
-            }
-            &:last-child {
-              border-top-right-radius: 0.5rem;
-              border-bottom-right-radius: 0.5rem;
-            }
-            &.img-container {
-              // width: 1rem;
-              // background: #fff;
+        .vs-table--search-input {
+          padding: 0.9rem 2.5rem;
+          font-size: 1rem;
 
-              span {
-                display: flex;
-                justify-content: flex-start;
-              }
-
-              .product-img {
-                height: 110px;
-              }
-            }
+          & + i {
+            left: 1rem;
           }
-          td.td-check {
-            padding: 20px !important;
+
+          &:focus + i {
+            left: 1rem;
           }
         }
-      }
-
-      .vs-table--thead {
-        th {
-          padding-top: 0;
-          padding-bottom: 0;
-
-          .vs-table-text {
-            text-transform: uppercase;
-            font-weight: 600;
-          }
-        }
-        th.td-check {
-          padding: 0 15px !important;
-        }
-        tr {
-          background: none;
-          box-shadow: none;
-        }
-      }
-
-      .vs-table--pagination {
-        justify-content: center;
       }
     }
-  }
 
-  .vs-sidebar {
-    z-index: 100000;
-  }
+    .vs-table {
+      border-collapse: separate;
+      border-spacing: 0 1.3rem;
+      padding: 0 1rem;
 
-  .sidebar-custom > .header-sidebar {
+      tr {
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+        td {
+          padding: 10px;
+          &:first-child {
+            border-top-left-radius: 0.5rem;
+            border-bottom-left-radius: 0.5rem;
+          }
+          &:last-child {
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+          }
+          &.img-container {
+            // width: 1rem;
+            // background: #fff;
+
+            span {
+              display: flex;
+              justify-content: flex-start;
+            }
+
+            .product-img {
+              height: 110px;
+            }
+          }
+        }
+        td.td-check {
+          padding: 20px !important;
+        }
+      }
+    }
+
+    .vs-table--thead {
+      th {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        .vs-table-text {
+          text-transform: uppercase;
+          font-weight: 600;
+        }
+      }
+      th.td-check {
+        padding: 0 15px !important;
+      }
+      tr {
+        background: none;
+        box-shadow: none;
+      }
+    }
+
+    .vs-table--pagination {
+      justify-content: center;
+    }
+  }
+}
+
+.vs-sidebar {
+  z-index: 100000;
+}
+
+.sidebar-custom > .header-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  h4 {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    width: 100%;
-    h4 {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      > button {
-        margin-left: 10px;
-      }
-    }
-  }
-
-  .footer-sidebar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     width: 100%;
     > button {
-      border: 0px solid rgba(0, 0, 0, 0) !important;
-      border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
-      border-radius: 0px !important;
+      margin-left: 10px;
     }
   }
+}
 
-  .sidebar-custom > .vs-sidebar-primary {
-    max-width: 400px !important;
+.footer-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  > button {
+    border: 0px solid rgba(0, 0, 0, 0) !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
+    border-radius: 0px !important;
   }
+}
 
-  th:first-child .vs-table-text {
-    justify-content: center !important;
-    cursor: pointer;
-  }
-  .vs-table--thead {
-    background-color: #32304e;
-    color: #fff;
-  }
+.sidebar-custom > .vs-sidebar-primary {
+  max-width: 400px !important;
+}
 
-  .vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
-    padding: 10px 15px !important;
-  }
+th:first-child .vs-table-text {
+  justify-content: center !important;
+  cursor: pointer;
+}
+.vs-table--thead {
+  background-color: #32304e;
+  color: #fff;
+}
+
+.vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
+  padding: 10px 15px !important;
+}
 </style>
