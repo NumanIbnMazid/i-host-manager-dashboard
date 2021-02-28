@@ -59,6 +59,12 @@ export default [{
         icon: "BarChart2Icon"
     },
     {
+        url: "/reviews",
+        name: "Reviews",
+        slug: "reviews",
+        icon: "StarIcon"
+    },
+    {
         url: "/neworder",
         name: "New Order",
         slug: "neworder",

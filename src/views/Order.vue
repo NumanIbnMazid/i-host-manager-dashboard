@@ -142,7 +142,7 @@
         <vs-collapse-item
           icon-pack="feather"
           icon-arrow="icon-chevrons-down"
-          class="bg-white border-0 m-0 rounded op-block p-0 vs-con-loading__container mt-2 "
+          class="bg-white border-0 m-0 rounded op-block p-0 vs-con-loading__container mt-2"
           style="background-color: #ddd"
           :id="`div-with-loading-${order.id}`"
         >
@@ -239,7 +239,7 @@
                 order.status == '3_IN_TABLE' &&
                 checkAllServed(order.ordered_items)
               "
-              @click="createInvoice(order.id)"
+              @click="createInvoice(order)"
               >Create Invoice</vs-button
             >
 
@@ -283,10 +283,11 @@
               color="danger"
               text="Cancel"
               v-if="
-                (order.status && order.status == '1_ORDER_PLACED') ||
-                order.status == '2_ORDER_CONFIRMED' ||
-                order.status == '0_ORDER_INITIALIZED' ||
-                checkAllCanceled(order.ordered_items)
+                order.status != '' &&
+                ((order.status && order.status == '1_ORDER_PLACED') ||
+                  order.status == '2_ORDER_CONFIRMED' ||
+                  order.status == '0_ORDER_INITIALIZED' ||
+                  checkAllCanceled(order.ordered_items))
               "
             >
               <vs-button
@@ -778,8 +779,269 @@
         </vx-tooltip>
       </div>
     </vs-popup>
+    <!-- mark as served -->
+    <vs-popup
+      class="holamundo"
+      :title="`Order #${orderToServed.id} | Table No: ${orderToServed.table_no}`"
+      :active.sync="markAsServedPopup"
+    >
+      <!-- food select form -->
+      <div class="food-select-form">
+        <div class="vx-row text-sm">
+          <div class="vx-col w-3/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
+            <small>Food Name</small>
+            <v-select
+              label="name"
+              v-model="selectedFood"
+              :options="foods"
+              :reduce="(foods) => foods.id"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+
+          <div
+            class="vx-col w-3/12 mb-4 ml-0 pl-1 mr-0 pr-1"
+            @click="getFoodOptions()"
+          >
+            <small>Food Option</small>
+            <v-select
+              label="name"
+              v-model="selectedOption"
+              :options="foodOptions"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+              ><template v-if="!selectedFood" #no-options="{}">
+                <span class="text-danger"> Please select food first. </span>
+              </template></v-select
+            >
+          </div>
+
+          <div class="vx-col w-3/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+            <small>Food Extra</small>
+            <v-select
+              label="type_name"
+              multiple
+              v-model="selectedFoodExtraTypes"
+              :options="foodExtraTypes"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+
+          <div class="vx-col w-2/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+            <vs-input
+              class="w-10/12"
+              color="rgb(213, 14, 151)"
+              type="number"
+              min="1"
+              label-placeholder="Quantity"
+              v-model="quantity"
+            />
+          </div>
+
+          <div class="vx-col w-1/12 pl-0 mt-5">
+            <vs-button
+              color="success"
+              type="border"
+              title="Add"
+              icon-pack="feather"
+              icon="icon-plus"
+              @click="addOrderedItems(orderToServed, '2_ORDER_CONFIRMED')"
+            ></vs-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- food extra list -->
+      <div class="food-extras-list">
+        <ul
+          class="flex float-left"
+          v-for="foodExtra in foodExtras"
+          :key="foodExtra.id"
+        >
+          <li class="mb-4" v-for="fe in foodExtra" :key="fe.id">
+            <vs-checkbox
+              v-model="selectedFoodExtras"
+              :vs-value="fe.id"
+              color="success"
+              >{{ fe.name }}</vs-checkbox
+            >
+          </li>
+        </ul>
+      </div>
+
+      <vs-table :data="orderToServed.ordered_items">
+        <template slot="thead">
+          <vs-th class="text-center">Check</vs-th>
+          <vs-th class="text-center">Item Id</vs-th>
+          <vs-th class="text-center">Name</vs-th>
+          <vs-th class="text-center">Qty</vs-th>
+          <vs-th class="text-center">Options</vs-th>
+          <vs-th class="text-center">Price</vs-th>
+          <vs-th class="text-center">Action</vs-th>
+        </template>
+
+        <template slot-scope="{ data }">
+          <vs-tr
+            :class="`text-center ${
+              data[i].status == '0_ORDER_INITIALIZED' ? 'bg-grey' : ''
+            }`"
+            :key="i"
+            v-for="(tr, i) in data"
+          >
+            <!-- v-show="data[i].status != '0_ORDER_INITIALIZED'" -->
+            <vs-td :data="data[i].id">
+              <vs-checkbox
+                v-if="data[i].status === '2_ORDER_CONFIRMED'"
+                v-model="selectedItemForVarify"
+                :vs-value="data[i].id"
+              ></vs-checkbox>
+              <span
+                v-if="data[i].status === '3_IN_TABLE'"
+                class="badge bg-gn text-white rounded"
+                >Served</span
+              >
+              <span
+                v-if="data[i].status === '1_ORDER_PLACED'"
+                class="text-danger"
+                >Not Verified</span
+              >
+              <span
+                v-if="data[i].status === '4_CANCELLED'"
+                class="badge bg-danger text-white rounded"
+                >Canceled</span
+              >
+              <span
+                v-if="data[i].status === '0_ORDER_INITIALIZED'"
+                class="text-yl"
+                >Item Carts by user</span
+              >
+            </vs-td>
+
+            <vs-td :data="data[i].id">
+              {{ data[i].id }}
+            </vs-td>
+
+            <vs-td class="text-center" :data="data[i].food_name">
+              {{ data[i].food_name }}
+            </vs-td>
+
+            <vs-td class="text-center" :data="data[i].quantity">
+              <vs-input
+                class="w-16"
+                color="green"
+                type="number"
+                min="1"
+                label-placeholder="Quantity"
+                v-model="data[i].quantity"
+                @change="
+                  updateFoodQuantity(data[i], orderToServed.ordered_items)
+                "
+                >{{ data[i].quantity }}</vs-input
+              >
+            </vs-td>
+
+            <vs-td class="text-center" :data="data[i].food_option">
+              <span class="bg-gn p-1 rounded text-white">
+                <i v-if="data[i].food_option.option_type.name != 'single_type'">
+                  {{ data[i].food_option.option_type.name }}:</i
+                >
+                {{ data[i].food_option.name }}
+              </span>
+            </vs-td>
+            <vs-td :data="data[i].price"> ৳{{ data[i].price }} </vs-td>
+            <vs-td>
+              <span
+                v-if="data[i].status != '4_CANCELLED'"
+                class="badge rounded bg-rd text-white"
+                style="cursor: pointer"
+                @click="cancelOrderItem(orderToServed.id, data[i].id)"
+                >Cancel</span
+              >
+              <br />
+              <span
+                v-if="data[i].status == '1_ORDER_PLACED'"
+                class="badge rounded bg-bl text-white"
+                style="cursor: pointer"
+                @click="verifyOrderItem(orderToServed.id, data[i].id)"
+                >Verify</span
+              >
+            </vs-td>
+          </vs-tr>
+        </template>
+      </vs-table>
+
+      <!-- action buttons -->
+
+      <div class="action-buttons flex mt-4 float-right">
+        <!-- v-if="isAllOrderCanceled(orderToServed.id, orderToServed.ordered_items)" -->
+        <vx-tooltip
+          v-if="!checkAllCanceled(orderToServed.ordered_items)"
+          color="warning"
+          text="Confirm All"
+          class="mr-2"
+        >
+          <vs-button
+            v-if="selectedItemForVarify.length > 0"
+            color="warning"
+            icon-pack="feather"
+            icon="icon-printer"
+            type="border"
+            @click="
+              printKitechRecit(orderToServed, selectedItemForVarify);
+              markAsServedPopup = false;
+            "
+            >Selected item print for kitchen</vs-button
+          >
+        </vx-tooltip>
+
+        <!-- confirm all -->
+        <vx-tooltip
+          v-if="!checkAllCanceled(orderToServed.ordered_items)"
+          color="success"
+          text="Confirm All"
+          class="mr-2"
+        >
+          <vs-button
+            color="success"
+            type="border"
+            @click="
+              selectAll(
+                orderToServed.ordered_items,
+                orderToServed.id,
+                'in_kitchen'
+              )
+            "
+            >Serve All</vs-button
+          >
+        </vx-tooltip>
+
+        <!-- Serve selected -->
+        <vx-tooltip
+          v-if="!checkAllCanceled(orderToServed.ordered_items)"
+          color="primary"
+          text="Confirm Selects"
+        >
+          <vs-button
+            color="primary"
+            type="border"
+            @click="
+              confirmProcess(
+                orderToServed.id,
+                '/restaurant_management/dashboard/order/status/in_table/'
+              )
+            "
+            >Serve Select</vs-button
+          >
+        </vx-tooltip>
+      </div>
+    </vs-popup>
+    <vs-popup title="Invoice Preview" :active.sync="preInvoiceShow">
+      <PreInvoice
+        :therOrder="preInvoiceOrder"
+        @emitAfterCreateInvoice="afterCreateInvoice"
+      ></PreInvoice>
+    </vs-popup>
     <!-- Please dont' touch my below  code 😡😡😡😡-->
-    <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
+    <!-- <img id="res_logo" :src="resturent.logo" alt="" style="display: none" /> -->
   </div>
 </template>
 
@@ -790,6 +1052,7 @@ import vSelect from "vue-select";
 import axios from "@/axios.js";
 import moment from "moment";
 import ChangeTimeDurationDropdownVue from "../components/ChangeTimeDurationDropdown.vue";
+import PreInvoice from "../components/order/PreInvoice";
 // import { mapGetters } from "vuex";
 
 export default {
@@ -797,6 +1060,7 @@ export default {
     StatisticsCardLine,
     VxTimeline,
     "v-select": vSelect,
+    PreInvoice,
   },
   //sabbir
   data: () => ({
@@ -829,6 +1093,9 @@ export default {
     quantity: 1,
     selectedOption: "",
     selectedFoodExtras: [],
+
+    preInvoiceShow: false,
+    preInvoiceOrder: "",
   }),
 
   watch: {
@@ -1119,24 +1386,35 @@ export default {
       }
     },
 
-    createInvoice(order_id) {
+    createInvoice(order) {
+      this.preInvoiceShow = true;
+      this.preInvoiceOrder = order;
       // this.printRecipt(order_id);
-      axios
-        .post("/restaurant_management/dashboard/order/create_invoice/", {
-          order_id,
-        })
-        .then((res) => {
-          if (res.data.status) {
-            this.ordersData = this.ordersData.map((order) =>
-              order.id === order_id ? { ...res.data.data } : order
-            );
-            this.printRecipt(res.data.data);
-          }
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err);
-          this.checkError(err);
-        });
+      // let order_id = order.id;
+      // axios
+      //   .post("/restaurant_management/dashboard/order/create_invoice/", {
+      //     order_id,
+      //   })
+      //   .then((res) => {
+      //     if (res.data.status) {
+      //       this.ordersData = this.ordersData.map((order) =>
+      //         order.id === order_id ? { ...res.data.data } : order
+      //       );
+      //       this.printRecipt(res.data.data);
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     this.showActionMessage("error", err);
+      //     this.checkError(err);
+      //   });
+    },
+
+    afterCreateInvoice(changedOrder) {
+      let order_id = changedOrder.id;
+      this.ordersData = this.ordersData.map((order) =>
+        order.id === order_id ? { ...changedOrder } : order
+      );
+      this.preInvoiceShow = false;
     },
 
     collectOrdersPayment(order_id) {
@@ -1377,301 +1655,6 @@ export default {
         default:
           return [];
       }
-    },
-    //sabbir
-    printRecipt(order) {
-      // console.log(order);
-      const WinPrint = window.open(
-        "",
-        "",
-        "left=0,top=0,width=600,height=600,toolbar=0,scrollbars=0,status=0"
-      );
-
-      let itemDetail = "";
-      let resLogo = document.querySelector("#res_logo").src;
-
-      order.ordered_items.forEach((el) => {
-        if (el.status != "4_CANCELLED") {
-          itemDetail += `<tr class="service">
-                        <td class="tableitem itemname">
-                            <p class="itemtext">${el.food_name}(<b>${
-            el.quantity
-          }</b>)</p>
-                        </td>
-                        <td class="tableitem">
-                            <p class="itemtext" style="text-align:center">${
-                              el.food_option.price
-                            }/-</p>
-                        </td>
-                        <td class="tableitem price">
-                            <p class="itemtext">${
-                              el.food_option.price * el.quantity
-                            }/-</p>
-                        </td>
-                    </tr>`;
-        }
-      });
-
-      WinPrint.document.write(`<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Invoice</title>
-
-<style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            margin: 0;
-            padding: 0;
-        }
-        
-        #invoice-POS {
-            box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
-            padding: 2mm;
-            margin: 0 auto;
-            width: 44mm;
-            background: #FFF;
-        }
-        
-        #invoice-POS ::selection {
-            background: #f31544;
-            color: #000;
-        }
-        
-        #invoice-POS ::moz-selection {
-            background: #f31544;
-            color: #000;
-        }
-        
-        #invoice-POS h1 {
-            font-size: 1.5em;
-            color: #222;
-        }
-        
-        #invoice-POS h2 {
-            font-size: .9em;
-        }
-        
-        #invoice-POS h3 {
-            font-size: 1.2em;
-            font-weight: 300;
-            line-height: 2em;
-        }
-        
-        #invoice-POS p {
-            font-size: .7em;
-            color: #000;
-            line-height: 1.2em;
-        }
-        /* #invoice-POS #top,
-        #invoice-POS #mid,
-        #invoice-POS #bot {
-            border-bottom: 1px solid #000;
-        } */
-        
-        #invoice-POS #top {
-            min-height: 77px;
-        }
-        
-        #invoice-POS #bot {
-            min-height: 50px;
-        }
-        
-        #invoice-POS #top .logo {
-            height: 60px;
-            width: 60px;
-        }
-        
-        #invoice-POS .info {
-            display: block;
-            margin-left: 0;
-        }
-        
-        #invoice-POS .title {
-            float: right;
-        }
-        
-        #invoice-POS .title p {
-            text-align: right;
-        }
-        
-        #invoice-POS table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        #invoice-POS .tabletitle {
-            font-size: .7em;
-            background: #EEE;
-        }
-        
-        #invoice-POS .service {
-            border-bottom: 1px solid #EEE;
-        }
-        
-        #invoice-POS .item {
-            width: 24mm;
-        }
-        
-        #invoice-POS .itemtext {
-            font-size: .7em;
-        }
-        
-        #invoice-POS #legalcopy {
-            margin-top: 5mm;
-        }
-        
-        .price>p,
-        .price>h2,
-        .payment>h2 {
-            float: right;
-            margin-right: 5px;
-        }
-        
-        .info {
-            padding: 5px 0px;
-        }
-        
-        .info>p {
-            text-align: center !important;
-        }
-        
-        .final {
-            border: 1px solid #000;
-            border-left: 0;
-            border-right: 0;
-        }
-        
-        .itemname>p {
-            margin-right: 5px;
-        }
-    </style>
-  
-</head>
-
-<body>
-    <div id="invoice-POS">
-        <center id="top">
-            <div class="logo">
-                <img src="${resLogo}" style="width: 100%;" alt="">
-            </div>
-
-            <div class="info">
-                <h2>${this.resturent.name}</h2>
-                <h2>Invoice</h2>
-            </div>
-        </center>
-        <div id="mid">
-            <div class="info">
-                <p>
-                    VAT Reg: ${this.resturent.vat_registration_no}</br>
-                    Phone : ${this.resturent.phone}</br>
-                </p>
-            </div>
-        </div>
-        <div id="bot">
-            <center>
-                <h2>Order # ${order.order_no}</h2>
-                <h2>Table No: ${order.table_no}</h2>
-                <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
-            </center>
-            <div id="table">
-                <table>
-                    <tr class="tabletitle">
-                        <td class="item">
-                            <h2>Item</h2>
-                        </td>
-                        <td class="Hours">
-                            <h2>U.Price</h2>
-                        </td>
-                        <td class="Rate price">
-                            <h2>T.Price</h2>
-                        </td>
-                    </tr>
-
-                    ${itemDetail}
-
-                    <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>Total</h2>
-                        </td>
-                        <td></td>
-                        <td class="payment">
-                            <h2>${order.price.total_price}/-</h2>
-                        </td>
-                    </tr>
-                    <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>Service Charge</h2>
-                        </td>
-                        <td></td>
-                        <td class="payment">
-                            <h2>${order.price.service_charge}/-</h2>
-                        </td>
-                    </tr>
-                    <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>VAT (${order.price.tax_percentage}%)</h2>
-                        </td>
-                        <td></td>
-                        <td class="payment">
-                            <h2>${order.price.tax_amount}/-</h2>
-                        </td>
-                    </tr>
-                    <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>Net Total:</h2>
-                        </td>
-                        <td></td>
-                        <td class="payment">
-                            <h2>${order.price.grand_total_price}/-
-                            </h2>
-                        </td>
-                    </tr>
-                    <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>Discount Amount</h2>
-                        </td>
-                        <td></td>
-                        <td class="payment">
-                            <h2>(-) ${order.price.discount_amount}/-</h2>
-                        </td>
-                    </tr>
-                    <tr class="tabletitle final">
-                        <td class="Rate">
-                            <h2>Net Total:</h2>
-                        </td>
-                        <td></td>
-                        <td class="payment">
-                            <h2>${order.price.payable_amount}/-
-                            </h2>
-                        </td>
-                    </tr>
-                    
-                </table>
-            </div>
-            <div id="legalcopy">
-                <center>
-                    <p class="legal"><strong> Powerd by @i-host <br> <small>www.i-host.com.bd</small></strong>
-                    </p>
-                </center>
-            </div>
-        </div>
-    </div>
-</body>
-
-</html>`);
-
-      WinPrint.document.close();
-      WinPrint.focus();
-
-      WinPrint.print();
-      // WinPrint.close();
     },
 
     printKitechRecit(order, items = []) {
