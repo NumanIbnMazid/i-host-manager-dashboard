@@ -183,6 +183,12 @@ const router = new Router({
                     name: "chef",
                     component: () =>
                         import ("@/views/Chef.vue")
+                },
+                {
+                    path: "/*",
+                    name: "Error404",
+                    component: () =>
+                        import ("@/views/pages/Error404.vue")
                 }
             ]
         },
