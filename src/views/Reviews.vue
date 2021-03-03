@@ -96,7 +96,9 @@ export default {
   methods: {
     getReviews() {
       axios
-        .get(`/restaurant_management/dashboard/review_list/17/`)
+        .get(
+          `/restaurant_management/dashboard/review_list/${this.resturent_id}/`
+        )
         .then((res) => (this.reviews = res.data.data))
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);

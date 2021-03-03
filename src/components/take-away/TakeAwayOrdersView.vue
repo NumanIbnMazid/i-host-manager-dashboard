@@ -343,7 +343,7 @@ export default {
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
           // this.checkError(err);
-          this.$router.push("/login").catch(() => {});
+          // this.$router.push("/login").catch(() => {});
         });
     },
 
