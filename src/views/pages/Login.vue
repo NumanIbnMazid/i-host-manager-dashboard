@@ -136,13 +136,13 @@ export default {
         });
     },
 
-    checkAuth() {
-      if (localStorage.token) {
-        window.location.href = "/";
-      } else {
-        window.location.href = "/login";
-      }
-    },
+    // checkAuth() {
+    //   if (localStorage.token) {
+    //     window.location.href = "/";
+    //   } else {
+    //     window.location.href = "/login";
+    //   }
+    // },
   },
 
   created() {
