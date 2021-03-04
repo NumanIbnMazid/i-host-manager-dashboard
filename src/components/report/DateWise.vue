@@ -63,6 +63,7 @@
         <th>Waiter Name</th>
         <th>Price</th>
         <th>Discount Price</th>
+        <th>Total Price</th>
         <th>Action</th>
       </template>
 
@@ -87,6 +88,9 @@
             </vs-td>
             <vs-td
               ><p>৳{{ tr.order_info.price.discount_amount }}</p>
+            </vs-td>
+            <vs-td
+              ><p>৳{{ tr.order_info.price.payable_amount }}</p>
             </vs-td>
             <vs-td>
               <!-- <vs-button @click="showDetailsInfo(tr.order_info)"
@@ -269,16 +273,16 @@ export default {
 </script>
 
 <style scoped>
-  td {
-    border-top: 10px solid #f8f8f8;
-    text-align: center;
-  }
-  th {
-    text-align: center !important;
-    background-color: #31314e;
-    color: #fff !important;
-  }
-  th .vs-table-text {
-    justify-content: center !important;
-  }
+td {
+  border-top: 10px solid #f8f8f8;
+  text-align: center;
+}
+th {
+  text-align: center !important;
+  background-color: #31314e;
+  color: #fff !important;
+}
+th .vs-table-text {
+  justify-content: center !important;
+}
 </style>

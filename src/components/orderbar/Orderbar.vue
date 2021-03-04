@@ -11,10 +11,7 @@
     <UserProfile />
 
     <vs-sidebar-item index="1">
-      <div class="mx-10 py-4 w-full text-center bg-primary rounded shadow-md">
-        <h1 class="text-white">{{ todayData.total_sell }} ৳</h1>
-        <p class="text-ihosts"><b> Total Sell Today </b></p>
-      </div>
+      <SellToday :todayData="todayData"></SellToday>
     </vs-sidebar-item>
     <vs-sidebar-item index="2">
       <h5 class="text-center mx-auto">{{ date }}</h5></vs-sidebar-item
@@ -68,12 +65,14 @@
 <script>
 import axios from "@/axios.js";
 import moment from "moment";
+import SellToday from "./SellToday";
 
 import UserProfile from "../../views/UserProfile";
 import { mapGetters } from "vuex";
 export default {
   components: {
     UserProfile,
+    SellToday,
   },
   data: () => ({
     staff_info: JSON.parse(localStorage.getItem("staff_info")),
