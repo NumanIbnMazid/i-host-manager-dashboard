@@ -459,4 +459,6 @@ export default {
 .vs-con-table .vs-con-tbody .vs-table--tbody-table .tr-values .vs-table--td {
   padding: 2px 10px;
 }
+
+
 </style>
