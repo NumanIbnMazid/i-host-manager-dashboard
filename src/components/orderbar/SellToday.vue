@@ -111,4 +111,5 @@ export default {
 .vs-input--input {
   border-radius: 0px 5px 5px 0px !important;
 }
+
 </style>
