@@ -19,6 +19,7 @@
       class="p-1 px-2 text-sm rounded-full mt-1 inline-flex"
       icon-pack="feather"
       icon="icon-x-circle"
+      @click="closeSlase()"
     >
       Close
     </vs-button>
@@ -65,9 +66,11 @@ import axios from "@/axios.js";
 export default {
   props: ["todayData"],
   data: () => ({
+    resturent: JSON.parse(localStorage.getItem("resturent")),
     resturent_id: localStorage.getItem("resturent_id"),
     showOpenSalePopup: false,
-    statusNow: localStorage.getItem("openStatus"),
+    showCloseSalePopup: false,
+    statusNow: null,
     cashStart: 0,
     timeNow: moment().format("h:mm:ss A"),
   }),
@@ -81,14 +84,32 @@ export default {
         })
         .then((res) => {
           if (res.status) {
-            this.statusNow = true;
-            localStorage.setItem("openStatus", true);
+            this.resturent.cash_log = res.data.data;
+            localStorage.setItem("resturent", JSON.stringify(resturent));
             this.showOpenSalePopup = false;
           }
         });
     },
-    closeSales(){
-      axios.patch()
+    closeSlase() {
+      axios
+        .patch(
+          `/restaurant_management/dashboard/cash_log/${this.resturent.cash_log.id}/`,
+          {
+            restaurant: this.resturent_id,
+            // ending_time: this.timeNow,
+            remarks: "",
+          }
+        )
+        .then((res) => {
+          if (res.status) {
+            this.resturent.cash_log = res.data.data;
+            localStorage.setItem("resturent", JSON.stringify(resturent));
+            this.showCloseSalePopup = false;
+          }
+        });
+    },
+    closeSales() {
+      axios.patch();
     },
     getTime() {
       setInterval(() => {
@@ -100,7 +121,25 @@ export default {
   created() {
     this.getTime();
   },
+
+  mounted() {
+    let restaurant = JSON.parse(localStorage.getItem("resturent"));
+    this.statusNow = restaurant.cash_log
+      ? restaurant.cash_log.ending_time
+        ? false
+        : true
+      : false;
+  },
 };
+
+// "id": 15,
+//         "starting_time": "2021-03-10T10:59:06.747593",
+//         "ending_time": null,
+//         "in_cash_while_opening": 1000,
+//         "in_cash_while_closing": null,
+//         "total_received_payment": null,
+//         "total_cash_received": null,
+//         "remarks": null
 </script>
 
 <style scoped>
@@ -111,5 +150,5 @@ export default {
 .vs-input--input {
   border-radius: 0px 5px 5px 0px !important;
 }
-
 </style>
+
