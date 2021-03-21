@@ -19,7 +19,8 @@
       class="p-1 px-2 text-sm rounded-full mt-1 inline-flex"
       icon-pack="feather"
       icon="icon-x-circle"
-      @click="closeSlase()"
+      @click="showCloseSalePopup= true"
+
     >
       Close
     </vs-button>
@@ -56,6 +57,33 @@
         </vs-col>
       </vs-row>
     </vs-popup>
+
+    <vs-popup
+      class="holamundo"
+      title="Open sales"
+      :active.sync="showCloseSalePopup"
+    >
+      <vs-row>
+        <vs-col class="md:w-1/1 text-center">
+          <div class="text-left inline-block mx-2">
+            <label for="" class="">Date</label>
+            <br />
+            <vs-input class="text-center" v-model="timeNow" disabled>
+            </vs-input>
+          </div>
+        </vs-col>
+        <vs-col class="w-1/8 text-center">
+          <vs-button
+            color="primary"
+            class="mt-5 inline-flex"
+            icon-pack="feather"
+            icon="icon-check-circle"
+            @click="closeSlase()"
+          >Close Sales</vs-button
+          >
+        </vs-col>
+      </vs-row>
+    </vs-popup>
   </div>
 </template>
 
@@ -84,16 +112,21 @@ export default {
         })
         .then((res) => {
           if (res.status) {
+            let resturent = JSON.parse(localStorage.getItem('resturent'))
             this.resturent.cash_log = res.data.data;
+            resturent.cash_log = res.data.data;
             localStorage.setItem("resturent", JSON.stringify(resturent));
             this.showOpenSalePopup = false;
+            this.statusNow = true
           }
         });
     },
     closeSlase() {
+      // console.log(localStorage.getItem("resturent"))
+      let theRes = JSON.parse(localStorage.getItem("resturent"))
       axios
         .patch(
-          `/restaurant_management/dashboard/cash_log/${this.resturent.cash_log.id}/`,
+          `/restaurant_management/dashboard/cash_log/${theRes.cash_log.id}/`,
           {
             restaurant: this.resturent_id,
             // ending_time: this.timeNow,
@@ -102,9 +135,14 @@ export default {
         )
         .then((res) => {
           if (res.status) {
+
+            let resturent = JSON.parse(localStorage.getItem('resturent'))
             this.resturent.cash_log = res.data.data;
+            resturent.cash_log = res.data.data;
             localStorage.setItem("resturent", JSON.stringify(resturent));
             this.showCloseSalePopup = false;
+            this.statusNow = false
+
           }
         });
     },
