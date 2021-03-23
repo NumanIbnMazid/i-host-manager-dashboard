@@ -62,6 +62,7 @@
         <th>Customer Name</th>
         <th>Waiter Name</th>
         <th>Price</th>
+        <th>Vat Amount</th>
         <th>Discount Price</th>
         <th>Total Price</th>
         <th>Action</th>
@@ -79,12 +80,17 @@
             <vs-td
               ><p>{{ dateFromat(tr.created_at) }}</p>
             </vs-td>
-            <vs-td><p>-</p> </vs-td>
-            <vs-td
-              ><p>{{ tr.order_info.waiter.name }}</p>
+            <vs-td class="text-left"
+              ><p>{{ tr.order_info.customer ? tr.order_info.customer.name : '-' }}</p>
+            </vs-td>
+            <vs-td class="text-left"
+              ><p>{{ tr.order_info.waiter ? tr.order_info.waiter.name : '' }}</p>
             </vs-td>
             <vs-td
               ><p>৳{{ tr.order_info.price.grand_total_price }}</p>
+            </vs-td>
+            <vs-td
+              ><p>৳{{ tr.order_info.price.tax_amount }}</p>
             </vs-td>
             <vs-td
               ><p>৳{{ tr.order_info.price.discount_amount }}</p>
@@ -92,6 +98,7 @@
             <vs-td
               ><p>৳{{ tr.order_info.price.payable_amount }}</p>
             </vs-td>
+
             <vs-td>
               <!-- <vs-button @click="showDetailsInfo(tr.order_info)"
                 >Show Details</vs-button
@@ -103,10 +110,10 @@
       </template>
     </vs-table>
     <br />
-    <vs-pagination
+    <!-- <vs-pagination
       :total="Math.ceil(total / 10)"
       v-model="currentx"
-    ></vs-pagination>
+    ></vs-pagination> -->
 
     <!-- <ItemDetails
       :showOrder="showOrder"
@@ -160,7 +167,7 @@ export default {
       });
       axios
         .post(
-          `/restaurant_management/dashboard/invoice_all_report/${this.restaurant_id}/?limit=100&offset=0`,
+          `/restaurant_management/dashboard/invoice_all_report/${this.restaurant_id}/?limit=2000&offset=0`,
           {
             start_date: moment(this.startDate).format("Y-M-D"),
             end_date: moment(this.endDate).format("Y-M-D"),
