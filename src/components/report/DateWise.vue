@@ -52,6 +52,8 @@
       <vs-button class="m-2" color="danger" v-if="search" @click="resetFilter()"
         >Reset</vs-button
       >
+
+      <span class="float-right"><b>Total Amount:</b> {{totalAmount}}</span>
     </div>
 
     <vs-table class="p-0" ref="table" :data="orders">
@@ -64,7 +66,7 @@
         <th>Price</th>
         <th>Vat Amount</th>
         <th>Discount Price</th>
-        <th>Total Price</th>
+        <th>Net Price</th>
         <th>Action</th>
       </template>
 
@@ -154,6 +156,7 @@ export default {
     waiter: [],
     showOrder: [],
     showOrderDetailsPopup: false,
+    totalAmount: 0,
   }),
 
   methods: {
@@ -179,6 +182,7 @@ export default {
         .then((res) => {
           this.orders = res.data.data.results;
           this.total = res.data.data.total_order;
+          this.totalAmount = res.data.data.total_amaount
           console.log("this.orders ", this.orders);
         })
         .catch((err) => {
