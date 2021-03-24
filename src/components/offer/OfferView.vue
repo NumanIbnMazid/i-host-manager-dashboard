@@ -127,7 +127,7 @@
             </vs-td>
             <vs-td class="text-center">
               <p class="product-name font-medium truncate">
-                {{ truncate(tr.discount_schedule_type) }}
+                {{ truncate(tr.discount_type) }}
               </p>
             </vs-td>
 
@@ -435,19 +435,6 @@
           />
         </div>
 
-<!--        <div class="w-full">-->
-<!--          <vs-input-->
-<!--            v-if="newOffer.discount_schedule_type && newOffer.discount_schedule_type.value == 'date_wise' "-->
-<!--            icon-pack="feather"-->
-<!--            icon="icon-file-text  "-->
-<!--            label="date"-->
-<!--            v-model="newOffer.discount_slot_start_time"-->
-<!--            class="mt-5 w-full"-->
-<!--            type="date"-->
-<!--            v-validate="'required'"-->
-<!--          />-->
-<!--        </div>-->
-
         <div class="w-full"  v-if="newOffer.discount_schedule_type && newOffer.discount_schedule_type.value == 'Time_wise'">
           <vs-input
             icon-pack="feather"
@@ -557,7 +544,7 @@ export default {
         )
         .then((res) => {
           this.all_discount_offers = res.data.data;
-          console.log("offer res ", res.data.data);
+          console.log("offer res ", this.all_discount_offers);
         })
         .catch((err) => {
           console.log("error offer ", err.response);
