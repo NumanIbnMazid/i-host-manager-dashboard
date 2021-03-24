@@ -141,14 +141,14 @@ export default {
     createInvoice(order) {
       let order_id = order.id;
       axios
-        .post("/restaurant_management/dashboard/order/create_invoice/", {
+        .post("/restaurant_management/dashboard/order/confirm_payment/", {
           order_id,
           payment_method: this.payMethod,
           cash_received: parseFloat(this.paidCash),
         })
         .then((res) => {
           if (res.data.status) {
-            this.$emit("emitAfterCreateInvoice", res.data.data);
+            this.$emit("emitAfterCollectPayments", res.data.data);
             this.printRecipt(res.data.data);
           }
         })

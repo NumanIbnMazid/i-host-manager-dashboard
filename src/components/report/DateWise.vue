@@ -52,6 +52,8 @@
       <vs-button class="m-2" color="danger" v-if="search" @click="resetFilter()"
         >Reset</vs-button
       >
+
+      <span class="float-right"><b>Total Amount:</b> {{totalAmount}}</span>
     </div>
 
     <vs-table class="p-0" ref="table" :data="orders">
@@ -62,7 +64,9 @@
         <th>Customer Name</th>
         <th>Waiter Name</th>
         <th>Price</th>
+        <th>Vat Amount</th>
         <th>Discount Price</th>
+        <th>Net Price</th>
         <th>Action</th>
       </template>
 
@@ -78,16 +82,25 @@
             <vs-td
               ><p>{{ dateFromat(tr.created_at) }}</p>
             </vs-td>
-            <vs-td><p>-</p> </vs-td>
-            <vs-td
-              ><p>{{ tr.order_info.waiter.name }}</p>
+            <vs-td class="text-left"
+              ><p>{{ tr.order_info.customer ? tr.order_info.customer.name : '-' }}</p>
+            </vs-td>
+            <vs-td class="text-left"
+              ><p>{{ tr.order_info.waiter ? tr.order_info.waiter.name : '' }}</p>
             </vs-td>
             <vs-td
               ><p>৳{{ tr.order_info.price.grand_total_price }}</p>
             </vs-td>
             <vs-td
+              ><p>৳{{ tr.order_info.price.tax_amount }}</p>
+            </vs-td>
+            <vs-td
               ><p>৳{{ tr.order_info.price.discount_amount }}</p>
             </vs-td>
+            <vs-td
+              ><p>৳{{ tr.order_info.price.payable_amount }}</p>
+            </vs-td>
+
             <vs-td>
               <!-- <vs-button @click="showDetailsInfo(tr.order_info)"
                 >Show Details</vs-button
@@ -99,10 +112,10 @@
       </template>
     </vs-table>
     <br />
-    <vs-pagination
+    <!-- <vs-pagination
       :total="Math.ceil(total / 10)"
       v-model="currentx"
-    ></vs-pagination>
+    ></vs-pagination> -->
 
     <!-- <ItemDetails
       :showOrder="showOrder"
@@ -143,6 +156,7 @@ export default {
     waiter: [],
     showOrder: [],
     showOrderDetailsPopup: false,
+    totalAmount: 0,
   }),
 
   methods: {
@@ -156,7 +170,7 @@ export default {
       });
       axios
         .post(
-          `/restaurant_management/dashboard/invoice_all_report/${this.restaurant_id}/?limit=100&offset=0`,
+          `/restaurant_management/dashboard/invoice_all_report/${this.restaurant_id}/?limit=2000&offset=0`,
           {
             start_date: moment(this.startDate).format("Y-M-D"),
             end_date: moment(this.endDate).format("Y-M-D"),
@@ -168,6 +182,7 @@ export default {
         .then((res) => {
           this.orders = res.data.data.results;
           this.total = res.data.data.total_order;
+          this.totalAmount = res.data.data.total_amaount
           console.log("this.orders ", this.orders);
         })
         .catch((err) => {
@@ -269,16 +284,16 @@ export default {
 </script>
 
 <style scoped>
-  td {
-    border-top: 10px solid #f8f8f8;
-    text-align: center;
-  }
-  th {
-    text-align: center !important;
-    background-color: #31314e;
-    color: #fff !important;
-  }
-  th .vs-table-text {
-    justify-content: center !important;
-  }
+td {
+  border-top: 10px solid #f8f8f8;
+  text-align: center;
+}
+th {
+  text-align: center !important;
+  background-color: #31314e;
+  color: #fff !important;
+}
+th .vs-table-text {
+  justify-content: center !important;
+}
 </style>

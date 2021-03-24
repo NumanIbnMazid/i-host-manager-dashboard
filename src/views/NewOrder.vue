@@ -1450,221 +1450,221 @@ export default {
 
 
 <style lang="scss" >
-  .order-item-list-table {
-    max-height: 50%;
-    overflow: scroll;
-  }
-  .item-qty > .vs-con-input > .vs-input--input {
-    text-align: center;
-  }
-  // .vs-input--input {
-  //   text-align: center;
-  // }
-  #data-list-thumb-view-alt {
-    .vs-con-table {
-      .product-name {
-        max-width: 23rem;
-      }
+.order-item-list-table {
+  max-height: 50%;
+  overflow: scroll;
+}
+.item-qty > .vs-con-input > .vs-input--input {
+  text-align: center;
+}
+// .vs-input--input {
+//   text-align: center;
+// }
+#data-list-thumb-view-alt {
+  .vs-con-table {
+    .product-name {
+      max-width: 23rem;
+    }
 
-      .vs-table--header {
+    .vs-table--header {
+      display: flex;
+      flex-wrap: wrap-reverse;
+      margin-left: 1.5rem;
+      margin-right: 1.5rem;
+      > span {
         display: flex;
-        flex-wrap: wrap-reverse;
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
-        > span {
-          display: flex;
-          flex-grow: 1;
-        }
-
-        .vs-table--search {
-          padding-top: 0;
-
-          .vs-table--search-input {
-            padding: 0.9rem 2.5rem;
-            font-size: 1rem;
-
-            & + i {
-              left: 1rem;
-            }
-
-            &:focus + i {
-              left: 1rem;
-            }
-          }
-        }
+        flex-grow: 1;
       }
 
-      .vs-table {
-        border-collapse: separate;
-        // border-spacing: 0 1.3rem;
-        // padding: 0 1rem;
+      .vs-table--search {
+        padding-top: 0;
 
-        tr {
-          box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-          td {
-            padding: 10px;
-            &:first-child {
-              border-top-left-radius: 0;
-              border-bottom-left-radius: 0;
-            }
-            &:last-child {
-              border-top-right-radius: 0;
-              border-bottom-right-radius: 0;
-            }
-            &.img-container {
-              // width: 1rem;
-              // background: #fff;
+        .vs-table--search-input {
+          padding: 0.9rem 2.5rem;
+          font-size: 1rem;
 
-              span {
-                display: flex;
-                justify-content: flex-start;
-              }
-
-              .product-img {
-                height: 50px;
-                width: 50px !important;
-              }
-            }
+          & + i {
+            left: 1rem;
           }
-          td.td-check {
-            padding: 20px !important;
+
+          &:focus + i {
+            left: 1rem;
           }
         }
-      }
-
-      .vs-table--thead {
-        th {
-          padding-top: 0;
-          padding-bottom: 0;
-
-          .vs-table-text {
-            text-transform: uppercase;
-            font-weight: 600;
-          }
-        }
-        th.td-check {
-          padding: 0 15px !important;
-        }
-        tr {
-          background: none;
-          box-shadow: none;
-        }
-      }
-
-      .vs-table--pagination {
-        justify-content: center;
       }
     }
-  }
 
-  .vs-sidebar {
-    z-index: 100000;
-  }
+    .vs-table {
+      border-collapse: separate;
+      // border-spacing: 0 1.3rem;
+      // padding: 0 1rem;
 
-  .sidebar-custom > .header-sidebar {
+      tr {
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+        td {
+          padding: 10px;
+          &:first-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+          }
+          &:last-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+          }
+          &.img-container {
+            // width: 1rem;
+            // background: #fff;
+
+            span {
+              display: flex;
+              justify-content: flex-start;
+            }
+
+            .product-img {
+              height: 50px;
+              width: 50px !important;
+            }
+          }
+        }
+        td.td-check {
+          padding: 20px !important;
+        }
+      }
+    }
+
+    .vs-table--thead {
+      th {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        .vs-table-text {
+          text-transform: uppercase;
+          font-weight: 600;
+        }
+      }
+      th.td-check {
+        padding: 0 15px !important;
+      }
+      tr {
+        background: none;
+        box-shadow: none;
+      }
+    }
+
+    .vs-table--pagination {
+      justify-content: center;
+    }
+  }
+}
+
+.vs-sidebar {
+  z-index: 100000;
+}
+
+.sidebar-custom > .header-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  h4 {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    width: 100%;
-    h4 {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      > button {
-        margin-left: 10px;
-      }
-    }
-  }
-
-  .footer-sidebar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     width: 100%;
     > button {
-      border: 0px solid rgba(0, 0, 0, 0) !important;
-      border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
-      border-radius: 0px !important;
+      margin-left: 10px;
     }
   }
+}
 
-  .sidebar-custom > .vs-sidebar-primary {
-    max-width: 400px !important;
+.footer-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  > button {
+    border: 0px solid rgba(0, 0, 0, 0) !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
+    border-radius: 0px !important;
   }
+}
 
-  // th:first-child .vs-table-text {
-  //   justify-content: center !important;
-  //   cursor: pointer;
-  // }
-  .vs-table--thead {
-    background-color: #32304e;
-    color: #fff;
+.sidebar-custom > .vs-sidebar-primary {
+  max-width: 400px !important;
+}
+
+// th:first-child .vs-table-text {
+//   justify-content: center !important;
+//   cursor: pointer;
+// }
+.vs-table--thead {
+  background-color: #32304e;
+  color: #fff;
+}
+
+.vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
+  padding: 10px 15px !important;
+}
+
+.product-img {
+  width: 150px !important;
+  // width: 100px !important;
+}
+
+.th .sort-th,
+th .vs-table-text {
+  justify-content: center !important;
+}
+
+.place-order {
+  position: fixed;
+  // top: 900px;
+  bottom: 10px;
+  width: 21.5% !important;
+
+  background: #f1f1f1;
+  // box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
+  //   inset 0px -3px 5px rgba(0, 0, 0, 0.38);
+  // border-radius: 15px;
+}
+
+// table card styles
+.table-card {
+  margin: 4px 0 4px 6px;
+  width: 99%;
+  max-height: 700px;
+  left: 1517px;
+  top: 258px;
+  // overflow: hidden;
+
+  background: #ffffff;
+  border: 1px solid #c4c4c4;
+  box-sizing: border-box;
+  border-radius: 9px;
+}
+
+.take-out-table-header {
+  overflow-x: hidden;
+}
+
+// restaurant table styles
+.restaurant-tables {
+  width: 89px;
+  height: 63px;
+  left: 1544px;
+  top: 283px;
+
+  background: #ffffff;
+  border: 2px solid #c4c4c4;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+
+  // table number styles
+  .table-no {
+    width: 56.97px;
+    height: 59px;
   }
-
-  .vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
-    padding: 10px 15px !important;
-  }
-
-  .product-img {
-    width: 150px !important;
-    // width: 100px !important;
-  }
-
-  .th .sort-th,
-  th .vs-table-text {
-    justify-content: center !important;
-  }
-
-  .place-order {
-    position: fixed;
-    // top: 900px;
-    bottom: 10px;
-    width: 21.5% !important;
-
-    background: #f1f1f1;
-    // box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
-    //   inset 0px -3px 5px rgba(0, 0, 0, 0.38);
-    // border-radius: 15px;
-  }
-
-  // table card styles
-  .table-card {
-    margin: 4px 0 4px 6px;
-    width: 99%;
-    max-height: 700px;
-    left: 1517px;
-    top: 258px;
-    // overflow: hidden;
-
-    background: #ffffff;
-    border: 1px solid #c4c4c4;
-    box-sizing: border-box;
-    border-radius: 9px;
-  }
-
-  .take-out-table-header {
-    overflow-x: hidden;
-  }
-
-  // restaurant table styles
-  .restaurant-tables {
-    width: 89px;
-    height: 63px;
-    left: 1544px;
-    top: 283px;
-
-    background: #ffffff;
-    border: 2px solid #c4c4c4;
-    box-sizing: border-box;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 5px;
-
-    // table number styles
-    .table-no {
-      width: 56.97px;
-      height: 59px;
-    }
-  }
+}
 </style>

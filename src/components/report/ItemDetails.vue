@@ -113,7 +113,12 @@
         </template>
 
         <template slot-scope="{ data }">
-          <vs-tr class="text-center" :key="i" v-for="(tr, i) in data">
+          <vs-tr
+            class="text-center"
+            :key="i"
+            v-for="(tr, i) in data"
+            v-show="tr.status != '4_CANCELLED'"
+          >
             <vs-td :data="tr.id">
               {{ tr.id }}
             </vs-td>
@@ -668,16 +673,16 @@ export default {
 </script>
 
 <style scoped>
-  td {
-    border-top: 10px solid #f8f8f8;
-    text-align: center;
-  }
-  th {
-    text-align: center !important;
-    background-color: #31314e;
-    color: #fff !important;
-  }
-  th .vs-table-text {
-    justify-content: center !important;
-  }
+td {
+  border-top: 10px solid #f8f8f8;
+  text-align: center;
+}
+th {
+  text-align: center !important;
+  background-color: #31314e;
+  color: #fff !important;
+}
+th .vs-table-text {
+  justify-content: center !important;
+}
 </style>
