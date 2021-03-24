@@ -79,6 +79,14 @@
                 <td class="font-semibold">Vat Registration No</td>
                 <td>{{ vat_registration_no }}</td>
               </tr>
+              <tr>
+                <td class="font-semibold">service charge applied?</td>
+                <td>{{ is_service_charge_apply }}</td>
+              </tr>
+              <tr>
+                <td class="font-semibold">vat charge applied?</td>
+                <td>{{ is_vat_charge_apply }}</td>
+              </tr>
             </table>
           </div>
         </div>
@@ -416,6 +424,41 @@
                 </div>
               </div>
 
+
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
+                <label for=""><small>Service charge apply</small></label>
+                <v-select
+                  icon-pack="feather"
+                  icon="icon-edit"
+                  label="service_charge_apply"
+                  v-model="is_service_charge_apply"
+                  class="w-full"
+                  :options="['yes', 'no']"
+                  v-validate="'required'"
+                />
+                  </div>
+              </div>
+
+
+              <div class="vx-row mb-6">
+                <div class="vx-col w-full">
+                  <label for=""><small>Vat charge apply</small></label>
+                  <v-select
+                    icon-pack="feather"
+                    icon="icon-edit"
+                    label="vat_charge_apply"
+                    v-model="is_vat_charge_apply"
+                    class="w-full"
+                    :options="['yes', 'no']"
+                    v-validate="'required'"
+                  />
+                </div>
+              </div>
+
+
+
+
               <div class="vx-row">
                 <div class="vx-col w-full flex">
                   <vs-button
@@ -466,6 +509,7 @@ export default {
     newLogo: "",
     logoPreview: "",
     service_charge_is_percentage: "",
+
     service_charge: "",
     tax_percentage: "",
     created_at: "",
@@ -489,6 +533,8 @@ export default {
     old_password: "",
     new_password: "",
     payment_type: "",
+    is_service_charge_apply: null,
+    is_vat_charge_apply: null,
     subscription: "",
     available: { waiter: 3, manager: 3, table: 20 },
 
@@ -542,6 +588,9 @@ export default {
             this.trade_licence_no = restaurant.trade_licence_no;
             this.vat_registration_no = restaurant.vat_registration_no;
             this.payment_type = restaurant.payment_type;
+            this.is_service_charge_apply = restaurant.is_service_charge_apply_in_original_food_price;
+            this.is_vat_charge_apply = restaurant.is_vat_charge_apply_in_original_food_price;
+
             JSON.setItem("resturent", JSON.stringify(restaurant));
           }
         })
@@ -565,6 +614,8 @@ export default {
         vat_registration_no: this.vat_registration_no,
         trade_licence_no: this.trade_licence_no,
         payment_type: payment_type,
+        is_service_charge_apply_in_original_food_price:this.is_service_charge_apply == 'yes' ? true : false,
+        is_vat_charge_apply_in_original_food_price:this.is_vat_charge_apply == 'yes' ? true : false,
       };
 
       if (this.logoPreview != "" && this.newLogo !== "") {
@@ -580,6 +631,8 @@ export default {
           trade_licence_no: this.trade_licence_no,
           payment_type: payment_type,
           logo: this.logoPreview,
+          is_service_charge_apply_in_original_food_price:this.is_service_charge_apply == 'yes' ? true : false,
+          is_vat_charge_apply_in_original_food_price:this.is_vat_charge_apply == 'yes' ? true : false,
         };
       }
       axios
