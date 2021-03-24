@@ -69,16 +69,20 @@
         <vs-th class="text-center">Name</vs-th>
         <vs-th class="text-center">Description</vs-th>
         <vs-th class="text-center">URL</vs-th>
-        <vs-th class="text-center">Start Date</vs-th>
-        <vs-th class="text-center">End Date</vs-th>
+        <vs-th class="text-center">Discount Schedule Type</vs-th>
+
+        <vs-th class="text-center">Start Date/Start Time</vs-th>
+        <vs-th class="text-center">End Date/End Time</vs-th>
         <vs-th class="text-center">Amount (%)</vs-th>
         <!-- <vs-th class="text-center">Restaurant</vs-th> -->
         <vs-th class="text-center">Clickable</vs-th>
         <vs-th class="text-center">Is Popup</vs-th>
         <vs-th class="text-center">Is Slider</vs-th>
         <vs-th class="text-center">Serial No</vs-th>
-        <vs-th class="text-center">Featured Food</vs-th>
-        <vs-th class="text-center">Discounted Foods</vs-th>
+
+
+                <vs-th class="text-center">Featured Food</vs-th>
+                <vs-th class="text-center">Discounted Foods</vs-th>
         <vs-th class="text-center">Action</vs-th>
       </template>
 
@@ -121,14 +125,32 @@
                 </p>
               </vx-tooltip>
             </vs-td>
-
-            <vs-td>
+            <vs-td class="text-center">
               <p class="product-name font-medium truncate">
-                {{ formattDate(tr.start_date) }}
+                {{ truncate(tr.discount_schedule_type) }}
               </p>
             </vs-td>
 
-            <vs-td>
+            <vs-td v-if="tr.discount_schedule_type == 'Time_wise'" class="text-center" >
+                <p class="product-name font-medium truncate">
+                  {{ formatTime(tr.discount_slot_start_time) }}
+                </p>
+              </vs-td>
+
+             <vs-td v-else>
+               <p class="product-name font-medium truncate">
+                 {{ formattDate(tr.start_date) }}
+               </p>
+             </vs-td>
+
+            <vs-td v-if="tr.discount_schedule_type == 'Time_wise'" class="text-center" >
+              <p class="product-name font-medium truncate">
+
+                {{ formatTime(tr.discount_slot_closing_time) }}
+              </p>
+            </vs-td>
+
+            <vs-td v-else>
               <p class="product-name font-medium truncate">
                 {{ formattDate(tr.end_date) }}
               </p>
@@ -137,12 +159,6 @@
             <vs-td class="text-center">
               <p class="product-name font-medium truncate">{{ tr.amount }}%</p>
             </vs-td>
-
-            <!-- <vs-td class="text-center">
-              <p class="product-name font-medium truncate">
-                {{ tr.restaurant }}
-              </p>
-            </vs-td> -->
 
             <vs-td class="text-center">
               <p class="product-name font-medium truncate">
@@ -167,6 +183,17 @@
                 {{ tr.serial_no }}
               </p>
             </vs-td>
+
+<!--            <vs-td class="text-center" >-->
+<!--              <p class="product-name font-medium truncate">-->
+<!--                {{ truncate(tr.discount_slot_start_time) }}-->
+<!--              </p>-->
+<!--            </vs-td>-->
+<!--            <vs-td class="text-center">-->
+<!--              <p class="product-name font-medium truncate">-->
+<!--                {{ truncate(tr.discount_slot_closing_time)}}-->
+<!--              </p>-->
+<!--            </vs-td>-->
 
             <vs-td class="text-center">
               <p class="product-name font-medium truncate">
@@ -288,31 +315,7 @@
           />
         </div>
 
-        <!-- start date field -->
-        <div class="w-full mt-2">
-          <label for="" class="vs-input--label">Start Date</label>
-          <datepicker
-            icon-pack="feather"
-            icon="icon-clock"
-            label="Start Date"
-            class="mt-2 w-full"
-            placeholder="Start Date"
-            v-model="newOffer.start_date"
-          ></datepicker>
-        </div>
 
-        <!-- end date field -->
-        <div class="w-full mt-2">
-          <label for="" class="vs-input--label">End Date</label>
-          <datepicker
-            icon-pack="feather"
-            icon="icon-clock"
-            label="End Date"
-            class="mt-2 w-full"
-            placeholder="End Date"
-            v-model="newOffer.end_date"
-          ></datepicker>
-        </div>
 
         <div class="w-full">
           <vs-input
@@ -392,7 +395,7 @@
           />
         </div>
 
-        <!-- 
+        <!--
         <div class="w-full">
           <vs-input
             icon-pack="feather"
@@ -414,6 +417,80 @@
             min="0"
             v-validate="'required'"
           />
+        </div>
+
+
+
+        <div class="mt-5 w-full">
+          <label for=""><small>Discount schedule type </small></label>
+          <v-select
+            icon-pack="feather"
+            icon="icon-edit"
+            label="name"
+            v-model="newOffer.discount_schedule_type"
+            class="w-full"
+            :options="scheduleType"
+            :resource="(scheduleType) => scheduleType.value"
+            v-validate="'required'"
+          />
+        </div>
+
+<!--        <div class="w-full">-->
+<!--          <vs-input-->
+<!--            v-if="newOffer.discount_schedule_type && newOffer.discount_schedule_type.value == 'date_wise' "-->
+<!--            icon-pack="feather"-->
+<!--            icon="icon-file-text  "-->
+<!--            label="date"-->
+<!--            v-model="newOffer.discount_slot_start_time"-->
+<!--            class="mt-5 w-full"-->
+<!--            type="date"-->
+<!--            v-validate="'required'"-->
+<!--          />-->
+<!--        </div>-->
+
+        <div class="w-full"  v-if="newOffer.discount_schedule_type && newOffer.discount_schedule_type.value == 'Time_wise'">
+          <vs-input
+            icon-pack="feather"
+            icon="icon-file-text"
+            label="Start time"
+            v-model="newOffer.discount_slot_start_time"
+            class="mt-5 w-full"
+            type="time"
+            v-validate="'required'"
+          />
+          <vs-input
+            icon-pack="feather"
+            icon="icon-file-text"
+            label="End time"
+            v-model="newOffer.discount_slot_closing_time"
+            class="mt-5 w-full"
+            type="time"
+            v-validate="'required'"
+          />
+        </div>
+
+
+        <!-- start date field -->
+        <div class="w-full mt-2" v-if="newOffer.discount_schedule_type && newOffer.discount_schedule_type.value == 'Date_wise'">
+          <label for="" class="vs-input--label">Start Date </label>
+          <datepicker
+            icon-pack="feather"
+            icon="icon-clock"
+            label="Start Date"
+            class="mt-2 w-full"
+            placeholder="Start Date"
+            v-model="newOffer.start_date"
+          ></datepicker>
+
+          <label for="" class="vs-input--label">End Date</label>
+          <datepicker
+            icon-pack="feather"
+            icon="icon-clock"
+            label="End Date"
+            class="mt-2 w-full"
+            placeholder="End Date"
+            v-model="newOffer.end_date"
+          ></datepicker>
         </div>
 
         <vs-button
@@ -448,6 +525,7 @@ export default {
       popupActive: false,
       discountOfferFormActionMethod: null,
       foods: [],
+      scheduleType: [{name:'Date Wise',value: 'Date_wise'},{name:'Time Wise',value:'Time_wise'}],
 
       newOffer: {
         id: null,
@@ -455,6 +533,9 @@ export default {
         image: null,
         name: null,
         description: null,
+        discount_schedule_type:null,
+        discount_slot_start_time:null,
+        discount_slot_closing_time:null,
         url: null,
         start_date: null,
         end_date: null,
@@ -485,7 +566,7 @@ export default {
         });
     },
 
-    // TODO: 177, 370 food id issue
+// TODO: 177, 370 food id issue
 
     // TODO: new discount offer add problem
     createNewDiscountOffer() {
@@ -507,6 +588,9 @@ export default {
           food: this.newOffer.food,
           food_id_list: this.newOffer.food_id_list,
           serial_no: this.newOffer.serial_no,
+          discount_schedule_type: this.newOffer.discount_schedule_type.value,
+          discount_slot_start_time: this.newOffer.discount_slot_start_time,
+          discount_slot_closing_time: this.newOffer.discount_slot_closing_time,
         })
         .then((res) => {
           if (res.data.status) {
@@ -546,6 +630,9 @@ export default {
       this.newOffer.url = offer.url;
       this.newOffer.start_date = offer.start_date;
       this.newOffer.end_date = offer.end_date;
+      this.newOffer.discount_schedule_type = offer.discount_schedule_type;
+      this.newOffer.discount_slot_start_time = offer.discount_slot_start_time;
+      this.newOffer.discount_slot_closing_time = offer.discount_slot_closing_time;
       this.newOffer.amount = offer.amount;
 
       // type casting boolean value to string coz of select input type
@@ -556,6 +643,8 @@ export default {
       this.newOffer.food = offer.food;
       this.newOffer.food_id_list = offer.food_detail_list.food_id_list;
       this.newOffer.serial_no = offer.serial_no;
+
+
       this.discountOfferFormActionMethod = this.updateDiscountOffer;
       this.popupActive = !this.popupActive;
     },
@@ -577,6 +666,9 @@ export default {
         food: this.newOffer.food,
         food_id_list: this.newOffer.food_id_list,
         serial_no: this.newOffer.serial_no,
+        discount_schedule_type: this.newOffer.discount_schedule_type.value,
+        discount_slot_start_time: this.newOffer.discount_slot_start_time,
+        discount_slot_closing_time: this.newOffer.discount_slot_closing_time,
       };
 
       if (this.newOffer.image) {
@@ -671,6 +763,10 @@ export default {
     formattDate(date) {
       return moment(date).format("YYYY-MM-DD");
     },
+    formatTime(time){
+      let md = "2021-01-01 "+time;
+      return moment(md).format("h:mm:ss a");
+    }
   },
   created() {
     this.getAllDiscountList();
