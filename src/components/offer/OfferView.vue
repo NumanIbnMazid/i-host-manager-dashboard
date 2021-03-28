@@ -94,6 +94,11 @@
                 {{ itemsPerPage * (currentPage - 1) + indextr + 1 }}
               </p>
             </vs-td>
+<!--            <vs-td>-->
+<!--              <p class="product-name font-medium truncate text-center">-->
+<!--                {{indextr+1}}-->
+<!--              </p>-->
+<!--            </vs-td>-->
 
             <vs-td class="img-container">
               <img :src="tr.image" class="product-img" />
@@ -422,7 +427,7 @@
 
 
         <div class="mt-5 w-full">
-          <label for=""><small>Discount schedule type </small></label>
+          <label for=""><small>Discount schedule type  </small></label>
           <v-select
             icon-pack="feather"
             icon="icon-edit"
@@ -435,7 +440,8 @@
           />
         </div>
 
-        <div class="w-full"  v-if="newOffer.discount_schedule_type && newOffer.discount_schedule_type.value == 'Time_wise'">
+
+        <div class="w-full"  v-if="newOffer.discount_schedule_type && newOffer.discount_schedule_type.value == 'Time_wise' || newOffer.discount_schedule_type == 'Time_wise' ">
           <vs-input
             icon-pack="feather"
             icon="icon-file-text"
@@ -458,7 +464,7 @@
 
 
         <!-- start date field -->
-        <div class="w-full mt-2" v-if="newOffer.discount_schedule_type && newOffer.discount_schedule_type.value == 'Date_wise'">
+        <div class="w-full mt-2" v-if="newOffer.discount_schedule_type && newOffer.discount_schedule_type.value == 'Date_wise' || newOffer.discount_schedule_type == 'Date_wise'">
           <label for="" class="vs-input--label">Start Date </label>
           <datepicker
             icon-pack="feather"
@@ -505,7 +511,9 @@ export default {
     return {
       resturent_id: localStorage.getItem("resturent_id"),
       itemsPerPage: 5,
-      currentPage: 5,
+      isMounted: false,
+
+      // currentPage: 1,
       limit: 10,
       offset: "0",
       all_discount_offers: { results: [] },
@@ -535,6 +543,14 @@ export default {
         serial_no: null,
       },
     };
+  },
+  computed: {
+    currentPage() {
+      if (this.isMounted) {
+        return this.$refs.table.currentx;
+      }
+      return 0;
+    },
   },
   methods: {
     getAllDiscountList() {
@@ -757,6 +773,9 @@ export default {
   },
   created() {
     this.getAllDiscountList();
+  },
+  mounted() {
+    this.isMounted = true;
   },
 };
 </script>

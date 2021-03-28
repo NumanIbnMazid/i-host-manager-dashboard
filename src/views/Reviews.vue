@@ -56,12 +56,22 @@
                 #{{ tr.order_no }}
               </p>
             </vs-td>
-
-            <vs-td>
+            <vs-td v-if="tr.customer_info.name == null">
               <p class="product-name font-medium truncate">
-                {{ tr.customer_info ? tr.customer_info.name : "-" }}
+                {{ "-" }}
               </p>
             </vs-td>
+            <vs-td v-else>
+              <p class="product-name font-medium truncate">
+                {{ tr.customer_info.name }}
+              </p>
+            </vs-td>
+
+<!--            <vs-td>-->
+<!--              <p class="product-name font-medium truncate">-->
+<!--                {{ tr.customer_info ? tr.customer_info.name : "-" }}-->
+<!--              </p>-->
+<!--            </vs-td>-->
             <vs-td>
               <p class="product-name font-medium truncate">
                 {{ tr.review_text }}
@@ -99,7 +109,9 @@ export default {
         .get(
           `/restaurant_management/dashboard/review_list/${this.resturent_id}/`
         )
-        .then((res) => (this.reviews = res.data.data))
+        .then((res) => (
+          this.reviews = res.data.data
+        ))
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);

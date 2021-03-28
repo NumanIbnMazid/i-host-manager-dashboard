@@ -1451,12 +1451,12 @@ export default {
             margin: 0;
             padding: 0;
         }
-        
+
         body {
             margin: 0;
             padding: 0;
         }
-        
+
         #invoice-POS {
             box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
             padding: 2mm;
@@ -1464,32 +1464,32 @@ export default {
             width: 44mm;
             background: #FFF;
         }
-        
+
         #invoice-POS ::selection {
             background: #f31544;
             color: #000;
         }
-        
+
         #invoice-POS ::moz-selection {
             background: #f31544;
             color: #000;
         }
-        
+
         #invoice-POS h1 {
             font-size: 1.5em;
             color: #222;
         }
-        
+
         #invoice-POS h2 {
             font-size: .9em;
         }
-        
+
         #invoice-POS h3 {
             font-size: 1.2em;
             font-weight: 300;
             line-height: 2em;
         }
-        
+
         #invoice-POS p {
             font-size: .7em;
             color: #000;
@@ -1500,85 +1500,85 @@ export default {
         #invoice-POS #bot {
             border-bottom: 1px solid #000;
         } */
-        
+
         #invoice-POS #top {
             min-height: 77px;
         }
-        
+
         #invoice-POS #bot {
             min-height: 50px;
         }
-        
+
         #invoice-POS #top .logo {
             height: 60px;
             width: 60px;
         }
-        
+
         #invoice-POS .info {
             display: block;
             margin-left: 0;
         }
-        
+
         #invoice-POS .title {
             float: right;
         }
-        
+
         #invoice-POS .title p {
             text-align: right;
         }
-        
+
         #invoice-POS table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         #invoice-POS .tabletitle {
             font-size: .7em;
             background: #EEE;
         }
-        
+
         #invoice-POS .service {
             border-bottom: 1px solid #EEE;
         }
-        
+
         #invoice-POS .item {
             width: 24mm;
         }
-        
+
         #invoice-POS .itemtext {
             font-size: .7em;
         }
-        
+
         #invoice-POS #legalcopy {
             margin-top: 5mm;
         }
-        
+
         .price>p,
         .price>h2,
         .payment>h2 {
             float: right;
             margin-right: 5px;
         }
-        
+
         .info {
             padding: 5px 0px;
         }
-        
+
         .info>p {
             text-align: center !important;
         }
-        
+
         .final {
             border: 1px solid #000;
             border-left: 0;
             border-right: 0;
         }
-        
+
         .itemname>p {
             margin-right: 5px;
         }
     </style>
-  
+
 </head>
 
 <body>
@@ -1679,7 +1679,7 @@ export default {
                             </h2>
                         </td>
                     </tr>
-                    
+
                 </table>
             </div>
             <div id="legalcopy">
@@ -1969,7 +1969,7 @@ export default {
         if (el.status == "2_ORDER_CONFIRMED") {
           itemDetail += `<tr class="service">
                         <td class="tableitem">
-                            <p class="itemtext">${el.food_name}</p> 
+                            <p class="itemtext">${el.food_name}</p>
                             ${
                               el.food_option.option_type.name != "single_type"
                                 ? el.food_option.name
@@ -1993,12 +1993,12 @@ export default {
             margin: 0;
             padding: 0;
         }
-        
+
         body {
             margin: 0;
             padding: 0;
         }
-        
+
         #invoice-POS {
             box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
             padding: 2mm;
@@ -2006,101 +2006,101 @@ export default {
             width: 44mm;
             background: #FFF;
         }
-        
+
         #invoice-POS ::selection {
             background: #f31544;
             color: #000;
         }
-        
+
         #invoice-POS ::moz-selection {
             background: #f31544;
             color: #000;
         }
-        
+
         #invoice-POS h1 {
             font-size: 1.5em;
             color: #222;
         }
-        
+
         #invoice-POS h2 {
             font-size: .9em;
         }
-        
+
         #invoice-POS h3 {
             font-size: 1.2em;
             font-weight: 300;
             line-height: 2em;
         }
-        
+
         #invoice-POS p {
             font-size: .7em;
             color: #000;
             line-height: 1.2em;
         }
-        
+
         #invoice-POS #top,
         #invoice-POS #mid,
         #invoice-POS #bot {
             /* Targets all id with 'col-' */
             border-bottom: 1px solid #000;
         }
-        
+
         #invoice-POS #top {
             min-height: 100px;
         }
         /* #invoice-POS #mid {
             min-height: 80px;
         } */
-        
+
         #invoice-POS #bot {
             min-height: 50px;
         }
-        
+
         #invoice-POS #top .logo {
             height: 60px;
             width: 60px;
-            
+
         }
-        
+
         #invoice-POS .info {
             display: block;
             margin-left: 0;
         }
-        
+
         #invoice-POS .title {
             float: right;
         }
-        
+
         #invoice-POS .title p {
             text-align: right;
         }
-        
+
         #invoice-POS table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         #invoice-POS .tabletitle {
             font-size: .7em;
             background: #EEE;
         }
-        
+
         #invoice-POS .service {
             border-bottom: 1px solid #EEE;
         }
-        
+
         #invoice-POS .item {
             width: 24mm;
         }
-        
+
         #invoice-POS .itemtext {
             font-size: .7em;
         }
-        
+
         #invoice-POS #legalcopy {
             margin-top: 5mm;
         }
-        
+
         .qty>p,
         .qty>h2 {
             float: right;
@@ -2169,14 +2169,16 @@ export default {
           console.log(err);
         });
     },
-    playSound() {
+    playSound()
+      {
       var audio = new Audio(
         "https://ihost-space.sgp1.digitaloceanspaces.com/music/ring.mp3"
       );
       audio.play();
     },
 
-    webSocket() {
+    webSocket()
+      {
       let updateSocket;
       let vm = this;
       function connectSocket() {
@@ -2189,7 +2191,8 @@ export default {
 
           if (res.data != vm.ordersData) {
             vm.orderDisburse(res.data);
-            // vm.playSound();
+
+            vm.playSound();
           }
 
           if (vm.varifyPopup) {
@@ -2203,7 +2206,7 @@ export default {
             vm.orderToServed = res.data.find(
               (order) => order.id == vm.orderToServed.id
             );
-            console.log("kk");
+            // console.log("kk");
           }
 
           // vm.queriedItems = res.list.length;
@@ -2223,7 +2226,8 @@ export default {
     },
   },
 
-  created() {
+  created()
+      {
     this.getTime();
     this.webSocket();
 

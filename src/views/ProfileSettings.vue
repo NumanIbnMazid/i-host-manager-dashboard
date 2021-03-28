@@ -1,6 +1,8 @@
 <template>
   <div>
+
     <vx-card :title="userInfo.first_name">
+      <vs-switch class="float-right" v-model="sound" icon-pack="feather" vs-icon-off="icon-bell" vs-icon-on="icon-check"  />
       <vs-tabs>
         <vs-tab label="Profile" icon-pack="feather" icon="icon-home">
           <div class="vx-row mt-5">
@@ -181,6 +183,8 @@ export default {
     return {
       staff_info: JSON.parse(localStorage.getItem("staff_info")),
       user: JSON.parse(localStorage.getItem("user")),
+      sound: false,
+      logoPreview: '',
 
       userInfo: {
         first_name: "",
@@ -211,6 +215,14 @@ export default {
       this.userInfo.shift_end = this.staff_info.shift_end;
       this.userInfo.nid = this.staff_info.nid;
     },
+
+    updateCurrImg(){
+
+    },
+
+    // soundControl(){
+    //   this.sound ? this.sound = false : this.sound = true
+    // }
   },
 
   created() {

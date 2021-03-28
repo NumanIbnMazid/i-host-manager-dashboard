@@ -58,6 +58,8 @@
         <vs-th>Name</vs-th>
         <vs-th>Category</vs-th>
         <vs-th>Price</vs-th>
+        <vs-th>Is available</vs-th>
+        <vs-th>Is vat applicable</vs-th>
         <vs-th class="text-center">Options</vs-th>
         <vs-th>Action</vs-th>
       </template>
@@ -87,6 +89,13 @@
             <vs-td>
               <p class="product-name font-medium truncate">{{ tr.price }}</p>
             </vs-td>
+            <vs-td>
+              <p class="product-name font-medium truncate">{{ tr.is_available }}</p>
+            </vs-td>
+            <vs-td>
+              <p class="product-name font-medium truncate">{{ tr.is_vat_applicable }}</p>
+            </vs-td>
+
 
             <vs-td class="text-center flex">
               <span v-for="(opt, i) in tr.food_options" :key="i">
@@ -223,6 +232,8 @@
                 </p>
               </td>
             </tr>
+
+
           </table>
         </div>
       </template>

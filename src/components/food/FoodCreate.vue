@@ -149,6 +149,46 @@
                     </li>
                   </ul>
                 </div>
+
+                <div class="ml-5">
+                  <label for="">
+                    <small>Is Available? </small>
+                  </label>
+                  <ul class="">
+                    <li>
+                      <vs-radio v-model="is_available" vs-value="2"
+                      >Yes</vs-radio
+                      >
+                    </li>
+                    <li>
+                      <vs-radio v-model="is_available" vs-value="3"
+                      >No</vs-radio
+                      >
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="ml-5">
+                  <label for="">
+                    <small>Is Vat Applicable? </small>
+                  </label>
+                  <ul class="">
+                    <li>
+                      <vs-radio v-model="is_vat_applicable" vs-value="4"
+                      >Yes</vs-radio
+                      >
+                    </li>
+                    <li>
+                      <vs-radio v-model="is_vat_applicable" vs-value="5"
+                      >No</vs-radio
+                      >
+                    </li>
+                  </ul>
+                </div>
+
+
+
+
               </div>
             </div>
           </div>
@@ -383,6 +423,8 @@ export default {
       image: "",
       is_top: "0",
       is_recommended: "false",
+      is_available: null,
+      is_vat_applicable: null,
       preview: "",
       category: "",
       food: "",
@@ -444,8 +486,8 @@ export default {
     },
 
     createFood() {
-      let formData = new FormData();
 
+      let formData = new FormData();
       formData.append("name", this.name);
       formData.append("restaurant", localStorage.getItem("resturent_id"));
       formData.append("category", this.category);
@@ -457,6 +499,9 @@ export default {
         "is_recommended",
         this.is_recommended == "false" ? false : true
       );
+
+      formData.append("is_available",this.is_available == "2" ? true : false);
+      formData.append("is_vat_applicable",this.is_vat_applicable == "4"? true : false);
 
       return new Promise((resolve, reject) => {
         axios
@@ -489,6 +534,9 @@ export default {
         "is_recommended",
         this.is_recommended == "false" ? false : true
       );
+      formData.append("is_available",this.is_available == "2" ? true : false);
+      formData.append("is_vat_applicable",this.is_vat_applicable == "4"? true : false);
+
 
       return new Promise((resolve, reject) => {
         axios

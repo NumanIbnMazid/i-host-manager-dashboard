@@ -109,6 +109,8 @@
           <vs-th class="text-center">Qty</vs-th>
           <vs-th class="text-center">Options</vs-th>
           <vs-th class="text-center">Price</vs-th>
+          <vs-th class="text-center">Total Price</vs-th>
+
           <vs-th class="text-center" v-if="!showUpdateBtn">Action</vs-th>
         </template>
 
@@ -150,6 +152,11 @@
             </vs-td>
             <vs-td :data="tr.food_option.price">
               ৳{{ tr.food_option.price }}
+            </vs-td>
+
+
+            <vs-td>
+              ৳{{ tr.food_option.price * tr.quantity }}
             </vs-td>
 
             <vs-td v-if="!showUpdateBtn">
@@ -414,12 +421,12 @@ export default {
             margin: 0;
             padding: 0;
         }
-        
+
         body {
             margin: 0;
             padding: 0;
         }
-        
+
         #invoice-POS {
             box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
             padding: 2mm;
@@ -427,32 +434,32 @@ export default {
             width: 44mm;
             background: #FFF;
         }
-        
+
         #invoice-POS ::selection {
             background: #f31544;
             color: #000;
         }
-        
+
         #invoice-POS ::moz-selection {
             background: #f31544;
             color: #000;
         }
-        
+
         #invoice-POS h1 {
             font-size: 1.5em;
             color: #222;
         }
-        
+
         #invoice-POS h2 {
             font-size: .9em;
         }
-        
+
         #invoice-POS h3 {
             font-size: 1.2em;
             font-weight: 300;
             line-height: 2em;
         }
-        
+
         #invoice-POS p {
             font-size: .7em;
             color: #000;
@@ -463,85 +470,85 @@ export default {
         #invoice-POS #bot {
             border-bottom: 1px solid #000;
         } */
-        
+
         #invoice-POS #top {
             min-height: 77px;
         }
-        
+
         #invoice-POS #bot {
             min-height: 50px;
         }
-        
+
         #invoice-POS #top .logo {
             height: 60px;
             width: 60px;
         }
-        
+
         #invoice-POS .info {
             display: block;
             margin-left: 0;
         }
-        
+
         #invoice-POS .title {
             float: right;
         }
-        
+
         #invoice-POS .title p {
             text-align: right;
         }
-        
+
         #invoice-POS table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         #invoice-POS .tabletitle {
             font-size: .7em;
             background: #EEE;
         }
-        
+
         #invoice-POS .service {
             border-bottom: 1px solid #EEE;
         }
-        
+
         #invoice-POS .item {
             width: 24mm;
         }
-        
+
         #invoice-POS .itemtext {
             font-size: .7em;
         }
-        
+
         #invoice-POS #legalcopy {
             margin-top: 5mm;
         }
-        
+
         .price>p,
         .price>h2,
         .payment>h2 {
             float: right;
             margin-right: 5px;
         }
-        
+
         .info {
             padding: 5px 0px;
         }
-        
+
         .info>p {
             text-align: center !important;
         }
-        
+
         .final {
             border: 1px solid #000;
             border-left: 0;
             border-right: 0;
         }
-        
+
         .itemname>p {
             margin-right: 5px;
         }
     </style>
-  
+
 </head>
 
 <body>
