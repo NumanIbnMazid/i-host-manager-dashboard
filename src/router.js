@@ -153,7 +153,13 @@ const router = new Router({
                     name: "reviews",
                     component: () =>
                         import ("@/views/Reviews.vue")
-                }
+                },
+              {
+                path: "/promo_code",
+                name: "promo_code",
+                component: () =>
+                  import ("@/views/Promo_code.vue")
+              }
             ]
         },
         {
