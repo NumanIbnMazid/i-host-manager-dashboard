@@ -625,6 +625,7 @@ export default {
     },
 
     updateDiscountOfferGo(offer) {
+
       console.log("offer ", offer);
       this.newOffer.id = offer.id;
       this.newOffer.logoPreview = offer.image;

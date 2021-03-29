@@ -46,6 +46,7 @@ export default [{
         slug: "offer",
         icon: "ShoppingBagIcon"
     },
+
     {
         url: "/notificaiton",
         name: "Notification",
@@ -75,5 +76,11 @@ export default [{
         name: "Take Away Order",
         slug: "takeawayorder",
         icon: "LogOutIcon"
-    }
+    },
+  {
+    url: "/promo_code",
+    name: "Promo_code",
+    slug: "promo_code",
+    icon: "ShoppingBagIcon"
+  },
 ];
