@@ -3,6 +3,19 @@
     <!-- restaurent info -->
     <vx-card class="mb-base" v-show="!showEditField">
       <!-- restaurent name -->
+      <div class="float-right">
+        <span>Notification Sound</span>
+        <br />
+        <vs-switch
+          class="float-right"
+          v-model="sound"
+          icon-pack="feather"
+          vs-icon-off="icon-bell"
+          vs-icon-on="icon-check"
+          @click.stop="controlNotification"
+        />
+      </div>
+
       <h3 class="mb-4 pb-4">{{ resturent.name }}</h3>
 
       <div class="vx-row">
@@ -424,22 +437,20 @@
                 </div>
               </div>
 
-
               <div class="vx-row mb-6">
                 <div class="vx-col w-full">
-                <label for=""><small>Service charge apply</small></label>
-                <v-select
-                  icon-pack="feather"
-                  icon="icon-edit"
-                  label="service_charge_apply"
-                  v-model="is_service_charge_apply"
-                  class="w-full"
-                  :options="['yes', 'no']"
-                  v-validate="'required'"
-                />
-                  </div>
+                  <label for=""><small>Service charge apply</small></label>
+                  <v-select
+                    icon-pack="feather"
+                    icon="icon-edit"
+                    label="service_charge_apply"
+                    v-model="is_service_charge_apply"
+                    class="w-full"
+                    :options="['yes', 'no']"
+                    v-validate="'required'"
+                  />
+                </div>
               </div>
-
 
               <div class="vx-row mb-6">
                 <div class="vx-col w-full">
@@ -455,9 +466,6 @@
                   />
                 </div>
               </div>
-
-
-
 
               <div class="vx-row">
                 <div class="vx-col w-full flex">
@@ -539,7 +547,18 @@ export default {
     available: { waiter: 3, manager: 3, table: 20 },
 
     payments: [],
+
+    sound: false,
   }),
+
+  // watch: {
+  //   sound: function (val) {
+  //     console.log(val);
+  //     // if (val == false) {
+
+  //     // }
+  //   },
+  // },
 
   methods: {
     updateCurrImg(input) {
@@ -588,8 +607,10 @@ export default {
             this.trade_licence_no = restaurant.trade_licence_no;
             this.vat_registration_no = restaurant.vat_registration_no;
             this.payment_type = restaurant.payment_type;
-            this.is_service_charge_apply = restaurant.is_service_charge_apply_in_original_food_price;
-            this.is_vat_charge_apply = restaurant.is_vat_charge_apply_in_original_food_price;
+            this.is_service_charge_apply =
+              restaurant.is_service_charge_apply_in_original_food_price;
+            this.is_vat_charge_apply =
+              restaurant.is_vat_charge_apply_in_original_food_price;
 
             JSON.setItem("resturent", JSON.stringify(restaurant));
           }
@@ -614,8 +635,10 @@ export default {
         vat_registration_no: this.vat_registration_no,
         trade_licence_no: this.trade_licence_no,
         payment_type: payment_type,
-        is_service_charge_apply_in_original_food_price:this.is_service_charge_apply == 'yes' ? true : false,
-        is_vat_charge_apply_in_original_food_price:this.is_vat_charge_apply == 'yes' ? true : false,
+        is_service_charge_apply_in_original_food_price:
+          this.is_service_charge_apply == "yes" ? true : false,
+        is_vat_charge_apply_in_original_food_price:
+          this.is_vat_charge_apply == "yes" ? true : false,
       };
 
       if (this.logoPreview != "" && this.newLogo !== "") {
@@ -631,8 +654,10 @@ export default {
           trade_licence_no: this.trade_licence_no,
           payment_type: payment_type,
           logo: this.logoPreview,
-          is_service_charge_apply_in_original_food_price:this.is_service_charge_apply == 'yes' ? true : false,
-          is_vat_charge_apply_in_original_food_price:this.is_vat_charge_apply == 'yes' ? true : false,
+          is_service_charge_apply_in_original_food_price:
+            this.is_service_charge_apply == "yes" ? true : false,
+          is_vat_charge_apply_in_original_food_price:
+            this.is_vat_charge_apply == "yes" ? true : false,
         };
       }
       axios
@@ -703,12 +728,55 @@ export default {
           this.checkError(err);
         });
     },
+
+    controlNotification() {
+      let theNotification = localStorage.getItem("notification");
+      if (theNotification != null) {
+        if (theNotification == "true") {
+          this.sound = false;
+          if (this.sound == false) {
+            localStorage.setItem("notification", "false");
+          }
+        }
+
+        if (theNotification == "false") {
+          this.sound = true;
+          if (this.sound == true) {
+            localStorage.setItem("notification", "true");
+          }
+        }
+      } else {
+        this.sound = true;
+        if (this.sound == true) {
+          localStorage.setItem("notification", "true");
+        }
+      }
+
+      location.reload();
+    },
+
+    checkNotification() {
+      let theNotification = localStorage.getItem("notification");
+      console.log(theNotification);
+      if (theNotification != null) {
+        if (theNotification == "true") {
+          this.sound = true;
+        }
+
+        if (theNotification == "false") {
+          this.sound = false;
+        }
+      } else {
+        this.sound = false;
+      }
+    },
   },
 
   created() {
     this.getRestaurant();
     this.getAllPaymentsOptions();
     this.usageLeft();
+    this.checkNotification();
   },
 };
 </script>

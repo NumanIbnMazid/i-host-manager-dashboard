@@ -2169,16 +2169,14 @@ export default {
           console.log(err);
         });
     },
-    playSound()
-      {
+    playSound() {
       var audio = new Audio(
         "https://ihost-space.sgp1.digitaloceanspaces.com/music/ring.mp3"
       );
       audio.play();
     },
 
-    webSocket()
-      {
+    webSocket() {
       let updateSocket;
       let vm = this;
       function connectSocket() {
@@ -2191,15 +2189,17 @@ export default {
 
           if (res.data != vm.ordersData) {
             vm.orderDisburse(res.data);
-
-            vm.playSound();
+            let theNotification = localStorage.getItem("notification");
+            // if (theNotification == true) {
+            //   console.log("check notification:", theNotification);
+              vm.playSound();
+            // }
           }
 
           if (vm.varifyPopup) {
             vm.orderToVarify = res.data.find(
               (order) => order.id == vm.orderToVarify.id
             );
-            console.log("jj");
           }
 
           if (vm.markAsServedPopup) {
@@ -2226,8 +2226,7 @@ export default {
     },
   },
 
-  created()
-      {
+  created() {
     this.getTime();
     this.webSocket();
 

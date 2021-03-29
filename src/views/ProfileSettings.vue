@@ -2,7 +2,6 @@
   <div>
 
     <vx-card :title="userInfo.first_name">
-      <vs-switch class="float-right" v-model="sound" icon-pack="feather" vs-icon-off="icon-bell" vs-icon-on="icon-check"  />
       <vs-tabs>
         <vs-tab label="Profile" icon-pack="feather" icon="icon-home">
           <div class="vx-row mt-5">
