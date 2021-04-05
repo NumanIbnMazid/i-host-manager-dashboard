@@ -1,122 +1,36 @@
 <template>
   <div>
-    <vs-table :data="therOrder.ordered_items">
-      <template slot="thead">
-        <th class="text-left bg-grey">Sl.</th>
-        <th class="text-left bg-grey">Name</th>
-        <th class="text-center bg-grey">Quantity</th>
-        <th class="text-right bg-grey">Price</th>
-      </template>
-
+    <vs-table :data="therOrderForInvoice.ordered_items">
       <template slot-scope="{ data }">
-        <vs-tr class="text-left" :key="i" v-for="(tr, i) in data">
-          <vs-td>
-            {{ i + 1 }}
-          </vs-td>
-
-          <vs-td class="text-left" :data="tr.food_name">
-            {{ tr.food_name }}
-            <span
-              v-if="tr.food_option.option_type.name != 'single_type'"
-              class="text-sm"
-            >
-              ({{ tr.food_option.option_type.name }}-{{ tr.food_option.name }})
-            </span>
-            <br />
-            <small>
-              <i class="" v-for="(extra, i) in tr.food_extra" :key="i">
-                {{ extra.name }} {{ tr.food_extra.length == i + 1 ? "" : "," }}
-              </i>
-            </small>
-          </vs-td>
-
-          <vs-td class="text-center" :data="tr.quantity">
-            {{ tr.quantity }}
-          </vs-td>
-
-          <vs-td class="text-right" :data="tr.price"> ৳{{ tr.price }} </vs-td>
-        </vs-tr>
-        <vs-tr class="bg-grey-light font-bold">
-          <vs-td colspan="3" class="text-right">Total:</vs-td>
-          <vs-td class="text-right"> ৳{{ therOrder.price.total_price }} </vs-td>
-        </vs-tr>
-        <vs-tr class="bg-grey-light font-bold">
-          <vs-td colspan="3" class="text-right">Service Charge(+):</vs-td>
-          <vs-td class="text-right">
-            ৳{{ therOrder.price.service_charge }}
-          </vs-td>
-        </vs-tr>
-        <vs-tr class="bg-grey-light font-bold">
-          <vs-td colspan="3" class="text-right"
-            >VAT({{ therOrder.price.tax_percentage }})(+):</vs-td
-          >
-          <vs-td class="text-right"> ৳{{ therOrder.price.tax_amount }} </vs-td>
-        </vs-tr>
-        <vs-tr class="bg-hard font-bold">
-          <vs-td colspan="3" class="text-right">Net Total:</vs-td>
-          <vs-td class="text-right">
-            ৳{{ therOrder.price.grand_total_price }}
-          </vs-td>
-        </vs-tr>
-        <vs-tr class="bg-grey-light font-bold">
-          <vs-td colspan="3" class="text-right">Discount(-):</vs-td>
-          <vs-td class="text-right">
-            ৳{{ therOrder.price.discount_amount }}
-          </vs-td>
-        </vs-tr>
-        <vs-tr class="bg-dark text-white font-bold">
-          <vs-td colspan="3" class="text-right">Grand Total:</vs-td>
-          <vs-td class="text-right">
-            ৳{{ therOrder.price.payable_amount }}
-          </vs-td>
-        </vs-tr>
-        <vs-tr v-if="payMethod == 2" class="bg-white font-bold">
-          <vs-td colspan="3" class="text-right">Paid Cash:</vs-td>
+        <vs-tr class="bg-white font-bold">
+          <vs-td colspan="3" class="text-right">Force Discount Amount:</vs-td>
           <vs-td class="text-right pr-0">
-            ৳
-            <input
-              type="text"
-              class="text-right p-1 rounded text-dark font-bold"
-              style="width: 60px; border: 1px solid #ddd"
-              v-model="paidCash"
-              @focus="$event.target.select()"
+
+            <vs-input
+              icon-pack="feather"
+              icon="icon-dollar-sign"
+              class="mt-5 w-full"
+              type="number"
+              v-model="force_discount_amount"
+              min="0"
+              v-validate="'required'"
             />
           </vs-td>
         </vs-tr>
-        <vs-tr v-if="payMethod == 2" class="bg-white font-bold">
-          <vs-td colspan="3" class="text-right">Change Cash:</vs-td>
-          <vs-td class="text-right">
-            ৳
-            {{
-              paidCash > therOrder.price.payable_amount
-                ? (paidCash - therOrder.price.payable_amount).toFixed(2)
-                : 0
-            }}
-          </vs-td>
-        </vs-tr>
+      <vs-tr class="bg-white font-bold">
+        <vs-td colspan="3" class="text-right">Discount Percentage:</vs-td>
+
+            <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage" vs-value="true">Yes</vs-radio>
+            <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage" vs-value="false">No</vs-radio>
+
+      </vs-tr>
+
       </template>
     </vs-table>
-    <div>
-      <h4 class="text-grey-dark pl-2 m-0">Pay By:</h4>
-      <ul class="centerx slect-type mx-auto">
-        <li
-          class="float-left p-2 pb-0"
-          v-for="(paym, i) in resturent.payment_type"
-          :key="i"
-        >
-          <vs-radio
-            v-model="payMethod"
-            :vs-value="paym.id"
-            name="payment_method"
-            >{{ paym.name }}</vs-radio
-          >
-        </li>
-      </ul>
-    </div>
     <vs-button
       class="float-right"
       color="success"
-      @click="createInvoice(therOrder)"
+      @click="createInvoice(therOrderForInvoice)"
       >Print</vs-button
     >
 
@@ -128,29 +42,66 @@
 <script>
 import axios from "@/axios.js";
 import moment from "moment";
+import vSelect from "vue-select";
+import Datepicker from "vuejs-datepicker";
+
 
 export default {
-  props: ["therOrder"],
+  props: ["therOrderForInvoice"],
+  components: {
+    vSelect,
+  },
+
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
     resturent: JSON.parse(localStorage.getItem("resturent")),
     paidCash: 0,
     payMethod: 2,
+    force_discount_amount: null,
+    discount_amount_is_percentage: null,
+
   }),
   methods: {
+
+    boolean_conversion(discount_amount_is_percentage)
+    {
+      return discount_amount_is_percentage == 'true';
+
+    },
+
     createInvoice(order) {
+
       let order_id = order.id;
+      const body = {
+
+        force_discount_amount: parseInt(this.force_discount_amount),
+        discount_amount_is_percentage: this.boolean_conversion(this.discount_amount_is_percentage)
+      };
+
       axios
-        .post("/restaurant_management/dashboard/order/confirm_payment/", {
-          order_id,
-          payment_method: this.payMethod,
-          cash_received: parseFloat(this.paidCash),
-        })
+        .post(
+          `/restaurant_management/dashboard/force_discount/${order_id}`,
+          body
+        )
         .then((res) => {
-          if (res.data.status) {
-            this.$emit("emitAfterCollectPayments", res.data.data);
-            this.printRecipt(res.data.data);
-          }
+
+              axios
+                .post("/restaurant_management/dashboard/order/create_invoice/", {
+                  order_id,
+                })
+                .then((res) => {
+                  if (res.data.status) {
+
+                    this.printRecipt(res.data.data);
+                    this.$emit("emitAfterCollectInvoices", res.data.data);
+
+                  }
+                })
+                .catch((err) => {
+                  this.showActionMessage("error", err);
+                  this.checkError(err);
+                });
+
         })
         .catch((err) => {
           this.showActionMessage("error", err);
@@ -419,24 +370,6 @@ export default {
                         <td></td>
                         <td class="payment">
                             <h2>(-) ${order.price.discount_amount}/-</h2>
-                        </td>
-                    </tr>
-                     <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>Cash Received</h2>
-                        </td>
-                        <td></td>
-                        <td class="payment">
-                            <h2>(-) ${order.price.cash_received}/-</h2>
-                        </td>
-                    </tr>
-                      <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>Changed Amount</h2>
-                        </td>
-                        <td></td>
-                        <td class="payment">
-                            <h2>(-) ${order.price.change_amount}/-</h2>
                         </td>
                     </tr>
                     <tr class="tabletitle final">

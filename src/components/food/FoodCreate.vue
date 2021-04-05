@@ -100,6 +100,17 @@
               />
             </div>
 
+            <div class="w-full mt-5">
+              <label for=""><small>Discount</small></label>
+              <v-select
+                label="name"
+                class="w-full"
+                v-model="discount"
+                :options="allDiscounts"
+                :reduce="(allDiscounts) => allDiscounts.id"
+              />
+            </div>
+
             <div class="w-full">
               <vs-input
                 label="Description"
@@ -417,16 +428,19 @@ export default {
   },
   data() {
     return {
+
+      resturent_id: localStorage.getItem("resturent_id"),
       name: "",
       description: "",
       ingredients: "",
       image: "",
       is_top: "0",
       is_recommended: "false",
-      is_available: null,
-      is_vat_applicable: null,
+      is_available: "2",
+      is_vat_applicable: "4",
       preview: "",
       category: "",
+      discount: "",
       food: "",
       is_single: "true",
       single_price: 0,
@@ -447,6 +461,7 @@ export default {
       optionsTypes: [],
       extrasTypes: [],
       allcategorys: [],
+      allDiscounts: [],
     };
   },
   methods: {
@@ -491,6 +506,7 @@ export default {
       formData.append("name", this.name);
       formData.append("restaurant", localStorage.getItem("resturent_id"));
       formData.append("category", this.category);
+      formData.append("discount", this.discount);
       formData.append("ingredients", this.ingredients);
       formData.append("description", this.description);
       formData.append("image", this.image);
@@ -511,7 +527,8 @@ export default {
             },
           })
           .then((res) => {
-            this.food = res.data.data;
+            this.food = res.data.data
+            console.log("created",this.food);
             if (res.data.status) {
               resolve(true);
             } else {
@@ -526,6 +543,7 @@ export default {
       formData.append("name", this.name);
       formData.append("restaurant", localStorage.getItem("resturent_id"));
       formData.append("category", this.category);
+      formData.append("discount", this.discount);
       formData.append("ingredients", this.ingredients);
       formData.append("description", this.description);
       formData.append("image", this.image);
@@ -693,6 +711,18 @@ export default {
           console.log(err);
         });
     },
+    getDiscount()
+    {
+      axios
+        .get(`restaurant_management/dashboard/restaurant/${this.resturent_id}/discount_list/`)
+        .then((res) => {
+          this.allDiscounts = res.data.data.results;
+          console.log("all_discount",this.allDiscounts);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
 
     /** Get all option type */
     getAllOptionsType() {
@@ -723,6 +753,7 @@ export default {
 
   created() {
     this.getCatgory();
+    this.getDiscount();
     this.getAllOptionsType();
     this.getAllExtrasType();
   },

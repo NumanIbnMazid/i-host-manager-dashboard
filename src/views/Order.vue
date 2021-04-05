@@ -240,8 +240,20 @@
                 checkAllServed(order.ordered_items)
               "
               @click="createInvoice(order)"
-              >Create Invoice</vs-button
-            >
+              >Create Invoice
+            </vs-button>
+
+
+<!--            <vs-button-->
+<!--              class="ml-2 bg-ihostm"-->
+<!--              v-if="-->
+<!--                order.status &&-->
+<!--                order.status == '3_IN_TABLE' &&-->
+<!--                checkAllServed(order.ordered_items)-->
+<!--              "-->
+<!--              @click="createInvoice(order)"-->
+<!--            >Create Invoice-->
+<!--            </vs-button>-->
 
             <vs-button
               class="ml-2 bg-gn"
@@ -1040,6 +1052,16 @@
         @emitAfterCollectPayments="afterCollectPayments"
       ></CollectPayments>
     </vs-popup>
+
+
+    <vs-popup title="Create Invoice Preview" :active.sync="collectInvoiceShow">
+      <CollectInvoices
+        :therOrderForInvoice="collectInvoicesOrder"
+        @emitAfterCollectInvoices = "afterCollectInvoices"
+>
+
+      </CollectInvoices>
+    </vs-popup>
     <!-- Please dont' touch my below  code 😡😡😡😡-->
     <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
   </div>
@@ -1053,6 +1075,7 @@ import axios from "@/axios.js";
 import moment from "moment";
 import ChangeTimeDurationDropdownVue from "../components/ChangeTimeDurationDropdown.vue";
 import CollectPayments from "../components/order/CollectPayments";
+import CollectInvoices from "../components/order/CollectInvoices";
 // import { mapGetters } from "vuex";
 
 export default {
@@ -1061,6 +1084,7 @@ export default {
     VxTimeline,
     "v-select": vSelect,
     CollectPayments,
+    CollectInvoices,
   },
   //sabbir
   data: () => ({
@@ -1095,7 +1119,9 @@ export default {
     selectedFoodExtras: [],
 
     collectPaymentsShow: false,
+    collectInvoiceShow: false,
     collectPaymentsOrder: "",
+    collectInvoicesOrder: "",
   }),
 
   watch: {
@@ -1385,26 +1411,33 @@ export default {
         this.showActionMessage("error", "Please select food!");
       }
     },
-
-    createInvoice(order) {
-      let order_id = order.id;
-      axios
-        .post("/restaurant_management/dashboard/order/create_invoice/", {
-          order_id,
-        })
-        .then((res) => {
-          if (res.data.status) {
-            this.ordersData = this.ordersData.map((order) =>
-              order.id === order_id ? { ...res.data.data } : order
-            );
-            this.printRecipt(res.data.data);
-          }
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err);
-          this.checkError(err);
-        });
+    createInvoice(order)
+    {
+      // this.collectPaymentsShow = true;
+      this.collectInvoiceShow = true;
+      this.collectInvoicesOrder = order;
+      // console.log("clicking on the create invoice portion");
     },
+
+    // createInvoice(order) {
+    //   let order_id = order.id;
+    //   axios
+    //     .post("/restaurant_management/dashboard/order/create_invoice/", {
+    //       order_id,
+    //     })
+    //     .then((res) => {
+    //       if (res.data.status) {
+    //         this.ordersData = this.ordersData.map((order) =>
+    //           order.id === order_id ? { ...res.data.data } : order
+    //         );
+    //         this.printRecipt(res.data.data);
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       this.showActionMessage("error", err);
+    //       this.checkError(err);
+    //     });
+    // },
 
     printRecipt(order) {
       // console.log(order);
@@ -1728,6 +1761,13 @@ export default {
       );
       this.collectPaymentsShow = false;
     },
+    afterCollectInvoices(changedOrder){
+      let order_id = changedOrder.id;
+      this.ordersData = this.ordersData.map((order) =>
+        order.id === order_id ? { ...changedOrder } : order
+      );
+      this.collectInvoiceShow = false;
+    },
 
     cancelOrderItem(order_id, item_id) {
       axios
@@ -1935,6 +1975,7 @@ export default {
       ];
 
       switch (status) {
+
         case "0_ORDER_INITIALIZED":
           return pending;
         case "1_ORDER_PLACED":

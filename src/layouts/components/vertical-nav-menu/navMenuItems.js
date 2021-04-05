@@ -53,6 +53,12 @@ export default [{
         slug: "notification",
         icon: "MessageCircleIcon"
     },
+   {
+    url: "/short_report",
+    name: "Short Report",
+    slug: "shortReport",
+    icon: "BarChart2Icon"
+    },
     {
         url: "/report",
         name: "Report",
@@ -79,7 +85,7 @@ export default [{
     },
   {
     url: "/promo_code",
-    name: "Promo_code",
+    name: "Promo Code",
     slug: "promo_code",
     icon: "ShoppingBagIcon"
   },

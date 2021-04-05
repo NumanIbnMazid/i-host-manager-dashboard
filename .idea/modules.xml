@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../full-version/full-version/.idea/full-version.iml" filepath="$PROJECT_DIR$/../full-version/full-version/.idea/full-version.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/i-host-v2-manager.iml" filepath="$PROJECT_DIR$/.idea/i-host-v2-manager.iml" />
     </modules>
   </component>

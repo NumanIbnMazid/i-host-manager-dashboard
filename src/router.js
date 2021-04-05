@@ -117,6 +117,12 @@ const router = new Router({
                         import ("./views/Report.vue"),
                     beforeEnter: requireAuth
                 },
+              {
+                path: "/short_report",
+                name: "short_review",
+                component: () =>
+                  import ("@/views/ShortReview.vue"),
+              },
                 {
                     path: "/report/waiter-wise",
                     name: "WaiterReport",
@@ -160,6 +166,7 @@ const router = new Router({
                 component: () =>
                   import ("@/views/Promo_code.vue")
               }
+
             ]
         },
         {

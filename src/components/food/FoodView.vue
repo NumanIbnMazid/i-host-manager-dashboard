@@ -58,6 +58,8 @@
         <vs-th>Name</vs-th>
         <vs-th>Category</vs-th>
         <vs-th>Price</vs-th>
+        <vs-th>Discount</vs-th>
+
         <vs-th>Is available</vs-th>
         <vs-th>Is vat applicable</vs-th>
         <vs-th class="text-center">Options</vs-th>
@@ -88,6 +90,13 @@
 
             <vs-td>
               <p class="product-name font-medium truncate">{{ tr.price }}</p>
+            </vs-td>
+            <vs-td v-if="tr.discount_details.name == null">
+              <p class="product-name font-medium truncate">{{"-"}}</p>
+            </vs-td>
+            <vs-td v-else>
+              <p class="product-name font-medium truncate">{{ tr.discount_details.name }}</p>
+
             </vs-td>
             <vs-td>
               <p class="product-name font-medium truncate">{{ tr.is_available }}</p>
@@ -376,7 +385,7 @@ export default {
           `restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
         )
         .then((res) => {
-          console.log("food ", res);
+          console.log("food ", res.data.data);
           this.foods = res.data.data;
         })
         .catch((err) => {

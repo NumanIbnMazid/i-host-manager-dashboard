@@ -100,6 +100,18 @@
               />
             </div>
 
+            <div class="w-full mt-5">
+              <label for=""><small>Discount</small></label>
+              <v-select
+                label="name"
+                class="w-full"
+                v-model="discount"
+                :options="allDiscounts"
+                :reduce="(allDiscounts) => allDiscounts.id"
+
+              />
+            </div>
+
             <div class="w-full">
               <vs-input
                 label="Description"
@@ -428,6 +440,8 @@ export default {
   },
   data() {
     return {
+      resturent_id: localStorage.getItem("resturent_id"),
+
       id: null,
       name: "",
       description: "",
@@ -440,6 +454,7 @@ export default {
       is_available: null,
       is_vat_applicable: null,
       category: "",
+      discount: "",
       food: {},
       is_single: "yes",
       single_price: 0,
@@ -460,6 +475,8 @@ export default {
       optionsTypes: [],
       extrasTypes: [],
       allcategorys: [],
+      allDiscounts: [],
+
     };
   },
   methods: {
@@ -494,18 +511,19 @@ export default {
       axios
         .get(`restaurant_management/dashboard/food/${this.$route.params.id}/`)
         .then((res) => {
-          console.log(res);
+          console.log("get_food",res.data.data);
           let food = res.data.data;
           this.id = food.id;
           this.name = food.name;
           this.category = food.category.id;
+          this.discount = food.discount_details.id;
           this.ingredients = food.ingredients;
           this.description = food.description;
           this.preview = food.image;
           this.is_top = food.is_top ? "1" : "0";
           this.is_recommended = food.is_recommended ? "true" : "false";
-          this.is_available = food.is_available == "true" ? "2" : "3";
-          this.is_vat_applicable = food.is_vat_applicable == "true" ? "4" : "5"
+          this.is_available = food.is_available == true ? "2" : "3";
+          this.is_vat_applicable = food.is_vat_applicable == true ? "4" : "5"
 
 
           this.is_single =
@@ -530,6 +548,7 @@ export default {
       formData.append("name", this.name);
       formData.append("restaurant", localStorage.getItem("resturent_id"));
       formData.append("category", this.category);
+      formData.append("discount",this.discount);
       formData.append("ingredients", this.ingredients);
       formData.append("description", this.description);
       if (this.image) {
@@ -707,6 +726,20 @@ export default {
           console.log(err);
         });
     },
+    getDiscount()
+    {
+      axios
+        .get(`restaurant_management/dashboard/restaurant/${this.resturent_id}/discount_list/`)
+        .then((res) => {
+          console.log(res);
+          this.allDiscounts = res.data.data.results;
+          console.log("all_discount_list",this.allDiscounts);
+
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
 
     /** Get all option type */
     getAllOptionsType() {
@@ -757,6 +790,7 @@ export default {
   created() {
     this.getFood();
     this.getCatgory();
+    this.getDiscount();
     this.getAllOptionsType();
     this.getAllExtrasType();
     this.getOptionsOfFood();
