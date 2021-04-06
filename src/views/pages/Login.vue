@@ -110,6 +110,12 @@ export default {
                 JSON.stringify(rstrnt[0].restaurant)
               );
               localStorage.setItem("resturent_id", rstrnt[0].restaurant.id);
+
+              let theNotification = localStorage.getItem("notification");
+
+              if (theNotification == null) {
+                localStorage.setItem("notification", "true");
+              }
             }
 
             // this.$router.push("/");
