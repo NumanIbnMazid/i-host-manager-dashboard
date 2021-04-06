@@ -89,6 +89,16 @@
               />
             </div>
 
+            <div class="w-full">
+              <vs-input
+                label="Code"
+                v-model="food_code"
+                class="mt-5 w-full"
+                name="item-name"
+              />
+            </div>
+
+
             <div class="w-full mt-5">
               <label for=""><small>Category</small></label>
               <v-select
@@ -431,6 +441,7 @@ export default {
 
       resturent_id: localStorage.getItem("resturent_id"),
       name: "",
+      food_code: "",
       description: "",
       ingredients: "",
       image: "",
@@ -504,6 +515,7 @@ export default {
 
       let formData = new FormData();
       formData.append("name", this.name);
+      formData.append("code", this.food_code);
       formData.append("restaurant", localStorage.getItem("resturent_id"));
       formData.append("category", this.category);
       formData.append("discount", this.discount);
@@ -541,6 +553,7 @@ export default {
       let formData = new FormData();
 
       formData.append("name", this.name);
+      formData.append("code", this.food_code);
       formData.append("restaurant", localStorage.getItem("resturent_id"));
       formData.append("category", this.category);
       formData.append("discount", this.discount);

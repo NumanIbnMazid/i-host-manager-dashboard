@@ -59,14 +59,14 @@
      <v-select
        placeholder="Select Type"
        v-model="type_of_month_basis"
-       :options="['life_time', 'current_month','previous_month','weekly_basis']"
+       :options="['Life Time', 'Current Month','Previous Month','Weekly']"
        style="min-width: 200px"
 
      />
    </div>
 
 
-    <div v-if="type_of_month_basis == 'life_time'">
+    <div v-if="type_of_month_basis == 'Life Time'">
       <div class="vx-row mt-6 mb-3">
       <div class="vx-col md:w-1/2">
         <h3 class="text-grey-dark">Total: {{total_item}}</h3>
@@ -86,7 +86,7 @@
         </div>
       </div>
     </div>
-    <div v-if="type_of_month_basis == 'current_month'">
+    <div v-if="type_of_month_basis == 'Current Month'">
       <div class="vx-row mt-6 mb-3">
         <div class="vx-col md:w-1/2">
           <h3 class="text-grey-dark">Total Payment of Current Month: {{current_month_total}}</h3>
@@ -107,7 +107,7 @@
       </div>
 
     </div>
-    <div v-if="type_of_month_basis == 'previous_month'">
+    <div v-if="type_of_month_basis == 'Previous Month'">
       <div class="vx-row mt-6 mb-3">
         <div class="vx-col md:w-1/2">
           <h3 class="text-grey-dark">Total Payment of Last Month : {{last_month_total}}</h3>
@@ -128,7 +128,7 @@
       </div>
 
     </div>
-    <div v-if="type_of_month_basis == 'weekly_basis'">
+    <div v-if="type_of_month_basis == 'Weekly'">
       <div class="vx-row mt-6 mb-3">
         <div class="vx-col md:w-1/2">
           <h3 class="text-grey-dark">Weekly Total Payment: {{weekly_total}}</h3>

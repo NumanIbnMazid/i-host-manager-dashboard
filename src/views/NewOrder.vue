@@ -76,23 +76,25 @@
             </hooper>
           </div>
 
+
           <div class="w-10/12">
-            <div class="w-full mx-2">
+            <div class="">
+
               <vs-input
-                class="w-full px-1 foodsearch"
-                placeholder="Search for item......"
+                class="w-9/12 mb-2 mr-5 "
+                placeholder="Search by food keyword......"
                 v-model="search"
                 @keyup="findFooitem()"
-              ></vs-input>
-
+              >
+              </vs-input>
 
               <vs-input
-                class="w-full px-1 foodsearch"
+                class="w-9/12 mb-2 mr-5 "
                 placeholder="Search by food code......"
                 v-model="searchByCode"
                 @keyup="findFoodByCode()"
-              ></vs-input>
-
+              >
+              </vs-input>
               <!-- food grid view -->
               <div id="demo-basic-card" class="mt-4" v-if="isGrid">
                 <div class="vx-row">
@@ -134,15 +136,6 @@
                         </p>
 
                       </div>
-
-
-
-
-
-
-
-
-
 
                       <!-- <p class="text-grey">{{ "card_1.subtitle_2" }}</p> -->
 

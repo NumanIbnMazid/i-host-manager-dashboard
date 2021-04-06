@@ -58,6 +58,7 @@
         <vs-th>Name</vs-th>
         <vs-th>Category</vs-th>
         <vs-th>Price</vs-th>
+        <vs-th>Food Code</vs-th>
         <vs-th>Discount</vs-th>
 
         <vs-th>Is available</vs-th>
@@ -90,6 +91,9 @@
 
             <vs-td>
               <p class="product-name font-medium truncate">{{ tr.price }}</p>
+            </vs-td>
+            <vs-td>
+              <p class="product-name font-medium truncate">{{ tr.code }}</p>
             </vs-td>
             <vs-td v-if="tr.discount_details.name == null">
               <p class="product-name font-medium truncate">{{"-"}}</p>
