@@ -144,6 +144,31 @@
       </div>
     </vx-card>
 
+    <!-- TAKEAWAY INFORMATION -->
+    <vx-card class="mb-base" v-show="!showEditField">
+      <!-- restaurent name -->
+      <h3 class="mb-4 pb-4">Takeaway Information</h3>
+
+      <div class="vx-row">
+        <div
+          class="vx-col mt-2 mx-auto sm:w-8/12 md:w-6/12 lg:w-11/12 flex flex-wrap"
+          id="avatar-col"
+        >
+          <!-- Avatar -->
+          <div class="w-1/5 m-2" v-for="pt in takeaway_order_type" :key="pt.id">
+            <vx-card>
+              <div class="option-logo">
+                <img class="payment-logo w-28" :src="pt.image" :alt="pt.name" />
+              </div>
+              <hr />
+              <h3 class="text-center py-1">{{ pt.name }}</h3>
+              <hr />
+            </vx-card>
+          </div>
+        </div>
+      </div>
+    </vx-card>
+
     <!-- Subscription Plan INFORMATION -->
     <vx-card class="mb-base" v-show="!showEditField">
       <!-- restaurent name -->
@@ -541,6 +566,7 @@ export default {
     old_password: "",
     new_password: "",
     payment_type: "",
+    takeaway_order_type: "",
     is_service_charge_apply: null,
     is_vat_charge_apply: null,
     subscription: "",
@@ -607,6 +633,10 @@ export default {
             this.trade_licence_no = restaurant.trade_licence_no;
             this.vat_registration_no = restaurant.vat_registration_no;
             this.payment_type = restaurant.payment_type;
+            console.log("payment type",this.payment_type);
+
+            this.takeaway_order_type = restaurant.takeway_order_type
+            console.log("take away order type",this.takeaway_order_type);
             this.is_service_charge_apply =
               restaurant.is_service_charge_apply_in_original_food_price;
             this.is_vat_charge_apply =
