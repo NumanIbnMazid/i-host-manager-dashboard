@@ -339,7 +339,7 @@
           <!-- take out information table -->
           <div
             class="table-info mt-1 pt-1 order-item-list-table"
-            v-if="isTakeOut || (isDinein && slectedTable)"
+            v-if="isTakeOut || (isDinein && slectedTable) || takeaway_order_type_id !=null"
           >
             <div class="table-card">
               <vs-table class="take-out-table-header">
@@ -361,7 +361,7 @@
 
                     <vs-td> {{ item.quantity }} </vs-td>
 
-                    <vs-td> {{ item.price }} </vs-td>
+                    <vs-td> {{ item.food_option.price }} </vs-td>
 
                     <vs-td>
                       <vx-tooltip class="mx-auto" color="danger" text="Cancel">
@@ -466,23 +466,9 @@
             <hr />
             <table class="m-2">
               <tr>
-                <td class="font-semibold">Payable Amount :</td>
+                <td class="font-semibold">Total Price :</td>
                 <td>
-                  <p>{{ orderData.price.payable_amount }}</p>
-                </td>
-              </tr>
-
-              <tr>
-                <td class="font-semibold">Tax Amount :</td>
-                <td>
-                  <p>{{ orderData.price.tax_amount }}</p>
-                </td>
-              </tr>
-
-              <tr>
-                <td class="font-semibold">Vat Percentage :</td>
-                <td>
-                  <p>{{ orderData.price.tax_percentage }}</p>
+                  <p>{{ orderData.price.total_price }}</p>
                 </td>
               </tr>
 
@@ -494,28 +480,38 @@
               </tr>
 
               <tr>
-                <td class="font-semibold">Service Base Amount :</td>
+                <td class="font-semibold">Vat Charge :</td>
                 <td>
-                  <p>
-                    {{ orderData.price.service_charge_base_amount }}
-                    {{
-                      orderData.price.service_charge_is_percentage ? "%" : "৳"
-                    }}
-                  </p>
+                  <p>{{ orderData.price.tax_amount }}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="font-semibold">Grand Total :</td>
+                <td>
+                  <p>{{ orderData.price.grand_total_price }}</p>
                 </td>
               </tr>
 
               <tr>
                 <td class="font-semibold">Discount Amount :</td>
                 <td>
-                  <p>{{ orderData.price.discount_amount }}</p>
+                  <p>
+                    {{ orderData.price.discount_amount }}
+<!--                    {{-->
+<!--                      orderData.price.service_charge_is_percentage ? "%" : "৳"-->
+<!--                    }}-->
+                  </p>
                 </td>
               </tr>
 
               <tr>
-                <td class="font-semibold">Grand Total Price :</td>
-                <td>{{ orderData.price.grand_total_price }}</td>
+                <td class="font-semibold">Payable Amount :</td>
+                <td>
+                  <p>{{ orderData.price.payable_amount }}</p>
+                </td>
               </tr>
+
             </table>
           </div>
 
@@ -661,7 +657,6 @@
               v-model="takeaway_order_type_id"
               :options="takeaway_type"
               :reduce="(takeaway_type) => takeaway_type.id"
-              :dir="$vs.rtl ? 'rtl' : 'ltr'"
             />
           </div>
         </div>
@@ -875,6 +870,7 @@ export default {
           console.log("res ", res.data);
           if (res.data.status) {
             this.orderData = res.data.data;
+            console.log("order data",this.orderData);
             localStorage.setItem("orderData", JSON.stringify(res.data.data));
           } else this.showErrorLog(res.data.error.error_details);
         })

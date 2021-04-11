@@ -53,12 +53,12 @@ export default [{
         slug: "notification",
         icon: "MessageCircleIcon"
     },
-   // {
-   //  url: "/short_report",
-   //  name: "Short Report",
-   //  slug: "shortReport",
-   //  icon: "BarChart2Icon"
-   //  },
+   {
+    url: "/short_report",
+    name: "Short Report",
+    slug: "shortReport",
+    icon: "BarChart2Icon"
+    },
     {
         url: "/report",
         name: "Report",
