@@ -1173,7 +1173,6 @@ export default {
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
-
           // checking error code
           this.checkError(err);
         });

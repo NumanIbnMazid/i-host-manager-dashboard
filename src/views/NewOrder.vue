@@ -296,6 +296,7 @@
                 class="text-dark shadow"
                 type="filled"
                 @click="
+                  popupActive = !popupActive;
                   isTakeOut = !isTakeOut;
                   isDinein = false;
                   slectedTable = null;
@@ -645,6 +646,55 @@
       </div>
     </vs-popup>
 
+    <vs-popup
+      class="holamundo w-full"
+      title="Take Away Type"
+      :active.sync="popupActive"
+    >
+      <!-- food select form -->
+      <div class="food-select-form">
+        <div class="vx-row text-sm">
+          <div class="vx-col w-full pl-4 pr-0 mb-4">
+            <small>Take away type</small>
+            <v-select
+              label="name"
+              v-model="takeaway_order_type_id"
+              :options="takeaway_type"
+              :reduce="(takeaway_type) => takeaway_type.id"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+        </div>
+      </div>
+
+
+      <!-- order item list -->
+      <vs-table>
+
+
+      </vs-table>
+
+      <!-- action buttons -->
+      <div class="action-buttons flex mt-4">
+        <!-- confirm all -->
+
+        <vx-tooltip color="success" text="Confirm All" class="mr-2 float-right">
+          <vs-button
+            color="success"
+            type="border"
+            @click="popupActive = false"
+          >Submit</vs-button
+          >
+        </vx-tooltip>
+
+        <!-- confirm selected -->
+      </div>
+    </vs-popup>
+
+
+
+
+
     <!-- Please don't remove below  code -->
     <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
   </div>
@@ -688,6 +738,7 @@ export default {
 
     tables: [],
     dinein_selected_table_id: null,
+    takeaway_order_type_id: null,
     orderData: { id: null, ordered_items: [], price: null },
     categories: [],
     itemsCarts: [],
@@ -701,8 +752,10 @@ export default {
     isBtnLoading: false,
     isConfirmPayment: false,
     showOrder: null,
+    takeaway_type: [],
 
     isActiveitemDetailPopup: false,
+    popupActive: false,
     selectedItem: { extras: [] },
     addToCardItem: {
       quantity: 1,
@@ -714,6 +767,21 @@ export default {
   }),
 
   methods: {
+
+    getAllTakeoutType() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/`
+        )
+        .then((res) => {
+          this.takeaway_type = res.data.data.takeway_order_type;
+        })
+        .catch((err) => {
+          console.log("error offer ", err.response);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
     getTime() {
       setInterval(() => {
         this.time = moment().format("h:mm:ss A");
@@ -796,7 +864,7 @@ export default {
           restaurant: this.resturent_id,
           table: this.dinein_selected_table_id,
         };
-      } else body = { restaurant: this.resturent_id };
+      } else body = { restaurant: this.resturent_id , takeway_order_type: this.takeaway_order_type_id };
 
       await axios
         .post(
@@ -841,6 +909,7 @@ export default {
       if (this.isDinein && this.dinein_selected_table_id === null) {
         return this.showActionMessage("error", "Please Select Table First!!");
       }
+
       if (this.orderData.id == null) {
         console.log(1111);
         await this.createTakeAwayOrder();
@@ -1486,6 +1555,7 @@ export default {
   created() {
     // console.log("od ", JSON.parse(localStorage.getItem("orderData")).id);
     // this.createTakeAwayOrder();
+    this.getAllTakeoutType();
     this.getFood();
     this.getCategorys();
     this.getOrderedItems(JSON.parse(localStorage.getItem("orderData")).id);
