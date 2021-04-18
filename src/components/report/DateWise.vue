@@ -54,7 +54,19 @@
       >
 
       <span class="float-right"><b>Total Amount:</b> {{totalAmount}}</span>
+
+
     </div>
+<!--    <vs-button-->
+<!--      class="m-2 float-right"-->
+<!--      @click="downloadExcelReport"-->
+<!--    >Excel</vs-button-->
+<!--    >-->
+<!--    <vs-button-->
+<!--      class="m-2 float-right"-->
+<!--      @click="downloadPdfReport"-->
+<!--    >Pdf</vs-button-->
+<!--    >-->
 
     <vs-table class="p-0" ref="table" :data="orders">
       <template slot="thead">
@@ -160,6 +172,24 @@ export default {
   }),
 
   methods: {
+    //
+    // downloadExcelReport()
+    // {
+    //   console.log("downloading excel report");
+    // },
+    // downloadPdfReport()
+    // {
+    //   axios
+    //     .post(
+    //       `/restaurant_management/dashboard/print-pdf-datewise-report/${this.restaurant_id}/`
+    //     )
+    //     .then((res) => {
+    //       console.log("response of pdf",res);
+    //     })
+    //     .catch((err) => {
+    //
+    //     });
+    // },
     getAllOrder() {
       console.log({
         start_date: moment(this.startDate).format("Y-M-D"),

@@ -1054,7 +1054,7 @@
     </vs-popup>
 
 
-    <vs-popup title="Create Invoice Preview" :active.sync="collectInvoiceShow">
+    <vs-popup title="" :active.sync="collectInvoiceShow">
       <CollectInvoices
         :therOrderForInvoice="collectInvoicesOrder"
         @emitAfterCollectInvoices = "afterCollectInvoices"

@@ -8,7 +8,7 @@
 
             <vs-input
               icon-pack="feather"
-              icon="icon-dollar-sign"
+              icon=""
               class="mt-5 w-full"
               type="number"
               v-model="force_discount_amount"
@@ -57,8 +57,8 @@ export default {
     resturent: JSON.parse(localStorage.getItem("resturent")),
     paidCash: 0,
     payMethod: 2,
-    force_discount_amount: null,
-    discount_amount_is_percentage: null,
+    force_discount_amount: 0,
+    discount_amount_is_percentage: 'true',
 
   }),
   methods: {
@@ -84,23 +84,34 @@ export default {
           body
         )
         .then((res) => {
+             var error_message = '';
+             error_message = res.data.msg;
+             if(error_message !='success')
+             {
 
-              axios
-                .post("/restaurant_management/dashboard/order/create_invoice/", {
-                  order_id,
-                })
-                .then((res) => {
-                  if (res.data.status) {
+               return this.showActionMessage("error", error_message);
+             }
+             else
+             {
+               axios
+                 .post("/restaurant_management/dashboard/order/create_invoice/", {
+                   order_id,
+                 })
+                 .then((res) => {
+                   if (res.data.status) {
 
-                    this.printRecipt(res.data.data);
-                    this.$emit("emitAfterCollectInvoices", res.data.data);
+                     this.printRecipt(res.data.data);
+                     this.$emit("emitAfterCollectInvoices", res.data.data);
 
-                  }
-                })
-                .catch((err) => {
-                  this.showActionMessage("error", err);
-                  this.checkError(err);
-                });
+                   }
+                 })
+                 .catch((err) => {
+                   this.showActionMessage("error", err);
+                   this.checkError(err);
+                 });
+
+             }
+
 
         })
         .catch((err) => {

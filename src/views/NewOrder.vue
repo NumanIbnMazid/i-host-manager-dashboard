@@ -60,7 +60,7 @@
             >
               <slide v-for="(category, i) in categories" :key="i">
                 <vs-button
-                  class="w-full my-1"
+                  class="w-full my-1 "
                   :color="
                     slectedCategory == category.id ? 'secondary' : 'primary'
                   "
@@ -122,15 +122,15 @@
                         </h5>
                       </vx-tooltip>
                       <div class="d-block">
-                        <p class="text-grey text-center mb-2" v-if="food.discounted_price == null">
+                        <p class="text-dark text-center mb-2" v-if="food.discounted_price == null">
                           ৳  {{ food.price }}
                         </p>
 
                         <p class="text-grey text-center mb-2" v-else>
-                          <span class="text-grey  mb-2 mr-5 line-through">
+                          <span class="text-grey-dark  mb-2 mr-5 line-through">
                           ৳  {{ food.price }}
                         </span>
-                          <span class="text-grey mb-2 ml-5" >
+                          <span class="text-dark mb-2 ml-5" >
                           ৳ {{ food.discounted_price }}
                         </span>
                         </p>
@@ -511,6 +511,12 @@
                   <p>{{ orderData.price.payable_amount }}</p>
                 </td>
               </tr>
+              <tr>
+                <td class="font-semibold">Take away type :</td>
+                <td>
+                  <p>{{ orderData.price.payable_amount }}</p>
+                </td>
+              </tr>
 
             </table>
           </div>
@@ -550,17 +556,30 @@
                 Place Order</vs-button
               >
 
+<!--              <vs-button-->
+<!--                v-else-->
+<!--                color="primary"-->
+<!--                class="text-2xl text-white w-full"-->
+<!--                type="flat"-->
+<!--                @click="createInvoice(orderData.id)"-->
+<!--                :disabled="isBtnLoading ? true : false"-->
+<!--                ><file-text-icon-->
+<!--                  size="0.8x"-->
+<!--                  class="custom-class"-->
+<!--                ></file-text-icon>-->
+<!--                Create Invoice</vs-button-->
+<!--              >-->
               <vs-button
                 v-else
                 color="primary"
                 class="text-2xl text-white w-full"
                 type="flat"
-                @click="createInvoice(orderData.id)"
-                :disabled="isBtnLoading ? true : false"
-                ><file-text-icon
-                  size="0.8x"
-                  class="custom-class"
-                ></file-text-icon>
+                @click="show_force_discount_form()"
+
+              ><file-text-icon
+                size="0.8x"
+                class="custom-class"
+              ></file-text-icon>
                 Create Invoice</vs-button
               >
             </div>
@@ -686,6 +705,47 @@
       </div>
     </vs-popup>
 
+    <vs-popup
+      class="holamundo"
+      title="Force Discount"
+      :active.sync="popup_active_for_force_discount"
+    >
+      <vs-table>
+        <vs-tr class="bg-white font-bold">
+          <vs-td colspan="3" class="text-right">Force Discount Amount:</vs-td>
+          <vs-td class="text-right pr-0">
+            <vs-input
+              icon-pack="feather"
+              icon=""
+              class="mt-5 w-full"
+              v-model="force_discount_amount"
+              type="number"
+              min="0"
+              v-validate="'required'"
+            />
+          </vs-td>
+        </vs-tr>
+        <vs-tr class="bg-white font-bold">
+          <vs-td colspan="3" class="text-right">Discount Percentage:</vs-td>
+
+          <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage"  vs-value="true">Yes</vs-radio>
+          <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage"  vs-value="false">No</vs-radio>
+
+        </vs-tr>
+
+      </vs-table>
+      <vs-button
+        class="float-right"
+        color="success"
+        @click="createInvoice(orderData.id)"
+        :disabled="isBtnLoading ? true : false"
+      >Print</vs-button
+      >
+
+
+    </vs-popup>
+
+
 
 
 
@@ -730,6 +790,10 @@ export default {
     foods: [],
     search: "",
     searchByCode: "",
+    force_discount_amount: 0,
+    discount_amount_is_percentage: 'true',
+
+    popup_active_for_force_discount: false,
 
     tables: [],
     dinein_selected_table_id: null,
@@ -762,6 +826,12 @@ export default {
   }),
 
   methods: {
+
+    boolean_conversion(discount_amount_is_percentage)
+    {
+      return discount_amount_is_percentage == 'true';
+
+    },
 
     getAllTakeoutType() {
       axios
@@ -859,7 +929,11 @@ export default {
           restaurant: this.resturent_id,
           table: this.dinein_selected_table_id,
         };
-      } else body = { restaurant: this.resturent_id , takeway_order_type: this.takeaway_order_type_id };
+      }
+      else body = {
+        restaurant: this.resturent_id ,
+        takeway_order_type: this.takeaway_order_type_id
+      };
 
       await axios
         .post(
@@ -1152,27 +1226,90 @@ export default {
         });
     },
 
-    createInvoice(order_id) {
-      this.isBtnLoading = true;
-      axios
-        .post("/restaurant_management/dashboard/order/create_invoice/", {
-          order_id,
-        })
-        .then((res) => {
-          console.log("invoice ", res.data);
-          if (res.data.status) {
-            console.log("invoice 1 ", res.data);
-            this.isInvoice = !this.isInvoice;
-            this.isConfirmPayment = true;
-            this.orderData = res.data.data;
-            this.printRecipt(res.data.data);
-            this.isBtnLoading = false;
-          } else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => {
-          console.log("error invoice ", err.response);
-        });
+    show_force_discount_form()
+    {
+      this.popup_active_for_force_discount = true;
+
+
     },
+    createInvoice(order_id) {
+
+
+      let OrderId = order_id;
+      const body = {
+
+        force_discount_amount: parseInt(this.force_discount_amount),
+        discount_amount_is_percentage: this.boolean_conversion(this.discount_amount_is_percentage)
+      };
+      axios
+        .post(
+          `/restaurant_management/dashboard/force_discount/${OrderId}`,
+          body
+        )  .then((res) => {
+        var error_message = '';
+        error_message = res.data.msg;
+        if(error_message !='success')
+        {
+
+          return this.showActionMessage("error", error_message);
+        }
+       else
+        {
+
+          this.isBtnLoading = true;
+          axios
+            .post("/restaurant_management/dashboard/order/create_invoice/", {
+              order_id,
+            })
+            .then((res) => {
+              console.log("invoice ", res.data);
+              if (res.data.status) {
+                console.log("invoice 1 ", res.data);
+                this.isInvoice = !this.isInvoice;
+                this.isConfirmPayment = true;
+                this.orderData = res.data.data;
+                this.printRecipt(res.data.data);
+                this.popup_active_for_force_discount = false;
+                this.isBtnLoading = false;
+              } else this.showErrorLog(res.data.error.error_details);
+            })
+            .catch((err) => {
+              console.log("error invoice ", err.response);
+            });
+        }
+      })
+        .catch((err) => {
+          this.showActionMessage("error", err);
+          this.checkError(err);
+        });
+
+    },
+
+
+    // createInvoice(order_id) {
+    //
+    //
+    //
+    //   this.isBtnLoading = true;
+    //   axios
+    //     .post("/restaurant_management/dashboard/order/create_invoice/", {
+    //       order_id,
+    //     })
+    //     .then((res) => {
+    //       console.log("invoice ", res.data);
+    //       if (res.data.status) {
+    //         console.log("invoice 1 ", res.data);
+    //         this.isInvoice = !this.isInvoice;
+    //         this.isConfirmPayment = true;
+    //         this.orderData = res.data.data;
+    //         this.printRecipt(res.data.data);
+    //         this.isBtnLoading = false;
+    //       } else this.showErrorLog(res.data.error.error_details);
+    //     })
+    //     .catch((err) => {
+    //       console.log("error invoice ", err.response);
+    //     });
+    // },
 
     placeOrder() {
       this.isBtnLoading = true;
