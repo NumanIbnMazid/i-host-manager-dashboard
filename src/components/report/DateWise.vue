@@ -57,16 +57,57 @@
 
 
     </div>
-<!--    <vs-button-->
-<!--      class="m-2 float-right"-->
-<!--      @click="downloadExcelReport"-->
-<!--    >Excel</vs-button-->
-<!--    >-->
-<!--    <vs-button-->
-<!--      class="m-2 float-right"-->
-<!--      @click="downloadPdfReport"-->
-<!--    >Pdf</vs-button-->
-<!--    >-->
+
+
+<!--    <div class="vx-row">-->
+<!--      <div-->
+<!--        class="vx-col sm:w-2/12 w-full mb-2 p-2"-->
+<!--      >-->
+<!--        <vx-card>-->
+<!--          <template>-->
+<!--            <div class="v-col w-full sm:w-12/12">-->
+<!--              <div class="text-center mb-2">-->
+<!--                <b>Download PDF</b> <br />-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="vx-row mt-3">-->
+<!--              <div class="v-col w-full sm:w-12/12">-->
+<!--                <div class="text-center">-->
+
+<!--                  <div class="flex flex-row mr-2">-->
+
+<!--                    <div class="v-col w-full sm:w-1/4 md:w-1/4 lg:w-1/4">-->
+<!--                      <vs-button-->
+<!--                        color="primary"-->
+<!--                        icon-pack="feather"-->
+<!--                        icon="icon-download"-->
+<!--                        type="gradient"-->
+<!--                        class="mt-2 lg:ml-1 md:ml-0 sm:ml-0 w-full center"-->
+<!--                      ></vs-button>-->
+<!--                    </div>-->
+
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </template>-->
+<!--        </vx-card>-->
+<!--      </div>-->
+<!--    </div>-->
+
+
+     <vs-button
+      class="m-2 float-right "
+     >
+       <a href="#" @click="downloadExcelReport" style="color: white">Download Excel</a> </vs-button>
+     <vs-button
+      class="m-2 float-right"
+     >
+     <a href="#" @click="downloadPdfReport" style="color: white">Download Pdf</a>
+<!--       <template>-->
+<!--         <download-icon size="1.5x" class="custom-class text-blue"></download-icon>-->
+<!--       </template>-->
+     </vs-button>
 
     <vs-table class="p-0" ref="table" :data="orders">
       <template slot="thead">
@@ -143,12 +184,15 @@ import Datepicker from "vuejs-datepicker";
 import vSelect from "vue-select";
 
 import ItemDetails from "@/components/report/ItemDetails.vue";
+import { DownloadIcon } from 'vue-feather-icons'
+
 
 export default {
   components: {
     Datepicker,
     vSelect,
     ItemDetails,
+    DownloadIcon,
   },
 
   data: () => ({
@@ -172,24 +216,77 @@ export default {
   }),
 
   methods: {
-    //
-    // downloadExcelReport()
-    // {
-    //   console.log("downloading excel report");
-    // },
-    // downloadPdfReport()
-    // {
-    //   axios
-    //     .post(
-    //       `/restaurant_management/dashboard/print-pdf-datewise-report/${this.restaurant_id}/`
-    //     )
-    //     .then((res) => {
-    //       console.log("response of pdf",res);
-    //     })
-    //     .catch((err) => {
-    //
-    //     });
-    // },
+
+    downloadFile(response, fileName)
+    {
+      // It is necessary to create a new blob object with mime-type explicitly set
+      // otherwise only Chrome works like it should
+
+      var newBlob = new Blob([response.body], {type: 'application/pdf'})
+
+      // IE doesn't allow using a blob object directly as link href
+      // instead it is necessary to use msSaveOrOpenBlob
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(newBlob)
+        return
+      }
+      // For other browsers:
+      // Create a link pointing to the ObjectURL containing the blob.
+      const data = window.URL.createObjectURL(newBlob)
+      var link = document.createElement('a')
+      link.href = data
+      link.download = fileName + '.pdf'
+      link.click()
+      setTimeout(function () {
+        // For Firefox it is necessary to delay revoking the ObjectURL
+        window.URL.revokeObjectURL(data)
+      }, 100)
+
+    },
+
+    downloadExcelReport()
+    {
+      console.log("downloading excel report");
+      axios
+        .post(
+          `restaurant_management/dashboard/generate-datewise-report-excel/${this.restaurant_id}/`
+        )
+        .then((res) => {
+          // console.log("response of excel",res.headers['content-type']);
+          var contentType = res.headers['content-type'];
+          this.downloadFile(res, 'DailyReportExcel',contentType);
+        })
+        .catch((err) => {
+
+        });
+    },
+    downloadPdfReport()
+    {
+      axios
+        .post(
+          `/restaurant_management/dashboard/generate-datewise-report-pdf/${this.restaurant_id}/`,
+          {
+            start_date: moment(this.startDate).format("Y-M-D"),
+            end_date: moment(this.endDate).format("Y-M-D"),
+            category: this.category,
+            waiter: this.waiter,
+            item: this.item,
+          }
+        )
+        .then((res) => {
+          console.log("response of pdf",res);
+          // var contentType = res.headers['content-type'];
+
+          this.downloadFile(res, 'DailyReport');
+
+        })
+        .catch((err) => {
+
+          this.checkError(err);
+
+
+        });
+    },
     getAllOrder() {
       console.log({
         start_date: moment(this.startDate).format("Y-M-D"),
