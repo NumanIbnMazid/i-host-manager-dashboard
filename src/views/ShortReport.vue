@@ -758,18 +758,7 @@ export default {
                         </td>
                     </tr>
                          ${itemDetail}
-<!--                    <tr class="tabletitle">-->
-<!--                        <td class="Rate">-->
-<!--                        -->
-<!--                        </td>-->
-<!--                        <td class="payment">-->
-<!--                            <h2></h2>-->
-<!--                        </td>-->
-<!--                        <td></td>-->
-<!--                         <td class="payment">-->
-<!--                            <h2></h2>-->
-<!--                        </td>-->
-<!--                    </tr>-->
+
                     <tr class="tabletitle final">
                         <td class="Rate">
                             <h2>Net Total:</h2>
@@ -832,6 +821,86 @@ export default {
                         </td>
                     </tr>
                 </table>
+    <table>
+                   <tr id="bot">
+                   <center>
+             <p>Discount Info Of Takeaway</p>
+
+                   </center>
+                     </td>
+                   </tr>
+
+                <table class="mr-2">
+
+                 <tr class="tabletitle">
+                        <td class="item">
+                            <h2>Item</h2>
+                        </td>
+                       <td class="Payment">
+                            <h2></h2>
+                        </td>
+                        <td>&nbsp; &nbsp;</td>
+                        </td>
+                        <td class="Rate price">
+                            <h2>Amount</h2>
+                        </td>
+                    </tr>
+                     <tr class="tabletitle">
+                        <td class="Rate">
+                            <h2>Total Discount</h2>
+                        </td>
+                        <td class="payment">
+                            <h2></h2>
+                        </td>
+                        <td></td>
+                         <td class="payment">
+                            <h2>${all_daily_report.total_discount}</h2>
+                        </td>
+                    </tr>
+                     <tr class="tabletitle">
+                        <td class="Rate">
+                            <h2>Total Order</h2>
+                        </td>
+                        <td class="payment">
+                            <h2></h2>
+                        </td>
+                        <td></td>
+                         <td class="payment">
+                            <h2>${all_daily_report.total_order}/-</h2>
+                        </td>
+                    </tr>
+                        <tr class="tabletitle">
+                        <td class="Rate">
+                            <h2>Total Sell</h2>
+                        </td>
+                        <td class="payment">
+                            <h2></h2>
+                        </td>
+                        <td></td>
+                         <td class="payment">
+                            <h2>${all_daily_report.total_sell}/-</h2>
+                        </td>
+                    </tr>
+                        </tr>
+                        <tr class="tabletitle">
+                        <td class="Rate">
+                            <h2>Total Vat</h2>
+                        </td>
+                        <td class="payment">
+                            <h2></h2>
+                        </td>
+                        <td></td>
+                         <td class="payment">
+                            <h2>${all_daily_report.total_tax}/-</h2>
+                        </td>
+                    </tr>
+
+
+
+
+
+                </table>
+
                  <table>
                    <tr id="bot">
                    <center>

@@ -99,14 +99,18 @@
      <vs-button
       class="m-2 float-right "
      >
-       <a href="#" @click="downloadExcelReport" style="color: white">Download Excel</a> </vs-button>
+       <a href="#"  class="text-white pr-4">EXCEL</a>
+       <template>
+         <download-icon size="1.5x" class="custom-class text-blue float-right" @click="downloadExcelReport"></download-icon>
+       </template>
+     </vs-button>
      <vs-button
       class="m-2 float-right"
      >
-     <a href="#" @click="downloadPdfReport" style="color: white">Download Pdf</a>
-<!--       <template>-->
-<!--         <download-icon size="1.5x" class="custom-class text-blue"></download-icon>-->
-<!--       </template>-->
+     <a href="#"  class="text-white pr-4">PDF</a>
+       <template>
+         <download-icon size="1.5x" class="custom-class text-blue float-right" @click="downloadPdfReport"></download-icon>
+       </template>
      </vs-button>
 
     <vs-table class="p-0" ref="table" :data="orders">
@@ -219,10 +223,10 @@ export default {
 
     downloadFile(response, fileName)
     {
+
       // It is necessary to create a new blob object with mime-type explicitly set
       // otherwise only Chrome works like it should
-
-      var newBlob = new Blob([response.body], {type: 'application/pdf'})
+        var newBlob = new Blob([response.data], {type: 'application/pdf'})
 
       // IE doesn't allow using a blob object directly as link href
       // instead it is necessary to use msSaveOrOpenBlob
@@ -235,7 +239,36 @@ export default {
       const data = window.URL.createObjectURL(newBlob)
       var link = document.createElement('a')
       link.href = data
-      link.download = fileName + '.pdf'
+
+        link.download = fileName + '.pdf'
+      link.click()
+      setTimeout(function () {
+        // For Firefox it is necessary to delay revoking the ObjectURL
+        window.URL.revokeObjectURL(data)
+      }, 100)
+
+    },
+
+    downloadFileForExcel(response, fileName)
+    {
+      // It is necessary to create a new blob object with mime-type explicitly set
+      // otherwise only Chrome works like it should
+
+      var newBlob = new Blob([response.data], {type: 'application/vnd.ms-excel'})
+
+      // IE doesn't allow using a blob object directly as link href
+      // instead it is necessary to use msSaveOrOpenBlob
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(newBlob)
+        return
+      }
+      // For other browsers:
+      // Create a link pointing to the ObjectURL containing the blob.
+      const data = window.URL.createObjectURL(newBlob)
+      var link = document.createElement('a')
+      link.href = data
+
+      link.download = fileName + '.xls'
       link.click()
       setTimeout(function () {
         // For Firefox it is necessary to delay revoking the ObjectURL
@@ -247,14 +280,25 @@ export default {
     downloadExcelReport()
     {
       console.log("downloading excel report");
+
       axios
         .post(
-          `restaurant_management/dashboard/generate-datewise-report-excel/${this.restaurant_id}/`
+          `restaurant_management/dashboard/generate-datewise-report-excel/${this.restaurant_id}/`,
+          {
+            start_date: moment(this.startDate).format("YYYY-MM-DD"),
+            end_date: moment(this.endDate).format("YYYY-MM-DD"),
+            waiter: this.waiter,
+            item: this.item,
+          },
+          {responseType: 'blob'}
+
         )
         .then((res) => {
-          // console.log("response of excel",res.headers['content-type']);
-          var contentType = res.headers['content-type'];
-          this.downloadFile(res, 'DailyReportExcel',contentType);
+          console.log("response of excel",res.headers['content-type']);
+          console.log("response",res);
+
+          // var contentType = res.headers['content-type'];
+          this.downloadFileForExcel(res, 'DailyReportExcel');
         })
         .catch((err) => {
 
@@ -266,12 +310,11 @@ export default {
         .post(
           `/restaurant_management/dashboard/generate-datewise-report-pdf/${this.restaurant_id}/`,
           {
-            start_date: moment(this.startDate).format("Y-M-D"),
-            end_date: moment(this.endDate).format("Y-M-D"),
-            category: this.category,
+            start_date: moment(this.startDate).format("YYYY-MM-DD"),
+            end_date: moment(this.endDate).format("YYYY-MM-DD"),
             waiter: this.waiter,
             item: this.item,
-          }
+          },
         )
         .then((res) => {
           console.log("response of pdf",res);
