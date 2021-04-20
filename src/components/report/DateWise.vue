@@ -190,13 +190,21 @@ export default {
 
   methods: {
 
-    downloadFile(response, fileName)
+    downloadFile(response,fileName,contentType)
     {
-
       // It is necessary to create a new blob object with mime-type explicitly set
       // otherwise only Chrome works like it should
+      if(contentType == 'application/pdf')
+      {
         var newBlob = new Blob([response.data], {type: 'application/pdf'})
 
+      }
+      else
+      {
+        var newBlob = new Blob([response.data], {type: 'application/vnd.ms-excel'})
+
+      }
+
       // IE doesn't allow using a blob object directly as link href
       // instead it is necessary to use msSaveOrOpenBlob
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
@@ -208,42 +216,22 @@ export default {
       const data = window.URL.createObjectURL(newBlob)
       var link = document.createElement('a')
       link.href = data
+      if(contentType == 'application/pdf')
+      {
 
         link.download = fileName + '.pdf'
-      link.click()
-      setTimeout(function () {
-        // For Firefox it is necessary to delay revoking the ObjectURL
-        window.URL.revokeObjectURL(data)
-      }, 100)
 
-    },
-
-    downloadFileForExcel(response, fileName)
-    {
-      // It is necessary to create a new blob object with mime-type explicitly set
-      // otherwise only Chrome works like it should
-
-      var newBlob = new Blob([response.data], {type: 'application/vnd.ms-excel'})
-
-      // IE doesn't allow using a blob object directly as link href
-      // instead it is necessary to use msSaveOrOpenBlob
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(newBlob)
-        return
       }
-      // For other browsers:
-      // Create a link pointing to the ObjectURL containing the blob.
-      const data = window.URL.createObjectURL(newBlob)
-      var link = document.createElement('a')
-      link.href = data
+      else
+      {
+        link.download = fileName + '.xls'
 
-      link.download = fileName + '.xls'
+      }
       link.click()
       setTimeout(function () {
         // For Firefox it is necessary to delay revoking the ObjectURL
         window.URL.revokeObjectURL(data)
       }, 500)
-
     },
 
     downloadExcelReport()
@@ -263,15 +251,16 @@ export default {
 
         )
         .then((res) => {
+
           console.log("response of excel",res.headers['content-type']);
           console.log("response",res);
-
-
           var daily_report_excel = 'report_('+moment(this.startDate).format("YYYY-MM-DD")+'_to_'+moment(this.endDate).format("YYYY-MM-DD")+')';
 
-          this.downloadFileForExcel(res, daily_report_excel);
+          this.downloadFile(res, daily_report_excel,res.headers['content-type']);
         })
         .catch((err) => {
+
+          this.checkError(err);
 
         });
     },
@@ -289,15 +278,13 @@ export default {
         )
         .then((res) => {
           console.log("response of pdf",res);
-          // var contentType = res.headers['content-type'];
           var daily_report_pdf = 'report_('+moment(this.startDate).format("YYYY-MM-DD")+'_to_'+moment(this.endDate).format("YYYY-MM-DD")+')';
-          this.downloadFile(res, daily_report_pdf);
+          this.downloadFile(res, daily_report_pdf,  res.headers['content-type']);
 
         })
         .catch((err) => {
 
           this.checkError(err);
-
 
         });
     },
