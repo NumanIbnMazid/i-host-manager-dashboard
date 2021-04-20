@@ -82,7 +82,7 @@
 
               <vs-input
                 class="w-9/12 mb-2 mr-5 "
-                placeholder="Search by food keyword......"
+                placeholder="Search by food name......"
                 v-model="search"
                 @keyup="findFooitem()"
               >
@@ -681,14 +681,8 @@
         </div>
       </div>
 
-
-      <!-- order item list -->
-      <vs-table>
-
-
-      </vs-table>
-
       <!-- action buttons -->
+      <br><br><br><br>
       <div class="action-buttons flex mt-4">
         <!-- confirm all -->
 
@@ -696,7 +690,7 @@
           <vs-button
             color="success"
             type="border"
-            @click="popupActive = false"
+            @click="submit_error"
           >Submit</vs-button
           >
         </vx-tooltip>
@@ -818,6 +812,21 @@ export default {
 
   methods: {
 
+    submit_error()
+    {
+      if(this.takeaway_order_type_id !=null)
+      {
+        this.popupActive = false;
+
+      }
+      else
+      {
+        this.showActionMessage("error", "Please select the takeaway type first");
+
+      }
+
+    },
+
     boolean_conversion(discount_amount_is_percentage)
     {
       return discount_amount_is_percentage == 'true';
@@ -936,8 +945,13 @@ export default {
           console.log("response of create takeaway ", res.data);
           if(res.data.status != true)
           {
-            var takeaway_type_error = res.data.msg;
-            return this.showActionMessage("error", takeaway_type_error);
+            this.showActionMessage("error", "Please select the takeaway type first");
+
+            // console.log("error details",res.data.msg);
+            // var takeaway_type_error = res.data.msg;
+            // return this.showActionMessage("error", takeaway_type_error);
+            //  this.showErrorLog(res.data.error.error_details);
+
           }
           else
           {

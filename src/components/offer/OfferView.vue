@@ -613,7 +613,12 @@ export default {
               color: "success",
               position: "top-right",
             });
-          } else this.showErrorLog(res.data.error.error_details);
+          } else
+          {
+            console.log("error response",res.data.error);
+            this.showErrorLog(res.data.error.error_details);
+
+          }
         })
         .catch((err) =>
           this.$vs.notify({
