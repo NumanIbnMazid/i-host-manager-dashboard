@@ -933,13 +933,23 @@ export default {
         )
         .then((res) => {
 
-
           console.log("response of create takeaway ", res.data);
-          if (res.data.status) {
+          if(res.data.status != true)
+          {
+            var takeaway_type_error = res.data.msg;
+            return this.showActionMessage("error", takeaway_type_error);
+          }
+          else
+          {
             this.orderData = res.data.data;
             console.log("order data",this.orderData);
             localStorage.setItem("orderData", JSON.stringify(res.data.data));
-          } else this.showErrorLog(res.data.error.error_details);
+          }
+          // if (res.data.status) {
+          //   this.orderData = res.data.data;
+          //   console.log("order data",this.orderData);
+          //   localStorage.setItem("orderData", JSON.stringify(res.data.data));
+          // } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
           console.log("err ", err.response);

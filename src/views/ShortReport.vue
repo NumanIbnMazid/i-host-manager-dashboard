@@ -441,6 +441,7 @@ export default {
 
       let itemDetail = "";
       let takeawayDetail = "";
+      let takeawayDetailWithDiscount = "";
       let resLogo = document.querySelector("#res_logo").src;
 
 
@@ -489,6 +490,22 @@ export default {
                         <td class="payment">
                             <h2>${
           el.total_sell
+        }/-</h2>
+                        </td>
+                    </tr>`;
+      });
+      all_daily_report.takeway_order_details_summary.forEach((el) => {
+        takeawayDetailWithDiscount += `<tr class="tabletitle">
+                        <td class="Rate">
+                            ${el.name}
+                        </td>
+                        <td class="payment">
+                            <h2></h2>
+                        </td>
+                        <td></td>
+                        <td class="payment">
+                            <h2>${
+          el.total_discount
         }/-</h2>
                         </td>
                     </tr>`;
@@ -670,9 +687,10 @@ export default {
             <div id="table">
                 <table>
                    <tr id="bot">
+                &nbsp;
+
                    <center>
              <p>General Information</p>
-
                    </center>
                      </td>
                    </tr>
@@ -736,6 +754,8 @@ export default {
                 </table>
                   <table>
                    <tr id="bot">
+             &nbsp;
+
                    <center>
              <p>Payment Information</p>
 
@@ -774,6 +794,8 @@ export default {
                 </table>
  <table>
                    <tr id="bot">
+                &nbsp;
+
                    <center>
              <p>Takeaway Information</p>
 
@@ -821,10 +843,13 @@ export default {
                         </td>
                     </tr>
                 </table>
-    <table>
+
+<table>
                    <tr id="bot">
+                &nbsp;
+
                    <center>
-             <p>Discount Info Of Takeaway</p>
+             <p>Discount Info Of Takeaway Order</p>
 
                    </center>
                      </td>
@@ -836,73 +861,22 @@ export default {
                         <td class="item">
                             <h2>Item</h2>
                         </td>
-                       <td class="Payment">
+                        <td class="Payment">
                             <h2></h2>
                         </td>
                         <td>&nbsp; &nbsp;</td>
-                        </td>
                         <td class="Rate price">
-                            <h2>Amount</h2>
+                            <h2>Discount</h2>
                         </td>
                     </tr>
-                     <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>Total Discount</h2>
-                        </td>
-                        <td class="payment">
-                            <h2></h2>
-                        </td>
-                        <td></td>
-                         <td class="payment">
-                            <h2>${all_daily_report.total_discount}/-</h2>
-                        </td>
-                    </tr>
-                     <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>Total Order</h2>
-                        </td>
-                        <td class="payment">
-                            <h2></h2>
-                        </td>
-                        <td></td>
-                         <td class="payment">
-                            <h2>${all_daily_report.total_order}/-</h2>
-                        </td>
-                    </tr>
-                        <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>Total Sell</h2>
-                        </td>
-                        <td class="payment">
-                            <h2></h2>
-                        </td>
-                        <td></td>
-                         <td class="payment">
-                            <h2>${all_daily_report.total_sell}/-</h2>
-                        </td>
-                    </tr>
-                        </tr>
-                        <tr class="tabletitle">
-                        <td class="Rate">
-                            <h2>Total Vat</h2>
-                        </td>
-                        <td class="payment">
-                            <h2></h2>
-                        </td>
-                        <td></td>
-                         <td class="payment">
-                            <h2>${all_daily_report.total_tax}/-</h2>
-                        </td>
-                    </tr>
-
-
-
-
-
+                         ${takeawayDetailWithDiscount}
                 </table>
+
+
 
                  <table>
                    <tr id="bot">
+                    &nbsp;
                    <center>
              <p>Additional Information</p>
 
