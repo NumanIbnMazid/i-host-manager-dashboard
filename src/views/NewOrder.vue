@@ -707,12 +707,12 @@
 
     <vs-popup
       class="holamundo"
-      title="Force Discount"
+      title="Discount"
       :active.sync="popup_active_for_force_discount"
     >
       <vs-table>
         <vs-tr class="bg-white font-bold">
-          <vs-td colspan="3" class="text-right">Force Discount Amount:</vs-td>
+          <vs-td colspan="3" class="text-right">Discount Amount:</vs-td>
           <vs-td class="text-right pr-0">
             <vs-input
               icon-pack="feather"
@@ -727,10 +727,8 @@
         </vs-tr>
         <vs-tr class="bg-white font-bold">
           <vs-td colspan="3" class="text-right">Discount Percentage:</vs-td>
-
           <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage"  vs-value="true">Yes</vs-radio>
           <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage"  vs-value="false">No</vs-radio>
-
         </vs-tr>
 
       </vs-table>
@@ -741,14 +739,7 @@
         :disabled="isBtnLoading ? true : false"
       >Print</vs-button
       >
-
-
     </vs-popup>
-
-
-
-
-
 
     <!-- Please don't remove below  code -->
     <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
@@ -941,7 +932,9 @@ export default {
           body
         )
         .then((res) => {
-          console.log("res ", res.data);
+
+
+          console.log("response of create takeaway ", res.data);
           if (res.data.status) {
             this.orderData = res.data.data;
             console.log("order data",this.orderData);
@@ -1238,14 +1231,15 @@ export default {
       let OrderId = order_id;
       const body = {
 
-        force_discount_amount: parseInt(this.force_discount_amount),
-        discount_amount_is_percentage: this.boolean_conversion(this.discount_amount_is_percentage)
+        take_away_discount_amount: parseInt(this.force_discount_amount),
+        take_away_discount_amount_is_percentage: this.boolean_conversion(this.discount_amount_is_percentage)
       };
       axios
         .post(
-          `/restaurant_management/dashboard/force_discount/${OrderId}`,
+          `/restaurant_management/dashboard/take_away_discount/${OrderId}`,
           body
         )  .then((res) => {
+          console.log("response of takeaway discount",res);
         var error_message = '';
         error_message = res.data.msg;
         if(error_message !='success')

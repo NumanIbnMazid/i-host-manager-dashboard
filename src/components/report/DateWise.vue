@@ -58,44 +58,6 @@
 
     </div>
 
-
-<!--    <div class="vx-row">-->
-<!--      <div-->
-<!--        class="vx-col sm:w-2/12 w-full mb-2 p-2"-->
-<!--      >-->
-<!--        <vx-card>-->
-<!--          <template>-->
-<!--            <div class="v-col w-full sm:w-12/12">-->
-<!--              <div class="text-center mb-2">-->
-<!--                <b>Download PDF</b> <br />-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="vx-row mt-3">-->
-<!--              <div class="v-col w-full sm:w-12/12">-->
-<!--                <div class="text-center">-->
-
-<!--                  <div class="flex flex-row mr-2">-->
-
-<!--                    <div class="v-col w-full sm:w-1/4 md:w-1/4 lg:w-1/4">-->
-<!--                      <vs-button-->
-<!--                        color="primary"-->
-<!--                        icon-pack="feather"-->
-<!--                        icon="icon-download"-->
-<!--                        type="gradient"-->
-<!--                        class="mt-2 lg:ml-1 md:ml-0 sm:ml-0 w-full center"-->
-<!--                      ></vs-button>-->
-<!--                    </div>-->
-
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </template>-->
-<!--        </vx-card>-->
-<!--      </div>-->
-<!--    </div>-->
-
-
      <vs-button
       class="m-2 float-right "
      >
@@ -112,6 +74,9 @@
          <download-icon size="1.5x" class="custom-class text-blue float-right" @click="downloadPdfReport"></download-icon>
        </template>
      </vs-button>
+<!--    <div class="loader"></div>-->
+
+
 
     <vs-table class="p-0" ref="table" :data="orders">
       <template slot="thead">
@@ -166,6 +131,9 @@
             </vs-td>
           </vs-tr>
         </tbody>
+        <tbody>
+
+        </tbody>
       </template>
     </vs-table>
     <br />
@@ -186,6 +154,7 @@ import axios from "@/axios.js";
 import moment from "moment";
 import Datepicker from "vuejs-datepicker";
 import vSelect from "vue-select";
+
 
 import ItemDetails from "@/components/report/ItemDetails.vue";
 import { DownloadIcon } from 'vue-feather-icons'
@@ -273,7 +242,7 @@ export default {
       setTimeout(function () {
         // For Firefox it is necessary to delay revoking the ObjectURL
         window.URL.revokeObjectURL(data)
-      }, 100)
+      }, 500)
 
     },
 
@@ -297,8 +266,10 @@ export default {
           console.log("response of excel",res.headers['content-type']);
           console.log("response",res);
 
-          // var contentType = res.headers['content-type'];
-          this.downloadFileForExcel(res, 'DailyReportExcel');
+
+          var daily_report_excel = 'report_('+moment(this.startDate).format("YYYY-MM-DD")+'_to_'+moment(this.endDate).format("YYYY-MM-DD")+')';
+
+          this.downloadFileForExcel(res, daily_report_excel);
         })
         .catch((err) => {
 
@@ -319,8 +290,8 @@ export default {
         .then((res) => {
           console.log("response of pdf",res);
           // var contentType = res.headers['content-type'];
-
-          this.downloadFile(res, 'DailyReport');
+          var daily_report_pdf = 'report_('+moment(this.startDate).format("YYYY-MM-DD")+'_to_'+moment(this.endDate).format("YYYY-MM-DD")+')';
+          this.downloadFile(res, daily_report_pdf);
 
         })
         .catch((err) => {
@@ -353,7 +324,7 @@ export default {
           this.orders = res.data.data.results;
           this.total = res.data.data.total_order;
           this.totalAmount = res.data.data.total_amaount
-          console.log("this.orders ", this.orders);
+          console.log("orders ", this.orders);
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
@@ -451,6 +422,7 @@ export default {
     // this.getCategorys();
   },
 };
+
 </script>
 
 <style scoped>
@@ -466,4 +438,26 @@ th {
 th .vs-table-text {
   justify-content: center !important;
 }
+.loader {
+  border: 2px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 2px solid #3498db;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 0.8s linear infinite;
+}
+
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 </style>

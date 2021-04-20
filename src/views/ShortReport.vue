@@ -854,7 +854,7 @@ export default {
                         </td>
                         <td></td>
                          <td class="payment">
-                            <h2>${all_daily_report.total_discount}</h2>
+                            <h2>${all_daily_report.total_discount}/-</h2>
                         </td>
                     </tr>
                      <tr class="tabletitle">
@@ -934,7 +934,7 @@ export default {
                         </td>
                         <td></td>
                          <td class="payment">
-                            <h2>${all_daily_report.total_discount}</h2>
+                            <h2>${all_daily_report.total_discount}/-</h2>
                         </td>
                     </tr>
                      <tr class="tabletitle">
