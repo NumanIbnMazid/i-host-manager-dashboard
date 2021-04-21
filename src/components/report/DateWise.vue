@@ -439,10 +439,11 @@ th .vs-table-text {
 .loader {
   border: 2px solid #f3f3f3;
   border-radius: 50%;
-  border-top: 2px solid #3498db;
+  border-top: 2px solid #FF8C00;
   width: 50px;
   height: 50px;
-  float: right;
+  /*float: right;*/
+  margin: 0 auto;
   -webkit-animation: spin 2s linear infinite; /* Safari */
   animation: spin 0.8s linear infinite;
   display: none;

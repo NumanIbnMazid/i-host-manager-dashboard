@@ -92,7 +92,10 @@
             <vs-td>
               <p class="product-name font-medium truncate">{{ tr.price }}</p>
             </vs-td>
-            <vs-td>
+            <vs-td v-if="tr.code == null">
+              <p class="product-name font-medium truncate">{{"-"}}</p>
+            </vs-td>
+            <vs-td v-else>
               <p class="product-name font-medium truncate">{{ tr.code }}</p>
             </vs-td>
             <vs-td v-if="tr.discount_details.name == null">

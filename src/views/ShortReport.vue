@@ -2,7 +2,7 @@
   <div>
     <div class="vx-row mb-10">
       <div class="vx-col md:w-1/2">
-        <h1 class="text-grey-dark">Review Dashboard</h1>
+        <h1 class="text-grey-dark">Short Report Dashboard</h1>
       </div>
     </div>
 
@@ -741,7 +741,7 @@ export default {
                             <h2>Net Total:</h2>
                         </td>
                          <td class="payment">
-                            <h2>${all_daily_report.dining_order_summary.sell_percentage+all_daily_report.takeway_order_summary.sell_percentage}%</h2>
+                            <h2>${(all_daily_report.dining_order_summary.sell_percentage+all_daily_report.takeway_order_summary.sell_percentage).toFixed(2)}%</h2>
                         </td>
                         <td></td>
                          <td class="payment">
@@ -784,7 +784,7 @@ export default {
                             <h2>Net Total:</h2>
                         </td>
                          <td class="payment">
-                            <h2>${all_daily_report.total_calculation.total_payment_sell_percentage}%</h2>
+                            <h2>${(all_daily_report.total_calculation.total_payment_sell_percentage).toFixed(2)}%</h2>
                         </td>
                         <td></td>
                          <td class="payment">
@@ -818,24 +818,13 @@ export default {
                         </td>
                     </tr>
                          ${takeawayDetail}
-<!--                    <tr class="tabletitle">-->
-<!--                        <td class="Rate">-->
-<!--                        -->
-<!--                        </td>-->
-<!--                        <td class="payment">-->
-<!--                            <h2></h2>-->
-<!--                        </td>-->
-<!--                        <td></td>-->
-<!--                         <td class="payment">-->
-<!--                            <h2></h2>-->
-<!--                        </td>-->
-<!--                    </tr>-->
+
                     <tr class="tabletitle final">
                         <td class="Rate">
                             <h2>Net Total:</h2>
                         </td>
                          <td class="payment">
-                            <h2>${all_daily_report.total_calculation.total_takeaway_sell_percentage}%</h2>
+                            <h2>${(all_daily_report.total_calculation.total_takeaway_sell_percentage).toFixed(2)}%</h2>
                         </td>
                         <td></td>
                          <td class="payment">
