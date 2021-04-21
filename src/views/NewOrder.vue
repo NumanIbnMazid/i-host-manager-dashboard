@@ -511,12 +511,12 @@
                   <p>{{ orderData.price.payable_amount }}</p>
                 </td>
               </tr>
-              <tr>
-                <td class="font-semibold">Take away type :</td>
-                <td>
-                  <p>{{ orderData.price.payable_amount }}</p>
-                </td>
-              </tr>
+<!--              <tr>-->
+<!--                <td class="font-semibold">Take away type :</td>-->
+<!--                <td>-->
+<!--                  <p>{{ orderData.price.payable_amount }}</p>-->
+<!--                </td>-->
+<!--              </tr>-->
 
             </table>
           </div>

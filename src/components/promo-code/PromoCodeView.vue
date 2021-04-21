@@ -270,6 +270,7 @@
       </vs-row>
     </vs-popup>
   </div>
+
 </template>
 
 <script>
@@ -322,6 +323,8 @@ export default {
     },
   },
   methods: {
+
+
 
     getAllPromoCodeList()
     {

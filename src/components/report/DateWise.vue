@@ -74,9 +74,7 @@
          <download-icon size="1.5x" class="custom-class text-blue float-right" @click="downloadPdfReport"></download-icon>
        </template>
      </vs-button>
-<!--    <div class="loader"></div>-->
-
-
+    <div class="loader"></div>
 
     <vs-table class="p-0" ref="table" :data="orders">
       <template slot="thead">
@@ -190,6 +188,12 @@ export default {
 
   methods: {
 
+    loaderShow()
+    {
+      document.getElementsByClassName('loader')[0].style.display = 'block';
+
+    },
+
     downloadFile(response,fileName,contentType)
     {
       // It is necessary to create a new blob object with mime-type explicitly set
@@ -228,6 +232,8 @@ export default {
 
       }
       link.click()
+      document.getElementsByClassName('loader')[0].style.display = 'none';
+
       setTimeout(function () {
         // For Firefox it is necessary to delay revoking the ObjectURL
         window.URL.revokeObjectURL(data)
@@ -236,6 +242,7 @@ export default {
 
     downloadExcelReport()
     {
+      this.loaderShow();
       console.log("downloading excel report");
 
       axios
@@ -266,6 +273,7 @@ export default {
     },
     downloadPdfReport()
     {
+      this.loaderShow();
       axios
         .post(
           `/restaurant_management/dashboard/generate-datewise-report-pdf/${this.restaurant_id}/`,
@@ -289,6 +297,7 @@ export default {
         });
     },
     getAllOrder() {
+
       console.log({
         start_date: moment(this.startDate).format("Y-M-D"),
         end_date: moment(this.endDate).format("Y-M-D"),
@@ -425,16 +434,19 @@ th {
 th .vs-table-text {
   justify-content: center !important;
 }
+
+
 .loader {
   border: 2px solid #f3f3f3;
   border-radius: 50%;
   border-top: 2px solid #3498db;
   width: 50px;
   height: 50px;
+  float: right;
   -webkit-animation: spin 2s linear infinite; /* Safari */
   animation: spin 0.8s linear infinite;
+  display: none;
 }
-
 
 /* Safari */
 @-webkit-keyframes spin {
