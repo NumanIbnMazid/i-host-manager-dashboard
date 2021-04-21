@@ -361,7 +361,12 @@
 
                     <vs-td> {{ item.quantity }} </vs-td>
 
-                    <vs-td> {{ item.food_option.discounted_price }} </vs-td>
+                    <vs-td v-if="item.food_option.discounted_price !=null">
+                      {{ item.food_option.discounted_price }}
+                    </vs-td>
+                    <vs-td v-else>
+                      {{ item.food_option.price }}
+                    </vs-td>
 
                     <vs-td>
                       <vx-tooltip class="mx-auto" color="danger" text="Cancel">
