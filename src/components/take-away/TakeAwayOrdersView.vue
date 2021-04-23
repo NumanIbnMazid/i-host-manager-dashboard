@@ -138,6 +138,10 @@
               <td class="font-semibold">Order No :</td>
               <td>{{ selectedOrder.order_no }}</td>
             </tr>
+<!--            <tr>-->
+<!--              <td class="font-semibold">Take away type :</td>-->
+<!--              <td>{{ selectedOrder.take_away_type_method.name }}</td>-->
+<!--            </tr>-->
 
             <tr>
               <td class="font-semibold">Status Details :</td>
@@ -156,45 +160,27 @@
                   <td class="text-ihostm m-2">Price Details</td>
                   <hr />
                   <table class="m-2">
-                    <tr>
-                      <td class="font-semibold">Payable Amount :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.payable_amount }}</p>
-                      </td>
-                    </tr>
 
                     <tr>
-                      <td class="font-semibold">Tax Amount :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.tax_amount }}</p>
-                      </td>
+                      <td class="font-semibold">Total Price :</td>
+                      <td>{{ selectedOrder.price.total_price }}</td>
                     </tr>
-
-                    <tr>
-                      <td class="font-semibold">Vat Percentage :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.tax_percentage }}</p>
-                      </td>
-                    </tr>
-
                     <tr>
                       <td class="font-semibold">Service Charge :</td>
                       <td>
                         <p>{{ selectedOrder.price.service_charge }}</p>
                       </td>
                     </tr>
-
                     <tr>
-                      <td class="font-semibold">Service Base Amount :</td>
+                      <td class="font-semibold">Vat Amount :</td>
                       <td>
-                        <p>
-                          {{ selectedOrder.price.service_charge_base_amount }}
-                          {{
-                            selectedOrder.price.service_charge_is_percentage
-                              ? "%"
-                              : "৳"
-                          }}
-                        </p>
+                        <p>{{ selectedOrder.price.tax_amount }}</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-semibold">Grand Total :</td>
+                      <td>
+                        <p>{{ selectedOrder.price.grand_total_price }}</p>
                       </td>
                     </tr>
 
@@ -206,9 +192,13 @@
                     </tr>
 
                     <tr>
-                      <td class="font-semibold">Grand Total Price :</td>
-                      <td>{{ selectedOrder.price.grand_total_price }}</td>
+                      <td class="font-semibold">Net Total :</td>
+                      <td>
+                        <p>{{ selectedOrder.price.payable_amount }}</p>
+                      </td>
                     </tr>
+
+
                   </table>
                 </div>
               </td>
@@ -321,6 +311,7 @@ export default {
       confirmOrder: false,
       isInvoiceCreated: true,
       collectCash: false,
+      takeaway_type: '',
     };
   },
   computed: {
@@ -360,6 +351,8 @@ export default {
           food_items,
         })
         .then((res) => {
+
+          // this.takeaway_type = res.data.data.;
           if (res.data.status) {
             this.isBtnLoading = false;
             this.confirmOrder = false;
@@ -643,7 +636,7 @@ export default {
 
             <div class="info">
                 <h2>${this.resturent.name}</h2>
-                <h2>Invoice</h2>
+                <h3>Invoice</h3>
             </div>
         </center>
         <div id="mid">
@@ -656,16 +649,17 @@ export default {
         </div>
         <div id="bot">
             <center>
-                <h2>Order # ${order.invoice.id}</h2>
-                <h2>Table No: ${order.table_no}</h2>
-                <h2>Waiter: ${order.waiter.name}</h2>
-                <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
+                <h2>Order # ${order.order_no}</h2>
+             <h2>Take Away # ${order.take_away_type_method.name}</h2>
+
+
+                <p>Time: ${moment().format("DD/MM/Y, h:mma")}</p>
             </center>
             <div id="table">
                 <table>
                     <tr class="tabletitle">
                         <td class="item">
-                            <h2>Item</h2>
+                            <h2>Item(QTY)</h2>
                         </td>
                         <td class="Hours">
                             <h2>U.Price</h2>
@@ -706,7 +700,7 @@ export default {
                     </tr>
                     <tr class="tabletitle">
                         <td class="Rate">
-                            <h2>Net Total:</h2>
+                            <h2>Grand Total:</h2>
                         </td>
                         <td></td>
                         <td class="payment">
@@ -735,8 +729,12 @@ export default {
                     </tr>
                 </table>
             </div>
+
             <div id="legalcopy">
                 <center>
+
+
+
                     <p class="legal"><strong> Powerd by @i-host <br> <small>www.i-host.com.bd</small></strong>
                     </p>
                 </center>

@@ -10,7 +10,7 @@
         tabindex="-1"
         v-if="to"
         exact
-        :class="`${[{'router-link-active': activeLink}]}`"
+        :class="`font-10 ${[{'router-link-active': activeLink}]}`"
         :to="to"
         :target="target" >
           <vs-icon v-if="!featherIcon" :icon-pack="iconPack" :icon="icon" />
@@ -50,8 +50,11 @@ export default {
 
 </script>
 
-<style  scoped>
+<style>
  /* .router-link-active {
     background: linear-gradient(118deg, rgba(var(--vs-secondary), 1), rgba(var(--vs-secondary), 0.7)) !important;
 } */
+ .v-nav-menu .vs-sidebar--item a span {
+   font-size: 14px !important;
+ }
 </style>

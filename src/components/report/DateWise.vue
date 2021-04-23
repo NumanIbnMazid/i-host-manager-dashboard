@@ -53,8 +53,6 @@
         >Reset</vs-button
       >
 
-      <span class="float-right"><b>Total Amount:</b> {{totalAmount}}</span>
-
 
     </div>
 
@@ -74,6 +72,17 @@
          <download-icon size="1.5x" class="custom-class text-blue float-right" @click="downloadPdfReport"></download-icon>
        </template>
      </vs-button>
+
+    <div class="mt-4">
+      <span class="mr-2 p-2"><b>Order:</b> {{total_order}}</span>
+      <span class="mr-2 p-2"><b>Service Charge:</b> {{total_service_charge}}</span>
+      <span class="mr-2 p-2"><b>Vat:</b> {{total_vat}}</span>
+      <span class="mr-2 p-2"><b>Grand Total:</b> {{total_price}}</span>
+      <span class="mr-2 p-2"><b>Discount:</b> {{total_discount}}</span>
+      <span class="mr-2 p-2"><b>Net Total:</b> {{totalAmount}}</span>
+    </div>
+
+
     <div class="loader"></div>
 
     <vs-table class="p-0" ref="table" :data="orders">
@@ -83,8 +92,9 @@
         <th>Time</th>
         <th>Customer Name</th>
         <th>Waiter Name</th>
-        <th>Price</th>
+        <th>Service Charge</th>
         <th>Vat Amount</th>
+        <th>Grand Total</th>
         <th>Discount Price</th>
         <th>Net Price</th>
         <th>Action</th>
@@ -105,14 +115,18 @@
             <vs-td class="text-left"
               ><p>{{ tr.order_info.customer ? tr.order_info.customer.name : '-' }}</p>
             </vs-td>
+
             <vs-td class="text-left"
               ><p>{{ tr.order_info.waiter ? tr.order_info.waiter.name : '' }}</p>
             </vs-td>
             <vs-td
-              ><p>৳{{ tr.order_info.price.grand_total_price }}</p>
+            ><p>৳{{ tr.order_info.price.service_charge }}</p>
             </vs-td>
             <vs-td
-              ><p>৳{{ tr.order_info.price.tax_amount }}</p>
+            ><p>৳{{ tr.order_info.price.tax_amount }}</p>
+            </vs-td>
+            <vs-td
+              ><p>৳{{ tr.order_info.price.grand_total_price }}</p>
             </vs-td>
             <vs-td
               ><p>৳{{ tr.order_info.price.discount_amount }}</p>
@@ -184,6 +198,11 @@ export default {
     showOrder: [],
     showOrderDetailsPopup: false,
     totalAmount: 0,
+    total_order: 0,
+    total_service_charge: 0,
+    total_vat: 0,
+    total_price: 0,
+    total_discount: 0,
   }),
 
   methods: {
@@ -318,8 +337,13 @@ export default {
         )
         .then((res) => {
           this.orders = res.data.data.results;
-          this.total = res.data.data.total_order;
+          // this.total = res.data.data.total_order;
           this.totalAmount = res.data.data.total_amaount
+          this.total_order = res.data.data.total_order
+          this.total_service_charge = res.data.data.total_service_charge
+          this.total_vat = res.data.data.total_vat
+          this.total_price = res.data.data.total_price
+          this.total_discount = res.data.data.total_discount
           console.log("orders ", this.orders);
         })
         .catch((err) => {

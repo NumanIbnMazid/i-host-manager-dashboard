@@ -1,0 +1,65 @@
+<!-- price details -->
+<!--          <div class="add_scroll_bar">-->
+<div>XXXXXXXX</div>
+<div
+  class="price-details table-card mt-5 w-full"
+  v-if="orderData.price"
+>
+  <h6 class="text-ihostm m-2">Price Details</h6>
+  <hr />
+  <table class="m-2">
+    <tr>
+      <td class="font-semibold">Total Price :</td>
+      <td>
+        <p>{{ orderData.price.total_price }}</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="font-semibold">Service Charge :</td>
+      <td>
+        <p>{{ orderData.price.service_charge }}</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="font-semibold">Vat Charge :</td>
+      <td>
+        <p>{{ orderData.price.tax_amount }}</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="font-semibold">Grand Total :</td>
+      <td>
+        <p>{{ orderData.price.grand_total_price }}</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="font-semibold">Discount Amount :</td>
+      <td>
+        <p>
+          {{ orderData.price.discount_amount }}
+          <!--                    {{-->
+          <!--                      orderData.price.service_charge_is_percentage ? "%" : "৳"-->
+          <!--                    }}-->
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="font-semibold">Payable Amount :</td>
+      <td>
+        <p>{{ orderData.price.payable_amount }}</p>
+      </td>
+    </tr>
+    <!--              <tr>-->
+    <!--                <td class="font-semibold">Take away type :</td>-->
+    <!--                <td>-->
+    <!--                  <p>{{ orderData.price.payable_amount }}</p>-->
+    <!--                </td>-->
+    <!--              </tr>-->
+
+  </table>
+</div>

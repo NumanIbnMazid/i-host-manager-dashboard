@@ -79,7 +79,7 @@ export default [{
     },
     {
         url: "/take-away-orders",
-        name: "Take Away Order",
+        name: "Take Away Orders",
         slug: "takeawayorder",
         icon: "LogOutIcon"
     },

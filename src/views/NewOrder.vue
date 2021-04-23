@@ -300,7 +300,7 @@
                   isTakeOut = !isTakeOut;
                   isDinein = false;
                   slectedTable = null;
-                  cancelOrder();
+                  fresh_takeout()
                 "
                 v-bind:class="[
                   isTakeOut ? 'text-white bg-warning' : 'text-dark',
@@ -324,9 +324,8 @@
                   isTakeOut = false;
                   isTakeAwayOrderList = false;
                   getTables();
-                  cancelOrder();
                   isInvoice = false;
-                "
+                  "
                 >Dine In</vs-button
               >
             </div>
@@ -339,7 +338,7 @@
           <!-- take out information table -->
           <div
             class="table-info mt-1 pt-1 order-item-list-table"
-            v-if="isTakeOut || (isDinein && slectedTable) || takeaway_order_type_id !=null"
+            v-if="isTakeOut || (isDinein && slectedTable)"
           >
             <div class="table-card">
               <vs-table class="take-out-table-header">
@@ -361,10 +360,10 @@
 
                     <vs-td> {{ item.quantity }} </vs-td>
 
-                    <vs-td v-if="item.food_option.discounted_price !=null">
-                      {{ item.food_option.discounted_price }}
-                    </vs-td>
-                    <vs-td v-else>
+<!--                    <vs-td v-if="item.food_option.discounted_price !=null">-->
+<!--                      {{ item.food_option.discounted_price }}-->
+<!--                    </vs-td>-->
+                    <vs-td>
                       {{ item.food_option.price }}
                     </vs-td>
 
@@ -376,8 +375,8 @@
                           icon-pack="feather"
                           icon="icon-x-circle"
                           @click="cancelOrderItem(item.id)"
-                        ></vs-button> </vx-tooltip
-                    ></vs-td>
+                        ></vs-button> </vx-tooltip>
+                    </vs-td>
                   </vs-tr>
                 </template>
               </vs-table>
@@ -390,82 +389,11 @@
               <h4 class="text-center p-0 m-0">Change Table</h4>
             </div>
           </div>
-
-          <!-- table card -->
-          <div class="table-info mt-4 pt-4" v-if="isDinein && !slectedTable">
-            <div class="table-card">
-              <div class="table-list m-2 grid grid-cols-3 gap-4">
-                <div
-                  class="restaurant-tables mr-2 text-white center"
-                  v-for="(table, index) in tables"
-                  :key="index"
-                >
-                  <div
-                    :style="`${
-                      table.is_occupied
-                        ? 'cursor: not-allowed'
-                        : 'cursor: pointer'
-                    }`"
-                    class="table-no mx-auto"
-                    :class="
-                      !table.is_occupied
-                        ? table.id == slectedTable
-                          ? 'bg-primary'
-                          : 'bg-success'
-                        : 'bg-grey'
-                    "
-                    @click="
-                      table.is_occupied
-                        ? null
-                        : ((slectedTable = table.id),
-                          (selectedTableNum = table.table_no),
-                          (dinein_selected_table_id = table.id))
-                    "
-                  >
-                    <div class="table-svg">
-                      <p class="table-number text-center text-2xl mt-0 pt-0">
-                        {{ table.table_no }}
-                      </p>
-
-                      <svg
-                        class="ml-4"
-                        width="26"
-                        height="19"
-                        viewBox="0 0 24 17"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M23.1431 16.2857V5.14285H0.857422V16.2857H2.57171V6.42857C2.57171 6.19189 2.7636 6 3.00028 6H21.0003C21.237 6 21.4288 6.19189 21.4288 6.42857V16.2857H23.1431Z"
-                          fill="#fff"
-                        />
-                        <path
-                          d="M1.51507 0L0.37207 1.71429H23.6279L22.4849 0H1.51507Z"
-                          fill="#fff"
-                        />
-                        <path
-                          d="M0 2.57143H24V4.28571H0V2.57143Z"
-                          fill="#fff"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- select button -->
-              <div class="mx-auto text-center mt-4 mb-4">
-                <vs-button class="w-3/4 text-2xl" color="dark" type="filled"
-                  >Select</vs-button
-                >
-              </div>
-            </div>
-          </div>
-
           <!-- price details -->
+          <div class="add_scroll_bar" v-if="orderData.price && !isDinein">
           <div
             class="price-details table-card mt-5 w-full"
-            v-if="orderData.price"
+
           >
             <h6 class="text-ihostm m-2">Price Details</h6>
             <hr />
@@ -503,28 +431,106 @@
                 <td>
                   <p>
                     {{ orderData.price.discount_amount }}
-<!--                    {{-->
-<!--                      orderData.price.service_charge_is_percentage ? "%" : "৳"-->
-<!--                    }}-->
+                    <!--                    {{-->
+                    <!--                      orderData.price.service_charge_is_percentage ? "%" : "৳"-->
+                    <!--                    }}-->
                   </p>
                 </td>
               </tr>
 
               <tr>
-                <td class="font-semibold">Payable Amount :</td>
+                <td class="font-semibold">Net Total :</td>
                 <td>
                   <p>{{ orderData.price.payable_amount }}</p>
                 </td>
               </tr>
-<!--              <tr>-->
-<!--                <td class="font-semibold">Take away type :</td>-->
-<!--                <td>-->
-<!--                  <p>{{ orderData.price.payable_amount }}</p>-->
-<!--                </td>-->
-<!--              </tr>-->
+              <!--              <tr>-->
+              <!--                <td class="font-semibold">Take away type :</td>-->
+              <!--                <td>-->
+              <!--                  <p>{{ orderData.price.payable_amount }}</p>-->
+              <!--                </td>-->
+              <!--              </tr>-->
 
             </table>
           </div>
+
+          </div>
+          <!-- table card -->
+          <div class="add_scroll_bar_for_dinein">
+            <div class="table-info mt-4 pt-4 " v-if="isDinein && !slectedTable">
+              <div class="table-card">
+                <div class="table-list m-2 grid grid-cols-3 gap-4">
+                  <div
+                    class="restaurant-tables mr-2 text-white center"
+                    v-for="(table, index) in tables"
+                    :key="index"
+                  >
+                    <div
+                      :style="`${
+                      table.is_occupied
+                        ? 'cursor: not-allowed'
+                        : 'cursor: pointer'
+                    }`"
+                      class="table-no mx-auto"
+                      :class="
+                      !table.is_occupied
+                        ? table.id == slectedTable
+                          ? 'bg-primary'
+                          : 'bg-success'
+                        : 'bg-grey'
+                    "
+                      @click="
+                      table.is_occupied
+                        ? null
+                        : ((slectedTable = table.id),
+                          (selectedTableNum = table.table_no),
+                          (dinein_selected_table_id = table.id))
+                    "
+                    >
+                      <div class="table-svg">
+                        <p class="table-number text-center text-2xl mt-0 pt-0">
+                          {{ table.table_no }}
+                        </p>
+
+                        <svg
+                          class="ml-4"
+                          width="26"
+                          height="19"
+                          viewBox="0 0 24 17"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M23.1431 16.2857V5.14285H0.857422V16.2857H2.57171V6.42857C2.57171 6.19189 2.7636 6 3.00028 6H21.0003C21.237 6 21.4288 6.19189 21.4288 6.42857V16.2857H23.1431Z"
+                            fill="#fff"
+                          />
+                          <path
+                            d="M1.51507 0L0.37207 1.71429H23.6279L22.4849 0H1.51507Z"
+                            fill="#fff"
+                          />
+                          <path
+                            d="M0 2.57143H24V4.28571H0V2.57143Z"
+                            fill="#fff"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- select button -->
+                <div class="mx-auto text-center mt-4 mb-4">
+                  <vs-button class="w-3/4 text-2xl" color="dark" type="filled"
+                  >Select</vs-button
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+<!--          </div>-->
 
           <!-- place order btn -->
           <div class="place-order w-2/3 mx-auto m-2 text-center bg-white">
@@ -817,23 +823,25 @@ export default {
 
   methods: {
 
-    submit_error()
+    fresh_takeout()
     {
-      if(this.takeaway_order_type_id !=null)
-      {
+      this.orderData = { id: null, ordered_items: [], price: null };
+      localStorage.setItem("orderData", null);
+    },
+
+    submit_error() {
+      this.isTakeOut = true;
+      if (this.takeaway_order_type_id != null) {
         this.popupActive = false;
 
-      }
-      else
-      {
+      } else {
         this.showActionMessage("error", "Please select the takeaway type first");
 
       }
 
     },
 
-    boolean_conversion(discount_amount_is_percentage)
-    {
+    boolean_conversion(discount_amount_is_percentage) {
       return discount_amount_is_percentage == 'true';
 
     },
@@ -934,9 +942,8 @@ export default {
           restaurant: this.resturent_id,
           table: this.dinein_selected_table_id,
         };
-      }
-      else body = {
-        restaurant: this.resturent_id ,
+      } else body = {
+        restaurant: this.resturent_id,
         takeway_order_type: this.takeaway_order_type_id
       };
 
@@ -948,8 +955,7 @@ export default {
         .then((res) => {
 
           console.log("response of create takeaway ", res.data);
-          if(res.data.status != true)
-          {
+          if (res.data.status != true) {
             this.showActionMessage("error", "Please select the takeaway type first");
 
             // console.log("error details",res.data.msg);
@@ -957,11 +963,9 @@ export default {
             // return this.showActionMessage("error", takeaway_type_error);
             //  this.showErrorLog(res.data.error.error_details);
 
-          }
-          else
-          {
+          } else {
             this.orderData = res.data.data;
-            console.log("order data",this.orderData);
+            console.log("order data", this.orderData);
             localStorage.setItem("orderData", JSON.stringify(res.data.data));
           }
           // if (res.data.status) {
@@ -1037,14 +1041,14 @@ export default {
       axios
         .patch(
           `/restaurant_management/dashboard/order/cart/items/${item.id}/`,
-          { quantity: item.quantity }
+          {quantity: item.quantity}
         )
         .then((res) => {
           console.log("qty update ", res.data);
           if (res.data.status) {
             const updatedOrders = res.data.data.ordered_items.map((orderItem) =>
               orderItem.id === item.id
-                ? { ...orderItem, quantity: item.quantity }
+                ? {...orderItem, quantity: item.quantity}
                 : orderItem
             );
 
@@ -1121,23 +1125,23 @@ export default {
         });
     },
 
-    cancelOrder() {
-      axios
-        .post("/restaurant_management/dashboard/order/cancel_order/", {
-          order_id: this.orderData.id,
-        })
-        .then((res) => {
-          console.log("order can ", res);
-          if (res.data.status) {
-            this.orderData = { id: null, ordered_items: [], price: null };
-            localStorage.setItem("orderData", null);
-            this.dinein_selected_table_id = null;
-          }
-        })
-        .catch((err) => {
-          console.log("order can error ", err.response);
-        });
-    },
+    // cancelOrder() {
+    //   axios
+    //     .post("/restaurant_management/dashboard/order/cancel_order/", {
+    //       order_id: this.orderData.id,
+    //     })
+    //     .then((res) => {
+    //       console.log("order can ", res);
+    //       if (res.data.status) {
+    //         this.orderData = { id: null, ordered_items: [], price: null };
+    //         localStorage.setItem("orderData", null);
+    //         this.dinein_selected_table_id = null;
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.log("order can error ", err.response);
+    //     });
+    // },
 
     cancelOrderItem(itemId) {
       console.log("order to cancel ", itemId);
@@ -1162,7 +1166,7 @@ export default {
             this.showActionMessage("success", "Item Cancel!");
 
             if (resData.ordered_items.length < 1)
-              this.orderData = { id: null, ordered_items: [], price: null };
+              this.orderData = {id: null, ordered_items: [], price: null};
             localStorage.setItem("orderData", null);
           } else this.showErrorLog(res.data.error.error_details);
         })
@@ -1206,7 +1210,7 @@ export default {
             // is dine in selected
             if (this.isDinein && this.dinein_selected_table_id !== null) {
               this.isBtnLoading = false;
-              this.orderData = { id: null, ordered_items: [], price: null };
+              this.orderData = {id: null, ordered_items: [], price: null};
               localStorage.setItem("orderData", this.orderData);
               this.showActionMessage(
                 "success",
@@ -1236,7 +1240,7 @@ export default {
         .then((res) => {
           console.log("cPorder  ", res.data);
           if (res.data.status && res.data.data.status === "5_PAID") {
-            this.orderData = { id: null, ordered_items: [], price: null };
+            this.orderData = {id: null, ordered_items: [], price: null};
             localStorage.setItem("orderData", null);
             this.showActionMessage("success", res.data.data.status_details);
             this.isConfirmPayment = false;
@@ -1248,8 +1252,7 @@ export default {
         });
     },
 
-    show_force_discount_form()
-    {
+    show_force_discount_form() {
       this.popup_active_for_force_discount = true;
 
 
@@ -1267,17 +1270,14 @@ export default {
         .post(
           `/restaurant_management/dashboard/take_away_discount/${OrderId}`,
           body
-        )  .then((res) => {
-          console.log("response of takeaway discount",res);
+        ).then((res) => {
+        console.log("response of takeaway discount", res);
         var error_message = '';
         error_message = res.data.msg;
-        if(error_message !='success')
-        {
+        if (error_message != 'success') {
 
           return this.showActionMessage("error", error_message);
-        }
-       else
-        {
+        } else {
 
           this.isBtnLoading = true;
           axios
@@ -1345,6 +1345,8 @@ export default {
           .then((res) => {
             console.log("place order ", res);
             if (res.data.status) {
+              this.orderData = res.data.data;
+              console.log("XXXXXXXXXXXXXXXXXXXXXXXX", this.orderData)
               const foodItems = res.data.data.ordered_items
                 .filter((item) => item.status === "1_ORDER_PLACED")
                 .map((item) => item.id);
@@ -1387,7 +1389,15 @@ export default {
         });
     },
 
+    fresh_previous_selected_data()
+    {
+      this.orderData = { id: null, ordered_items: [], price: null };
+      localStorage.setItem("orderData", null);
+    },
     getTables() {
+      this.orderData = { id: null, ordered_items: [], price: null };
+      localStorage.setItem("orderData", null);
+
       axios
         .get(
           `/restaurant_management/dashboard/restaurant/${this.resturent_id}/tables/`
@@ -1598,7 +1608,7 @@ export default {
 
             <div class="info">
                 <h2>${this.resturent.name}</h2>
-                <h2>Invoice</h2>
+                <h3>Invoice</h3>
             </div>
         </center>
         <div id="mid">
@@ -1612,13 +1622,15 @@ export default {
         <div id="bot">
             <center>
                 <h2>Order # ${order.order_no}</h2>
-                <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
+                <h2>Take Away # ${order.take_away_type_method.name}</h2>
+
+                <p>Time: ${moment().format("DD/MM/Y, h:mma")}</p>
             </center>
             <div id="table">
                 <table>
                     <tr class="tabletitle">
                         <td class="item">
-                            <h2>Item</h2>
+                            <h2>Item(QTY)</h2>
                         </td>
                         <td class="Hours">
                             <h2>U.Price</h2>
@@ -1659,7 +1671,7 @@ export default {
                     </tr>
                      <tr class="tabletitle">
                         <td class="Rate">
-                            <h2>Net Total:</h2>
+                            <h2>Grand Total:</h2>
                         </td>
                         <td></td>
                         <td class="payment">
@@ -1690,6 +1702,7 @@ export default {
             </div>
             <div id="legalcopy">
                 <center>
+
                     <p class="legal"><strong> Powerd by @i-host <br> <small>www.i-host.com.bd</small></strong>
                     </p>
                 </center>
@@ -1711,6 +1724,7 @@ export default {
   created() {
     // console.log("od ", JSON.parse(localStorage.getItem("orderData")).id);
     // this.createTakeAwayOrder();
+    this.fresh_previous_selected_data();
     this.getAllTakeoutType();
     this.getFood();
     this.getCategorys();
@@ -1918,6 +1932,16 @@ th .vs-table-text {
 
 .take-out-table-header {
   overflow-x: hidden;
+}
+
+//To add scroll bar in the price details section
+.add_scroll_bar {
+  height:150px;
+  overflow-y: scroll;
+}
+.add_scroll_bar_for_dinein {
+  height:550px;
+  overflow-y: scroll;
 }
 
 // restaurant table styles
