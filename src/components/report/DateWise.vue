@@ -112,11 +112,11 @@
             <vs-td
               ><p>{{ dateFromat(tr.created_at) }}</p>
             </vs-td>
-            <vs-td class="text-left"
+            <vs-td class=""
               ><p>{{ tr.order_info.customer ? tr.order_info.customer.name : '-' }}</p>
             </vs-td>
 
-            <vs-td class="text-left"
+            <vs-td class=""
               ><p>{{ tr.order_info.waiter ? tr.order_info.waiter.name : '' }}</p>
             </vs-td>
             <vs-td
