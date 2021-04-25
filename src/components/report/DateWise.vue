@@ -75,11 +75,15 @@
 
     <div class="mt-4">
       <span class="mr-2 p-2"><b>Order:</b> {{total_order}}</span>
+      <span class="mr-2 p-2"><b>Price:</b> {{total_food_price}}</span>
       <span class="mr-2 p-2"><b>Service Charge:</b> {{total_service_charge}}</span>
       <span class="mr-2 p-2"><b>Vat:</b> {{total_vat}}</span>
       <span class="mr-2 p-2"><b>Grand Total:</b> {{total_price}}</span>
       <span class="mr-2 p-2"><b>Discount:</b> {{total_discount}}</span>
-      <span class="mr-2 p-2"><b>Net Total:</b> {{totalAmount}}</span>
+      <div class="mt-1 mb-1">
+        <span class="p-2"><b>Net Total:</b> {{totalAmount}}</span>
+      </div>
+
     </div>
 
 
@@ -92,6 +96,7 @@
         <th>Time</th>
         <th>Customer Name</th>
         <th>Waiter Name</th>
+        <th>Price</th>
         <th>Service Charge</th>
         <th>Vat Amount</th>
         <th>Grand Total</th>
@@ -109,8 +114,7 @@
             <vs-td
               ><p>{{ tr.order_info.table_no }}</p></vs-td
             >
-            <vs-td
-              ><p>{{ dateFromat(tr.created_at) }}</p>
+            <vs-td class="w-2/3">{{ dateFormat(tr.created_at)}}
             </vs-td>
             <vs-td class=""
               ><p>{{ tr.order_info.customer ? tr.order_info.customer.name : '-' }}</p>
@@ -118,6 +122,9 @@
 
             <vs-td class=""
               ><p>{{ tr.order_info.waiter ? tr.order_info.waiter.name : '' }}</p>
+            </vs-td>
+            <vs-td
+            ><p>৳{{ tr.order_info.price.total_price }}</p>
             </vs-td>
             <vs-td
             ><p>৳{{ tr.order_info.price.service_charge }}</p>
@@ -202,6 +209,7 @@ export default {
     total_service_charge: 0,
     total_vat: 0,
     total_price: 0,
+    total_food_price: 0,
     total_discount: 0,
   }),
 
@@ -342,9 +350,11 @@ export default {
           this.total_order = res.data.data.total_order
           this.total_service_charge = res.data.data.total_service_charge
           this.total_vat = res.data.data.total_vat
-          this.total_price = res.data.data.total_price
+          this.total_price = res.data.data.total_grand_total_price
+          this.total_food_price = res.data.data.total_food_price
           this.total_discount = res.data.data.total_discount
-          console.log("orders ", this.orders);
+
+          console.log("orders pppppppppppppp", res.data.data);
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
@@ -430,8 +440,10 @@ export default {
     //   this.showOrderDetailsPopup = true;
     // },
 
-    dateFromat(date) {
-      return moment(date).format("D-M-Y h:mm:ss");
+    dateFormat(date) {
+      let date_time = date;
+      return moment(date_time).format("D-M-Y  h:mm A");
+
     },
   },
 

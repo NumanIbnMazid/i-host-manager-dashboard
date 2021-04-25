@@ -88,10 +88,13 @@
               </p>
             </vs-td>
 
-            <vs-td>
-              <p class="product-name font-medium truncate">
-                {{ tr.status_details }}
+            <vs-td v-if="tr.status_details != 'Create Invoice'">
+              <p class="text-success" >
+                Processing
               </p>
+            </vs-td>
+            <vs-td v-else>
+              <p class="product-name font-medium truncate">{{tr.status_details}}</p>
             </vs-td>
 
             <vs-td class="whitespace-no-wrap">
@@ -145,7 +148,10 @@
 
             <tr>
               <td class="font-semibold">Status Details :</td>
-              <td>
+              <td v-if="selectedOrder.status_details != 'Create Invoice'">
+                <p>Processing</p>
+              </td>
+              <td v-else>
                 <p>{{ selectedOrder.status_details }}</p>
               </td>
             </tr>
@@ -253,19 +259,30 @@
               Confirm Order</vs-button
             > -->
 
+<!--            <vs-button-->
+<!--              v-if="isInvoiceCreated"-->
+<!--              color="dark"-->
+<!--              class="text-1xl text-white w-64 bg-black mx-auto"-->
+<!--              type="flat"-->
+<!--              @click="createInvoice(selectedOrder)"-->
+<!--              :disabled="isBtnLoading ? true : false"-->
+<!--            >-->
+<!--              Create Invoice</vs-button-->
+<!--            >-->
             <vs-button
-              v-if="isInvoiceCreated"
+              v-if="selectedOrder.status_details != 'Create Invoice'"
               color="dark"
               class="text-1xl text-white w-64 bg-black mx-auto"
               type="flat"
-              @click="createInvoice(selectedOrder)"
+              @click="show_discount_form()"
               :disabled="isBtnLoading ? true : false"
             >
               Create Invoice</vs-button
             >
 
+
             <vs-button
-              v-if="collectCash"
+              v-if="selectedOrder.status_details =='Create Invoice'"
               color="dark"
               class="text-1xl text-white w-64 bg-black mx-auto"
               type="flat"
@@ -278,6 +295,43 @@
         </div>
       </template>
     </vs-popup>
+
+            <vs-popup
+              class="holamundo"
+              title="Discount"
+              :active.sync="popup_discount_form"
+            >
+            <vs-table>
+              <vs-tr class="bg-white font-bold">
+                <vs-td colspan="3" class="text-right">Discount Amount:</vs-td>
+                <vs-td class="text-right pr-0">
+                  <vs-input
+                    icon-pack="feather"
+                    icon=""
+                    class="mt-5 w-full"
+                    v-model="discount_amount"
+                    type="number"
+                    min="0"
+                    v-validate="'required'"
+                  />
+                </vs-td>
+              </vs-tr>
+              <vs-tr class="bg-white font-bold">
+                <vs-td colspan="3" class="text-right">Discount Percentage:</vs-td>
+                <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage"  vs-value="true">Yes</vs-radio>
+                <vs-radio style="padding:10px;"  v-model="discount_amount_is_percentage" vs-value="false">No</vs-radio>
+              </vs-tr>
+
+            </vs-table>
+            <vs-button
+              class="float-right"
+              color="success"
+              @click="createInvoice(selectedOrder)"
+              :disabled="isBtnLoading ? true : false"
+            >Print
+            </vs-button
+            >
+            </vs-popup>
 
     <!-- Please don't remove below  code -->
     <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
@@ -312,6 +366,10 @@ export default {
       isInvoiceCreated: true,
       collectCash: false,
       takeaway_type: '',
+      popup_discount_form: false,
+      discount_amount: 0,
+      discount_amount_is_percentage: 'true',
+
     };
   },
   computed: {
@@ -324,13 +382,22 @@ export default {
   },
 
   methods: {
+    show_discount_form()
+    {
+      this.popup_discount_form = true;
+      this.orderDetailPopupActive = false;
+
+    },
     getTakeAwayOrderList() {
       console.log("this.resturent_id ", this.resturent_id);
       axios
         .get(
           `/restaurant_management/dashboard/take_away_order/${this.resturent_id}/`
         )
-        .then((res) => (this.takeAwayOrders = res.data.data))
+        .then((res) => (
+          this.takeAwayOrders = res.data.data,
+          console.log("take away orders",res.data.data)
+        ))
         .catch((err) => {
           // this.showActionMessage("error", err.response.statusText);
           // this.checkError(err);
@@ -372,6 +439,7 @@ export default {
         })
         .then((res) => {
           if (res.data.status) {
+
             const leftTakeAwayOrders = this.takeAwayOrders.filter(
               (takeAwayorder) => takeAwayorder.id !== order.id
             );
@@ -393,29 +461,62 @@ export default {
         });
     },
 
+    boolean_conversion(discount_amount_is_percentage) {
+
+      return discount_amount_is_percentage == 'true';
+
+    },
+
     createInvoice(order) {
-      this.isBtnLoading = true;
+
+
+
+      let OrderId = order.id;
+      const body = {
+
+        take_away_discount_amount: parseInt(this.discount_amount),
+        take_away_discount_amount_is_percentage: this.boolean_conversion(this.discount_amount_is_percentage)
+      };
       axios
-        .post("/restaurant_management/dashboard/order/create_invoice/", {
-          order_id: order.id,
-        })
-        .then((res) => {
-          console.log("invoice ", res.data);
-          if (res.data.status) {
-            console.log(1);
-            this.isInvoiceCreated = false;
-            this.collectCash = true;
-            this.isBtnLoading = false;
-            this.printRecipt(res.data.data);
-            console.log(res.data.data);
-            console.log(2);
-            // this.showActionMessage("success", "Order Canceled!");
-          }
-          // else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => {
-          console.log("error invoice ", err.response);
-        });
+        .post(
+          `/restaurant_management/dashboard/take_away_discount/${OrderId}`,
+          body
+        ).then((res) => {
+          console.log("response of takeaway discount",res);
+        this.isBtnLoading = true;
+        axios
+          .post("/restaurant_management/dashboard/order/create_invoice/", {
+            order_id: order.id,
+          })
+          .then((res) => {
+
+
+            console.log("invoice ", res.data);
+            if (res.data.status) {
+
+
+              console.log(1);
+              this.getTakeAwayOrderList();
+              this.isInvoiceCreated = false;
+              this.collectCash = true;
+              this.isBtnLoading = false;
+              this.printRecipt(res.data.data);
+
+              console.log(res.data.data);
+              console.log(2);
+              // this.showActionMessage("success", "Order Canceled!");
+            }
+            // else this.showErrorLog(res.data.error.error_details);
+          })
+          .catch((err) => {
+            console.log("error invoice ", err.response);
+          });
+
+      }).catch((err)=>{
+        console.log("error takeaway discount ", err.response);
+
+      });
+
     },
 
     cancelOrder(order_id) {
@@ -451,6 +552,7 @@ export default {
     },
 
     printRecipt(order) {
+      this.popup_discount_form = false;
       console.log("order ", order);
       const WinPrint = window.open(
         "",
