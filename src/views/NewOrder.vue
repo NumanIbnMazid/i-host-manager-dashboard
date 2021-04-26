@@ -78,23 +78,29 @@
 
 
           <div class="w-10/12">
-            <div class="">
+            <div class="b-row">
 
-              <vs-input
-                class="w-9/12 mb-2 mr-5 "
-                placeholder="Search by food name......"
-                v-model="search"
-                @keyup="findFooitem()"
-              >
-              </vs-input>
+              <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-6">
+                <vs-input
+                  class="w-9/12 mb-2 mr-5 "
+                  placeholder="Search by food name......"
+                  v-model="search"
+                  @keyup="findFooitem()"
+                >
+                </vs-input>
+              </div>
+              <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-6">
+                <vs-input
+                  class="w-9/12 mb-2 mr-5 "
+                  placeholder="Search by food code......"
+                  v-model="searchByCode"
+                  @keyup="findFoodByCode()"
+                >
+                </vs-input>
+              </div>
 
-              <vs-input
-                class="w-9/12 mb-2 mr-5 "
-                placeholder="Search by food code......"
-                v-model="searchByCode"
-                @keyup="findFoodByCode()"
-              >
-              </vs-input>
+
+
               <!-- food grid view -->
               <div id="demo-basic-card" class="mt-4" v-if="isGrid">
                 <div class="vx-row">
@@ -1735,7 +1741,7 @@ export default {
 </script>
 
 
-<style lang="scss" >
+<style lang="scss" scoped >
 .order-item-list-table {
   max-height: 50%;
   overflow: scroll;

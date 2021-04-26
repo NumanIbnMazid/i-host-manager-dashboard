@@ -27,14 +27,14 @@
             class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
           >
             <span class="mr-2"
-              >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} -
+            >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} -
               {{
                 takeAwayOrders.length - currentPage * itemsPerPage > 0
                   ? currentPage * itemsPerPage
                   : takeAwayOrders.length
               }}
              </span
-            >
+             >
             <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
           </div>
 
@@ -65,66 +65,66 @@
 
       <template slot-scope="{ data }">
         <tbody>
-          <vs-tr class="text-center" :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-            <vs-td>
-              <p class="product-name font-medium truncate ">
-                {{ itemsPerPage * (currentPage - 1) + indextr + 1 }}
-              </p>
-            </vs-td>
-            <vs-td >
-              <!-- <img :src="tr.order_no" class="product-img" /> -->
-              <p class="">{{ tr.order_no }}</p>
-            </vs-td>
+        <vs-tr class="text-center" :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+          <vs-td>
+            <p class="product-name font-medium truncate ">
+              {{ itemsPerPage * (currentPage - 1) + indextr + 1 }}
+            </p>
+          </vs-td>
+          <vs-td >
+            <!-- <img :src="tr.order_no" class="product-img" /> -->
+            <p class="">{{ tr.order_no }}</p>
+          </vs-td>
 
-            <vs-td class="text-center">
-              <!-- <p class="product-name font-medium truncate">{{ tr.ordered_items }}</p> -->
-              <span  v-for="(ordered_item, i) in tr.ordered_items" :key="i">
-                <vs-chip > {{ ordered_item.food_name }}</vs-chip>
+          <vs-td>
+            <!-- <p class="product-name font-medium truncate">{{ tr.ordered_items }}</p> -->
+            <span v-for="(ordered_item, i) in tr.ordered_items" :key="i">
+                <vs-chip> {{ ordered_item.food_name }}</vs-chip>
                 <br />
               </span>
-            </vs-td>
+          </vs-td>
 
-            <vs-td>
-              <p class="product-name font-medium truncate ">
-                {{ tr.price.payable_amount }}
-              </p>
-            </vs-td>
+          <vs-td>
+            <p class="product-name font-medium truncate ">
+              {{ tr.price.payable_amount }}
+            </p>
+          </vs-td>
 
-            <vs-td v-if="tr.status_details != 'Create Invoice'">
-              <p class="text-success " >
-                Processing
-              </p>
-            </vs-td>
-            <vs-td v-else>
-              <p class="product-name font-medium truncate ">{{tr.status_details}}</p>
-            </vs-td>
-            <vs-td v-if="tr.take_away_type_method.name !=null">
-              <p class="product-name font-medium truncate ">{{tr.take_away_type_method.name}}</p>
-            </vs-td>
-            <vs-td v-else>
-              <p class="product-name font-medium truncate ">-</p>
+          <vs-td v-if="tr.status_details != 'Create Invoice'">
+            <p class="text-success " >
+              Processing
+            </p>
+          </vs-td>
+          <vs-td v-else>
+            <p class="product-name font-medium truncate ">{{tr.status_details}}</p>
+          </vs-td>
+          <vs-td v-if="tr.take_away_type_method.name !=null">
+            <p class="product-name font-medium truncate ">{{tr.take_away_type_method.name}}</p>
+          </vs-td>
+          <vs-td v-else>
+            <p class="product-name font-medium truncate ">-</p>
 
-            </vs-td>
+          </vs-td>
 
-            <vs-td class="whitespace-no-wrap ">
-              <feather-icon
-                icon="EyeIcon"
-                svgClasses="w-5 h-5 m-3 hover:text-primary stroke-current"
-                title="View Order"
-                @click="
+          <vs-td class="whitespace-no-wrap ">
+            <feather-icon
+              icon="EyeIcon"
+              svgClasses="w-5 h-5 m-3 hover:text-primary stroke-current"
+              title="View Order"
+              @click="
                   orderDetailPopupActive = true;
                   selectedOrder = tr;
                 "
-              />
-              <feather-icon
-                icon="XCircleIcon"
-                svgClasses="w-5 h-5 hover:text-danger stroke-current"
-                class="ml-2"
-                title="Cancel Order"
-                @click="confirmAction(cancelOrder, [tr.id])"
-              />
-            </vs-td>
-          </vs-tr>
+            />
+            <feather-icon
+              icon="XCircleIcon"
+              svgClasses="w-5 h-5 hover:text-danger stroke-current"
+              class="ml-2"
+              title="Cancel Order"
+              @click="confirmAction(cancelOrder, [tr.id])"
+            />
+          </vs-td>
+        </vs-tr>
         </tbody>
       </template>
     </vs-table>
@@ -150,10 +150,10 @@
               <td class="font-semibold">Order No :</td>
               <td>{{ selectedOrder.order_no }}</td>
             </tr>
-<!--            <tr>-->
-<!--              <td class="font-semibold">Take away type :</td>-->
-<!--              <td>{{ selectedOrder.take_away_type_method.name }}</td>-->
-<!--            </tr>-->
+            <!--            <tr>-->
+            <!--              <td class="font-semibold">Take away type :</td>-->
+            <!--              <td>{{ selectedOrder.take_away_type_method.name }}</td>-->
+            <!--            </tr>-->
 
             <tr>
               <td class="font-semibold">Status Details :</td>
@@ -172,198 +172,198 @@
                   class="price-details table-card mt-5 w-full"
                   v-if="selectedOrder.price"
                 >
-                  <td class="text-ihostm m-2">Price Details</td>
-                  <hr />
-                  <table class="m-2">
+              <td class="text-ihostm m-2">Price Details</td>
+              <hr />
+              <table class="m-2">
 
-                    <tr>
-                      <td class="font-semibold">Total Price :</td>
-                      <td>{{ selectedOrder.price.total_price }}</td>
-                    </tr>
-                    <tr>
-                      <td class="font-semibold">Service Charge :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.service_charge }}</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="font-semibold">Vat Amount :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.tax_amount }}</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="font-semibold">Grand Total :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.grand_total_price }}</p>
-                      </td>
-                    </tr>
+                <tr>
+                  <td class="font-semibold">Total Price :</td>
+                  <td>{{ selectedOrder.price.total_price }}</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Service Charge :</td>
+                  <td>
+                    <p>{{ selectedOrder.price.service_charge }}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Vat Amount :</td>
+                  <td>
+                    <p>{{ selectedOrder.price.tax_amount }}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Grand Total :</td>
+                  <td>
+                    <p>{{ selectedOrder.price.grand_total_price }}</p>
+                  </td>
+                </tr>
 
-                    <tr>
-                      <td class="font-semibold">Discount Amount :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.discount_amount }}</p>
-                      </td>
-                    </tr>
+                <tr>
+                  <td class="font-semibold">Discount Amount :</td>
+                  <td>
+                    <p>{{ selectedOrder.price.discount_amount }}</p>
+                  </td>
+                </tr>
 
-                    <tr>
-                      <td class="font-semibold">Net Total :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.payable_amount }}</p>
-                      </td>
-                    </tr>
-
-
-                  </table>
-                </div>
-              </td>
-            </tr>
-
-            <!-- <tr>
-              <td class="font-semibold">Options :</td>
-              <td class="flex">
-                <span v-for="(opt, i) in selectedOrder.food_options" :key="i">
-                  <vs-chip>
-                    <b>{{ opt.option_type.name }}: </b>
-                    {{ opt.name }}</vs-chip
-                  >
-                </span>
-              </td>
-            </tr> -->
-
-            <!-- <tr>
-              <td class="font-semibold">Extra Type :</td>
-              <td class="flex">
-                <span v-for="(opt, i) in selectedOrder.food_extras" :key="i">
-                  <vs-chip> {{ opt.type_name }}</vs-chip>
-                </span>
-              </td>
-            </tr> -->
-
-            <!-- <tr>
-              <td class="font-semibold">Top :</td>
-              <td>{{ selectedOrder.is_top ? "Yes" : "No" }}</td>
-            </tr> -->
-
-            <!-- <tr>
-              <td class="font-semibold">Recommended :</td>
-              <td>
-                <p>
-                  {{ selectedOrder.is_recommended ? "Yes" : "No" }}
-                </p>
-              </td>
-            </tr> -->
-          </table>
-          <br />
-
-          <div class="flex flex-wrap-reverse items-center">
-            <!-- <vs-button
-              v-if="confirmOrder"
-              color="dark"
-              class="text-1xl text-white w-64 bg-black mx-auto"
-              type="flat"
-              @click="inTable(selectedOrder)"
-              :disabled="isBtnLoading ? true : false"
-            >
-              Confirm Order</vs-button
-            > -->
-
-<!--            <vs-button-->
-<!--              v-if="isInvoiceCreated"-->
-<!--              color="dark"-->
-<!--              class="text-1xl text-white w-64 bg-black mx-auto"-->
-<!--              type="flat"-->
-<!--              @click="createInvoice(selectedOrder)"-->
-<!--              :disabled="isBtnLoading ? true : false"-->
-<!--            >-->
-<!--              Create Invoice</vs-button-->
-<!--            >-->
-            <vs-button
-              v-if="selectedOrder.status_details != 'Create Invoice'"
-              color="dark"
-              class="text-1xl text-white w-64 bg-black mx-auto"
-              type="flat"
-              @click="show_discount_form()"
-              :disabled="isBtnLoading ? true : false"
-            >
-              Create Invoice</vs-button
-            >
+                <tr>
+                  <td class="font-semibold">Net Total :</td>
+                  <td>
+                    <p>{{ selectedOrder.price.payable_amount }}</p>
+                  </td>
+                </tr>
 
 
-            <vs-button
-              v-if="selectedOrder.status_details =='Create Invoice'"
-              color="dark"
-              class="text-1xl text-white w-64 bg-black mx-auto"
-              type="flat"
-              @click="confirmPaymentOrder(selectedOrder)"
-              :disabled="isBtnLoading ? true : false"
-            >
-              Collect Cash</vs-button
-            >
-          </div>
+              </table>
         </div>
-      </template>
-    </vs-popup>
+        </td>
+        </tr>
 
-            <vs-popup
-              class="holamundo"
-              title="Discount"
-              :active.sync="popup_discount_form"
-            >
-            <vs-table>
-              <vs-tr class="bg-white font-bold">
-                <vs-td colspan="3" class="text-right">Discount Amount:</vs-td>
-                <vs-td class="text-right pr-0">
-                  <vs-input
-                    icon-pack="feather"
-                    icon=""
-                    class="mt-5 w-full"
-                    v-model="discount_amount"
-                    type="number"
-                    min="0"
-                    v-validate="'required'"
-                  />
-                </vs-td>
-              </vs-tr>
-              <vs-tr class="bg-white font-bold">
-                <vs-td colspan="3" class="text-right">Discount Percentage:</vs-td>
-                <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage"  vs-value="true">Yes</vs-radio>
-                <vs-radio style="padding:10px;"  v-model="discount_amount_is_percentage" vs-value="false">No</vs-radio>
-              </vs-tr>
-
-            </vs-table>
-            <vs-button
-              class="float-right"
-              color="success"
-              @click="createInvoice(selectedOrder)"
-              :disabled="isBtnLoading ? true : false"
-            >Print
-            </vs-button
-            >
-            </vs-popup>
-
-    <!-- Please don't remove below  code -->
-    <img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
-
-         <h2 class="m-2 text-center">Completed Orders</h2>
-          <vs-table class="p-0"
-            ref="tableForAllTakeaway"
-            v-model="selected"
-            pagination
-            :max-items="itemsPerPageForAllTakeaway"
-            search
-            :data="completeTakeawayOrders"
-          >
-          <div
-            slot="header"
-            class="flex flex-wrap-reverse items-center flex-grow justify-between"
-          >
-
-
-            <vs-dropdown vs-trigger-click class="cursor-pointer mb-4 mr-4">
-              <div
-                class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
+        <!-- <tr>
+          <td class="font-semibold">Options :</td>
+          <td class="flex">
+            <span v-for="(opt, i) in selectedOrder.food_options" :key="i">
+              <vs-chip>
+                <b>{{ opt.option_type.name }}: </b>
+                {{ opt.name }}</vs-chip
               >
+            </span>
+          </td>
+        </tr> -->
+
+        <!-- <tr>
+          <td class="font-semibold">Extra Type :</td>
+          <td class="flex">
+            <span v-for="(opt, i) in selectedOrder.food_extras" :key="i">
+              <vs-chip> {{ opt.type_name }}</vs-chip>
+            </span>
+          </td>
+        </tr> -->
+
+        <!-- <tr>
+          <td class="font-semibold">Top :</td>
+          <td>{{ selectedOrder.is_top ? "Yes" : "No" }}</td>
+        </tr> -->
+
+        <!-- <tr>
+          <td class="font-semibold">Recommended :</td>
+          <td>
+            <p>
+              {{ selectedOrder.is_recommended ? "Yes" : "No" }}
+            </p>
+          </td>
+        </tr> -->
+        </table>
+        <br />
+
+        <div class="flex flex-wrap-reverse items-center">
+          <!-- <vs-button
+            v-if="confirmOrder"
+            color="dark"
+            class="text-1xl text-white w-64 bg-black mx-auto"
+            type="flat"
+            @click="inTable(selectedOrder)"
+            :disabled="isBtnLoading ? true : false"
+          >
+            Confirm Order</vs-button
+          > -->
+
+          <!--            <vs-button-->
+          <!--              v-if="isInvoiceCreated"-->
+          <!--              color="dark"-->
+          <!--              class="text-1xl text-white w-64 bg-black mx-auto"-->
+          <!--              type="flat"-->
+          <!--              @click="createInvoice(selectedOrder)"-->
+          <!--              :disabled="isBtnLoading ? true : false"-->
+          <!--            >-->
+          <!--              Create Invoice</vs-button-->
+          <!--            >-->
+          <vs-button
+            v-if="selectedOrder.status_details != 'Create Invoice'"
+            color="dark"
+            class="text-1xl text-white w-64 bg-black mx-auto"
+            type="flat"
+            @click="show_discount_form()"
+            :disabled="isBtnLoading ? true : false"
+          >
+            Create Invoice</vs-button
+          >
+
+
+          <vs-button
+            v-if="selectedOrder.status_details =='Create Invoice'"
+            color="dark"
+            class="text-1xl text-white w-64 bg-black mx-auto"
+            type="flat"
+            @click="confirmPaymentOrder(selectedOrder)"
+            :disabled="isBtnLoading ? true : false"
+          >
+            Collect Cash</vs-button
+          >
+        </div>
+  </div>
+</template>
+</vs-popup>
+
+<vs-popup
+  class="holamundo"
+  title="Discount"
+  :active.sync="popup_discount_form"
+>
+<vs-table>
+  <vs-tr class="bg-white font-bold">
+    <vs-td colspan="3" class="text-right">Discount Amount:</vs-td>
+    <vs-td class="text-right pr-0">
+      <vs-input
+        icon-pack="feather"
+        icon=""
+        class="mt-5 w-full"
+        v-model="discount_amount"
+        type="number"
+        min="0"
+        v-validate="'required'"
+      />
+    </vs-td>
+  </vs-tr>
+  <vs-tr class="bg-white font-bold">
+    <vs-td colspan="3" class="text-right">Discount Percentage:</vs-td>
+    <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage"  vs-value="true">Yes</vs-radio>
+    <vs-radio style="padding:10px;"  v-model="discount_amount_is_percentage" vs-value="false">No</vs-radio>
+  </vs-tr>
+
+</vs-table>
+<vs-button
+  class="float-right"
+  color="success"
+  @click="createInvoice(selectedOrder)"
+  :disabled="isBtnLoading ? true : false"
+>Print
+</vs-button
+>
+</vs-popup>
+
+<!-- Please don't remove below  code -->
+<img id="res_logo" :src="resturent.logo" alt="" style="display: none" />
+
+<h2 class="m-2 text-center">Completed Orders</h2>
+<vs-table class="p-0"
+          ref="tableForAllTakeaway"
+          v-model="selected"
+          pagination
+          :max-items="itemsPerPageForAllTakeaway"
+          search
+          :data="completeTakeawayOrders"
+>
+<div
+  slot="header"
+  class="flex flex-wrap-reverse items-center flex-grow justify-between"
+>
+
+
+  <vs-dropdown vs-trigger-click class="cursor-pointer mb-4 mr-4">
+    <div
+      class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
+    >
                       <span class="mr-2"
                       >{{ currentPageForAllTakeaway * itemsPerPageForAllTakeaway - (itemsPerPageForAllTakeaway - 1) }} -
                         {{
@@ -372,69 +372,69 @@
                             : completeTakeawayOrders.length
                         }}
                     </span
-                      >
-                <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
-              </div>
+                    >
+      <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
+    </div>
 
-              <vs-dropdown-menu>
-                <vs-dropdown-item @click="itemsPerPageForAllTakeaway = 5">
-                  <span>5</span>
-                </vs-dropdown-item>
-                <vs-dropdown-item @click="itemsPerPageForAllTakeaway = 10">
-                  <span>10</span>
-                </vs-dropdown-item>
+    <vs-dropdown-menu>
+      <vs-dropdown-item @click="itemsPerPageForAllTakeaway = 5">
+        <span>5</span>
+      </vs-dropdown-item>
+      <vs-dropdown-item @click="itemsPerPageForAllTakeaway = 10">
+        <span>10</span>
+      </vs-dropdown-item>
 
-              </vs-dropdown-menu>
-            </vs-dropdown>
-          </div>
+    </vs-dropdown-menu>
+  </vs-dropdown>
+</div>
 
-          <template slot="thead">
-            <vs-th>Sl</vs-th>
-            <vs-th>Order No</vs-th>
-            <vs-th>Payable Amount</vs-th>
-            <vs-th>Order Item</vs-th>
-            <vs-th>Status Details</vs-th>
-            <vs-th>Takeaway Type</vs-th>
-          </template>
+<template slot="thead">
+  <vs-th>Sl</vs-th>
+  <vs-th>Order No</vs-th>
+  <vs-th>Payable Amount</vs-th>
+  <vs-th>Order Item</vs-th>
+  <vs-th>Status Details</vs-th>
+  <vs-th>Takeaway Type</vs-th>
+</template>
 
-          <template slot-scope="{ data }">
-            <tbody>
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <p class="product-name font-medium truncate text-center">
-                  {{ itemsPerPageForAllTakeaway * (currentPageForAllTakeaway - 1) + indextr + 1 }}
-                </p>
-              </vs-td>
-              <vs-td>
-                <!-- <img :src="tr.order_no" class="product-img" /> -->
-                <p class="product-name font-medium truncate text-center">{{ tr.order_info.order_no }}</p>
-              </vs-td>
-              <vs-td>
-                <p class="product-name font-medium truncate text-center">{{ tr.order_info.price.payable_amount }}</p>
-              </vs-td>
+<template slot-scope="{ data }">
+  <tbody>
+  <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+    <vs-td>
+      <p class="product-name font-medium truncate text-center">
+        {{ itemsPerPageForAllTakeaway * (currentPageForAllTakeaway - 1) + indextr + 1 }}
+      </p>
+    </vs-td>
+    <vs-td>
+      <!-- <img :src="tr.order_no" class="product-img" /> -->
+      <p class="product-name font-medium truncate text-center">{{ tr.order_info.order_no }}</p>
+    </vs-td>
+    <vs-td>
+      <p class="product-name font-medium truncate text-center">{{ tr.order_info.price.payable_amount }}</p>
+    </vs-td>
 
-              <vs-td>
+    <vs-td>
                 <span v-for="(ordered_item, i) in tr.order_info.ordered_items" :key="i">
                           <vs-chip> {{ ordered_item.food_name }}</vs-chip>
                           <br />
                         </span>
-              </vs-td>
+    </vs-td>
 
-              <vs-td>
-                <p class="product-name font-medium truncate text-center">{{tr.order_info.status_details}}</p>
-              </vs-td>
+    <vs-td>
+      <p class="product-name font-medium truncate text-center">{{tr.order_info.status_details}}</p>
+    </vs-td>
 
-              <vs-td v-if="tr.order_info.take_away_type_method.name !=null">
-                <p class="product-name font-medium truncate text-center">{{tr.order_info.take_away_type_method.name}}</p>
-              </vs-td>
-              <vs-td v-else>
-                <p class="product-name font-medium truncate text-center">-</p>
-              </vs-td>
-            </vs-tr>
-            </tbody>
-          </template>
-          </vs-table>
-  </div>
+    <vs-td v-if="tr.order_info.take_away_type_method.name !=null">
+      <p class="product-name font-medium truncate text-center">{{tr.order_info.take_away_type_method.name}}</p>
+    </vs-td>
+    <vs-td v-else>
+      <p class="product-name font-medium truncate text-center">-</p>
+    </vs-td>
+  </vs-tr>
+  </tbody>
+</template>
+</vs-table>
+</div>
 
 
 
@@ -507,7 +507,7 @@ export default {
         )
         .then((res) => (
           this.takeAwayOrders = res.data.data,
-          console.log("take away orders",res.data.data)
+            console.log("take away orders",res.data.data)
         ))
         .catch((err) => {
           // this.showActionMessage("error", err.response.statusText);
@@ -523,8 +523,8 @@ export default {
           `/restaurant_management/dashboard/complete_take_away_order/${this.resturent_id}/`
         )
         .then((res) => (
-        this.completeTakeawayOrders = res.data.data,
-          console.log("complete takeaway orders",this.completeTakeawayOrders)
+          this.completeTakeawayOrders = res.data.data,
+            console.log("complete takeaway orders",this.completeTakeawayOrders)
         ))
         .catch((err) => {
           // this.showActionMessage("error", err.response.statusText);
@@ -612,7 +612,7 @@ export default {
           `/restaurant_management/dashboard/take_away_discount/${OrderId}`,
           body
         ).then((res) => {
-          console.log("response of takeaway discount",res);
+        console.log("response of takeaway discount",res);
         this.isBtnLoading = true;
         axios
           .post("/restaurant_management/dashboard/order/create_invoice/", {
@@ -705,13 +705,13 @@ export default {
                         </td>
                         <td class="tableitem">
                             <p class="itemtext" style="text-align:center">${
-                              el.food_option.price
-                            }/-</p>
+            el.food_option.price
+          }/-</p>
                         </td>
                         <td class="tableitem price">
                             <p class="itemtext">${
-                              el.food_option.price * el.quantity
-                            }/-</p>
+            el.food_option.price * el.quantity
+          }/-</p>
                         </td>
                     </tr>`;
         }
@@ -993,7 +993,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 td {
   border-top: 10px solid #f8f8f8;
   text-align: center !important;
@@ -1007,3 +1007,155 @@ th .vs-table-text {
   justify-content: center !important;
 }
 </style>
+<!--<style lang="scss" scoped>-->
+
+
+<!--#data-list-thumb-view {-->
+<!--  .vs-con-table {-->
+<!--    .product-name {-->
+<!--      max-width: 23rem;-->
+<!--    }-->
+
+<!--    .vs-table&#45;&#45;header {-->
+<!--      display: flex;-->
+<!--      flex-wrap: wrap-reverse;-->
+<!--      margin-left: 1.5rem;-->
+<!--      margin-right: 1.5rem;-->
+<!--      > span {-->
+<!--        display: flex;-->
+<!--        flex-grow: 1;-->
+<!--      }-->
+
+<!--      .vs-table&#45;&#45;search {-->
+<!--        padding-top: 0;-->
+
+<!--        .vs-table&#45;&#45;search-input {-->
+<!--          padding: 0.9rem 2.5rem;-->
+<!--          font-size: 1rem;-->
+
+<!--          & + i {-->
+<!--            left: 1rem;-->
+<!--          }-->
+
+<!--          &:focus + i {-->
+<!--            left: 1rem;-->
+<!--          }-->
+<!--        }-->
+<!--      }-->
+<!--    }-->
+
+<!--    .vs-table {-->
+<!--      border-collapse: separate;-->
+<!--      border-spacing: 0 1.3rem;-->
+<!--      padding: 0 1rem;-->
+
+<!--      tr {-->
+<!--        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);-->
+<!--        td {-->
+<!--          padding: 10px;-->
+<!--          &:first-child {-->
+<!--            border-top-left-radius: 0.5rem;-->
+<!--            border-bottom-left-radius: 0.5rem;-->
+<!--          }-->
+<!--          &:last-child {-->
+<!--            border-top-right-radius: 0.5rem;-->
+<!--            border-bottom-right-radius: 0.5rem;-->
+<!--          }-->
+<!--          &.img-container {-->
+<!--            // width: 1rem;-->
+<!--            // background: #fff;-->
+
+<!--            span {-->
+<!--              display: flex;-->
+<!--              justify-content: flex-start;-->
+<!--            }-->
+
+<!--            .product-img {-->
+<!--              height: 110px;-->
+<!--            }-->
+<!--          }-->
+<!--        }-->
+<!--        td.td-check {-->
+<!--          padding: 20px !important;-->
+<!--        }-->
+<!--      }-->
+<!--    }-->
+
+<!--    .vs-table&#45;&#45;thead {-->
+<!--      th {-->
+<!--        padding-top: 0;-->
+<!--        padding-bottom: 0;-->
+
+<!--        .vs-table-text {-->
+<!--          text-transform: uppercase;-->
+<!--          font-weight: 600;-->
+<!--        }-->
+<!--      }-->
+<!--      th.td-check {-->
+<!--        padding: 0 15px !important;-->
+<!--      }-->
+<!--      tr {-->
+<!--        background: none;-->
+<!--        box-shadow: none;-->
+<!--      }-->
+<!--    }-->
+
+<!--    .vs-table&#45;&#45;pagination {-->
+<!--      justify-content: center;-->
+<!--    }-->
+<!--  }-->
+<!--}-->
+
+<!--.vs-sidebar {-->
+<!--  z-index: 100000;-->
+<!--}-->
+
+<!--.sidebar-custom > .header-sidebar {-->
+<!--  display: flex;-->
+<!--  align-items: center;-->
+<!--  justify-content: center;-->
+<!--  flex-direction: column;-->
+<!--  width: 100%;-->
+<!--  h4 {-->
+<!--    display: flex;-->
+<!--    align-items: center;-->
+<!--    justify-content: center;-->
+<!--    width: 100%;-->
+<!--    > button {-->
+<!--      margin-left: 10px;-->
+<!--    }-->
+<!--  }-->
+<!--}-->
+
+<!--.footer-sidebar {-->
+<!--  display: flex;-->
+<!--  align-items: center;-->
+<!--  justify-content: space-between;-->
+<!--  width: 100%;-->
+<!--  > button {-->
+<!--    border: 0px solid rgba(0, 0, 0, 0) !important;-->
+<!--    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;-->
+<!--    border-radius: 0px !important;-->
+<!--  }-->
+<!--}-->
+
+<!--.sidebar-custom > .vs-sidebar-primary {-->
+<!--  max-width: 400px !important;-->
+<!--}-->
+
+<!--th:first-child .vs-table-text {-->
+<!--  justify-content: center !important;-->
+<!--  cursor: pointer;-->
+<!--}-->
+<!--.vs-table&#45;&#45;thead {-->
+<!--  background-color: #32304e;-->
+<!--  color: #fff;-->
+<!--}-->
+
+<!--.vs-con-table .vs-con-tbody .vs-table&#45;&#45;tbody-table .vs-table&#45;&#45;thead th {-->
+<!--  padding: 10px 15px !important;-->
+<!--}-->
+<!--</style>-->
+
+
+
