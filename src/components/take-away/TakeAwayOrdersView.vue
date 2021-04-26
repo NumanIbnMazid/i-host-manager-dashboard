@@ -613,34 +613,44 @@ export default {
           body
         ).then((res) => {
           console.log("response of takeaway discount",res);
-        this.isBtnLoading = true;
-        axios
-          .post("/restaurant_management/dashboard/order/create_invoice/", {
-            order_id: order.id,
-          })
-          .then((res) => {
+        var error_message = '';
+        error_message = res.data.msg;
+        if (error_message != 'success') {
+
+          return this.showActionMessage("error", error_message);
+        }
+        else
+          {
+          this.isBtnLoading = true;
+          axios
+            .post("/restaurant_management/dashboard/order/create_invoice/", {
+              order_id: order.id,
+            })
+            .then((res) => {
 
 
-            console.log("invoice ", res.data);
-            if (res.data.status) {
+              console.log("invoice ", res.data);
+              if (res.data.status) {
 
 
-              console.log(1);
-              this.getTakeAwayOrderList();
-              this.isInvoiceCreated = false;
-              this.collectCash = true;
-              this.isBtnLoading = false;
-              this.printRecipt(res.data.data);
+                console.log(1);
+                this.getTakeAwayOrderList();
+                this.isInvoiceCreated = false;
+                this.collectCash = true;
+                this.isBtnLoading = false;
+                this.printRecipt(res.data.data);
 
-              console.log(res.data.data);
-              console.log(2);
-              // this.showActionMessage("success", "Order Canceled!");
-            }
-            // else this.showErrorLog(res.data.error.error_details);
-          })
-          .catch((err) => {
-            console.log("error invoice ", err.response);
-          });
+                console.log(res.data.data);
+                console.log(2);
+                // this.showActionMessage("success", "Order Canceled!");
+              }
+              // else this.showErrorLog(res.data.error.error_details);
+            })
+            .catch((err) => {
+              console.log("error invoice ", err.response);
+            });
+        }
+
 
       }).catch((err)=>{
         console.log("error takeaway discount ", err.response);
