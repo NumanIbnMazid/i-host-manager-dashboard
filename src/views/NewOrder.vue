@@ -1217,7 +1217,7 @@ export default {
             if (this.isDinein && this.dinein_selected_table_id !== null) {
               this.isBtnLoading = false;
               this.orderData = {id: null, ordered_items: [], price: null};
-              localStorage.setItem("orderData", this.orderData);
+              // localStorage.setItem("orderData", this.orderData);
               this.showActionMessage(
                 "success",
                 `Order Confirmed At Table  No ${this.dinein_selected_table_id}`
@@ -1741,7 +1741,7 @@ export default {
 </script>
 
 
-<style lang="scss" scoped >
+<style lang="scss"  >
 .order-item-list-table {
   max-height: 50%;
   overflow: scroll;

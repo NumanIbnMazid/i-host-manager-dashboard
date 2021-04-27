@@ -518,7 +518,7 @@ export default {
       formData.append("code", this.food_code);
       formData.append("restaurant", localStorage.getItem("resturent_id"));
       formData.append("category", this.category);
-      formData.append("discount", this.discount);
+      formData.append("discount_id", this.discount);
       formData.append("ingredients", this.ingredients);
       formData.append("description", this.description);
       formData.append("image", this.image);
@@ -556,7 +556,7 @@ export default {
       formData.append("code", this.food_code);
       formData.append("restaurant", localStorage.getItem("resturent_id"));
       formData.append("category", this.category);
-      formData.append("discount", this.discount);
+      formData.append("discount_id", this.discount);
       formData.append("ingredients", this.ingredients);
       formData.append("description", this.description);
       formData.append("image", this.image);

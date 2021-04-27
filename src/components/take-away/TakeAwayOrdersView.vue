@@ -1003,7 +1003,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 td {
   border-top: 10px solid #f8f8f8;
   text-align: center !important;
