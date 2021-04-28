@@ -106,6 +106,7 @@ export default {
           this.orders = res.data.data.results;
           this.totalOrder = res.data.data.total_order;
           this.totalAmount = res.data.data.total_amaount;
+          console.log("total order fdfdsfdf",this.totalOrder);
           this.$vs.loading.close();
         })
         .catch((err) => {

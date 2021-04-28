@@ -1,5 +1,7 @@
 <template>
   <div id="data-list-thumb-view" class="data-list-container">
+    <h2 class="m-2 text-center">Running Orders</h2>
+
     <vs-table
       ref="table"
       v-model="selected"
@@ -26,7 +28,7 @@
           <div
             class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
           >
-            <span class="mr-2"
+            <span class="mr-2" v-if="takeAwayOrders !=null"
               >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} -
               {{
                 takeAwayOrders.length - currentPage * itemsPerPage > 0
@@ -38,7 +40,7 @@
             <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
           </div>
 
-          <vs-dropdown-menu>
+          <vs-dropdown-menu v-if="takeAwayOrders !=null">
             <vs-dropdown-item @click="itemsPerPage = 10">
               <span>10</span>
             </vs-dropdown-item>
@@ -59,7 +61,6 @@
         <vs-th>Price</vs-th>
         <vs-th>Status Details</vs-th>
         <vs-th>Takeaway Type</vs-th>
-
         <vs-th>Action</vs-th>
       </template>
 
@@ -172,7 +173,7 @@
                   class="price-details table-card mt-5 w-full"
                   v-if="selectedOrder.price"
                 >
-                  <td class="text-ihostm m-2">Price Details</td>
+                  <td class="text-ihostm m-2 text-center">Price Details</td>
                   <hr />
                   <table class="m-2">
 
@@ -305,6 +306,16 @@
       </template>
     </vs-popup>
 
+          <vs-popup title="Invoice Preview" :active.sync="takeawayOrdersPaymentShow">
+          <TakeawayPayments
+            :theOrder="TakeawayPaymentOrder"
+            @emitAfterTakeawayPayments="afterTakeawayPayments"
+
+
+          ></TakeawayPayments>
+          </vs-popup>
+
+
             <vs-popup
               class="holamundo"
               title="Discount"
@@ -364,7 +375,7 @@
               <div
                 class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
               >
-                      <span class="mr-2"
+                      <span class="mr-2" v-if="completeTakeawayOrders !=null"
                       >{{ currentPageForAllTakeaway * itemsPerPageForAllTakeaway - (itemsPerPageForAllTakeaway - 1) }} -
                         {{
                           completeTakeawayOrders.length - currentPageForAllTakeaway * itemsPerPageForAllTakeaway > 0
@@ -376,7 +387,7 @@
                 <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
               </div>
 
-              <vs-dropdown-menu>
+              <vs-dropdown-menu v-if="completeTakeawayOrders != null">
                 <vs-dropdown-item @click="itemsPerPageForAllTakeaway = 5">
                   <span>5</span>
                 </vs-dropdown-item>
@@ -389,6 +400,7 @@
           </div>
 
           <template slot="thead">
+
             <vs-th>Sl</vs-th>
             <vs-th>Order No</vs-th>
             <vs-th>Payable Amount</vs-th>
@@ -444,10 +456,13 @@
 import vSelect from "vue-select";
 import axios from "@/axios.js";
 import moment from "moment";
+import TakeawayPayments from "./TakeawayPayments";
+
 
 export default {
   components: {
     "v-select": vSelect,
+    TakeawayPayments
   },
   data() {
     return {
@@ -473,6 +488,8 @@ export default {
       popup_discount_form: false,
       discount_amount: 0,
       discount_amount_is_percentage: 'true',
+      takeawayOrdersPaymentShow: false,
+      TakeawayPaymentOrder: "",
 
     };
   },
@@ -498,6 +515,13 @@ export default {
       this.popup_discount_form = true;
       this.orderDetailPopupActive = false;
 
+    },
+
+    afterTakeawayPayments(is_invoice_preview_false) {
+
+      this.takeawayOrdersPaymentShow = is_invoice_preview_false;
+      this.getTakeAwayOrderList();
+      this.getAllTakeawayOrders();
     },
     getTakeAwayOrderList() {
       console.log("this.resturent_id ", this.resturent_id);
@@ -561,34 +585,40 @@ export default {
     },
 
     confirmPaymentOrder(order) {
-      this.isBtnLoading = true;
-      axios
-        .post("/restaurant_management/dashboard/order/confirm_payment/", {
-          order_id: order.id,
-        })
-        .then((res) => {
-          if (res.data.status) {
+      console.log("ordersssssssssssssssss",order);
+      this.orderDetailPopupActive = false;
+      this.takeawayOrdersPaymentShow = true;
+      this.TakeawayPaymentOrder = order;
+       //
+       // this.isBtnLoading = true;
+       // axios
+       //   .post("/restaurant_management/dashboard/order/confirm_payment/", {
+       //     order_id: order.id,
+       //   })
+       //   .then((res) => {
+       //     if (res.data.status) {
+       //
+       //       const leftTakeAwayOrders = this.takeAwayOrders.filter(
+       //         (takeAwayorder) => takeAwayorder.id !== order.id
+       //       );
+       //
+       //       // if the order is running then remove order from newOrder board
+       //       if (order.id === this.runningTakeAwayOrder.id) {
+       //         localStorage.removeItem("orderData");
+       //       }
+       //
+       //       this.takeAwayOrders = leftTakeAwayOrders;
+       //       this.getAllTakeawayOrders();
+       //       this.isInvoiceCreated = false;
+       //       this.collectCash = true;
+       //       this.isBtnLoading = false;
+       //       this.orderDetailPopupActive = false;
+       //     } else this.showErrorLog(res.data.error.error_details);
+       //   })
+       //   .catch((err) => {
+       //     console.log("err co ", err.response);
+       //   });
 
-            const leftTakeAwayOrders = this.takeAwayOrders.filter(
-              (takeAwayorder) => takeAwayorder.id !== order.id
-            );
-
-            // if the order is running then remove order from newOrder board
-            if (order.id === this.runningTakeAwayOrder.id) {
-              localStorage.removeItem("orderData");
-            }
-
-            this.takeAwayOrders = leftTakeAwayOrders;
-            this.getAllTakeawayOrders();
-            this.isInvoiceCreated = false;
-            this.collectCash = true;
-            this.isBtnLoading = false;
-            this.orderDetailPopupActive = false;
-          } else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => {
-          console.log("err co ", err.response);
-        });
     },
 
     boolean_conversion(discount_amount_is_percentage) {
@@ -1006,14 +1036,17 @@ export default {
 <style scoped>
 td {
   border-top: 10px solid #f8f8f8;
-  text-align: center !important;
+  text-align: center;
 }
 th {
   text-align: center !important;
   background-color: #31314e;
   color: #fff !important;
+
 }
 th .vs-table-text {
   justify-content: center !important;
 }
+
+
 </style>

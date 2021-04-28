@@ -605,6 +605,16 @@
       </div>
     </vs-row>
 
+
+    <vs-popup title="Invoice Preview" :active.sync="newOrdersPaymentShow">
+      <NewOrderPayments
+
+        :theNewOrder="newPaymentOrder"
+        @emitAfterNewOrderPayments="afterNewOrderPayments"
+
+      ></NewOrderPayments>
+    </vs-popup>
+
     <!-- item add to card details -->
     <!-- popup -->
     <vs-popup
@@ -762,6 +772,8 @@
 import axios from "@/axios.js";
 import moment from "moment";
 import vSelect from "vue-select";
+import NewOrderPayments from "../components/new-order/NewOrderPayments";
+
 
 // icons
 import { CheckSquareIcon } from "vue-feather-icons";
@@ -784,6 +796,7 @@ export default {
     CheckSquareIcon,
     FileTextIcon,
     DollarSignIcon,
+    NewOrderPayments,
   },
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
@@ -825,9 +838,27 @@ export default {
       food_option: null,
       food_extras: [],
     },
+    newOrdersPaymentShow: false,
+    newPaymentOrder: "",
   }),
 
   methods: {
+
+
+    afterNewOrderPayments(res) {
+
+          if (res.data.status && res.data.data.status === "5_PAID") {
+            this.newOrdersPaymentShow = false;
+            this.orderData = {id: null, ordered_items: [], price: null};
+            localStorage.setItem("orderData", null);
+            this.showActionMessage("success", res.data.data.status_details);
+            this.isConfirmPayment = false;
+            this.isBtnLoading = false;
+
+
+          } else this.showErrorLog(res.data.error.error_details);
+
+    },
 
     fresh_takeout()
     {
@@ -1036,7 +1067,8 @@ export default {
             this.orderData.ordered_items.push(res.data.data[0]);
             // checkIfCart(res.data.data[0])
             console.log("order data cart ", this.orderData);
-          } else this.showErrorLog(res.data.error.error_details);
+          }
+          // else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
           console.log("err oci ", err.response);
@@ -1238,24 +1270,32 @@ export default {
     },
 
     confirmPaymentOrder() {
+
       this.isBtnLoading = true;
-      axios
-        .post("/restaurant_management/dashboard/order/confirm_payment/", {
-          order_id: this.orderData.id,
-        })
-        .then((res) => {
-          console.log("cPorder  ", res.data);
-          if (res.data.status && res.data.data.status === "5_PAID") {
-            this.orderData = {id: null, ordered_items: [], price: null};
-            localStorage.setItem("orderData", null);
-            this.showActionMessage("success", res.data.data.status_details);
-            this.isConfirmPayment = false;
-            this.isBtnLoading = false;
-          } else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => {
-          console.log("err co ", err.response);
-        });
+      console.log("Order data isssssssssssssssssssssssssssssssss ",this.orderData);
+      this.newOrdersPaymentShow = true;
+      this.newPaymentOrder = this.orderData;
+
+
+      // this.isBtnLoading = true;
+      // axios
+      //   .post("/restaurant_management/dashboard/order/confirm_payment/", {
+      //     order_id: this.o`rderData.id,
+      //   })
+      //   .then((res) => {
+      //
+      //     console.log("cPorder  ", res.data);
+      //     if (res.data.status && res.data.data.status === "5_PAID") {
+      //       this.orderData = {id: null, ordered_items: [], price: null};
+      //       localStorage.setItem("orderData", null);
+      //       this.showActionMessage("success", res.data.data.status_details);
+      //       this.isConfirmPayment = false;
+      //       this.isBtnLoading = false;
+      //     } else this.showErrorLog(res.data.error.error_details);
+      //   })
+      //   .catch((err) => {
+      //     console.log("err co ", err.response);
+      //   });
     },
 
     show_force_discount_form() {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vs-table :data="therOrder.ordered_items">
+    <vs-table :data="theOrder.ordered_items">
       <template slot="thead">
         <th class="text-left bg-grey">Sl.</th>
         <th class="text-left bg-grey">Name</th>
@@ -38,36 +38,36 @@
         </vs-tr>
         <vs-tr class="bg-grey-light font-bold">
           <vs-td colspan="3" class="text-right">Total:</vs-td>
-          <vs-td class="text-right"> ৳{{ therOrder.price.total_price }} </vs-td>
+          <vs-td class="text-right"> ৳{{ theOrder.price.total_price }} </vs-td>
         </vs-tr>
         <vs-tr class="bg-grey-light font-bold">
           <vs-td colspan="3" class="text-right">Service Charge(+):</vs-td>
           <vs-td class="text-right">
-            ৳{{ therOrder.price.service_charge }}
+            ৳{{ theOrder.price.service_charge }}
           </vs-td>
         </vs-tr>
         <vs-tr class="bg-grey-light font-bold">
           <vs-td colspan="3" class="text-right"
-            >VAT({{ therOrder.price.tax_percentage }})(+):</vs-td
+          >VAT({{ theOrder.price.tax_percentage }})(+):</vs-td
           >
-          <vs-td class="text-right"> ৳{{ therOrder.price.tax_amount }} </vs-td>
+          <vs-td class="text-right"> ৳{{ theOrder.price.tax_amount }} </vs-td>
         </vs-tr>
         <vs-tr class="bg-hard font-bold">
           <vs-td colspan="3" class="text-right">Net Total:</vs-td>
           <vs-td class="text-right">
-            ৳{{ therOrder.price.grand_total_price }}
+            ৳{{ theOrder.price.grand_total_price }}
           </vs-td>
         </vs-tr>
         <vs-tr class="bg-grey-light font-bold">
           <vs-td colspan="3" class="text-right">Discount(-):</vs-td>
           <vs-td class="text-right">
-            ৳{{ therOrder.price.discount_amount }}
+            ৳{{ theOrder.price.discount_amount }}
           </vs-td>
         </vs-tr>
         <vs-tr class="bg-dark text-white font-bold">
           <vs-td colspan="3" class="text-right">Grand Total:</vs-td>
           <vs-td class="text-right">
-            ৳{{ therOrder.price.payable_amount }}
+            ৳{{ theOrder.price.payable_amount }}
           </vs-td>
         </vs-tr>
         <vs-tr v-if="payMethod == 2" class="bg-white font-bold">
@@ -88,8 +88,8 @@
           <vs-td class="text-right">
             ৳
             {{
-              paidCash > therOrder.price.payable_amount
-                ? (paidCash - therOrder.price.payable_amount).toFixed(2)
+              paidCash > theOrder.price.payable_amount
+                ? (paidCash - theOrder.price.payable_amount).toFixed(2)
                 : 0
             }}
           </vs-td>
@@ -108,7 +108,7 @@
             v-model="payMethod"
             :vs-value="paym.id"
             name="payment_method"
-            >{{ paym.name }}</vs-radio
+          >{{ paym.name }}</vs-radio
           >
         </li>
       </ul>
@@ -116,8 +116,8 @@
     <vs-button
       class="float-right"
       color="success"
-      @click="createInvoice(therOrder)"
-      >Print</vs-button
+      @click="createInvoice(theOrder)"
+    >Print</vs-button
     >
 
     <!-- Please dont' touch my below  code 😡😡😡😡-->
@@ -130,7 +130,7 @@ import axios from "@/axios.js";
 import moment from "moment";
 
 export default {
-  props: ["therOrder"],
+  props: ["theOrder"],
   data: () => ({
     resturent_id: localStorage.getItem("resturent_id"),
     resturent: JSON.parse(localStorage.getItem("resturent")),
@@ -138,7 +138,11 @@ export default {
     payMethod: 2,
   }),
   methods: {
+
+
     createInvoice(order) {
+
+
       let order_id = order.id;
       axios
         .post("/restaurant_management/dashboard/order/confirm_payment/", {
@@ -148,7 +152,7 @@ export default {
         })
         .then((res) => {
           if (res.data.status) {
-            this.$emit("emitAfterCollectPayments", res.data.data);
+            this.$emit("emitAfterTakeawayPayments", false);
             this.printRecipt(res.data.data);
           }
         })
@@ -159,7 +163,7 @@ export default {
     },
 
     printRecipt(order) {
-      console.log("collect paymentssssssssssss",order);
+      // console.log(order);
       const WinPrint = window.open(
         "",
         "",
@@ -179,13 +183,13 @@ export default {
                         </td>
                         <td class="tableitem">
                             <p class="itemtext" style="text-align:center">${
-                              el.food_option.price
-                            }/-</p>
+            el.food_option.price
+          }/-</p>
                         </td>
                         <td class="tableitem price">
                             <p class="itemtext">${
-                              el.food_option.price * el.quantity
-                            }/-</p>
+            el.food_option.price * el.quantity
+          }/-</p>
                         </td>
                     </tr>`;
         }
@@ -356,9 +360,9 @@ export default {
         <div id="bot">
             <center>
                 <h2>Order # ${order.order_no}</h2>
-                <h2>Table No: ${order.table_no}</h2>
-                <h2>Payment Type: ${order.payment_method.name}</h2>
-                <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
+             <h2>Take Away # ${order.take_away_type_method.name}</h2>
+             <h2>Payment Method # ${order.payment_method.name}</h2>
+                <p>Time: ${moment().format("DD/MM/Y, h:mma")}</p>
             </center>
             <div id="table">
                 <table>
@@ -442,7 +446,7 @@ export default {
                     </tr>
                     <tr class="tabletitle final">
                         <td class="Rate">
-                            <h2>Net Total:</h2>
+                            <h2>Grand Total:</h2>
                         </td>
                         <td></td>
                         <td class="payment">
