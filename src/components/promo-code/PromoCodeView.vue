@@ -157,6 +157,148 @@
       </template>
     </vs-table>
 
+
+<!--   <h2 class="text-center">Cancel Items</h2>-->
+<!--    <vs-table-->
+<!--      ref="table"-->
+<!--      pagination-->
+<!--      :max-items="itemsPerPage"-->
+<!--      search-->
+<!--      :data="all_promo_codes"-->
+<!--    >-->
+<!--      <div-->
+<!--        slot="header"-->
+<!--        class="flex flex-wrap-reverse items-center flex-grow justify-between"-->
+<!--      >-->
+
+
+<!--        <vs-dropdown vs-trigger-click class="cursor-pointer mb-4 mr-4">-->
+<!--          <div-->
+<!--            class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"-->
+<!--          >-->
+<!--            <span class="mr-2"-->
+<!--            >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} - -->
+<!--              {{-->
+<!--                all_promo_codes.length - -->
+<!--                currentPage * itemsPerPage >-->
+<!--                0-->
+<!--                  ? currentPage * itemsPerPage-->
+<!--                  : all_promo_codes.length-->
+<!--              }}-->
+<!--              of {{ queriedItems }}</span-->
+<!--            >-->
+<!--            <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />-->
+<!--          </div>-->
+
+<!--          <vs-dropdown-menu>-->
+<!--            <vs-dropdown-item @click="itemsPerPage = 10">-->
+<!--              <span>10</span>-->
+<!--            </vs-dropdown-item>-->
+<!--            <vs-dropdown-item @click="itemsPerPage = 15">-->
+<!--              <span>15</span>-->
+<!--            </vs-dropdown-item>-->
+<!--            <vs-dropdown-item @click="itemsPerPage = 20">-->
+<!--              <span>20</span>-->
+<!--            </vs-dropdown-item>-->
+<!--          </vs-dropdown-menu>-->
+<!--        </vs-dropdown>-->
+<!--      </div>-->
+
+<!--      <template slot="thead">-->
+<!--        <vs-th class="text-center">Sl</vs-th>-->
+<!--        <vs-th class="text-center">Promo Code</vs-th>-->
+<!--        <vs-th class="text-center">Start Date</vs-th>-->
+<!--        <vs-th class="text-center">End Date</vs-th>-->
+<!--        <vs-th class="text-center">Promo Type</vs-th>-->
+<!--        <vs-th class="text-center">Maximum Amount</vs-th>-->
+<!--        <vs-th class="text-center">Minimum Purchase Amount</vs-th>-->
+<!--        <vs-th class="text-center">Amount</vs-th>-->
+<!--        <vs-th class="text-center">Maximum Limit</vs-th>-->
+<!--        <vs-th class="text-center">Created At</vs-th>-->
+<!--        <vs-th class="text-center">Action</vs-th>-->
+<!--      </template>-->
+
+<!--      <template slot-scope="{ data }">-->
+<!--        <tbody>-->
+<!--        <vs-tr v-for="(tr, indextr) in data" :key="indextr">-->
+<!--          <vs-td>-->
+<!--            <p class="product-name font-medium truncate text-center">-->
+<!--              {{ itemsPerPage * (currentPage - 1) + indextr + 1 }}-->
+<!--            </p>-->
+<!--          </vs-td>-->
+
+<!--          <vs-td>-->
+<!--            <p class="product-name font-medium truncate text-center">-->
+<!--              {{tr.code}}-->
+<!--            </p>-->
+<!--          </vs-td>-->
+
+
+<!--          <vs-td>-->
+<!--            <p class="product-name font-medium truncate text-center">-->
+<!--              {{formattDate(tr.start_date)}}-->
+<!--            </p>-->
+<!--          </vs-td>-->
+
+<!--          <vs-td>-->
+<!--            <p class="product-name font-medium truncate text-center">-->
+<!--              {{formattDate(tr.end_date)}}-->
+<!--            </p>-->
+<!--          </vs-td>-->
+
+<!--          <vs-td>-->
+<!--            <p class="product-name font-medium truncate text-center">-->
+<!--              {{tr.promo_type}}-->
+<!--            </p>-->
+<!--          </vs-td>-->
+
+<!--          <vs-td>-->
+<!--            <p class="product-name font-medium truncate text-center">-->
+<!--              {{tr.max_amount}}-->
+<!--            </p>-->
+<!--          </vs-td>-->
+
+<!--          <vs-td>-->
+<!--            <p class="product-name font-medium truncate text-center">-->
+<!--              {{tr.minimum_purchase_amount}}-->
+<!--            </p>-->
+<!--          </vs-td>-->
+<!--          <vs-td>-->
+<!--            <p class="product-name font-medium truncate text-center">-->
+<!--              {{tr.amount}}-->
+<!--            </p>-->
+<!--          </vs-td>-->
+<!--          <vs-td>-->
+<!--            <p class="product-name font-medium truncate text-center">-->
+<!--              {{tr.max_limit}}-->
+<!--            </p>-->
+<!--          </vs-td>-->
+<!--          <vs-td>-->
+<!--            <p class="product-name font-medium truncate text-center">-->
+<!--              {{formattDate(tr.created_at)}}-->
+<!--            </p>-->
+<!--          </vs-td>-->
+
+<!--          <vs-td class="whitespace-no-wrap">-->
+
+<!--            <feather-icon-->
+<!--              icon="EditIcon"-->
+<!--              svgClasses="w-5 h-5 hover:text-primary stroke-current"-->
+<!--              @click ="updatePromoCode(tr)"-->
+<!--            />-->
+<!--            <feather-icon-->
+<!--              icon="TrashIcon"-->
+<!--              svgClasses="w-5 h-5 hover:text-danger stroke-current"-->
+<!--              class="ml-2"-->
+<!--              @click="confirmAction(deletePromoCode, [tr.id])"-->
+<!--            />-->
+<!--          </vs-td>-->
+<!--        </vs-tr>-->
+<!--        </tbody>-->
+<!--      </template>-->
+<!--    </vs-table>-->
+
+
     <!-- NEW PROMO CODE POPUP FORM -->
     <vs-popup
       class="holamundo"
@@ -502,5 +644,10 @@ export default {
   height: 80px;
   width: auto;
   border-radius: 5px;
+}
+th {
+  text-align: center !important;
+  background-color: #31314e;
+  color: #fff !important;
 }
 </style>
