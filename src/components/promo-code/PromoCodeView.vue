@@ -158,145 +158,115 @@
     </vs-table>
 
 
-<!--   <h2 class="text-center">Cancel Items</h2>-->
-<!--    <vs-table-->
-<!--      ref="table"-->
-<!--      pagination-->
-<!--      :max-items="itemsPerPage"-->
-<!--      search-->
-<!--      :data="all_promo_codes"-->
-<!--    >-->
-<!--      <div-->
-<!--        slot="header"-->
-<!--        class="flex flex-wrap-reverse items-center flex-grow justify-between"-->
-<!--      >-->
+   <h2 class="text-center">Cancel Items</h2>
+    <vs-table
+      ref="tableForCancelledItem"
+      pagination
+      :max-items="itemsPerPageForAllCancelledItems"
+      search
+      :data="all_cancelled_item_list"
+    >
+      <div
+        slot="header"
+        class="flex flex-wrap-reverse items-center flex-grow justify-between"
+      >
+
+        <vs-dropdown vs-trigger-click class="cursor-pointer mb-4 mr-4">
+          <div
+            class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"
+          >
+            <span class="mr-2" v-if="all_cancelled_item_list !=null"
+            >{{ currentPageForAllCanceledItem * itemsPerPageForAllCancelledItems - (itemsPerPageForAllCancelledItems - 1) }} -
+              {{
+                all_cancelled_item_list.length -
+                currentPageForAllCanceledItem * itemsPerPageForAllCancelledItems >
+                0
+                  ? currentPageForAllCanceledItem * itemsPerPageForAllCancelledItems
+                  : all_cancelled_item_list.length
+              }}
+              of {{ queriedItems }}</span
+            >
+            <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
+          </div>
+
+          <vs-dropdown-menu>
+            <vs-dropdown-item @click="itemsPerPageForAllCancelledItems = 10">
+              <span>10</span>
+            </vs-dropdown-item>
+            <vs-dropdown-item @click="itemsPerPageForAllCancelledItems = 15">
+              <span>15</span>
+            </vs-dropdown-item>
+            <vs-dropdown-item @click="itemsPerPageForAllCancelledItems = 20">
+              <span>20</span>
+            </vs-dropdown-item>
+          </vs-dropdown-menu>
+        </vs-dropdown>
+      </div>
 
 
-<!--        <vs-dropdown vs-trigger-click class="cursor-pointer mb-4 mr-4">-->
-<!--          <div-->
-<!--            class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium"-->
-<!--          >-->
-<!--            <span class="mr-2"-->
-<!--            >{{ currentPage * itemsPerPage - (itemsPerPage - 1) }} - -->
-<!--              {{-->
-<!--                all_promo_codes.length - -->
-<!--                currentPage * itemsPerPage >-->
-<!--                0-->
-<!--                  ? currentPage * itemsPerPage-->
-<!--                  : all_promo_codes.length-->
-<!--              }}-->
-<!--              of {{ queriedItems }}</span-->
-<!--            >-->
-<!--            <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />-->
-<!--          </div>-->
+      <template v-slot:thead>
 
-<!--          <vs-dropdown-menu>-->
-<!--            <vs-dropdown-item @click="itemsPerPage = 10">-->
-<!--              <span>10</span>-->
-<!--            </vs-dropdown-item>-->
-<!--            <vs-dropdown-item @click="itemsPerPage = 15">-->
-<!--              <span>15</span>-->
-<!--            </vs-dropdown-item>-->
-<!--            <vs-dropdown-item @click="itemsPerPage = 20">-->
-<!--              <span>20</span>-->
-<!--            </vs-dropdown-item>-->
-<!--          </vs-dropdown-menu>-->
-<!--        </vs-dropdown>-->
-<!--      </div>-->
+          <vs-th>
+            Sl
+          </vs-th>
 
-<!--      <template slot="thead">-->
-<!--        <vs-th class="text-center">Sl</vs-th>-->
-<!--        <vs-th class="text-center">Promo Code</vs-th>-->
-<!--        <vs-th class="text-center">Start Date</vs-th>-->
-<!--        <vs-th class="text-center">End Date</vs-th>-->
-<!--        <vs-th class="text-center">Promo Type</vs-th>-->
-<!--        <vs-th class="text-center">Maximum Amount</vs-th>-->
-<!--        <vs-th class="text-center">Minimum Purchase Amount</vs-th>-->
-<!--        <vs-th class="text-center">Amount</vs-th>-->
-<!--        <vs-th class="text-center">Maximum Limit</vs-th>-->
-<!--        <vs-th class="text-center">Created At</vs-th>-->
-<!--        <vs-th class="text-center">Action</vs-th>-->
-<!--      </template>-->
+        <vs-th>Food Name</vs-th>
+        <vs-th>Food Option</vs-th>
+        <vs-th>Price</vs-th>
+        <vs-th>Quantity</vs-th>
+        <vs-th>Date</vs-th>
 
-<!--      <template slot-scope="{ data }">-->
-<!--        <tbody>-->
-<!--        <vs-tr v-for="(tr, indextr) in data" :key="indextr">-->
-<!--          <vs-td>-->
-<!--            <p class="product-name font-medium truncate text-center">-->
-<!--              {{ itemsPerPage * (currentPage - 1) + indextr + 1 }}-->
-<!--            </p>-->
-<!--          </vs-td>-->
+      </template>
 
-<!--          <vs-td>-->
-<!--            <p class="product-name font-medium truncate text-center">-->
-<!--              {{tr.code}}-->
-<!--            </p>-->
-<!--          </vs-td>-->
+      <template slot-scope="{ data }">
+        <tbody>
+        <vs-tr v-for="(tr, indextr) in data" :key="indextr">
+          <vs-td>
+            <p class="product-name font-medium truncate text-center">
+              {{ itemsPerPageForAllCancelledItems * (currentPageForAllCanceledItem - 1) + indextr + 1 }}
+            </p>
+          </vs-td>
+
+          <vs-td>
+            <p class="product-name font-medium truncate text-center">
+              {{tr.canceled_item.food_name}}
+            </p>
+          </vs-td>
 
 
-<!--          <vs-td>-->
-<!--            <p class="product-name font-medium truncate text-center">-->
-<!--              {{formattDate(tr.start_date)}}-->
-<!--            </p>-->
-<!--          </vs-td>-->
+          <vs-td>
+            <p class="product-name font-medium truncate text-center">
+              {{tr.canceled_item.food_option_name}}
+            </p>
+          </vs-td>
 
-<!--          <vs-td>-->
-<!--            <p class="product-name font-medium truncate text-center">-->
-<!--              {{formattDate(tr.end_date)}}-->
-<!--            </p>-->
-<!--          </vs-td>-->
+          <vs-td>
+            <p class="product-name font-medium truncate text-center">
+              {{tr.canceled_item.food_price}}
+            </p>
+          </vs-td>
+          <vs-td>
+            <p class="product-name font-medium truncate text-center">
+              {{tr.quantity}}
+            </p>
+          </vs-td>
 
-<!--          <vs-td>-->
-<!--            <p class="product-name font-medium truncate text-center">-->
-<!--              {{tr.promo_type}}-->
-<!--            </p>-->
-<!--          </vs-td>-->
+          <vs-td>
+            <p class="product-name font-medium truncate text-center">
+              {{dateFormat(tr.canceled_at)}}
+            </p>
+          </vs-td>
 
-<!--          <vs-td>-->
-<!--            <p class="product-name font-medium truncate text-center">-->
+          <vs-td>
+            <p class="product-name font-medium truncate text-center">
 <!--              {{tr.max_amount}}-->
-<!--            </p>-->
-<!--          </vs-td>-->
+            </p>
+          </vs-td>
 
-<!--          <vs-td>-->
-<!--            <p class="product-name font-medium truncate text-center">-->
-<!--              {{tr.minimum_purchase_amount}}-->
-<!--            </p>-->
-<!--          </vs-td>-->
-<!--          <vs-td>-->
-<!--            <p class="product-name font-medium truncate text-center">-->
-<!--              {{tr.amount}}-->
-<!--            </p>-->
-<!--          </vs-td>-->
-<!--          <vs-td>-->
-<!--            <p class="product-name font-medium truncate text-center">-->
-<!--              {{tr.max_limit}}-->
-<!--            </p>-->
-<!--          </vs-td>-->
-<!--          <vs-td>-->
-<!--            <p class="product-name font-medium truncate text-center">-->
-<!--              {{formattDate(tr.created_at)}}-->
-<!--            </p>-->
-<!--          </vs-td>-->
-
-<!--          <vs-td class="whitespace-no-wrap">-->
-
-<!--            <feather-icon-->
-<!--              icon="EditIcon"-->
-<!--              svgClasses="w-5 h-5 hover:text-primary stroke-current"-->
-<!--              @click ="updatePromoCode(tr)"-->
-<!--            />-->
-<!--            <feather-icon-->
-<!--              icon="TrashIcon"-->
-<!--              svgClasses="w-5 h-5 hover:text-danger stroke-current"-->
-<!--              class="ml-2"-->
-<!--              @click="confirmAction(deletePromoCode, [tr.id])"-->
-<!--            />-->
-<!--          </vs-td>-->
-<!--        </vs-tr>-->
-<!--        </tbody>-->
-<!--      </template>-->
-<!--    </vs-table>-->
+        </vs-tr>
+        </tbody>
+      </template>
+    </vs-table>
 
 
     <!-- NEW PROMO CODE POPUP FORM -->
@@ -430,6 +400,7 @@ export default {
     return {
       resturent_id: localStorage.getItem("resturent_id"),
       itemsPerPage: 5,
+      itemsPerPageForAllCancelledItems: 10,
       isMounted: false,
 
       // currentPage: 1,
@@ -437,6 +408,7 @@ export default {
       offset: "0",
       all_discount_offers: { results: [] },
       all_promo_codes : [],
+      all_cancelled_item_list: [],
       popupActive: false,
       promoCodeFormActionMethod: null,
       promoCode:{
@@ -463,6 +435,12 @@ export default {
       }
       return 0;
     },
+    currentPageForAllCanceledItem() {
+      if (this.isMounted) {
+        return this.$refs.tableForCancelledItem.currentx;
+      }
+      return 0;
+    },
   },
   methods: {
 
@@ -477,6 +455,23 @@ export default {
         .then((res) => {
           this.all_promo_codes = res.data.data;
           console.log("Promo code",this.all_promo_codes);
+        })
+        .catch((err) => {
+          console.log("error promo code ", err.response);
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+
+    getAllCanceledItemList()
+    {
+      axios
+        .get(
+          `/restaurant_management/dashboard/canceled_food_item_report/${this.resturent_id}/`
+        )
+        .then((res) => {
+          this.all_cancelled_item_list = res.data.data;
+          console.log("Cancelled Item List",this.all_cancelled_item_list);
         })
         .catch((err) => {
           console.log("error promo code ", err.response);
@@ -624,6 +619,11 @@ export default {
     formattDate(date) {
       return moment(date).format("YYYY-MM-DD");
     },
+    dateFormat(date) {
+      let date_time = date;
+      return moment(date_time).format("D-M-Y  h:mm A");
+
+    },
     formatTime(time){
       let md = "2021-01-01 "+time;
       return moment(md).format("h:mm:ss a");
@@ -632,6 +632,7 @@ export default {
   created() {
 
     this.getAllPromoCodeList();
+    this.getAllCanceledItemList();
   },
   mounted() {
     this.isMounted = true;
@@ -650,4 +651,8 @@ th {
   background-color: #31314e;
   color: #fff !important;
 }
+th .vs-table-text {
+  justify-content: center !important;
+}
+
 </style>
