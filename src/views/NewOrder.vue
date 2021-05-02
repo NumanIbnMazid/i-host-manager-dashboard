@@ -352,6 +352,7 @@
                   <vs-th class="text-xs">Item</vs-th>
                   <vs-th class="text-xs">Qty</vs-th>
                   <vs-th class="text-xs">Amount</vs-th>
+                  <vs-th class="text-xs">Total Amount</vs-th>
                   <vs-th class="text-xs">Action</vs-th>
                 </template>
 
@@ -362,15 +363,42 @@
                     :key="item.id"
                   >
                     <!-- <vs-tr class="text-xs"> -->
-                    <vs-td> {{ item.food_name }} </vs-td>
+                    <vs-td class="text-center"> {{ item.food_name }} </vs-td>
 
-                    <vs-td> {{ item.quantity }} </vs-td>
+
+
+                    <vs-td class="text-center">
+                      <div class="flex">
+                        <vs-button
+                          color="primary"
+                          type="border"
+                          icon-pack="feather"
+                          icon="icon-minus"
+                          size="small"
+                        ></vs-button>
+                        <vs-td class="text-center">
+                          {{ item.quantity }}
+                        </vs-td>
+                        <vs-button
+                          color="primary"
+                          type="border"
+                          icon-pack="feather"
+                          icon="icon-plus"
+                          size="small"
+                          @click="increaseItem(item)"
+                        ></vs-button>
+                      </div>
+
+                    </vs-td>
 
 <!--                    <vs-td v-if="item.food_option.discounted_price !=null">-->
 <!--                      {{ item.food_option.discounted_price }}-->
 <!--                    </vs-td>-->
-                    <vs-td>
+                    <vs-td class="text-center">
                       {{ item.food_option.price }}
+                    </vs-td>
+                    <vs-td class="text-center">
+                      {{ item.quantity * item.food_option.price }}
                     </vs-td>
 
                     <vs-td>
@@ -384,8 +412,11 @@
                         ></vs-button> </vx-tooltip>
                     </vs-td>
                   </vs-tr>
+
                 </template>
+
               </vs-table>
+
             </div>
             <div
               class="w-full m-0 p-0"
@@ -1103,17 +1134,31 @@ export default {
     },
 
     increaseItem(item) {
+      console.log("increase itemmmmmmmmmmmmmmmmmmmmmmmmmmm",item);
+      console.log("Ordered items list for default quantity show",this.orderData.ordered_items);
       let theItem = this.orderData.ordered_items.find(
         (arr) => arr.food_option.food === item.id
       );
-      theItem.quantity += 1;
-      this.updateCartItem(theItem);
+      console.log("The itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",theItem);
+      if(theItem != null)
+      {
+        theItem.quantity += 1;
+        this.updateCartItem(theItem);
+      }
+      else
+      {
+        item.quantity += 1;
+        this.updateCartItem(item);
+      }
+
     },
 
     decraseItem(item) {
+
       let theItem = this.orderData.ordered_items.find(
         (arr) => arr.food_option.food === item.id
       );
+
       if (theItem.quantity == 1) {
         let index = this.itemsCarts.indexOf(theItem);
         if (index > -1) {
@@ -1129,9 +1174,11 @@ export default {
     checkIfCart(item) {
       // console.log("item ", item);
       // console.log("oi ", this.orderData.ordered_items);
+      console.log("check if cart initially.....",item);
       let theItem = this.orderData.ordered_items.find(
         (arr) => arr.food_option.food === item.id
       );
+      console.log("the itemmmmmmm initially",theItem);
       // console.log('theItem ', this.orderData.ordered_items, theItem)
       return theItem ? theItem : false;
     },

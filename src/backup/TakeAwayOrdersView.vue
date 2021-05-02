@@ -53,14 +53,14 @@
       </div>
 
       <template slot="thead">
-        <vs-th>Sl</vs-th>
-        <vs-th class="text-center">Order No</vs-th>
-        <vs-th>Ordered Items</vs-th>
-        <vs-th>Price</vs-th>
-        <vs-th>Status Details</vs-th>
-        <vs-th>Takeaway Type</vs-th>
+        <th>Sl</th>
+        <th class="text-center">Order No</th>
+        <th>Ordered Items</th>
+        <th>Price</th>
+        <th>Status Details</th>
+        <th>Takeaway Type</th>
 
-        <vs-th>Action</vs-th>
+        <th>Action</th>
       </template>
 
       <template slot-scope="{ data }">
@@ -388,57 +388,59 @@
   </vs-dropdown>
 </div>
 
-<template slot="thead">
-  <vs-th>Sl</vs-th>
-  <vs-th>Order No</vs-th>
-  <vs-th>Payable Amount</vs-th>
-  <vs-th>Order Item</vs-th>
-  <vs-th>Status Details</vs-th>
-  <vs-th>Takeaway Type</vs-th>
-</template>
+        <template slot="thead">
 
-<template slot-scope="{ data }">
-  <tbody>
-  <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-    <vs-td>
-      <p class="product-name font-medium truncate text-center">
-        {{ itemsPerPageForAllTakeaway * (currentPageForAllTakeaway - 1) + indextr + 1 }}
-      </p>
-    </vs-td>
-    <vs-td>
-      <!-- <img :src="tr.order_no" class="product-img" /> -->
-      <p class="product-name font-medium truncate text-center">{{ tr.order_info.order_no }}</p>
-    </vs-td>
-    <vs-td>
-      <p class="product-name font-medium truncate text-center">{{ tr.order_info.price.payable_amount }}</p>
-    </vs-td>
+          <th>Sl</th>
+          <th>Order No</th>
+          <th>Payable Amount</th>
+          <th>Order Item</th>
+          <th>Status Details</th>
+          <th>Takeaway Type</th>
 
-    <vs-td>
-                <span v-for="(ordered_item, i) in tr.order_info.ordered_items" :key="i">
-                          <vs-chip> {{ ordered_item.food_name }}</vs-chip>
-                          <br />
-                        </span>
-    </vs-td>
+        </template>
 
-    <vs-td>
-      <p class="product-name font-medium truncate text-center">{{tr.order_info.status_details}}</p>
-    </vs-td>
+        <template slot-scope="{ data }">
+          <tbody>
+          <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+            <vs-td>
+              <p class="product-name font-medium truncate text-center">
+                {{ itemsPerPageForAllTakeaway * (currentPageForAllTakeaway - 1) + indextr + 1 }}
+              </p>
+            </vs-td>
+            <vs-td>
+              <!-- <img :src="tr.order_no" class="product-img" /> -->
+              <p class="product-name font-medium truncate text-center">{{ tr.order_info.order_no }}</p>
+            </vs-td>
+            <vs-td>
+              <p class="product-name font-medium truncate text-center">{{ tr.order_info.price.payable_amount }}</p>
+            </vs-td>
 
-    <vs-td v-if="tr.order_info.take_away_type_method.name !=null">
-      <p class="product-name font-medium truncate text-center">{{tr.order_info.take_away_type_method.name}}</p>
-    </vs-td>
-    <vs-td v-else>
-      <p class="product-name font-medium truncate text-center">-</p>
-    </vs-td>
-  </vs-tr>
-  </tbody>
-</template>
-</vs-table>
-</div>
+            <vs-td>
+                        <span v-for="(ordered_item, i) in tr.order_info.ordered_items" :key="i">
+                                  <vs-chip> {{ ordered_item.food_name }}</vs-chip>
+                                  <br />
+                                </span>
+            </vs-td>
+
+            <vs-td>
+              <p class="product-name font-medium truncate text-center">{{tr.order_info.status_details}}</p>
+            </vs-td>
+
+            <vs-td v-if="tr.order_info.take_away_type_method.name !=null">
+              <p class="product-name font-medium truncate text-center">{{tr.order_info.take_away_type_method.name}}</p>
+            </vs-td>
+            <vs-td v-else>
+              <p class="product-name font-medium truncate text-center">-</p>
+            </vs-td>
+          </vs-tr>
+          </tbody>
+        </template>
+        </vs-table>
+        </div>
 
 
 
-</template>
+      </template>
 
 <script>
 import vSelect from "vue-select";
@@ -1007,155 +1009,3 @@ th .vs-table-text {
   justify-content: center !important;
 }
 </style>
-<style lang="scss" scoped>
-
-
-#data-list-thumb-view {
-  .vs-con-table {
-    .product-name {
-      max-width: 23rem;
-    }
-
-    .vs-table--header {
-      display: flex;
-      flex-wrap: wrap-reverse;
-      margin-left: 1.5rem;
-      margin-right: 1.5rem;
-      > span {
-        display: flex;
-        flex-grow: 1;
-      }
-
-      .vs-table--search {
-        padding-top: 0;
-
-        .vs-table--search-input {
-          padding: 0.9rem 2.5rem;
-          font-size: 1rem;
-
-          & + i {
-            left: 1rem;
-          }
-
-          &:focus + i {
-            left: 1rem;
-          }
-        }
-      }
-    }
-
-    .vs-table {
-      border-collapse: separate;
-      border-spacing: 0 1.3rem;
-      padding: 0 1rem;
-
-      tr {
-        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
-        td {
-          padding: 10px;
-          &:first-child {
-            border-top-left-radius: 0.5rem;
-            border-bottom-left-radius: 0.5rem;
-          }
-          &:last-child {
-            border-top-right-radius: 0.5rem;
-            border-bottom-right-radius: 0.5rem;
-          }
-          &.img-container {
-            // width: 1rem;
-            // background: #fff;
-
-            span {
-              display: flex;
-              justify-content: flex-start;
-            }
-
-            .product-img {
-              height: 110px;
-            }
-          }
-        }
-        td.td-check {
-          padding: 20px !important;
-        }
-      }
-    }
-
-    .vs-table--thead {
-      th {
-        padding-top: 0;
-        padding-bottom: 0;
-
-        .vs-table-text {
-          text-transform: uppercase;
-          font-weight: 600;
-        }
-      }
-      th.td-check {
-        padding: 0 15px !important;
-      }
-      tr {
-        background: none;
-        box-shadow: none;
-      }
-    }
-
-    .vs-table--pagination {
-      justify-content: center;
-    }
-  }
-}
-
-.vs-sidebar {
-  z-index: 100000;
-}
-
-.sidebar-custom > .header-sidebar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  h4 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    > button {
-      margin-left: 10px;
-    }
-  }
-}
-
-.footer-sidebar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  > button {
-    border: 0px solid rgba(0, 0, 0, 0) !important;
-    border-left: 1px solid rgba(0, 0, 0, 0.07) !important;
-    border-radius: 0px !important;
-  }
-}
-
-.sidebar-custom > .vs-sidebar-primary {
-  max-width: 400px !important;
-}
-
-th:first-child .vs-table-text {
-  justify-content: center !important;
-  cursor: pointer;
-}
-.vs-table--thead {
-  background-color: #32304e;
-  color: #fff;
-}
-
-.vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
-  padding: 10px 15px !important;
-}
-</style>
-
-
-

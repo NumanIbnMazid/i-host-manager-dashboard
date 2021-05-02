@@ -204,17 +204,17 @@
       </div>
 
 
-      <template v-slot:thead>
+      <template slot="thead">
 
-          <vs-th>
+          <th>
             Sl
-          </vs-th>
+          </th>
 
-        <vs-th>Food Name</vs-th>
-        <vs-th>Food Option</vs-th>
-        <vs-th>Price</vs-th>
-        <vs-th>Quantity</vs-th>
-        <vs-th>Date</vs-th>
+        <th>Food Name</th>
+        <th>Food Option</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Date</th>
 
       </template>
 
