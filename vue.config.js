@@ -20,6 +20,12 @@ module.exports = {
         chunks: 'all'
       }
     }
+  },
+  pwa: {
+    workboxPluginMode: 'InjectManifest',
+    workboxOptions: {
+      swSrc: 'src/service-worker.js'
+    }
   }
   // devServer: {
   //   overlay: {
