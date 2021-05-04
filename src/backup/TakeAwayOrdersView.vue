@@ -53,7 +53,7 @@
       </div>
 
       <template slot="thead">
-        <th>Sl</th>
+        <vs-th>Sl</vs-th>
         <th class="text-center">Order No</th>
         <th>Ordered Items</th>
         <th>Price</th>
@@ -391,7 +391,7 @@
         <template slot="thead">
 
           <th>Sl</th>
-          <th>Order No</th>
+          <th class="text-center">Order No</th>
           <th>Payable Amount</th>
           <th>Order Item</th>
           <th>Status Details</th>

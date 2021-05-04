@@ -363,9 +363,7 @@
                     :key="item.id"
                   >
                     <!-- <vs-tr class="text-xs"> -->
-                    <vs-td class="text-center"> {{ item.food_name }} </vs-td>
-
-
+                    <vs-td class="text-center" > {{ item.food_name }} </vs-td>
 
                     <vs-td class="text-center">
                       <div class="flex">
@@ -375,6 +373,7 @@
                           icon-pack="feather"
                           icon="icon-minus"
                           size="small"
+                          @click="decraseItem(item)"
                         ></vs-button>
                         <vs-td class="text-center">
                           {{ item.quantity }}
@@ -412,17 +411,24 @@
                         ></vs-button> </vx-tooltip>
                     </vs-td>
                   </vs-tr>
+                  <vs-tr v-if="orderData.ordered_items.length > 0">
+                    <td colspan="5" class="text-center">
+                      <hr>
+                     Net Total: {{calculate_total()}}
+                    </td>
 
+                  </vs-tr>
                 </template>
 
               </vs-table>
+
 
             </div>
             <div
               class="w-full m-0 p-0"
               v-if="slectedTable"
               @click="slectedTable = null"
-            >
+            >ne
               <h4 class="text-center p-0 m-0">Change Table</h4>
             </div>
           </div>
@@ -871,9 +877,37 @@ export default {
     },
     newOrdersPaymentShow: false,
     newPaymentOrder: "",
+    netTotalView: false,
+    netTotal:0,
+    check_order_place_status:null,
+
+
   }),
 
   methods: {
+
+    getUpdatedPriceDetails(orderId)
+    {
+      axios
+        .get(`/restaurant_management/dashboard/order/create_order/${orderId}/`)
+        .then((res) => {
+          this.orderData = res.data.data;
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+
+
+    calculate_total()
+    {
+      let sum = 0;
+      this.orderData.ordered_items.forEach(function(item) {
+        sum += ((item.quantity)*(item.food_option.price));
+      });
+      return sum;
+    },
 
 
     afterNewOrderPayments(res) {
@@ -1099,6 +1133,11 @@ export default {
             // checkIfCart(res.data.data[0])
             console.log("order data cart ", this.orderData);
           }
+          if(this.check_order_place_status === '1_ORDER_PLACED')
+          {
+            this.getUpdatedPriceDetails(this.orderData.id);
+          }
+
           // else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
@@ -1126,6 +1165,10 @@ export default {
               (order) => order.status !== "4_CANCELLED"
             );
           } else this.showErrorLog(res.data.error.error_details);
+          if(this.check_order_place_status === '1_ORDER_PLACED')
+          {
+            this.getUpdatedPriceDetails(this.orderData.id);
+          }
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
@@ -1158,17 +1201,37 @@ export default {
       let theItem = this.orderData.ordered_items.find(
         (arr) => arr.food_option.food === item.id
       );
+        console.log("the decrease itemmmmmmmmmmmmmmmmmmmmmmm",theItem);
+        if(theItem != null)
+        {
+          if (theItem.quantity == 1) {
 
-      if (theItem.quantity == 1) {
-        let index = this.itemsCarts.indexOf(theItem);
-        if (index > -1) {
-          this.itemsCarts.splice(index, 1);
+            // let index = this.itemsCarts.indexOf(theItem);
+            // console.log("the indexxxxxxxxxxxxxxxxxxxxxxxxx",index);
+            // if (index > -1) {
+            //   this.itemsCarts.splice(index, 1);
+            // }
+          } else {
+            theItem.quantity--;
+          }
+
+          this.updateCartItem(theItem);
         }
-      } else {
-        theItem.quantity--;
-      }
+        else
+        {
+         if(item.quantity == 1)
+         {
 
-      this.updateCartItem(theItem);
+         }
+         else
+         {
+           item.quantity--;
+
+         }
+          this.updateCartItem(item);
+
+        }
+
     },
 
     checkIfCart(item) {
@@ -1187,7 +1250,7 @@ export default {
       axios
         .get(`/restaurant_management/dashboard/order/create_order/${orderId}/`)
         .then((res) => {
-          console.log("get or ", res.data);
+          console.log("get ordered itemmmmmmmmmmmm ", res.data);
           if (res.data.status) {
             const data = res.data.data;
 
@@ -1428,6 +1491,7 @@ export default {
     // },
 
     placeOrder() {
+
       this.isBtnLoading = true;
       console.log("object ", this.orderData);
       if (this.orderData.ordered_items.length > 0) {
@@ -1443,7 +1507,8 @@ export default {
               const foodItems = res.data.data.ordered_items
                 .filter((item) => item.status === "1_ORDER_PLACED")
                 .map((item) => item.id);
-
+              console.log("place order status",res.data.data.status);
+              this.check_order_place_status = res.data.data.status;
               this.confirmOrder(this.orderData.id, foodItems);
               this.showActionMessage("success", "Order Place Successfully!");
             } else this.showErrorLog(res.data.error.error_details);
@@ -1452,7 +1517,10 @@ export default {
       } else this.showActionMessage("error", "Please Select Order First!!");
     },
 
+
+
     getFood() {
+          console.log("ordered dddddddddd",this.orderData.ordered_items.length);
       axios
         .get(
           `restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
@@ -1828,7 +1896,16 @@ export default {
 </script>
 
 
-<style lang="scss"  >
+<style lang="scss">
+
+
+.netTotal
+{
+  padding-left:30px;
+}
+.netTotalRow
+{
+}
 .order-item-list-table {
   max-height: 50%;
   overflow: scroll;
