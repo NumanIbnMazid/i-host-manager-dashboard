@@ -130,181 +130,416 @@
       </template>
     </vs-table>
 
-    <!-- order detail info popup -->
+
+    <!-- order details info popup -->
     <vs-popup
-      class="holamundo w-full"
-      :title="`Order Details`"
+      class="holamundo"
+      :title="selectedOrder.status_details != 'Create Invoice' ? `Order No #${selectedOrder.order_no}, Status: Processing` : `Order No #${selectedOrder.order_no}, Status: ${selectedOrder.status_details}`"
+
       :active.sync="orderDetailPopupActive"
     >
-      <template>
-        <div class="con-expand-users w-full">
-          <!-- <div class="con-btns-user flex items-center justify-between">
-            <img
-              class="rounded mx-auto"
-              style="height: 180px"
-              :src="selectedOrder.image"
+      <!-- food select form -->
+      <div class="food-select-form">
+        <div class="vx-row text-sm">
+          <div class="vx-col w-3/12 pl-4 pr-0 mb-4" @click="getFoodNames()">
+            <small>Food Name</small>
+            <v-select
+              label="name"
+              v-model="selectedFood"
+              :options="foods"
+              :reduce="(foods) => foods.id"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
             />
-          </div> -->
+          </div>
 
-          <table class="mx-auto mt-4 center">
-            <tr>
-              <td class="font-semibold">Order No :</td>
-              <td>{{ selectedOrder.order_no }}</td>
-            </tr>
+          <div
+            class="vx-col w-3/12 mb-4 ml-0 pl-1 mr-0 pr-1"
+            @click="getFoodOptions()"
+          >
+            <small>Food Option</small>
+            <v-select
+              label="name"
+              v-model="selectedOption"
+              :options="foodOptions"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            ><template v-if="!selectedFood" #no-options="{}">
+              <span class="text-danger"> Please select food first. </span>
+            </template></v-select
+            >
+          </div>
+
+          <div class="vx-col w-3/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+            <small>Food Extra</small>
+            <v-select
+              label="type_name"
+              multiple
+              v-model="selectedFoodExtraTypes"
+              :options="foodExtraTypes"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+          </div>
+
+          <div class="vx-col w-2/12 pl-0 ml-0 mb-4 mr-0 pr-1">
+            <vs-input
+              class="w-10/12"
+              color="rgb(213, 14, 151)"
+              type="number"
+              min="1"
+              label-placeholder="Quantity"
+              v-model="quantity"
+
+            />
+          </div>
+
+          <div class="vx-col w-1/12 pl-0 mt-5">
+            <vs-button
+              color="success"
+              type="border"
+              title="Add"
+              icon-pack="feather"
+              icon="icon-plus"
+              @click="addOrderedItems(selectedOrder, '3_IN_TABLE')"
+
+            ></vs-button>
+          </div>
+        </div>
+      </div>
+
+      <vs-table>
+
+        <template slot="thead">
+          <vs-th class="text-center">Check</vs-th>
+          <vs-th class="text-center">Item Id</vs-th>
+          <vs-th class="text-center">Name</vs-th>
+          <vs-th class="text-center">Options</vs-th>
+          <vs-th class="text-center">Price</vs-th>
+          <vs-th class="text-center">Action</vs-th>
+        </template>
+
+        <template slot-scope="{ data }">
+          <vs-tr
+            :data="selectedOrder.ordered_items"
+            :class="`text-center ${
+              selectedOrder.ordered_items.status == '0_ORDER_INITIALIZED' ? 'bg-grey' : ''
+            }`"
+            :key="i"
+            v-for="(tr, i) in selectedOrder.ordered_items"
+          >
+            <!-- v-show="data[i].status != '0_ORDER_INITIALIZED'" -->
+            <vs-td>
+
+              <span
+                v-if="tr.status === '4_CANCELLED'"
+                class="badge bg-danger text-white rounded"
+              >Canceled</span
+              >
+              <span
+                v-if="tr.status === '0_ORDER_INITIALIZED'"
+                class="text-yl"
+              >Item Carts by user</span
+              >
+            </vs-td>
+
+            <vs-td>
+              {{ tr.id }}
+            </vs-td>
+
+            <vs-td class="text-center">
+              {{ tr.food_name }}
+            </vs-td>
+
+
+            <vs-td class="text-center">
+              <span class="bg-gn p-1 rounded text-white">
+                <i v-if="tr.food_option.option_type.name != 'single_type'">
+                  {{ tr.food_option.option_type.name }}:</i
+                >
+                {{ tr.food_option.name }}
+              </span>
+            </vs-td>
+            <vs-td > ৳{{ tr.price }} </vs-td>
+            <vs-td>
+              <span
+                v-if="tr.status != '4_CANCELLED'"
+                class="badge rounded bg-rd text-white"
+                style="cursor: pointer"
+                @click="cancelOrderItem(selectedOrder.id, tr.id)"
+
+              >Cancel</span
+              >
+              <br />
+
+            </vs-td>
+          </vs-tr>
+        </template>
+
+
+      </vs-table>
+            <template>
+              <div class="con-expand-users w-full">
+                <!-- <div class="con-btns-user flex items-center justify-between">
+                  <img
+                    class="rounded mx-auto"
+                    style="height: 180px"
+                    :src="selectedOrder.image"
+                  />
+                </div> -->
+
+                <table class="mx-auto mt-4 center">
+
+
+
+                  <!-- price details -->
+                  <tr>
+                    <td>
+                      <div
+                        class="price-details table-card mt-5 w-full"
+                        v-if="priceDetails.price"
+                      >
+                        <p class="text-ihostm m-2 text-center">Price Details</p>
+                        <hr />
+                        <table class="m-2">
+
+                          <tr>
+                            <td class="font-semibold">Total Price :</td>
+                            <td>{{ priceDetails.price.total_price }}</td>
+                          </tr>
+                          <tr>
+                            <td class="font-semibold">Service Charge :</td>
+                            <td>
+                              <p>{{ priceDetails.price.service_charge }}</p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="font-semibold">Vat Amount :</td>
+                            <td>
+                              <p>{{ priceDetails.price.tax_amount }}</p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="font-semibold">Grand Total :</td>
+                            <td>
+                              <p>{{ priceDetails.price.grand_total_price }}</p>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td class="font-semibold">Discount Amount :</td>
+                            <td>
+                              <p>{{ priceDetails.price.discount_amount }}</p>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td class="font-semibold">Net Total :</td>
+                            <td>
+                              <p>{{ priceDetails.price.payable_amount }}</p>
+                            </td>
+                          </tr>
+
+
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+
+                </table>
+                <br />
+
+                <div class="flex flex-wrap-reverse items-center">
+                  <!-- <vs-button
+                    v-if="confirmOrder"
+                    color="dark"
+                    class="text-1xl text-white w-64 bg-black mx-auto"
+                    type="flat"
+                    @click="inTable(selectedOrder)"
+                    :disabled="isBtnLoading ? true : false"
+                  >
+                    Confirm Order</vs-button
+                  > -->
+
+      <!--            <vs-button-->
+      <!--              v-if="isInvoiceCreated"-->
+      <!--              color="dark"-->
+      <!--              class="text-1xl text-white w-64 bg-black mx-auto"-->
+      <!--              type="flat"-->
+      <!--              @click="createInvoice(selectedOrder)"-->
+      <!--              :disabled="isBtnLoading ? true : false"-->
+      <!--            >-->
+      <!--              Create Invoice</vs-button-->
+      <!--            >-->
+                  <vs-button
+                    v-if="selectedOrder.status_details != 'Create Invoice'"
+                    color="dark"
+                    class="text-1xl text-white w-64 bg-black mx-auto"
+                    type="flat"
+                    @click="show_discount_form()"
+                    :disabled="isBtnLoading ? true : false"
+                  >
+                    Create Invoice</vs-button
+                  >
+
+
+                  <vs-button
+                    v-if="selectedOrder.status_details =='Create Invoice'"
+                    color="dark"
+                    class="text-1xl text-white w-64 bg-black mx-auto"
+                    type="flat"
+                    @click="confirmPaymentOrder(selectedOrder)"
+                    :disabled="isBtnLoading ? true : false"
+                  >
+                    Collect Cash</vs-button
+                  >
+                </div>
+              </div>
+            </template>
+
+      <!-- action buttons -->
+
+    </vs-popup>
+
+<!--&lt;!&ndash; First Version &ndash;&gt;-->
+<!--    &lt;!&ndash; order detail info popup &ndash;&gt;-->
+<!--    <vs-popup-->
+<!--      class="holamundo w-full"-->
+<!--      :title="`Order Details`"-->
+<!--      :active.sync="orderDetailPopupActive"-->
+<!--    >-->
+<!--      <template>-->
+<!--        <div class="con-expand-users w-full">-->
+<!--          &lt;!&ndash; <div class="con-btns-user flex items-center justify-between">-->
+<!--            <img-->
+<!--              class="rounded mx-auto"-->
+<!--              style="height: 180px"-->
+<!--              :src="selectedOrder.image"-->
+<!--            />-->
+<!--          </div> &ndash;&gt;-->
+
+<!--          <table class="mx-auto mt-4 center">-->
 <!--            <tr>-->
-<!--              <td class="font-semibold">Take away type :</td>-->
-<!--              <td>{{ selectedOrder.take_away_type_method.name }}</td>-->
+<!--              <td class="font-semibold">Order No :</td>-->
+<!--              <td>{{ selectedOrder.order_no }}</td>-->
+<!--            </tr>-->
+<!--&lt;!&ndash;            <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;              <td class="font-semibold">Take away type :</td>&ndash;&gt;-->
+<!--&lt;!&ndash;              <td>{{ selectedOrder.take_away_type_method.name }}</td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </tr>&ndash;&gt;-->
+
+<!--            <tr>-->
+<!--              <td class="font-semibold">Status Details :</td>-->
+<!--              <td v-if="selectedOrder.status_details != 'Create Invoice'">-->
+<!--                <p>Processing</p>-->
+<!--              </td>-->
+<!--              <td v-else>-->
+<!--                <p>{{ selectedOrder.status_details }}</p>-->
+<!--              </td>-->
 <!--            </tr>-->
 
-            <tr>
-              <td class="font-semibold">Status Details :</td>
-              <td v-if="selectedOrder.status_details != 'Create Invoice'">
-                <p>Processing</p>
-              </td>
-              <td v-else>
-                <p>{{ selectedOrder.status_details }}</p>
-              </td>
-            </tr>
+<!--            &lt;!&ndash; price details &ndash;&gt;-->
+<!--            <tr>-->
+<!--              <td>-->
+<!--                <div-->
+<!--                  class="price-details table-card mt-5 w-full"-->
+<!--                  v-if="selectedOrder.price"-->
+<!--                >-->
+<!--                  <td class="text-ihostm m-2 text-center">Price Details</td>-->
+<!--                  <hr />-->
+<!--                  <table class="m-2">-->
 
-            <!-- price details -->
-            <tr>
-              <td>
-                <div
-                  class="price-details table-card mt-5 w-full"
-                  v-if="selectedOrder.price"
-                >
-                  <td class="text-ihostm m-2 text-center">Price Details</td>
-                  <hr />
-                  <table class="m-2">
+<!--                    <tr>-->
+<!--                      <td class="font-semibold">Total Price :</td>-->
+<!--                      <td>{{ selectedOrder.price.total_price }}</td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                      <td class="font-semibold">Service Charge :</td>-->
+<!--                      <td>-->
+<!--                        <p>{{ selectedOrder.price.service_charge }}</p>-->
+<!--                      </td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                      <td class="font-semibold">Vat Amount :</td>-->
+<!--                      <td>-->
+<!--                        <p>{{ selectedOrder.price.tax_amount }}</p>-->
+<!--                      </td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                      <td class="font-semibold">Grand Total :</td>-->
+<!--                      <td>-->
+<!--                        <p>{{ selectedOrder.price.grand_total_price }}</p>-->
+<!--                      </td>-->
+<!--                    </tr>-->
 
-                    <tr>
-                      <td class="font-semibold">Total Price :</td>
-                      <td>{{ selectedOrder.price.total_price }}</td>
-                    </tr>
-                    <tr>
-                      <td class="font-semibold">Service Charge :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.service_charge }}</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="font-semibold">Vat Amount :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.tax_amount }}</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="font-semibold">Grand Total :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.grand_total_price }}</p>
-                      </td>
-                    </tr>
+<!--                    <tr>-->
+<!--                      <td class="font-semibold">Discount Amount :</td>-->
+<!--                      <td>-->
+<!--                        <p>{{ selectedOrder.price.discount_amount }}</p>-->
+<!--                      </td>-->
+<!--                    </tr>-->
 
-                    <tr>
-                      <td class="font-semibold">Discount Amount :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.discount_amount }}</p>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td class="font-semibold">Net Total :</td>
-                      <td>
-                        <p>{{ selectedOrder.price.payable_amount }}</p>
-                      </td>
-                    </tr>
+<!--                    <tr>-->
+<!--                      <td class="font-semibold">Net Total :</td>-->
+<!--                      <td>-->
+<!--                        <p>{{ selectedOrder.price.payable_amount }}</p>-->
+<!--                      </td>-->
+<!--                    </tr>-->
 
 
-                  </table>
-                </div>
-              </td>
-            </tr>
+<!--                  </table>-->
+<!--                </div>-->
+<!--              </td>-->
+<!--            </tr>-->
 
-            <!-- <tr>
-              <td class="font-semibold">Options :</td>
-              <td class="flex">
-                <span v-for="(opt, i) in selectedOrder.food_options" :key="i">
-                  <vs-chip>
-                    <b>{{ opt.option_type.name }}: </b>
-                    {{ opt.name }}</vs-chip
-                  >
-                </span>
-              </td>
-            </tr> -->
+<!--          </table>-->
+<!--          <br />-->
 
-            <!-- <tr>
-              <td class="font-semibold">Extra Type :</td>
-              <td class="flex">
-                <span v-for="(opt, i) in selectedOrder.food_extras" :key="i">
-                  <vs-chip> {{ opt.type_name }}</vs-chip>
-                </span>
-              </td>
-            </tr> -->
-
-            <!-- <tr>
-              <td class="font-semibold">Top :</td>
-              <td>{{ selectedOrder.is_top ? "Yes" : "No" }}</td>
-            </tr> -->
-
-            <!-- <tr>
-              <td class="font-semibold">Recommended :</td>
-              <td>
-                <p>
-                  {{ selectedOrder.is_recommended ? "Yes" : "No" }}
-                </p>
-              </td>
-            </tr> -->
-          </table>
-          <br />
-
-          <div class="flex flex-wrap-reverse items-center">
-            <!-- <vs-button
-              v-if="confirmOrder"
-              color="dark"
-              class="text-1xl text-white w-64 bg-black mx-auto"
-              type="flat"
-              @click="inTable(selectedOrder)"
-              :disabled="isBtnLoading ? true : false"
-            >
-              Confirm Order</vs-button
-            > -->
-
-<!--            <vs-button-->
-<!--              v-if="isInvoiceCreated"-->
+<!--          <div class="flex flex-wrap-reverse items-center">-->
+<!--            &lt;!&ndash; <vs-button-->
+<!--              v-if="confirmOrder"-->
 <!--              color="dark"-->
 <!--              class="text-1xl text-white w-64 bg-black mx-auto"-->
 <!--              type="flat"-->
-<!--              @click="createInvoice(selectedOrder)"-->
+<!--              @click="inTable(selectedOrder)"-->
+<!--              :disabled="isBtnLoading ? true : false"-->
+<!--            >-->
+<!--              Confirm Order</vs-button-->
+<!--            > &ndash;&gt;-->
+
+<!--&lt;!&ndash;            <vs-button&ndash;&gt;-->
+<!--&lt;!&ndash;              v-if="isInvoiceCreated"&ndash;&gt;-->
+<!--&lt;!&ndash;              color="dark"&ndash;&gt;-->
+<!--&lt;!&ndash;              class="text-1xl text-white w-64 bg-black mx-auto"&ndash;&gt;-->
+<!--&lt;!&ndash;              type="flat"&ndash;&gt;-->
+<!--&lt;!&ndash;              @click="createInvoice(selectedOrder)"&ndash;&gt;-->
+<!--&lt;!&ndash;              :disabled="isBtnLoading ? true : false"&ndash;&gt;-->
+<!--&lt;!&ndash;            >&ndash;&gt;-->
+<!--&lt;!&ndash;              Create Invoice</vs-button&ndash;&gt;-->
+<!--&lt;!&ndash;            >&ndash;&gt;-->
+<!--            <vs-button-->
+<!--              v-if="selectedOrder.status_details != 'Create Invoice'"-->
+<!--              color="dark"-->
+<!--              class="text-1xl text-white w-64 bg-black mx-auto"-->
+<!--              type="flat"-->
+<!--              @click="show_discount_form()"-->
 <!--              :disabled="isBtnLoading ? true : false"-->
 <!--            >-->
 <!--              Create Invoice</vs-button-->
 <!--            >-->
-            <vs-button
-              v-if="selectedOrder.status_details != 'Create Invoice'"
-              color="dark"
-              class="text-1xl text-white w-64 bg-black mx-auto"
-              type="flat"
-              @click="show_discount_form()"
-              :disabled="isBtnLoading ? true : false"
-            >
-              Create Invoice</vs-button
-            >
 
 
-            <vs-button
-              v-if="selectedOrder.status_details =='Create Invoice'"
-              color="dark"
-              class="text-1xl text-white w-64 bg-black mx-auto"
-              type="flat"
-              @click="confirmPaymentOrder(selectedOrder)"
-              :disabled="isBtnLoading ? true : false"
-            >
-              Collect Cash</vs-button
-            >
-          </div>
-        </div>
-      </template>
-    </vs-popup>
+<!--            <vs-button-->
+<!--              v-if="selectedOrder.status_details =='Create Invoice'"-->
+<!--              color="dark"-->
+<!--              class="text-1xl text-white w-64 bg-black mx-auto"-->
+<!--              type="flat"-->
+<!--              @click="confirmPaymentOrder(selectedOrder)"-->
+<!--              :disabled="isBtnLoading ? true : false"-->
+<!--            >-->
+<!--              Collect Cash</vs-button-->
+<!--            >-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </template>-->
+<!--    </vs-popup>-->
 
           <vs-popup title="Invoice Preview" :active.sync="takeawayOrdersPaymentShow">
           <TakeawayPayments
@@ -369,7 +604,6 @@
             slot="header"
             class="flex flex-wrap-reverse items-center flex-grow justify-between"
           >
-
 
             <vs-dropdown vs-trigger-click class="cursor-pointer mb-4 mr-4">
               <div
@@ -490,6 +724,20 @@ export default {
       discount_amount_is_percentage: 'true',
       takeawayOrdersPaymentShow: false,
       TakeawayPaymentOrder: "",
+      selectedFood: "",
+      foods: [],
+      foodExtraTypes: [],
+      foodExtras: [],
+      foodOptions: [],
+      selectedOption: "",
+      selectedFoodExtraTypes: [],
+      quantity: 1,
+      selectedItemForVarify: [],
+      clicked_on_add_ordered_items: false,
+      priceDetails:[],
+
+
+
 
     };
   },
@@ -510,6 +758,125 @@ export default {
   },
 
   methods: {
+
+
+    getUpdatedPriceDetails(orderId)
+    {
+      axios
+        .get(`/restaurant_management/dashboard/order/create_order/${orderId}/`)
+        .then((res) => {
+          this.priceDetails = res.data.data;
+          console.log("price details",this.priceDetails);
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          this.checkError(err);
+        });
+    },
+
+
+    cancelOrderItem(order_id, item_id) {
+      axios
+        .post("/restaurant_management/dashboard/order/cart/cancel_items/", {
+          order_id,
+          food_items: [item_id],
+        })
+        .then((res) => {
+          if (res.data.status) {
+            // this.ordersData = this.ordersData.map((order) =>
+            //   order.id === order_id ? { ...res.data.data } : order
+            // );
+            // if(!this.checkAllCanceled(res.data.data.order_item)){
+            this.selectedOrder = res.data.data;
+            this.getUpdatedPriceDetails(order_id);
+            // }else{
+            //   this.orderToServed = [];
+            // }
+          }
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err);
+          this.checkError(err);
+        });
+    },
+
+
+    // adding food order to order cart
+    addOrderedItems(orderToProcess, status) {
+      this.clicked_on_add_ordered_items = true;
+      console.log("orderToProcess1 ", orderToProcess);
+      axios
+        .post("/restaurant_management/dashboard/order/cart/items/", [
+          {
+            quantity: this.quantity,
+            status,
+            food_option: this.selectedOption.id,
+            food_order: orderToProcess.id,
+            food_extra: this.selectedFoodExtras,
+          },
+        ])
+        .then((res) => {
+          // real time ui update (data object update)
+          if (res.data.status) {
+            // this.ordersData.map(
+            //   (order) =>
+            //     order.id === orderToProcess.id &&
+            //     order.ordered_items.push(res.data.data[0])
+            // );
+
+            orderToProcess.ordered_items.push(res.data.data[0]);
+            this.getTakeAwayOrderList();
+            this.getUpdatedPriceDetails(orderToProcess.id);
+
+            console.log("selected orderrrrrrrrrrrrrrrrrrr",this.selectedOrder);
+            console.log("before selected orderrrrrr",res.data.data);
+
+            // clear food state after add item to cart
+            this.selectedFood = "";
+          } else this.showActionMessage("error", "New Item Add Failed!");
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+
+          // checking error code
+          this.checkError(err);
+        });
+    },
+
+
+    // food options
+    getFoodOptions() {
+      if (this.selectedFood !== "") {
+        const food = this.foods.filter(
+          (food) => food.id === this.selectedFood
+        )[0];
+
+        this.foodOptions = food.food_options;
+        this.foodExtraTypes = food.food_extras;
+      }
+      // else this.showActionMessage("error", "Select Food First!");
+    },
+
+    // getting food names
+    getFoodNames() {
+      axios
+        .get(
+          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
+        )
+        .then((res) => {
+          console.log("foods ", res);
+          if (res.data.status) this.foods = res.data.data;
+          else this.showActionMessage("error", "Failed to get foods name!");
+        })
+        .catch((err) => {
+          this.showActionMessage("error", err.response.statusText);
+          // checking error code
+          this.checkError(err);
+        });
+    },
+
+
+
     show_discount_form()
     {
       this.popup_discount_form = true;
@@ -530,7 +897,9 @@ export default {
           `/restaurant_management/dashboard/take_away_order/${this.resturent_id}/`
         )
         .then((res) => (
+
           this.takeAwayOrders = res.data.data,
+
           console.log("take away orders",res.data.data)
         ))
         .catch((err) => {
@@ -628,8 +997,6 @@ export default {
     },
 
     createInvoice(order) {
-
-
 
       let OrderId = order.id;
       const body = {

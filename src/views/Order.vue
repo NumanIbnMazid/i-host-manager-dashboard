@@ -416,13 +416,13 @@
       <!-- order item list -->
       <vs-table :data="orderToVarify.ordered_items">
         <template slot="thead">
-          <vs-th class="text-center">Check</vs-th>
-          <vs-th class="text-center">Item Id.</vs-th>
-          <vs-th class="text-center">Name</vs-th>
-          <vs-th class="text-center">Qty</vs-th>
-          <vs-th class="text-center">Options</vs-th>
+          <th class="text-center thView">Check</th>
+          <th class="text-center thView">Item Id.</th>
+          <th class="text-center thView">Name</th>
+          <th class="text-center thView">Qty</th>
+          <th class="text-center thView">Options</th>
           <!-- <vs-th class="text-center">Extra</vs-th> -->
-          <vs-th class="text-center">Price</vs-th>
+          <th class="text-center thView">Price</th>
         </template>
 
         <template slot-scope="{ data }">
@@ -882,13 +882,13 @@
 
       <vs-table :data="orderToServed.ordered_items">
         <template slot="thead">
-          <vs-th class="text-center">Check</vs-th>
-          <vs-th class="text-center">Item Id</vs-th>
-          <vs-th class="text-center">Name</vs-th>
-          <vs-th class="text-center">Qty</vs-th>
-          <vs-th class="text-center">Options</vs-th>
-          <vs-th class="text-center">Price</vs-th>
-          <vs-th class="text-center">Action</vs-th>
+          <th class="text-center thView">Check</th>
+          <th class="text-center thView">Item Id</th>
+          <th class="text-center thView">Name</th>
+          <th class="text-center thView">Qty</th>
+          <th class="text-center thView">Options</th>
+          <th class="text-center thView">Price</th>
+          <th class="text-center thView">Action</th>
         </template>
 
         <template slot-scope="{ data }">
@@ -2301,6 +2301,13 @@ header.vs-collapse-item--header {
 .order-manger-area {
   max-height: 60vh;
   overflow-y: scroll;
+}
+
+.thView {
+  text-align: center !important;
+  background-color: #31314e;
+  color: #fff !important;
+
 }
 </style>
 

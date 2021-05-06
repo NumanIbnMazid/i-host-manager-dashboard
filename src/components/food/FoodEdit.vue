@@ -554,8 +554,9 @@ export default {
     },
 
     updateFood() {
-      let formData = new FormData();
 
+
+      let formData = new FormData();
       formData.append("name", this.name);
       formData.append("code", this.food_code);
       formData.append("restaurant", localStorage.getItem("resturent_id"));
