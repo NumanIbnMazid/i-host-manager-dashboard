@@ -35,6 +35,10 @@ import './assets/scss/main.scss'
 // Tailwind
 import '@/assets/css/main.css'
 
+// Font Awesome integreted
+import '@fortawesome/fontawesome-free/css/all.css'
+import '@fortawesome/fontawesome-free/js/all.js'
+
 // Vue Router
 import router from './router'
 
