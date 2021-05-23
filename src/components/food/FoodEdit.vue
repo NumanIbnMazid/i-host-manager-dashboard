@@ -584,6 +584,7 @@ export default {
           })
           .then((res) => {
             this.food = res.data.data;
+            console.log("Food Updated",this.food);
             if (res.data.status) {
               resolve(true);
             } else {

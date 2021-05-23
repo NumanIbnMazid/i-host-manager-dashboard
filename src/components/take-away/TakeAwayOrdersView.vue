@@ -113,8 +113,11 @@
                 svgClasses="w-5 h-5 m-3 hover:text-primary stroke-current"
                 title="View Order"
                 @click="
+
                   orderDetailPopupActive = true;
                   selectedOrder = tr;
+                  getUpdatedPriceDetails(tr.id);
+
                 "
               />
               <feather-icon
@@ -788,6 +791,7 @@ export default {
             // );
             // if(!this.checkAllCanceled(res.data.data.order_item)){
             this.selectedOrder = res.data.data;
+            this.getTakeAwayOrderList();
             this.getUpdatedPriceDetails(order_id);
             // }else{
             //   this.orderToServed = [];
@@ -833,6 +837,9 @@ export default {
 
             // clear food state after add item to cart
             this.selectedFood = "";
+
+            //clear food option after add item to cart
+            this.selectedOption = "";
           } else this.showActionMessage("error", "New Item Add Failed!");
         })
         .catch((err) => {

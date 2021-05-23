@@ -239,11 +239,18 @@ export default {
     createInvoice()
     {
       console.log("printing.....");
-      axios.
-      post(
-        `/restaurant_management/dashboard/invoice_short_report/${this.restaurant_id}/`
-      )
+     axios
+        .post(
+          `/restaurant_management/dashboard/invoice_short_report/${this.restaurant_id}/`,
+          {
+            start_date: moment(this.startDate).format("YYYY-MM-DD"),
+            end_date: moment(this.endDate).format("YYYY-MM-DD"),
+            waiter: this.waiter,
+            item: this.item,
+          },
+        )
         .then((res)=>{
+
           console.log("Here is your response",res.data.data);
 
           this.printRecipt(res.data.data);
@@ -733,6 +740,9 @@ export default {
 <!--                <h2>Order # </h2>-->
 <!--                <h2>Table No:</h2>-->
                 <h2>Time: ${moment().format("DD/MM/Y, h:mma")}</h2>
+                <h2>Start Date:${moment(this.startDate).format("YYYY-MM-DD")}</h2>
+                <h2>End Date:${moment(this.endDate).format("YYYY-MM-DD")}</h2>
+                
             </center>
             <div id="table">
                 <table>

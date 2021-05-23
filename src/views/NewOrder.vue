@@ -307,6 +307,7 @@
                   isDinein = false;
                   slectedTable = null;
                   fresh_takeout()
+                  isInvoice = false;
                 "
                 v-bind:class="[
                   isTakeOut ? 'text-white bg-warning' : 'text-dark',
@@ -606,7 +607,8 @@
                 <check-square-icon
                   size="0.8x"
                   class="custom-class"
-                ></check-square-icon>
+                >
+                </check-square-icon>
                 Place Order</vs-button
               >
 
@@ -927,6 +929,7 @@ export default {
 
     fresh_takeout()
     {
+      console.log("fresh previous stored data");
       this.orderData = { id: null, ordered_items: [], price: null };
       localStorage.setItem("orderData", null);
     },

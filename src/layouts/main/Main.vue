@@ -288,8 +288,20 @@ export default {
     },
 
     isDashboardOrRestaurent () {
-      if (this.$router.currentRoute.path === '/' || this.$router.currentRoute.path === '/order' || this.$router.currentRoute.path === '/restaurant' ) return true;
+      if (this.$router.currentRoute.path === '/' || this.$router.currentRoute.path === '/order' || this.$router.currentRoute.path === '/restaurant' )
+      {
+        if(this.windowWidth > 1200)
+        {
+       
+        return true;
+
+        }
+      } 
+      else
+      {
       return false;
+
+      }
     },
   },
   created() {
