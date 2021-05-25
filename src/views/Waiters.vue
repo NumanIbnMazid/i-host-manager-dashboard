@@ -318,6 +318,7 @@
 </template>
 <script>
 import axios from "@/axios.js";
+
 export default {
   data: () => ({
     restaurant_id: localStorage.getItem("resturent_id"),
@@ -345,18 +346,26 @@ export default {
 
   methods: {
     getWaiters() {
-      axios
+      if (navigator.onLine == true) {
+        axios
         .get(
           `/account_management/restaurant/${this.restaurant_id}/waiter_info/`
         )
         .then((res) => {
-          console.log("all waiters ", res);
+          // console.log("all waiters ", res);
           this.waiters = res.data.data;
         })
         .catch((err) => {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
+      } 
+      // waiter data for *pwa*
+      else {
+        console.log("******* Getting waiters data for offline state! *******")
+        let ihostState = JSON.parse(localStorage.getItem("ihostState"));
+        this.waiters = ihostState.waiterData;
+      }
     },
 
     // decided if open form for add new waiter or update waiter

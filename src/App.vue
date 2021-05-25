@@ -6,6 +6,7 @@
 
 <script>
 import themeConfig from '@/../themeConfig.js'
+import { mapGetters } from "vuex";
 
 export default {
   data () {
@@ -50,10 +51,16 @@ export default {
   mounted () {
     this.toggleClassInBody(themeConfig.theme)
     this.$store.commit('UPDATE_WINDOW_WIDTH', window.innerWidth)
+    // waiter data for *pwa*
+    this.$store.dispatch("getRestaurantWaiterData")
 
     const vh = window.innerHeight * 0.01
     // Then we set the value in the --vh custom property to the root of the document
     document.documentElement.style.setProperty('--vh', `${vh}px`)
+  },
+  computed: {
+    // waiter data for *pwa*
+    ...mapGetters(["waiterData"]),
   },
   async created () {
     const dir = this.$vs.rtl ? 'rtl' : 'ltr'

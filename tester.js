@@ -1,4 +1,4 @@
-{
+mydata = {
   "AppActiveUser": {
     "uid": 0,
     "displayName": "John Doe",

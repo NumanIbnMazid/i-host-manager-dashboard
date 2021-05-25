@@ -445,6 +445,15 @@ Vue.use(plugin);
 
 Vue.config.productionTip = false;
 
+// Global variables
+// Vue.mixin({
+//   data: function () {
+//     return {
+//       isOnline: navigator.onLine
+//     }
+//   }
+// })
+
 new Vue({
     router,
     store,

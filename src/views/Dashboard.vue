@@ -109,13 +109,13 @@ export default {
 
   mounted() {
     this.$store.dispatch("getMonthWeekData");
-    // waiter data for *pwa*
-    this.$store.dispatch("getRestaurantWaiterData");
+    // // waiter data for *pwa*
+    // this.$store.dispatch("getRestaurantWaiterData");
   },
 
   computed: {
     // waiter data for *pwa*
-    ...mapGetters(["monthWeekData","waiterData"]),
+    ...mapGetters(["monthWeekData"]),
     cmSell() {
       return this.monthWeekData && this.monthWeekData.current_month_total_sell;
     },
