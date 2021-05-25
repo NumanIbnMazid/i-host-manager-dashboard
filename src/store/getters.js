@@ -35,6 +35,10 @@ const getters = {
     },
     monthWeekData: state => {
         return state.monthWeekData;
+    },
+    // waiter data for *pwa*
+    waiterData: state => {
+        return state.waiterData;
     }
 };
 

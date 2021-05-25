@@ -70,7 +70,9 @@ const state = {
     windowWidth: null,
     ordersData: [],
     todayData: null,
-    monthWeekData: null
+    monthWeekData: null,
+    // waiter data for *pwa* -> Called in : Dashboard.vue
+    waiterData: null
 };
 
 export default state;

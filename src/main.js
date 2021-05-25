@@ -448,5 +448,9 @@ Vue.config.productionTip = false;
 new Vue({
     router,
     store,
+    // New code - initialize the store
+    created() {
+      store.commit('initializeStore');
+    },
     render: h => h(App)
 }).$mount('#app');

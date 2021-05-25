@@ -114,6 +114,25 @@ const actions = {
             .catch(err => {
                 console.error(err);
             });
+    },
+
+    // waiter data for *pwa*
+    getRestaurantWaiterData({
+      commit
+    }) {
+      let resturent_id = localStorage.getItem("resturent_id");
+      axios
+        .get(
+          `/account_management/restaurant/${resturent_id}/waiter_info/`
+        )
+        .then(res => {
+          if (res.data.status) {
+            commit("GET_RESTAURANT_WAITER_DATA", res.data.data);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
 };
 

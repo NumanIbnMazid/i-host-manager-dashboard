@@ -131,6 +131,29 @@ const mutations = {
     GET_MONTH_WEEK_DATA(state, monthWeekData) {
         state.monthWeekData = monthWeekData;
     },
+    // waiter data for *pwa*
+    GET_RESTAURANT_WAITER_DATA(state, waiterData) {
+        state.waiterData = waiterData;
+    },
+    // Add this mutation which allows us to load our state from the store
+    initializeStore() {
+      const data = localStorage.getItem('ihostState');
+
+      if (data) {
+        this.replaceState(Object.assign(this.state, JSON.parse(data)));
+      }
+    },
+    // Add this mutation which removes an item from the backlog, given the item id
+    removeItem(state, item) {
+      [state.items.todo, state.items.inProgress, state.items.done].forEach(
+        array => {
+          const indexInArray = array.findIndex(i => i.id === item.id);
+          if (indexInArray > -1) {
+            array.splice(indexInArray, 1);
+          }
+        }
+      );
+    }
 };
 
 export default mutations;
