@@ -39,7 +39,23 @@ const getters = {
     // waiter data for *pwa*
     waiterData: state => {
         return state.waiterData;
-    }
+    },
+    // foods data for *pwa*
+    foodsData: state => {
+        return state.foodsData;
+    },
+    // foodCategories data for *pwa*
+    foodCategoriesData: state => {
+        return state.foodCategoriesData;
+    },
+    // tables data for *pwa*
+    tablesData: state => {
+        return state.tablesData;
+    },
+    // takewayTypes data for *pwa*
+    takewayTypesData: state => {
+        return state.takewayTypesData;
+    },
 };
 
 export default getters;

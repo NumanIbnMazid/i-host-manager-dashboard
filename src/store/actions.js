@@ -56,7 +56,7 @@ const actions = {
                 commit("GET_ORDERS_DATA", res.data);
                 // vm.queriedItems = res.list.length;
 
-                console.log("Received a message from the socket:", e.data);
+                // console.log("Received a message from the socket:", e.data);
             };
             updateSocket.onclose = function(e) {
                 console.error("Chat socket closed unexpectedly; reconnecting");
@@ -136,6 +136,94 @@ const actions = {
               });
         } else {
             console.log("App is in offline. Can't get restaurant waiter data!")
+        }
+    },
+    // foods data for *pwa*
+    getRestaurantFoodsData({
+      commit
+    }) {
+        if (navigator.onLine == true) {
+            let resturent_id = localStorage.getItem("resturent_id");
+            axios
+              .get(
+                `/restaurant_management/dashboard/restaurant/${resturent_id}/foods/`
+              )
+              .then(res => {
+                if (res.data.status) {
+                  commit("GET_RESTAURANT_FOODS_DATA", res.data.data);
+                }
+              })
+              .catch(err => {
+                console.error(err);
+              });
+        } else {
+            console.log("App is in offline. Can't get restaurant foods data!")
+        }
+    },
+    // foodCategories data for *pwa*
+    getRestaurantFoodCategoriesData({
+      commit
+    }) {
+        if (navigator.onLine == true) {
+            let resturent_id = localStorage.getItem("resturent_id");
+            axios
+              .get(
+                `/restaurant_management/dashboard/restaurant/${resturent_id}/foods/`
+              )
+              .then(res => {
+                if (res.data.status) {
+                  commit("GET_RESTAURANT_FOOD_CATEGORIES_DATA", res.data.data);
+                }
+              })
+              .catch(err => {
+                console.error(err);
+              });
+        } else {
+            console.log("App is in offline. Can't get restaurant food categories data!")
+        }
+    },
+    // table data for *pwa*
+    getRestaurantTablesData({
+      commit
+    }) {
+        if (navigator.onLine == true) {
+            let resturent_id = localStorage.getItem("resturent_id");
+            axios
+              .get(
+                `/restaurant_management/dashboard/restaurant/${resturent_id}/tables/`
+              )
+              .then(res => {
+                if (res.data.status) {
+                  commit("GET_RESTAURANT_TABLES_DATA", res.data.data);
+                }
+              })
+              .catch(err => {
+                console.error(err);
+              });
+        } else {
+            console.log("App is in offline. Can't get restaurant tables data!")
+        }
+    },
+    // takewayTypes data for *pwa*
+    getRestaurantTakewayTypesData({
+      commit
+    }) {
+        if (navigator.onLine == true) {
+            let resturent_id = localStorage.getItem("resturent_id");
+            axios
+              .get(
+                `/restaurant_management/dashboard/restaurant/${resturent_id}/`
+              )
+              .then(res => {
+                if (res.data.status) {
+                  commit("GET_RESTAURANT_TAKEWAY_TYPES_DATA", res.data.data.takeway_order_type);
+                }
+              })
+              .catch(err => {
+                console.error(err);
+              });
+        } else {
+            console.log("App is in offline. Can't get restaurant takeway types data!")
         }
     }
 };

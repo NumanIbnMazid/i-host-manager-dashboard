@@ -71,8 +71,16 @@ const state = {
     ordersData: [],
     todayData: null,
     monthWeekData: null,
-    // waiter data for *pwa* -> Called in : Dashboard.vue
-    waiterData: null
+    // waiter data for *pwa* -> Called in : App.vue
+    waiterData: null,
+    // foods data for *pwa* -> Called in : App.vue
+    foodsData: null,
+    // food categories data for *pwa* -> Called in : App.vue
+    foodCategoriesData: null,
+    // tables data for *pwa* -> Called in : App.vue
+    tablesData: null,
+    // takewayTypes data for *pwa* -> Called in : App.vue
+    takewayTypesData: null
 };
 
 export default state;

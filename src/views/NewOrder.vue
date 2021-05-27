@@ -888,6 +888,24 @@ export default {
 
   methods: {
 
+    makeid() {
+      let length = 7
+      var result = []
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var charactersLength = characters.length;
+      for ( var i = 0; i < length; i++ ) {
+        result.push(characters.charAt(Math.floor(Math.random() * 
+      charactersLength)));
+      }
+      return result.join('');
+    },
+
+    // *pwa* Local Storage Manipulation : orderData
+    addOrUpdateOrderDataInLocalStorage(orderData) {
+      // add or update order data in local storage for *pwa*
+      localStorage.setItem("orderData", JSON.stringify(orderData));
+    },
+
     getUpdatedPriceDetails(orderId)
     {
       axios
@@ -952,7 +970,8 @@ export default {
     },
 
     getAllTakeoutType() {
-      axios
+      if (navigator.onLine == true) {
+        axios
         .get(
           `/restaurant_management/dashboard/restaurant/${this.resturent_id}/`
         )
@@ -964,6 +983,13 @@ export default {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
+      }
+      // takewayTypes data for *pwa*
+      else {
+        console.log("******* Getting takewayTypes data for offline state! *******")
+        let ihostState = JSON.parse(localStorage.getItem("ihostState"));
+        this.takeaway_type = ihostState.takewayTypesData;
+      }
     },
     getTime() {
       setInterval(() => {
@@ -1052,14 +1078,14 @@ export default {
         takeway_order_type: this.takeaway_order_type_id
       };
 
-      await axios
+      if (navigator.onLine == true) {
+        await axios
         .post(
           "/restaurant_management/dashboard/order/create_take_away_order/",
           body
         )
         .then((res) => {
 
-          console.log("response of create takeaway ", res.data);
           if (res.data.status != true) {
             this.showActionMessage("error", "Please select the takeaway type first");
 
@@ -1069,19 +1095,44 @@ export default {
             //  this.showErrorLog(res.data.error.error_details);
 
           } else {
-            this.orderData = res.data.data;
-            console.log("order data", this.orderData);
-            localStorage.setItem("orderData", JSON.stringify(res.data.data));
+            let response_data = res.data.data;
+            this.orderData = response_data;
+            // add create takeaway order response to localStorage for *pwa*
+            this.addOrUpdateOrderDataInLocalStorage(response_data);
           }
-          // if (res.data.status) {
-          //   this.orderData = res.data.data;
-          //   console.log("order data",this.orderData);
-          //   localStorage.setItem("orderData", JSON.stringify(res.data.data));
-          // } else this.showErrorLog(res.data.error.error_details);
         })
         .catch((err) => {
           console.log("err ", err.response);
         });
+      }
+      // store takeaway order create data in local storage for *pwa*
+      else {
+        console.log("******* Storing food create_take_away_order data for offline state! *******")
+        
+        // add offline state in request body
+        body.isOffline = true
+        let offlineIdentifier = this.makeid()
+        body.offlineIdentifier = offlineIdentifier
+
+        let targetStoreObject = {
+          endpoint: "/restaurant_management/dashboard/order/create_take_away_order/",
+          requestBody: body,
+          timestamp: new Date()
+        }
+        let ihostOfflineOrderData = JSON.parse(localStorage.getItem("ihostOfflineOrderData"))
+
+        if (ihostOfflineOrderData){
+          ihostOfflineOrderData.push(targetStoreObject)
+          localStorage.setItem('ihostOfflineOrderData', JSON.stringify(ihostOfflineOrderData))
+        } else {
+          let offlineOrders = []
+          offlineOrders.push(targetStoreObject)
+          localStorage.setItem('ihostOfflineOrderData', JSON.stringify(offlineOrders))
+        }
+
+        console.log(targetStoreObject, "targetStoreObject ****************")
+        console.log(ihostOfflineOrderData, "ihostOfflineOrderData ******************")
+      }
     },
 
     addToItemCardGo(item) {
@@ -1116,9 +1167,6 @@ export default {
         await this.createTakeAwayOrder();
       }
 
-      console.log("itemm ", item);
-
-      console.log("odata 2 ", this.orderData);
       await axios
         .post("/restaurant_management/dashboard/order/cart/items/", [
           {
@@ -1133,8 +1181,8 @@ export default {
           if (res.data.status) {
             console.log("oci ", res.data);
             this.orderData.ordered_items.push(res.data.data[0]);
-            // checkIfCart(res.data.data[0])
-            console.log("order data cart ", this.orderData);
+            // add cart item to localStorage for *pwa*
+            this.addOrUpdateOrderDataInLocalStorage(this.orderData);
           }
           if(this.check_order_place_status === '1_ORDER_PLACED')
           {
@@ -1167,6 +1215,10 @@ export default {
             this.orderData.ordered_items = updatedOrders.filter(
               (order) => order.status !== "4_CANCELLED"
             );
+
+            // add updated cart data to localStorage for *pwa*
+            this.addOrUpdateOrderDataInLocalStorage(this.orderData);
+
           } else this.showErrorLog(res.data.error.error_details);
           if(this.check_order_place_status === '1_ORDER_PLACED')
           {
@@ -1180,12 +1232,10 @@ export default {
     },
 
     increaseItem(item) {
-      console.log("increase itemmmmmmmmmmmmmmmmmmmmmmmmmmm",item);
       console.log("Ordered items list for default quantity show",this.orderData.ordered_items);
       let theItem = this.orderData.ordered_items.find(
         (arr) => arr.food_option.food === item.id
       );
-      console.log("The itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",theItem);
       if(theItem != null)
       {
         theItem.quantity += 1;
@@ -1204,7 +1254,6 @@ export default {
       let theItem = this.orderData.ordered_items.find(
         (arr) => arr.food_option.food === item.id
       );
-        console.log("the decrease itemmmmmmmmmmmmmmmmmmmmmmm",theItem);
         if(theItem != null)
         {
           if (theItem.quantity == 1) {
@@ -1240,11 +1289,11 @@ export default {
     checkIfCart(item) {
       // console.log("item ", item);
       // console.log("oi ", this.orderData.ordered_items);
-      console.log("check if cart initially.....",item);
+      // console.log("check if cart initially.....",item);
       let theItem = this.orderData.ordered_items.find(
         (arr) => arr.food_option.food === item.id
       );
-      console.log("the itemmmmmmm initially",theItem);
+      // console.log("the itemmmmmmm initially",theItem);
       // console.log('theItem ', this.orderData.ordered_items, theItem)
       return theItem ? theItem : false;
     },
@@ -1253,7 +1302,6 @@ export default {
       axios
         .get(`/restaurant_management/dashboard/order/create_order/${orderId}/`)
         .then((res) => {
-          console.log("get ordered itemmmmmmmmmmmm ", res.data);
           if (res.data.status) {
             const data = res.data.data;
 
@@ -1385,7 +1433,6 @@ export default {
     confirmPaymentOrder() {
 
       this.isBtnLoading = true;
-      console.log("Order data isssssssssssssssssssssssssssssssss ",this.orderData);
       this.newOrdersPaymentShow = true;
       this.newPaymentOrder = this.orderData;
 
@@ -1506,7 +1553,6 @@ export default {
             console.log("place order ", res);
             if (res.data.status) {
               this.orderData = res.data.data;
-              console.log("XXXXXXXXXXXXXXXXXXXXXXXX", this.orderData)
               const foodItems = res.data.data.ordered_items
                 .filter((item) => item.status === "1_ORDER_PLACED")
                 .map((item) => item.id);
@@ -1523,8 +1569,8 @@ export default {
 
 
     getFood() {
-          console.log("ordered dddddddddd",this.orderData.ordered_items.length);
-      axios
+      if (navigator.onLine == true) {
+        axios
         .get(
           `restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
         )
@@ -1537,10 +1583,18 @@ export default {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
+      }
+      // foods data for *pwa*
+      else {
+        console.log("******* Getting foods data for offline state! *******")
+        let ihostState = JSON.parse(localStorage.getItem("ihostState"));
+        this.foods = ihostState.foodsData;
+      }
     },
 
     getCategorys() {
-      axios
+      if (navigator.onLine == true) {
+        axios
         .get(
           `/restaurant_management/dashboard/category_list/${this.resturent_id}`
         )
@@ -1551,6 +1605,13 @@ export default {
           this.showActionMessage("error", err.response.statusText);
           this.checkError(err);
         });
+      }
+      // foodCategories data for *pwa*
+      else {
+        console.log("******* Getting food categories data for offline state! *******")
+        let ihostState = JSON.parse(localStorage.getItem("ihostState"));
+        this.categories = ihostState.foodCategoriesData;
+      }
     },
 
     fresh_previous_selected_data()
@@ -1559,23 +1620,31 @@ export default {
       localStorage.setItem("orderData", null);
     },
     getTables() {
-      this.orderData = { id: null, ordered_items: [], price: null };
-      localStorage.setItem("orderData", null);
+      if (navigator.onLine == true) {
+        this.orderData = { id: null, ordered_items: [], price: null };
+        localStorage.setItem("orderData", null);
 
-      axios
-        .get(
-          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/tables/`
-        )
-        .then((res) => {
-          console.log("tables ", res.data.data);
-          this.tables = res.data.data;
-        })
-        .catch((err) => {
-          console.log("table error ", err.response);
-          this.showActionMessage("error", err.response.statusText);
-          // console.log("sremove error ", err);
-          this.checkError(err);
-        });
+        axios
+          .get(
+            `/restaurant_management/dashboard/restaurant/${this.resturent_id}/tables/`
+          )
+          .then((res) => {
+            console.log("tables ", res.data.data);
+            this.tables = res.data.data;
+          })
+          .catch((err) => {
+            console.log("table error ", err.response);
+            this.showActionMessage("error", err.response.statusText);
+            // console.log("sremove error ", err);
+            this.checkError(err);
+          });
+      }
+      // tables data for *pwa*
+      else {
+        console.log("******* Getting tables data for offline state! *******")
+        let ihostState = JSON.parse(localStorage.getItem("ihostState"));
+        this.tables = ihostState.tablesData;
+      }
     },
 
     showErrorLog(errorList) {

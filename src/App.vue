@@ -53,14 +53,22 @@ export default {
     this.$store.commit('UPDATE_WINDOW_WIDTH', window.innerWidth)
     // waiter data for *pwa*
     this.$store.dispatch("getRestaurantWaiterData")
+    // foods data for *pwa*
+    this.$store.dispatch("getRestaurantFoodsData")
+    // foodCategories data for *pwa*
+    this.$store.dispatch("getRestaurantFoodCategoriesData")
+    // tablesData data for *pwa*
+    this.$store.dispatch("getRestaurantTablesData")
+    // takewayTypesData data for *pwa*
+    this.$store.dispatch("getRestaurantTakewayTypesData")
 
     const vh = window.innerHeight * 0.01
     // Then we set the value in the --vh custom property to the root of the document
     document.documentElement.style.setProperty('--vh', `${vh}px`)
   },
   computed: {
-    // waiter data for *pwa*
-    ...mapGetters(["waiterData"]),
+    // get data for *pwa*
+    ...mapGetters(["waiterData", "foodsData", "foodCategoriesData", "tablesData", "takewayTypesData"]),
   },
   async created () {
     const dir = this.$vs.rtl ? 'rtl' : 'ltr'

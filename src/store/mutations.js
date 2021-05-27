@@ -135,6 +135,22 @@ const mutations = {
     GET_RESTAURANT_WAITER_DATA(state, waiterData) {
         state.waiterData = waiterData;
     },
+    // foods data for *pwa*
+    GET_RESTAURANT_FOODS_DATA(state, foodsData) {
+        state.foodsData = foodsData;
+    },
+    // food categories data for *pwa*
+    GET_RESTAURANT_FOOD_CATEGORIES_DATA(state, foodCategoriesData) {
+        state.foodCategoriesData = foodCategoriesData;
+    },
+    // table data for *pwa*
+    GET_RESTAURANT_TABLES_DATA(state, tablesData) {
+        state.tablesData = tablesData;
+    },
+    // takeway types data for *pwa*
+    GET_RESTAURANT_TAKEWAY_TYPES_DATA(state, takewayTypesData) {
+        state.takewayTypesData = takewayTypesData;
+    },
     // Add this mutation which allows us to load our state from the store
     initializeStore() {
       const data = localStorage.getItem('ihostState');
