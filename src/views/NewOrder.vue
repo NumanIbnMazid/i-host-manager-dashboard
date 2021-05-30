@@ -1088,27 +1088,16 @@ export default {
 
           if (res.data.status != true) {
             this.showActionMessage("error", "Please select the takeaway type first");
-
-            // console.log("error details",res.data.msg);
-            // var takeaway_type_error = res.data.msg;
-            // return this.showActionMessage("error", takeaway_type_error);
-            //  this.showErrorLog(res.data.error.error_details);
-
           } else {
             let response_data = res.data.data;
             this.orderData = response_data;
-            // add create takeaway order response to localStorage for *pwa*
-            this.addOrUpdateOrderDataInLocalStorage(response_data);
           }
         })
         .catch((err) => {
           console.log("err ", err.response);
         });
       }
-      // store takeaway order create data in local storage for *pwa*
       else {
-        console.log("******* Storing food create_take_away_order data for offline state! *******")
-        
         // add offline state in request body
         body.isOffline = true
         let offlineIdentifier = this.makeid()
@@ -1130,12 +1119,21 @@ export default {
           localStorage.setItem('ihostOfflineOrderData', JSON.stringify(offlineOrders))
         }
 
-        console.log(targetStoreObject, "targetStoreObject ****************")
-        console.log(ihostOfflineOrderData, "ihostOfflineOrderData ******************")
+        let takeawayFakeResponse = {
+          "ordered_items": [],
+          "table": null, // Get table based on takeaway or dinein
+          "remarks": null, // Get remarks
+          "status": "0_ORDER_INITIALIZED", // get dynamic
+          "id": 786, // TODO Get ID
+          "order_no": "000000" // TODO Get Order No
+        }
+
+        this.orderData = takeawayFakeResponse;
       }
     },
 
     addToItemCardGo(item) {
+      // console.log("itemmmmmmmmmmmmmm",item);
       let allextras = [];
 
       item.food_extras.map((extra) =>
@@ -1153,6 +1151,7 @@ export default {
       this.itemAddToCart({
         food_option: item.food_options[0].id,
         food_extras: allextras.map((extra) => extra.id),
+        food_item: item,
       });
     },
 
@@ -1163,26 +1162,31 @@ export default {
       }
 
       if (this.orderData.id == null) {
-        console.log(1111);
+        // console.log(1111);
         await this.createTakeAwayOrder();
       }
 
-      await axios
+      let body = null;
+
+      body = {
+        quantity: 1,
+        status: this.orderData.status,
+        food_order: this.orderData.id, // order id
+        food_option: item.food_option,
+        food_extras: item.food_extras,
+      }
+
+      if (navigator.onLine == true) {
+        await axios
         .post("/restaurant_management/dashboard/order/cart/items/", [
-          {
-            quantity: 1,
-            status: this.orderData.status,
-            food_order: this.orderData.id, // order id
-            food_option: item.food_option,
-            food_extras: item.food_extras,
-          },
+          body,
         ])
         .then((res) => {
           if (res.data.status) {
-            console.log("oci ", res.data);
+            // console.log("********** Cart Items Response******* ", res.data.data);
             this.orderData.ordered_items.push(res.data.data[0]);
             // add cart item to localStorage for *pwa*
-            this.addOrUpdateOrderDataInLocalStorage(this.orderData);
+            // this.addOrUpdateOrderDataInLocalStorage(this.orderData);
           }
           if(this.check_order_place_status === '1_ORDER_PLACED')
           {
@@ -1194,6 +1198,51 @@ export default {
         .catch((err) => {
           console.log("err oci ", err.response);
         });
+
+      } else {
+        // foods data
+        let targetFood = item.food_item
+        let orderedItem = {
+          "id": 7898, // TODO Get ID
+          "quantity": 1,
+          "food_order": this.orderData.id,
+          "status": this.orderData.status,
+          "food_name": targetFood.name,
+          "food_image": targetFood.image,
+          "food_option": targetFood.food_options,
+          "food_extra": targetFood.food_extras,
+          "price": targetFood.price,
+          "category_name": targetFood.category.name
+        }
+
+        this.orderData.ordered_items.push(orderedItem);
+        if(this.check_order_place_status === '1_ORDER_PLACED')
+        {
+          // TODO OFFLINE
+          this.getUpdatedPriceDetails(this.orderData.id);
+        }
+
+        // add offline state in request body
+        body.isOffline = true
+        let offlineIdentifier = this.makeid()
+        body.offlineIdentifier = offlineIdentifier
+
+        let targetStoreObject = {
+          endpoint: "/restaurant_management/dashboard/order/cart/items/",
+          requestBody: body,
+          timestamp: new Date()
+        }
+
+        let ihostOfflineCartItems = JSON.parse(localStorage.getItem("ihostOfflineCartItems"))
+        if (ihostOfflineCartItems){
+          ihostOfflineCartItems.push(targetStoreObject)
+          localStorage.setItem('ihostOfflineCartItems', JSON.stringify(ihostOfflineCartItems))
+        } else {
+          let offlineCartItems = []
+          offlineCartItems.push(targetStoreObject)
+          localStorage.setItem('ihostOfflineCartItems', JSON.stringify(offlineCartItems))
+        }
+      }
     },
 
     updateCartItem(item) {

@@ -1,19 +1,12 @@
-[{
-  "endpoint": "/restaurant_management/dashboard/order/create_take_away_order/",
-  "requestBody": {
-    "restaurant": "17",
-    "takeway_order_type": 22,
-    "isOffline": true,
-    "offlineIdentifier": "ZlJx9En"
-  },
-  "timestamp": "2021-05-27T12:05:35.869Z"
-}, {
-  "endpoint": "/restaurant_management/dashboard/order/create_take_away_order/",
-  "requestBody": {
-    "restaurant": "17",
-    "takeway_order_type": 22,
-    "isOffline": true,
-    "offlineIdentifier": "PcZuuJe"
-  },
-  "timestamp": "2021-05-27T12:05:45.530Z"
-}]
+{
+  "ordered_items": [],
+  "table": null,
+  "remarks": null,
+  "status": "0_ORDER_INITIALIZED",
+  "id": 3763,
+  "order_no": "001770"
+}
+{
+  "restaurant": "17",
+  "takeway_order_type": 24
+}

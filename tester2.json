@@ -1,0 +1,29 @@
+{
+  "ordered_items": [{
+    "id": 7898,
+    "quantity": 1,
+    "food_order": 3755,
+    "status": "0_ORDER_INITIALIZED",
+    "food_name": "Drinks",
+    "food_image": "https://ihost-space.sgp1.digitaloceanspaces.com/ihost-space-development/media/fafe1471-c9f5-4127-927d-7890f80d7361.png",
+    "food_option": [{
+      "id": 1600,
+      "option_type": {
+        "id": 1,
+        "name": "single_type"
+      },
+      "discounted_price": null,
+      "name": "Default",
+      "price": 150,
+      "food": 1393
+    }],
+    "food_extra": [],
+    "price": 150,
+    "category_name": "BEEF"
+  }],
+  "table": null,
+  "remarks": null,
+  "status": "0_ORDER_INITIALIZED",
+  "id": 3755,
+  "order_no": "001762"
+}
