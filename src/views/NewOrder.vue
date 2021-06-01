@@ -1086,11 +1086,15 @@ export default {
         )
         .then((res) => {
 
+          console.log("takeaway order type id ",this.takeaway_order_type_id);
+          
+
           if (res.data.status != true) {
             this.showActionMessage("error", "Please select the takeaway type first");
           } else {
             let response_data = res.data.data;
             this.orderData = response_data;
+            console.log("orderdata to view",this.orderData);
           }
         })
         .catch((err) => {
@@ -1133,7 +1137,8 @@ export default {
     },
 
     addToItemCardGo(item) {
-      // console.log("itemmmmmmmmmmmmmm",item);
+      console.log("itemmmmmmmmmmmmmm",item);
+      console.log("order Data",this.orderData);
       let allextras = [];
 
       item.food_extras.map((extra) =>
@@ -1156,6 +1161,7 @@ export default {
     },
 
     async itemAddToCart(item) {
+      
       console.log("item ", item);
       if (this.isDinein && this.dinein_selected_table_id === null) {
         return this.showActionMessage("error", "Please Select Table First!!");
@@ -1165,7 +1171,7 @@ export default {
         // console.log(1111);
         await this.createTakeAwayOrder();
       }
-
+ 
       let body = null;
 
       body = {
@@ -1183,7 +1189,7 @@ export default {
         ])
         .then((res) => {
           if (res.data.status) {
-            // console.log("********** Cart Items Response******* ", res.data.data);
+            console.log("********** Cart Items Response******* ", res.data.data);
             this.orderData.ordered_items.push(res.data.data[0]);
             // add cart item to localStorage for *pwa*
             // this.addOrUpdateOrderDataInLocalStorage(this.orderData);
@@ -1214,6 +1220,7 @@ export default {
           "price": targetFood.price,
           "category_name": targetFood.category.name
         }
+        console.log("orderedItemmmmmmm",orderedItem);
 
         this.orderData.ordered_items.push(orderedItem);
         if(this.check_order_place_status === '1_ORDER_PLACED')
