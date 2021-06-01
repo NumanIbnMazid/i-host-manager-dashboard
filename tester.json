@@ -1,12 +1,1 @@
-{
-  "ordered_items": [],
-  "table": null,
-  "remarks": null,
-  "status": "0_ORDER_INITIALIZED",
-  "id": 3763,
-  "order_no": "001770"
-}
-{
-  "restaurant": "17",
-  "takeway_order_type": 24
-}
+[{"endpoint":"/restaurant_management/dashboard/order/cart/items/","requestBody":{"quantity":1,"status":"0_ORDER_INITIALIZED","food_order":786,"food_option":1600,"food_extras":[],"isOffline":true,"offlineIdentifier":"wtm49hj"},"timestamp":"2021-05-30T10:19:58.648Z"},{"endpoint":"/restaurant_management/dashboard/order/cart/items/","requestBody":{"quantity":1,"status":"0_ORDER_INITIALIZED","food_order":786,"food_option":249,"food_extras":[],"isOffline":true,"offlineIdentifier":"6LXwVI1"},"timestamp":"2021-05-30T10:20:00.928Z"}]
