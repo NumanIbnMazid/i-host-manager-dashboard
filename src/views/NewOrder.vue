@@ -1156,54 +1156,13 @@ export default {
     },
 
     async itemAddToCart(item) {
-      console.log("item ", item);
-      if (this.isDinein && this.dinein_selected_table_id === null) {
-        return this.showActionMessage("error", "Please Select Table First!!");
-      }
 
-      if (this.orderData.id == null) {
-        // console.log(1111);
-        await this.createTakeAwayOrder();
-      }
-
-      let body = null;
-
-      body = {
-        quantity: 1,
-        status: this.orderData.status,
-        food_order: this.orderData.id, // order id
-        food_option: item.food_option,
-        food_extras: item.food_extras,
-      }
-
-      if (navigator.onLine == true) {
-        await axios
-        .post("/restaurant_management/dashboard/order/cart/items/", [
-          body,
-        ])
-        .then((res) => {
-          if (res.data.status) {
-            // console.log("********** Cart Items Response******* ", res.data.data);
-            this.orderData.ordered_items.push(res.data.data[0]);
-            // add cart item to localStorage for *pwa*
-            // this.addOrUpdateOrderDataInLocalStorage(this.orderData);
-          }
-          if(this.check_order_place_status === '1_ORDER_PLACED')
-          {
-            this.getUpdatedPriceDetails(this.orderData.id);
-          }
-
-          // else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => {
-          console.log("err oci ", err.response);
-        });
-
-      } else {
+      function itemAddToCartOffline() {
+        console.log("****************** itemAddToCartOffline() Start ******************")
         // foods data
         let targetFood = item.food_item
         let orderedItem = {
-          "id": 7898, // TODO Get ID
+          "id": 0, // TODO Get ID
           "quantity": 1,
           "food_order": this.orderData.id,
           "status": this.orderData.status,
@@ -1215,8 +1174,9 @@ export default {
           "category_name": targetFood.category.name
         }
 
-        this.orderData.ordered_items.push(orderedItem);
-        if(this.check_order_place_status === '1_ORDER_PLACED')
+        this.orderData.ordered_items.push(orderedItem)
+
+        if (this.check_order_place_status === '1_ORDER_PLACED')
         {
           // TODO OFFLINE
           this.getUpdatedPriceDetails(this.orderData.id);
@@ -1242,6 +1202,58 @@ export default {
           offlineCartItems.push(targetStoreObject)
           localStorage.setItem('ihostOfflineCartItems', JSON.stringify(offlineCartItems))
         }
+        console.log("****************** itemAddToCartOffline() Ends ******************")
+      }
+
+      console.log("item ", item);
+      
+      if (this.isDinein && this.dinein_selected_table_id === null) {
+        return this.showActionMessage("error", "Please Select Table First!!");
+      }
+
+      if (this.orderData.id == null) {
+        // console.log(1111);
+        await this.createTakeAwayOrder();
+      }
+
+      let body = null;
+
+      body = {
+        quantity: 1,
+        status: this.orderData.status,
+        food_order: this.orderData.id, // order id
+        food_option: item.food_option,
+        food_extras: item.food_extras,
+      }
+
+      if (navigator.onLine == true) {
+
+        itemAddToCartOffline()
+
+        await axios
+        .post("/restaurant_management/dashboard/order/cart/items/", [
+          body,
+        ])
+        .then((res) => {
+          if (res.data.status) {
+            // console.log("********** Cart Items Response******* ", res.data.data);
+            this.orderData.ordered_items.push(res.data.data[0]);
+            // add cart item to localStorage for *pwa*
+            // this.addOrUpdateOrderDataInLocalStorage(this.orderData);
+          }
+          if(this.check_order_place_status === '1_ORDER_PLACED')
+          {
+            this.getUpdatedPriceDetails(this.orderData.id);
+          }
+
+          // else this.showErrorLog(res.data.error.error_details);
+        })
+        .catch((err) => {
+          console.log("err oci ", err.response);
+        });
+
+      } else {
+        
       }
     },
 
