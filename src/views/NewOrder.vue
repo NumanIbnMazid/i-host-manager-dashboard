@@ -867,6 +867,8 @@ export default {
     showOrder: null,
     takeaway_type: [],
 
+    clickedFood: null,
+
     isActiveitemDetailPopup: false,
     popupActive: false,
     selectedItem: { extras: [] },
@@ -891,13 +893,21 @@ export default {
     makeid() {
       let length = 7
       var result = []
-      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      var charactersLength = characters.length;
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+      var charactersLength = characters.length
       for ( var i = 0; i < length; i++ ) {
         result.push(characters.charAt(Math.floor(Math.random() * 
-      charactersLength)));
+      charactersLength)))
       }
-      return result.join('');
+      return result.join('')
+    },
+
+    makeintid() {
+      let min = null
+      let max = null
+      min = Math.ceil(100000001)
+      max = Math.floor(9999999999999)
+      return Math.floor(Math.random() * (max - min + 1)) + min
     },
 
     // *pwa* Local Storage Manipulation : orderData
@@ -1063,7 +1073,51 @@ export default {
           this.addToCardItem.food_option ||
           this.selectedItem.food_options[0].id,
         food_extras: this.addToCardItem.food_extras,
+        food_item: this.clickedFood,
       });
+    },
+
+    createTakeAwayOrderOffline(body){
+      console.log("****************** createTakeAwayOrderOffline() Start ******************")
+
+      // console.log(body, "******* BODY DATA *******")
+      // add offline state in request body
+      body.isOffline = true
+      let offlineIdentifier = this.makeid()
+      body.offlineIdentifier = offlineIdentifier
+
+      let targetStoreObject = {
+        endpoint: "/restaurant_management/dashboard/order/create_take_away_order/",
+        method: "post",
+        requestBody: body,
+        timestamp: new Date()
+      }
+      let ihostOfflineOrderData = JSON.parse(localStorage.getItem("ihostOfflineOrderData"))
+
+      if (ihostOfflineOrderData){
+        ihostOfflineOrderData.push(targetStoreObject)
+        localStorage.setItem('ihostOfflineOrderData', JSON.stringify(ihostOfflineOrderData))
+      } else {
+        let offlineOrders = []
+        offlineOrders.push(targetStoreObject)
+        localStorage.setItem('ihostOfflineOrderData', JSON.stringify(offlineOrders))
+      }
+
+      let takeawayFakeResponse = {
+        "ordered_items": [],
+        "table": body.table, // Get table based on takeaway or dinein
+        "remarks": null, // Get remarks
+        "status": "0_ORDER_INITIALIZED", // get dynamic
+        "id": this.makeintid(), // TODO Get ID
+        "order_no": "0000000", // TODO Get Order No
+        "uid": this.makeid()
+      }
+
+      this.orderData = takeawayFakeResponse;
+
+      // console.log(this.orderData, "orderData")
+
+      console.log("****************** createTakeAwayOrderOffline() End ******************")
     },
 
     async createTakeAwayOrder() {
@@ -1079,66 +1133,42 @@ export default {
       };
 
       if (navigator.onLine == true) {
-        await axios
-        .post(
-          "/restaurant_management/dashboard/order/create_take_away_order/",
-          body
-        )
-        .then((res) => {
+        // await axios
+        // .post(
+        //   "/restaurant_management/dashboard/order/create_take_away_order/",
+        //   body
+        // )
+        // .then((res) => {
 
-          console.log("takeaway order type id ",this.takeaway_order_type_id);
+        //   console.log("takeaway order type id ",this.takeaway_order_type_id);
           
 
-          if (res.data.status != true) {
-            this.showActionMessage("error", "Please select the takeaway type first");
-          } else {
-            let response_data = res.data.data;
-            this.orderData = response_data;
-            console.log("orderdata to view",this.orderData);
-          }
-        })
-        .catch((err) => {
-          console.log("err ", err.response);
-        });
+        //   if (res.data.status != true) {
+        //     this.showActionMessage("error", "Please select the takeaway type first");
+        //   } else {
+        //     let response_data = res.data.data;
+        //     this.orderData = response_data;
+        //     console.log("orderdata to view",this.orderData);
+        //   }
+        // })
+        // .catch((err) => {
+        //   console.log("err ", err.response);
+        // });
+
+        // TODO Offline Tester
+        this.createTakeAwayOrderOffline(body)
       }
       else {
-        // add offline state in request body
-        body.isOffline = true
-        let offlineIdentifier = this.makeid()
-        body.offlineIdentifier = offlineIdentifier
-
-        let targetStoreObject = {
-          endpoint: "/restaurant_management/dashboard/order/create_take_away_order/",
-          requestBody: body,
-          timestamp: new Date()
-        }
-        let ihostOfflineOrderData = JSON.parse(localStorage.getItem("ihostOfflineOrderData"))
-
-        if (ihostOfflineOrderData){
-          ihostOfflineOrderData.push(targetStoreObject)
-          localStorage.setItem('ihostOfflineOrderData', JSON.stringify(ihostOfflineOrderData))
-        } else {
-          let offlineOrders = []
-          offlineOrders.push(targetStoreObject)
-          localStorage.setItem('ihostOfflineOrderData', JSON.stringify(offlineOrders))
-        }
-
-        let takeawayFakeResponse = {
-          "ordered_items": [],
-          "table": null, // Get table based on takeaway or dinein
-          "remarks": null, // Get remarks
-          "status": "0_ORDER_INITIALIZED", // get dynamic
-          "id": 786, // TODO Get ID
-          "order_no": "000000" // TODO Get Order No
-        }
-
-        this.orderData = takeawayFakeResponse;
+        // TODO Offline
+        this.createTakeAwayOrderOffline(body)
       }
     },
 
     addToItemCardGo(item) {
-      console.log("itemmmmmmmmmmmmmm",item);
-      console.log("order Data",this.orderData);
+      // assign clicked food
+      this.clickedFood = item
+      // console.log("itemmmmmmmmmmmmmm",item);
+      // console.log("order Data",this.orderData);
       let allextras = [];
 
       item.food_extras.map((extra) =>
@@ -1160,57 +1190,68 @@ export default {
       });
     },
 
-    async itemAddToCart(item) {
+    itemAddToCartOffline(body, item) {
+      console.log("****************** itemAddToCartOffline() Start ******************")
+      // foods data
+      let targetFood = item.food_item
 
-      function itemAddToCartOffline() {
-        console.log("****************** itemAddToCartOffline() Start ******************")
-        // foods data
-        let targetFood = item.food_item
-        let orderedItem = {
-          "id": 0, // TODO Get ID
-          "quantity": 1,
-          "food_order": this.orderData.id,
-          "status": this.orderData.status,
-          "food_name": targetFood.name,
-          "food_image": targetFood.image,
-          "food_option": targetFood.food_options,
-          "food_extra": targetFood.food_extras,
-          "price": targetFood.price,
-          "category_name": targetFood.category.name
-        }
+      let selectedFoodOption = targetFood.food_options.filter(function(foodOption) {
+        return foodOption.id === item.food_option;
+      })[0]
 
-        this.orderData.ordered_items.push(orderedItem)
-
-        if (this.check_order_place_status === '1_ORDER_PLACED')
-        {
-          // TODO OFFLINE
-          this.getUpdatedPriceDetails(this.orderData.id);
-        }
-
-        // add offline state in request body
-        body.isOffline = true
-        let offlineIdentifier = this.makeid()
-        body.offlineIdentifier = offlineIdentifier
-
-        let targetStoreObject = {
-          endpoint: "/restaurant_management/dashboard/order/cart/items/",
-          requestBody: body,
-          timestamp: new Date()
-        }
-
-        let ihostOfflineCartItems = JSON.parse(localStorage.getItem("ihostOfflineCartItems"))
-        if (ihostOfflineCartItems){
-          ihostOfflineCartItems.push(targetStoreObject)
-          localStorage.setItem('ihostOfflineCartItems', JSON.stringify(ihostOfflineCartItems))
-        } else {
-          let offlineCartItems = []
-          offlineCartItems.push(targetStoreObject)
-          localStorage.setItem('ihostOfflineCartItems', JSON.stringify(offlineCartItems))
-        }
-        console.log("****************** itemAddToCartOffline() Ends ******************")
+      let orderedItem = {
+        "id": this.makeintid(),
+        "quantity": 1,
+        "food_order": this.orderData.id,
+        "status": this.orderData.status,
+        "food_name": targetFood.name,
+        "food_image": targetFood.image,
+        // "food_option": targetFood.food_options[0],
+        "food_option": selectedFoodOption,
+        "food_extra": targetFood.food_extras,
+        "price": targetFood.price,
+        "category_name": targetFood.category.name,
+        "uid": this.makeid()
       }
 
-      console.log("item ", item);
+      this.orderData.ordered_items.push(orderedItem)
+
+      if (this.check_order_place_status === '1_ORDER_PLACED')
+      {
+        console.log("******* STATUS: 1 ORDER PLACED *******")
+        // TODO OFFLINE
+        // this.getUpdatedPriceDetails(this.orderData.id);
+      }
+
+      // add offline state in request body
+      body.isOffline = true
+      let offlineIdentifier = this.makeid()
+      body.offlineIdentifier = offlineIdentifier
+
+      let targetStoreObject = {
+        endpoint: "/restaurant_management/dashboard/order/cart/items/",
+        method: "post",
+        requestBody: body,
+        timestamp: new Date()
+      }
+
+      let ihostOfflineCartItems = JSON.parse(localStorage.getItem("ihostOfflineCartItems"))
+      if (ihostOfflineCartItems){
+        ihostOfflineCartItems.push(targetStoreObject)
+        localStorage.setItem('ihostOfflineCartItems', JSON.stringify(ihostOfflineCartItems))
+      } else {
+        let offlineCartItems = []
+        offlineCartItems.push(targetStoreObject)
+        localStorage.setItem('ihostOfflineCartItems', JSON.stringify(offlineCartItems))
+      }
+
+      // console.log(this.orderData, "orderData")
+      console.log("****************** itemAddToCartOffline() Ends ******************")
+    },
+
+    async itemAddToCart(item) {
+
+      console.log("******* itemAddToCart => item *******", item);
       
       if (this.isDinein && this.dinein_selected_table_id === null) {
         return this.showActionMessage("error", "Please Select Table First!!");
@@ -1233,32 +1274,35 @@ export default {
 
       if (navigator.onLine == true) {
 
-        itemAddToCartOffline()
+        // await axios
+        // .post("/restaurant_management/dashboard/order/cart/items/", [
+        //   body,
+        // ])
+        // .then((res) => {
+        //   if (res.data.status) {
+        //     console.log("********** Cart Items Response ******* ", res.data.data);
+        //     this.orderData.ordered_items.push(res.data.data[0]);
+        //     console.log("********** orderData From Online ******* ", this.orderData);
+        //     // add cart item to localStorage for *pwa*
+        //     // this.addOrUpdateOrderDataInLocalStorage(this.orderData);
+        //   }
+        //   if(this.check_order_place_status === '1_ORDER_PLACED')
+        //   {
+        //     this.getUpdatedPriceDetails(this.orderData.id);
+        //   }
 
-        await axios
-        .post("/restaurant_management/dashboard/order/cart/items/", [
-          body,
-        ])
-        .then((res) => {
-          if (res.data.status) {
-            console.log("********** Cart Items Response******* ", res.data.data);
-            this.orderData.ordered_items.push(res.data.data[0]);
-            // add cart item to localStorage for *pwa*
-            // this.addOrUpdateOrderDataInLocalStorage(this.orderData);
-          }
-          if(this.check_order_place_status === '1_ORDER_PLACED')
-          {
-            this.getUpdatedPriceDetails(this.orderData.id);
-          }
+        //   // else this.showErrorLog(res.data.error.error_details);
+        // })
+        // .catch((err) => {
+        //   console.log("err oci ", err.response);
+        // });
 
-          // else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => {
-          console.log("err oci ", err.response);
-        });
+        // TODO Offline Tester
+        this.itemAddToCartOffline(body, item)
 
       } else {
-        
+        // TODO Offline
+        this.itemAddToCartOffline(body, item)
       }
     },
 
@@ -1283,10 +1327,10 @@ export default {
             );
 
             // add updated cart data to localStorage for *pwa*
-            this.addOrUpdateOrderDataInLocalStorage(this.orderData);
+            // this.addOrUpdateOrderDataInLocalStorage(this.orderData);
 
           } else this.showErrorLog(res.data.error.error_details);
-          if(this.check_order_place_status === '1_ORDER_PLACED')
+          if (this.check_order_place_status === '1_ORDER_PLACED')
           {
             this.getUpdatedPriceDetails(this.orderData.id);
           }
@@ -1408,37 +1452,84 @@ export default {
     //     });
     // },
 
+    cancelOrderItemOffline(body, itemId) {
+      console.log("****************** cancelOrderItemOffline() Start ******************")
+
+      let filteredOrderData = []
+      this.orderData.ordered_items.map(order => {
+        if(order.id !== itemId){
+          filteredOrderData.push(order)
+        }
+      })
+
+      this.orderData.ordered_items = filteredOrderData;
+
+      // add offline state in request body
+      body.isOffline = true
+      let offlineIdentifier = this.makeid()
+      body.offlineIdentifier = offlineIdentifier
+
+      let targetStoreObject = {
+        endpoint: "/restaurant_management/dashboard/order/cart/cancel_items/",
+        method: "post",
+        requestBody: body,
+        timestamp: new Date()
+      }
+
+      let ihostOfflineCancelOrderItem = JSON.parse(localStorage.getItem("ihostOfflineCancelOrderItem"))
+      if (ihostOfflineCancelOrderItem){
+        ihostOfflineCancelOrderItem.push(targetStoreObject)
+        localStorage.setItem('ihostOfflineCancelOrderItem', JSON.stringify(ihostOfflineCancelOrderItem))
+      } else {
+        let offlineCancelItems = []
+        offlineCancelItems.push(targetStoreObject)
+        localStorage.setItem('ihostOfflineCancelOrderItem', JSON.stringify(offlineCancelItems))
+      }
+      console.log("****************** cancelOrderItemOffline() Ends ******************")
+    },
+
     cancelOrderItem(itemId) {
-      console.log("order to cancel ", itemId);
-      axios
-        .post("/restaurant_management/dashboard/order/cart/cancel_items/", {
-          order_id: this.orderData.id,
-          food_items: [itemId],
-        })
-        .then((res) => {
-          if (res.data.status) {
-            console.log("can data ", res.data.data);
 
-            const resData = res.data.data;
+      let body = {
+        order_id: this.orderData.id,
+        food_items: [itemId],
+      }
 
-            const leftItems = resData.ordered_items.filter(
-              (item) => item.status !== "4_CANCELLED"
-            );
+      if (navigator.onLine == true) {
+        // axios
+        // .post("/restaurant_management/dashboard/order/cart/cancel_items/", body)
+        // .then((res) => {
+        //   if (res.data.status) {
+        //     console.log("******* cancel_items ******* Response: ", res.data.data);
 
-            resData.ordered_items = leftItems;
+        //     const resData = res.data.data;
 
-            this.orderData = resData;
-            this.showActionMessage("success", "Item Cancel!");
+        //     const leftItems = resData.ordered_items.filter(
+        //       (item) => item.status !== "4_CANCELLED"
+        //     );
 
-            if (resData.ordered_items.length < 1)
-              this.orderData = {id: null, ordered_items: [], price: null};
-            localStorage.setItem("orderData", null);
-          } else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
-        });
+        //     resData.ordered_items = leftItems;
+
+        //     this.orderData = resData;
+        //     this.showActionMessage("success", "Item Cancel!");
+
+        //     if (resData.ordered_items.length < 1)
+        //       this.orderData = {id: null, ordered_items: [], price: null};
+        //     localStorage.setItem("orderData", null);
+        //   } else this.showErrorLog(res.data.error.error_details);
+        // })
+        // .catch((err) => {
+        //   this.showActionMessage("error", err.response.statusText);
+        //   this.checkError(err);
+        // });
+
+        // TODO Offline Tester
+        this.cancelOrderItemOffline(body, itemId)
+
+      } else {
+        // TODO Offline
+        this.cancelOrderItemOffline(body, itemId)
+      }
     },
 
     inTable(order_id, food_items) {
