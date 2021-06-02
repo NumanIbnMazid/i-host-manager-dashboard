@@ -1596,59 +1596,194 @@ export default {
       }
     },
 
+    inTableOffline(body, order_id, food_items) {
+      console.log(
+        "****************** inTableOffline() Start ******************"
+      )
+
+      let filteredOrderedItems = []
+      this.orderData.ordered_items.forEach(function (orderedItem) {
+        orderedItem.status = "3_IN_TABLE"
+        filteredOrderedItems.push(orderedItem)
+      });
+
+      this.isBtnLoading = false;
+      this.isInvoice = !this.isInvoice;
+      console.log("**** Order Data ****", this.orderData);
+      this.orderData.status = "3_IN_TABLE"
+      this.orderData.ordered_items = filteredOrderedItems
+      console.log("***** In voice created!!!!! *****");
+      this.showActionMessage("success", "Order Confirmed!");
+
+      // add offline state in request body
+      body.isOffline = true;
+      let offlineIdentifier = this.makeid();
+      body.offlineIdentifier = offlineIdentifier;
+
+      let targetStoreObject = {
+        endpoint:
+          "/restaurant_management/dashboard/order/status/in_table/",
+        method: "post",
+        requestBody: body,
+        timestamp: new Date(),
+      };
+      let ihostOfflineStatusInTableData = JSON.parse(
+        localStorage.getItem("ihostOfflineStatusInTableData")
+      );
+
+      if (ihostOfflineStatusInTableData) {
+        ihostOfflineStatusInTableData.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineStatusInTableData",
+          JSON.stringify(ihostOfflineStatusInTableData)
+        );
+      } else {
+        let statusInTables = [];
+        statusInTables.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineStatusInTableData",
+          JSON.stringify(statusInTables)
+        );
+      }
+
+      console.log(
+        "****************** inTableOffline() End ******************"
+      )
+    },
+
     inTable(order_id, food_items) {
-      axios
-        .post("/restaurant_management/dashboard/order/status/in_table/", {
-          order_id,
-          food_items,
-        })
-        .then((res) => {
-          if (res.data.status) {
-            this.isBtnLoading = false;
-            this.isInvoice = !this.isInvoice;
-            console.log("in table ", res.data);
-            this.orderData = res.data.data;
-            console.log("In voice created!!!!! ");
-            this.showActionMessage("success", "Order Confirmed!");
-          } else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => {
-          console.log("error in table ", err.response);
-        });
+
+      let body = {
+        order_id,
+        food_items,
+      }
+
+      if (navigator.onLine == true) {
+        // axios
+        // .post("/restaurant_management/dashboard/order/status/in_table/", body)
+        // .then((res) => {
+        //   if (res.data.status) {
+        //     this.isBtnLoading = false;
+        //     this.isInvoice = !this.isInvoice;
+        //     console.log("in table ", res.data);
+        //     this.orderData = res.data.data;
+        //     console.log("In voice created!!!!! ");
+        //     this.showActionMessage("success", "Order Confirmed!");
+        //   } else this.showErrorLog(res.data.error.error_details);
+        // })
+        // .catch((err) => {
+        //   console.log("error in table ", err.response);
+        // });
+
+        // TODO Offline Tester
+        this.inTableOffline(body, order_id, food_items);
+      } else {
+        // TODO Offline
+        this.inTableOffline(body, order_id, food_items);
+      }
+    },
+
+    confirmOrderOffline(body, order_id, food_items) {
+      console.log(
+        "****************** confirmOrderOffline() Start ******************"
+      )
+
+      // is dine in selected
+      if (this.isDinein && this.dinein_selected_table_id !== null) {
+        this.isBtnLoading = false;
+        this.orderData = { id: null, ordered_items: [], price: null };
+        // localStorage.setItem("orderData", this.orderData);
+        this.showActionMessage(
+          "success",
+          `Order Confirmed At Table  No ${this.dinein_selected_table_id}`
+        );
+        this.isTakeOut = !this.isTakeOut;
+        this.isDinein = false;
+        this.slectedTable = null;
+        return;
+      }
+
+      // add offline state in request body
+      body.isOffline = true;
+      let offlineIdentifier = this.makeid();
+      body.offlineIdentifier = offlineIdentifier;
+
+      let targetStoreObject = {
+        endpoint:
+          "/restaurant_management/dashboard/order/status/confirm/",
+        method: "post",
+        requestBody: body,
+        timestamp: new Date(),
+      };
+      let ihostOfflineStatusConfirmData = JSON.parse(
+        localStorage.getItem("ihostOfflineStatusConfirmData")
+      );
+
+      if (ihostOfflineStatusConfirmData) {
+        ihostOfflineStatusConfirmData.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineStatusConfirmData",
+          JSON.stringify(ihostOfflineStatusConfirmData)
+        );
+      } else {
+        let statusConfirms = [];
+        statusConfirms.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineStatusConfirmData",
+          JSON.stringify(statusConfirms)
+        );
+      }
+
+      // for take out option
+      this.inTable(order_id, food_items);
+
+      console.log(
+        "****************** confirmOrderOffline() End ******************"
+      )
     },
 
     confirmOrder(order_id, food_items) {
       this.isBtnLoading = true;
-      axios
-        .post("/restaurant_management/dashboard/order/status/confirm/", {
-          order_id,
-          food_items,
-        })
-        .then((res) => {
-          console.log("co ", res.data);
-          if (res.data.status) {
-            // is dine in selected
-            if (this.isDinein && this.dinein_selected_table_id !== null) {
-              this.isBtnLoading = false;
-              this.orderData = { id: null, ordered_items: [], price: null };
-              // localStorage.setItem("orderData", this.orderData);
-              this.showActionMessage(
-                "success",
-                `Order Confirmed At Table  No ${this.dinein_selected_table_id}`
-              );
-              this.isTakeOut = !this.isTakeOut;
-              this.isDinein = false;
-              this.slectedTable = null;
-              return;
-            }
+      let body = {
+        order_id,
+        food_items,
+      }
 
-            // for take out option
-            this.inTable(order_id, food_items);
-          } else this.showErrorLog(res.data.error.error_details);
-        })
-        .catch((err) => {
-          console.log("err co ", err.response);
-        });
+      if (navigator.onLine == true) {
+        // axios
+        // .post("/restaurant_management/dashboard/order/status/confirm/", body)
+        // .then((res) => {
+        //   console.log("co ", res.data);
+        //   if (res.data.status) {
+        //     // is dine in selected
+        //     if (this.isDinein && this.dinein_selected_table_id !== null) {
+        //       this.isBtnLoading = false;
+        //       this.orderData = { id: null, ordered_items: [], price: null };
+        //       // localStorage.setItem("orderData", this.orderData);
+        //       this.showActionMessage(
+        //         "success",
+        //         `Order Confirmed At Table  No ${this.dinein_selected_table_id}`
+        //       );
+        //       this.isTakeOut = !this.isTakeOut;
+        //       this.isDinein = false;
+        //       this.slectedTable = null;
+        //       return;
+        //     }
+
+        //     // for take out option
+        //     this.inTable(order_id, food_items);
+        //   } else this.showErrorLog(res.data.error.error_details);
+        // })
+        // .catch((err) => {
+        //   console.log("err co ", err.response);
+        // });
+
+        // TODO Offline Tester
+        this.confirmOrderOffline(body, order_id, food_items);
+      } else {
+        // TODO Offline
+        this.confirmOrderOffline(body, order_id, food_items);
+      }
     },
 
     confirmPaymentOrder() {
@@ -1769,6 +1904,9 @@ export default {
         filteredOrderedItems.push(orderedItem)
       });
       // this.orderData = res.data.data;
+
+      // TODO Calculate Price and Assign to this.orderData
+
       const foodItems = filteredOrderedItems
         .filter((item) => item.status === "1_ORDER_PLACED")
         .map((item) => item.id);
@@ -1789,8 +1927,8 @@ export default {
           "/restaurant_management/dashboard/order/placed_status/",
         method: "post",
         requestBody: body,
-        timestamp: new Date(),
-      };
+        timestamp: new Date()
+      }
       let ihostOfflineOrderPlacedStatusData = JSON.parse(
         localStorage.getItem("ihostOfflineOrderPlacedStatusData")
       );
@@ -1843,6 +1981,9 @@ export default {
 
           // TODO Offline tester
           this.placeOrderOffline(body);
+
+          console.log(this.isDinein, "******* IsDineIn ******")
+          console.log(this.orderData, "******* orderData ******")
         }
         else {
           // TODO Offline
