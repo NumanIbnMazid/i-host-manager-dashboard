@@ -60,7 +60,7 @@
             >
               <slide v-for="(category, i) in categories" :key="i">
                 <vs-button
-                  class="w-full my-1 "
+                  class="w-full my-1"
                   :color="
                     slectedCategory == category.id ? 'secondary' : 'primary'
                   "
@@ -76,13 +76,11 @@
             </hooper>
           </div>
 
-
           <div class="w-10/12">
             <div class="b-row">
-
               <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-6">
                 <vs-input
-                  class="w-9/12 mb-2 mr-5 "
+                  class="w-9/12 mb-2 mr-5"
                   placeholder="Search by food name......"
                   v-model="search"
                   @keyup="findFooitem()"
@@ -91,15 +89,13 @@
               </div>
               <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-6">
                 <vs-input
-                  class="w-9/12 mb-2 mr-5 "
+                  class="w-9/12 mb-2 mr-5"
                   placeholder="Search by food code......"
                   v-model="searchByCode"
                   @keyup="findFoodByCode()"
                 >
                 </vs-input>
               </div>
-
-
 
               <!-- food grid view -->
               <div id="demo-basic-card" class="mt-4" v-if="isGrid">
@@ -128,19 +124,21 @@
                         </h5>
                       </vx-tooltip>
                       <div class="d-block">
-                        <p class="text-dark text-center mb-2" v-if="food.discounted_price == null">
-                          ৳  {{ food.price }}
+                        <p
+                          class="text-dark text-center mb-2"
+                          v-if="food.discounted_price == null"
+                        >
+                          ৳ {{ food.price }}
                         </p>
 
                         <p class="text-grey text-center mb-2" v-else>
-                          <span class="text-grey-dark  mb-2 mr-5 line-through">
-                          ৳  {{ food.price }}
-                        </span>
-                          <span class="text-dark mb-2 ml-5" >
-                          ৳ {{ food.discounted_price }}
-                        </span>
+                          <span class="text-grey-dark mb-2 mr-5 line-through">
+                            ৳ {{ food.price }}
+                          </span>
+                          <span class="text-dark mb-2 ml-5">
+                            ৳ {{ food.discounted_price }}
+                          </span>
                         </p>
-
                       </div>
 
                       <!-- <p class="text-grey">{{ "card_1.subtitle_2" }}</p> -->
@@ -306,7 +304,7 @@
                   isTakeOut = !isTakeOut;
                   isDinein = false;
                   slectedTable = null;
-                  fresh_takeout()
+                  fresh_takeout();
                   isInvoice = false;
                 "
                 v-bind:class="[
@@ -315,8 +313,6 @@
                 >Take Out</vs-button
               >
             </div>
-
-
 
             <!-- dine in 🍴🍽 -->
             <div class="w-1/2">
@@ -332,7 +328,7 @@
                   isTakeAwayOrderList = false;
                   getTables();
                   isInvoice = false;
-                  "
+                "
                 >Dine In</vs-button
               >
             </div>
@@ -364,7 +360,7 @@
                     :key="item.id"
                   >
                     <!-- <vs-tr class="text-xs"> -->
-                    <vs-td class="text-center" > {{ item.food_name }} </vs-td>
+                    <vs-td class="text-center"> {{ item.food_name }} </vs-td>
 
                     <vs-td class="text-center">
                       <div class="flex">
@@ -388,12 +384,11 @@
                           @click="increaseItem(item)"
                         ></vs-button>
                       </div>
-
                     </vs-td>
 
-<!--                    <vs-td v-if="item.food_option.discounted_price !=null">-->
-<!--                      {{ item.food_option.discounted_price }}-->
-<!--                    </vs-td>-->
+                    <!--                    <vs-td v-if="item.food_option.discounted_price !=null">-->
+                    <!--                      {{ item.food_option.discounted_price }}-->
+                    <!--                    </vs-td>-->
                     <vs-td class="text-center">
                       {{ item.food_option.price }}
                     </vs-td>
@@ -409,99 +404,92 @@
                           icon-pack="feather"
                           icon="icon-x-circle"
                           @click="cancelOrderItem(item.id)"
-                        ></vs-button> </vx-tooltip>
+                        ></vs-button>
+                      </vx-tooltip>
                     </vs-td>
                   </vs-tr>
                   <vs-tr v-if="orderData.ordered_items.length > 0">
                     <td colspan="5" class="text-center">
-                      <hr>
-                     Net Total: {{calculate_total()}}
+                      <hr />
+                      Net Total: {{ calculate_total() }}
                     </td>
-
                   </vs-tr>
                 </template>
-
               </vs-table>
-
-
             </div>
             <div
               class="w-full m-0 p-0"
               v-if="slectedTable"
               @click="slectedTable = null"
-            >ne
+            >
+              ne
               <h4 class="text-center p-0 m-0">Change Table</h4>
             </div>
           </div>
           <!-- price details -->
           <div class="add_scroll_bar" v-if="orderData.price && !isDinein">
-          <div
-            class="price-details table-card mt-5 w-full"
+            <div class="price-details table-card mt-5 w-full">
+              <h6 class="text-ihostm m-2">Price Details</h6>
+              <hr />
+              <table class="m-2">
+                <tr>
+                  <td class="font-semibold">Total Price :</td>
+                  <td>
+                    <p>{{ orderData.price.total_price }}</p>
+                  </td>
+                </tr>
 
-          >
-            <h6 class="text-ihostm m-2">Price Details</h6>
-            <hr />
-            <table class="m-2">
-              <tr>
-                <td class="font-semibold">Total Price :</td>
-                <td>
-                  <p>{{ orderData.price.total_price }}</p>
-                </td>
-              </tr>
+                <tr>
+                  <td class="font-semibold">Service Charge :</td>
+                  <td>
+                    <p>{{ orderData.price.service_charge }}</p>
+                  </td>
+                </tr>
 
-              <tr>
-                <td class="font-semibold">Service Charge :</td>
-                <td>
-                  <p>{{ orderData.price.service_charge }}</p>
-                </td>
-              </tr>
+                <tr>
+                  <td class="font-semibold">Vat Charge :</td>
+                  <td>
+                    <p>{{ orderData.price.tax_amount }}</p>
+                  </td>
+                </tr>
 
-              <tr>
-                <td class="font-semibold">Vat Charge :</td>
-                <td>
-                  <p>{{ orderData.price.tax_amount }}</p>
-                </td>
-              </tr>
+                <tr>
+                  <td class="font-semibold">Grand Total :</td>
+                  <td>
+                    <p>{{ orderData.price.grand_total_price }}</p>
+                  </td>
+                </tr>
 
-              <tr>
-                <td class="font-semibold">Grand Total :</td>
-                <td>
-                  <p>{{ orderData.price.grand_total_price }}</p>
-                </td>
-              </tr>
+                <tr>
+                  <td class="font-semibold">Discount Amount :</td>
+                  <td>
+                    <p>
+                      {{ orderData.price.discount_amount }}
+                      <!--                    {{-->
+                      <!--                      orderData.price.service_charge_is_percentage ? "%" : "৳"-->
+                      <!--                    }}-->
+                    </p>
+                  </td>
+                </tr>
 
-              <tr>
-                <td class="font-semibold">Discount Amount :</td>
-                <td>
-                  <p>
-                    {{ orderData.price.discount_amount }}
-                    <!--                    {{-->
-                    <!--                      orderData.price.service_charge_is_percentage ? "%" : "৳"-->
-                    <!--                    }}-->
-                  </p>
-                </td>
-              </tr>
-
-              <tr>
-                <td class="font-semibold">Net Total :</td>
-                <td>
-                  <p>{{ orderData.price.payable_amount }}</p>
-                </td>
-              </tr>
-              <!--              <tr>-->
-              <!--                <td class="font-semibold">Take away type :</td>-->
-              <!--                <td>-->
-              <!--                  <p>{{ orderData.price.payable_amount }}</p>-->
-              <!--                </td>-->
-              <!--              </tr>-->
-
-            </table>
-          </div>
-
+                <tr>
+                  <td class="font-semibold">Net Total :</td>
+                  <td>
+                    <p>{{ orderData.price.payable_amount }}</p>
+                  </td>
+                </tr>
+                <!--              <tr>-->
+                <!--                <td class="font-semibold">Take away type :</td>-->
+                <!--                <td>-->
+                <!--                  <p>{{ orderData.price.payable_amount }}</p>-->
+                <!--                </td>-->
+                <!--              </tr>-->
+              </table>
+            </div>
           </div>
           <!-- table card -->
           <div class="add_scroll_bar_for_dinein">
-            <div class="table-info mt-4 pt-4 " v-if="isDinein && !slectedTable">
+            <div class="table-info mt-4 pt-4" v-if="isDinein && !slectedTable">
               <div class="table-card">
                 <div class="table-list m-2 grid grid-cols-3 gap-4">
                   <div
@@ -511,25 +499,25 @@
                   >
                     <div
                       :style="`${
-                      table.is_occupied
-                        ? 'cursor: not-allowed'
-                        : 'cursor: pointer'
-                    }`"
+                        table.is_occupied
+                          ? 'cursor: not-allowed'
+                          : 'cursor: pointer'
+                      }`"
                       class="table-no mx-auto"
                       :class="
-                      !table.is_occupied
-                        ? table.id == slectedTable
-                          ? 'bg-primary'
-                          : 'bg-success'
-                        : 'bg-grey'
-                    "
+                        !table.is_occupied
+                          ? table.id == slectedTable
+                            ? 'bg-primary'
+                            : 'bg-success'
+                          : 'bg-grey'
+                      "
                       @click="
-                      table.is_occupied
-                        ? null
-                        : ((slectedTable = table.id),
-                          (selectedTableNum = table.table_no),
-                          (dinein_selected_table_id = table.id))
-                    "
+                        table.is_occupied
+                          ? null
+                          : ((slectedTable = table.id),
+                            (selectedTableNum = table.table_no),
+                            (dinein_selected_table_id = table.id))
+                      "
                     >
                       <div class="table-svg">
                         <p class="table-number text-center text-2xl mt-0 pt-0">
@@ -565,16 +553,14 @@
                 <!-- select button -->
                 <div class="mx-auto text-center mt-4 mb-4">
                   <vs-button class="w-3/4 text-2xl" color="dark" type="filled"
-                  >Select</vs-button
+                    >Select</vs-button
                   >
                 </div>
               </div>
             </div>
           </div>
 
-
-
-<!--          </div>-->
+          <!--          </div>-->
 
           <!-- place order btn -->
           <div class="place-order w-2/3 mx-auto m-2 text-center bg-white">
@@ -604,38 +590,34 @@
                 :disabled="isBtnLoading ? true : false"
                 @click="placeOrder()"
               >
-                <check-square-icon
-                  size="0.8x"
-                  class="custom-class"
-                >
+                <check-square-icon size="0.8x" class="custom-class">
                 </check-square-icon>
                 Place Order</vs-button
               >
 
-<!--              <vs-button-->
-<!--                v-else-->
-<!--                color="primary"-->
-<!--                class="text-2xl text-white w-full"-->
-<!--                type="flat"-->
-<!--                @click="createInvoice(orderData.id)"-->
-<!--                :disabled="isBtnLoading ? true : false"-->
-<!--                ><file-text-icon-->
-<!--                  size="0.8x"-->
-<!--                  class="custom-class"-->
-<!--                ></file-text-icon>-->
-<!--                Create Invoice</vs-button-->
-<!--              >-->
+              <!--              <vs-button-->
+              <!--                v-else-->
+              <!--                color="primary"-->
+              <!--                class="text-2xl text-white w-full"-->
+              <!--                type="flat"-->
+              <!--                @click="createInvoice(orderData.id)"-->
+              <!--                :disabled="isBtnLoading ? true : false"-->
+              <!--                ><file-text-icon-->
+              <!--                  size="0.8x"-->
+              <!--                  class="custom-class"-->
+              <!--                ></file-text-icon>-->
+              <!--                Create Invoice</vs-button-->
+              <!--              >-->
               <vs-button
                 v-else
                 color="primary"
                 class="text-2xl text-white w-full"
                 type="flat"
                 @click="show_force_discount_form()"
-
-              ><file-text-icon
-                size="0.8x"
-                class="custom-class"
-              ></file-text-icon>
+                ><file-text-icon
+                  size="0.8x"
+                  class="custom-class"
+                ></file-text-icon>
                 Create Invoice</vs-button
               >
             </div>
@@ -644,13 +626,10 @@
       </div>
     </vs-row>
 
-
     <vs-popup title="Invoice Preview" :active.sync="newOrdersPaymentShow">
       <NewOrderPayments
-
         :theNewOrder="newPaymentOrder"
         @emitAfterNewOrderPayments="afterNewOrderPayments"
-
       ></NewOrderPayments>
     </vs-popup>
 
@@ -748,16 +727,13 @@
       </div>
 
       <!-- action buttons -->
-      <br><br><br><br>
+      <br /><br /><br /><br />
       <div class="action-buttons flex mt-4">
         <!-- confirm all -->
 
         <vx-tooltip color="success" text="Confirm All" class="mr-2 float-right">
-          <vs-button
-            color="success"
-            type="border"
-            @click="submit_error"
-          >Submit</vs-button
+          <vs-button color="success" type="border" @click="submit_error"
+            >Submit</vs-button
           >
         </vx-tooltip>
 
@@ -787,17 +763,26 @@
         </vs-tr>
         <vs-tr class="bg-white font-bold">
           <vs-td colspan="3" class="text-right">Discount Percentage:</vs-td>
-          <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage"  vs-value="true">Yes</vs-radio>
-          <vs-radio style="padding:10px;" v-model="discount_amount_is_percentage"  vs-value="false">No</vs-radio>
+          <vs-radio
+            style="padding: 10px"
+            v-model="discount_amount_is_percentage"
+            vs-value="true"
+            >Yes</vs-radio
+          >
+          <vs-radio
+            style="padding: 10px"
+            v-model="discount_amount_is_percentage"
+            vs-value="false"
+            >No</vs-radio
+          >
         </vs-tr>
-
       </vs-table>
       <vs-button
         class="float-right"
         color="success"
         @click="createInvoice(orderData.id)"
         :disabled="isBtnLoading ? true : false"
-      >Print</vs-button
+        >Print</vs-button
       >
     </vs-popup>
 
@@ -812,7 +797,6 @@ import axios from "@/axios.js";
 import moment from "moment";
 import vSelect from "vue-select";
 import NewOrderPayments from "../components/new-order/NewOrderPayments";
-
 
 // icons
 import { CheckSquareIcon } from "vue-feather-icons";
@@ -845,7 +829,7 @@ export default {
     search: "",
     searchByCode: "",
     force_discount_amount: 0,
-    discount_amount_is_percentage: 'true',
+    discount_amount_is_percentage: "true",
 
     popup_active_for_force_discount: false,
 
@@ -882,32 +866,32 @@ export default {
     newOrdersPaymentShow: false,
     newPaymentOrder: "",
     netTotalView: false,
-    netTotal:0,
-    check_order_place_status:null,
-
-
+    netTotal: 0,
+    check_order_place_status: null,
   }),
 
   methods: {
 
     makeid() {
-      let length = 7
-      var result = []
-      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-      var charactersLength = characters.length
-      for ( var i = 0; i < length; i++ ) {
-        result.push(characters.charAt(Math.floor(Math.random() * 
-      charactersLength)))
+      let length = 7;
+      var result = [];
+      var characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result.push(
+          characters.charAt(Math.floor(Math.random() * charactersLength))
+        );
       }
-      return result.join('')
+      return result.join("");
     },
 
     makeintid() {
-      let min = null
-      let max = null
-      min = Math.ceil(100000001)
-      max = Math.floor(9999999999999)
-      return Math.floor(Math.random() * (max - min + 1)) + min
+      let min = null;
+      let max = null;
+      min = Math.ceil(100000001);
+      max = Math.floor(9999999999999);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     },
 
     // *pwa* Local Storage Manipulation : orderData
@@ -916,8 +900,7 @@ export default {
       localStorage.setItem("orderData", JSON.stringify(orderData));
     },
 
-    getUpdatedPriceDetails(orderId)
-    {
+    getUpdatedPriceDetails(orderId) {
       axios
         .get(`/restaurant_management/dashboard/order/create_order/${orderId}/`)
         .then((res) => {
@@ -929,34 +912,26 @@ export default {
         });
     },
 
-
-    calculate_total()
-    {
+    calculate_total() {
       let sum = 0;
-      this.orderData.ordered_items.forEach(function(item) {
-        sum += ((item.quantity)*(item.food_option.price));
+      this.orderData.ordered_items.forEach(function (item) {
+        sum += item.quantity * item.food_option.price;
       });
       return sum;
     },
 
-
     afterNewOrderPayments(res) {
-
-          if (res.data.status && res.data.data.status === "5_PAID") {
-            this.newOrdersPaymentShow = false;
-            this.orderData = {id: null, ordered_items: [], price: null};
-            localStorage.setItem("orderData", null);
-            this.showActionMessage("success", res.data.data.status_details);
-            this.isConfirmPayment = false;
-            this.isBtnLoading = false;
-
-
-          } else this.showErrorLog(res.data.error.error_details);
-
+      if (res.data.status && res.data.data.status === "5_PAID") {
+        this.newOrdersPaymentShow = false;
+        this.orderData = { id: null, ordered_items: [], price: null };
+        localStorage.setItem("orderData", null);
+        this.showActionMessage("success", res.data.data.status_details);
+        this.isConfirmPayment = false;
+        this.isBtnLoading = false;
+      } else this.showErrorLog(res.data.error.error_details);
     },
 
-    fresh_takeout()
-    {
+    fresh_takeout() {
       console.log("fresh previous stored data");
       this.orderData = { id: null, ordered_items: [], price: null };
       localStorage.setItem("orderData", null);
@@ -966,37 +941,39 @@ export default {
       this.isTakeOut = true;
       if (this.takeaway_order_type_id != null) {
         this.popupActive = false;
-
       } else {
-        this.showActionMessage("error", "Please select the takeaway type first");
-
+        this.showActionMessage(
+          "error",
+          "Please select the takeaway type first"
+        );
       }
-
     },
 
     boolean_conversion(discount_amount_is_percentage) {
-      return discount_amount_is_percentage == 'true';
-
+      return discount_amount_is_percentage == "true";
     },
 
     getAllTakeoutType() {
       if (navigator.onLine == true) {
         axios
-        .get(
-          `/restaurant_management/dashboard/restaurant/${this.resturent_id}/`
-        )
-        .then((res) => {
-          this.takeaway_type = res.data.data.takeway_order_type;
-        })
-        .catch((err) => {
-          console.log("error offer ", err.response);
-          this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
-        });
+          .get(
+            `/restaurant_management/dashboard/restaurant/${this.resturent_id}/`
+          )
+          .then((res) => {
+            this.takeaway_type = res.data.data.takeway_order_type;
+          })
+          .catch((err) => {
+            console.log("error offer ", err.response);
+            this.showActionMessage("error", err.response.statusText);
+            this.checkError(err);
+          });
       }
       // takewayTypes data for *pwa*
       else {
-        console.log("******* Getting takewayTypes data for offline state! *******")
+        // TODO Offline
+        console.log(
+          "******* Getting takewayTypes data for offline state! *******"
+        );
         let ihostState = JSON.parse(localStorage.getItem("ihostState"));
         this.takeaway_type = ihostState.takewayTypesData;
       }
@@ -1043,7 +1020,6 @@ export default {
       }
     },
 
-
     findFooitemByCat(category_id) {
       this.slectedCategory = category_id;
       axios
@@ -1077,47 +1053,60 @@ export default {
       });
     },
 
-    createTakeAwayOrderOffline(body){
-      console.log("****************** createTakeAwayOrderOffline() Start ******************")
+    createTakeAwayOrderOffline(body) {
+      console.log(
+        "****************** createTakeAwayOrderOffline() Start ******************"
+      )
 
       // console.log(body, "******* BODY DATA *******")
       // add offline state in request body
-      body.isOffline = true
-      let offlineIdentifier = this.makeid()
-      body.offlineIdentifier = offlineIdentifier
+      body.isOffline = true;
+      let offlineIdentifier = this.makeid();
+      body.offlineIdentifier = offlineIdentifier;
 
       let targetStoreObject = {
-        endpoint: "/restaurant_management/dashboard/order/create_take_away_order/",
+        endpoint:
+          "/restaurant_management/dashboard/order/create_take_away_order/",
         method: "post",
         requestBody: body,
-        timestamp: new Date()
-      }
-      let ihostOfflineOrderData = JSON.parse(localStorage.getItem("ihostOfflineOrderData"))
+        timestamp: new Date(),
+      };
+      let ihostOfflineOrderData = JSON.parse(
+        localStorage.getItem("ihostOfflineOrderData")
+      );
 
-      if (ihostOfflineOrderData){
-        ihostOfflineOrderData.push(targetStoreObject)
-        localStorage.setItem('ihostOfflineOrderData', JSON.stringify(ihostOfflineOrderData))
+      if (ihostOfflineOrderData) {
+        ihostOfflineOrderData.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineOrderData",
+          JSON.stringify(ihostOfflineOrderData)
+        );
       } else {
-        let offlineOrders = []
-        offlineOrders.push(targetStoreObject)
-        localStorage.setItem('ihostOfflineOrderData', JSON.stringify(offlineOrders))
+        let offlineOrders = [];
+        offlineOrders.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineOrderData",
+          JSON.stringify(offlineOrders)
+        );
       }
 
       let takeawayFakeResponse = {
-        "ordered_items": [],
-        "table": body.table, // Get table based on takeaway or dinein
-        "remarks": null, // Get remarks
-        "status": "0_ORDER_INITIALIZED", // get dynamic
-        "id": this.makeintid(), // TODO Get ID
-        "order_no": "0000000", // TODO Get Order No
-        "uid": this.makeid()
-      }
+        ordered_items: [],
+        table: body.table, // Get table based on takeaway or dinein
+        remarks: null, // Get remarks
+        status: "0_ORDER_INITIALIZED", // get dynamic
+        id: this.makeintid(), // TODO Get ID
+        order_no: "0000000", // TODO Get Order No
+        uid: this.makeid(),
+      };
 
       this.orderData = takeawayFakeResponse;
 
       // console.log(this.orderData, "orderData")
 
-      console.log("****************** createTakeAwayOrderOffline() End ******************")
+      console.log(
+        "****************** createTakeAwayOrderOffline() End ******************"
+      )
     },
 
     async createTakeAwayOrder() {
@@ -1127,10 +1116,11 @@ export default {
           restaurant: this.resturent_id,
           table: this.dinein_selected_table_id,
         };
-      } else body = {
-        restaurant: this.resturent_id,
-        takeway_order_type: this.takeaway_order_type_id
-      };
+      } else
+        body = {
+          restaurant: this.resturent_id,
+          takeway_order_type: this.takeaway_order_type_id,
+        };
 
       if (navigator.onLine == true) {
         // await axios
@@ -1141,7 +1131,6 @@ export default {
         // .then((res) => {
 
         //   console.log("takeaway order type id ",this.takeaway_order_type_id);
-          
 
         //   if (res.data.status != true) {
         //     this.showActionMessage("error", "Please select the takeaway type first");
@@ -1156,17 +1145,16 @@ export default {
         // });
 
         // TODO Offline Tester
-        this.createTakeAwayOrderOffline(body)
-      }
-      else {
+        this.createTakeAwayOrderOffline(body);
+      } else {
         // TODO Offline
-        this.createTakeAwayOrderOffline(body)
+        this.createTakeAwayOrderOffline(body);
       }
     },
 
     addToItemCardGo(item) {
       // assign clicked food
-      this.clickedFood = item
+      this.clickedFood = item;
       // console.log("itemmmmmmmmmmmmmm",item);
       // console.log("order Data",this.orderData);
       let allextras = [];
@@ -1191,68 +1179,80 @@ export default {
     },
 
     itemAddToCartOffline(body, item) {
-      console.log("****************** itemAddToCartOffline() Start ******************")
+      console.log(
+        "****************** itemAddToCartOffline() Start ******************"
+      );
       // foods data
-      let targetFood = item.food_item
+      let targetFood = item.food_item;
 
-      let selectedFoodOption = targetFood.food_options.filter(function(foodOption) {
+      let selectedFoodOption = targetFood.food_options.filter(function (
+        foodOption
+      ) {
         return foodOption.id === item.food_option;
-      })[0]
+      })[0];
 
       let orderedItem = {
-        "id": this.makeintid(),
-        "quantity": 1,
-        "food_order": this.orderData.id,
-        "status": this.orderData.status,
-        "food_name": targetFood.name,
-        "food_image": targetFood.image,
+        id: this.makeintid(),
+        quantity: 1,
+        food_order: this.orderData.id,
+        status: this.orderData.status,
+        food_name: targetFood.name,
+        food_image: targetFood.image,
         // "food_option": targetFood.food_options[0],
-        "food_option": selectedFoodOption,
-        "food_extra": targetFood.food_extras,
-        "price": targetFood.price,
-        "category_name": targetFood.category.name,
-        "uid": this.makeid()
-      }
+        food_option: selectedFoodOption,
+        food_extra: targetFood.food_extras,
+        price: targetFood.price,
+        category_name: targetFood.category.name,
+        uid: this.makeid(),
+      };
 
-      this.orderData.ordered_items.push(orderedItem)
+      this.orderData.ordered_items.push(orderedItem);
 
-      if (this.check_order_place_status === '1_ORDER_PLACED')
-      {
-        console.log("******* STATUS: 1 ORDER PLACED *******")
+      if (this.check_order_place_status === "1_ORDER_PLACED") {
+        console.log("******* STATUS: 1 ORDER PLACED *******");
         // TODO OFFLINE
         // this.getUpdatedPriceDetails(this.orderData.id);
       }
 
       // add offline state in request body
-      body.isOffline = true
-      let offlineIdentifier = this.makeid()
-      body.offlineIdentifier = offlineIdentifier
+      body.isOffline = true;
+      let offlineIdentifier = this.makeid();
+      body.offlineIdentifier = offlineIdentifier;
 
       let targetStoreObject = {
         endpoint: "/restaurant_management/dashboard/order/cart/items/",
         method: "post",
         requestBody: body,
-        timestamp: new Date()
-      }
+        timestamp: new Date(),
+      };
 
-      let ihostOfflineCartItems = JSON.parse(localStorage.getItem("ihostOfflineCartItems"))
-      if (ihostOfflineCartItems){
-        ihostOfflineCartItems.push(targetStoreObject)
-        localStorage.setItem('ihostOfflineCartItems', JSON.stringify(ihostOfflineCartItems))
+      let ihostOfflineCartItems = JSON.parse(
+        localStorage.getItem("ihostOfflineCartItems")
+      );
+      if (ihostOfflineCartItems) {
+        ihostOfflineCartItems.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineCartItems",
+          JSON.stringify(ihostOfflineCartItems)
+        );
       } else {
-        let offlineCartItems = []
-        offlineCartItems.push(targetStoreObject)
-        localStorage.setItem('ihostOfflineCartItems', JSON.stringify(offlineCartItems))
+        let offlineCartItems = [];
+        offlineCartItems.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineCartItems",
+          JSON.stringify(offlineCartItems)
+        );
       }
 
       // console.log(this.orderData, "orderData")
-      console.log("****************** itemAddToCartOffline() Ends ******************")
+      console.log(
+        "****************** itemAddToCartOffline() Ends ******************"
+      );
     },
 
     async itemAddToCart(item) {
-
       console.log("******* itemAddToCart => item *******", item);
-      
+
       if (this.isDinein && this.dinein_selected_table_id === null) {
         return this.showActionMessage("error", "Please Select Table First!!");
       }
@@ -1261,7 +1261,7 @@ export default {
         // console.log(1111);
         await this.createTakeAwayOrder();
       }
- 
+
       let body = null;
 
       body = {
@@ -1270,10 +1270,9 @@ export default {
         food_order: this.orderData.id, // order id
         food_option: item.food_option,
         food_extras: item.food_extras,
-      }
+      };
 
       if (navigator.onLine == true) {
-
         // await axios
         // .post("/restaurant_management/dashboard/order/cart/items/", [
         //   body,
@@ -1298,102 +1297,157 @@ export default {
         // });
 
         // TODO Offline Tester
-        this.itemAddToCartOffline(body, item)
-
+        this.itemAddToCartOffline(body, item);
       } else {
         // TODO Offline
-        this.itemAddToCartOffline(body, item)
+        this.itemAddToCartOffline(body, item);
       }
+    },
+
+    updateCartItemOffline(body, item) {
+      console.log(
+        "****************** updateCartItemOffline() Start ******************"
+      )
+
+      console.log(item);
+
+      const updatedOrders = this.orderData.ordered_items.map((orderItem) =>
+        orderItem.id === item.id
+          ? { ...orderItem, quantity: item.quantity }
+          : orderItem
+      )
+
+      console.log(updatedOrders, "updatedOrders")
+
+      // update order data state
+      this.orderData.ordered_items = updatedOrders.filter(
+        (order) => order.status !== "4_CANCELLED"
+      );
+
+      if (this.check_order_place_status === "1_ORDER_PLACED") {
+        console.log("******* STATUS: 1 ORDER PLACED *******");
+        // this.getUpdatedPriceDetails(this.orderData.id);
+      }
+
+      console.log(this.orderData, "this.orderData")
+
+      // add offline state in request body
+      body.isOffline = true;
+      let offlineIdentifier = this.makeid();
+      body.offlineIdentifier = offlineIdentifier;
+
+      let targetStoreObject = {
+        endpoint: `/restaurant_management/dashboard/order/cart/items/${item.id}/`,
+        method: "patch",
+        requestBody: body,
+        timestamp: new Date(),
+      };
+      let ihostOfflineUpdateCartItemData = JSON.parse(
+        localStorage.getItem("ihostOfflineUpdateCartItemData")
+      );
+
+      if (ihostOfflineUpdateCartItemData) {
+        ihostOfflineUpdateCartItemData.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineUpdateCartItemData",
+          JSON.stringify(ihostOfflineUpdateCartItemData)
+        );
+      } else {
+        let offlineUpdateCartData = [];
+        offlineUpdateCartData.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineUpdateCartItemData",
+          JSON.stringify(offlineUpdateCartData)
+        );
+      }
+
+      console.log(
+        "****************** updateCartItemOffline() End ******************"
+      )
     },
 
     updateCartItem(item) {
-      axios
-        .patch(
-          `/restaurant_management/dashboard/order/cart/items/${item.id}/`,
-          {quantity: item.quantity}
-        )
-        .then((res) => {
-          console.log("qty update ", res.data);
-          if (res.data.status) {
-            const updatedOrders = res.data.data.ordered_items.map((orderItem) =>
-              orderItem.id === item.id
-                ? {...orderItem, quantity: item.quantity}
-                : orderItem
-            );
+      let body = { quantity: item.quantity }
 
-            // update order data state
-            this.orderData.ordered_items = updatedOrders.filter(
-              (order) => order.status !== "4_CANCELLED"
-            );
+      if (navigator.onLine == true) {
+        // axios
+        // .patch(
+        //   `/restaurant_management/dashboard/order/cart/items/${item.id}/`,
+        //   body
+        // )
+        // .then((res) => {
+        //   console.log("qty update ", res.data);
+        //   if (res.data.status) {
+        //     const updatedOrders = res.data.data.ordered_items.map((orderItem) =>
+        //       orderItem.id === item.id
+        //         ? {...orderItem, quantity: item.quantity}
+        //         : orderItem
+        //     );
 
-            // add updated cart data to localStorage for *pwa*
-            // this.addOrUpdateOrderDataInLocalStorage(this.orderData);
+        //     // update order data state
+        //     this.orderData.ordered_items = updatedOrders.filter(
+        //       (order) => order.status !== "4_CANCELLED"
+        //     );
 
-          } else this.showErrorLog(res.data.error.error_details);
-          if (this.check_order_place_status === '1_ORDER_PLACED')
-          {
-            this.getUpdatedPriceDetails(this.orderData.id);
-          }
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
-        });
+        //     // add updated cart data to localStorage for *pwa*
+        //     // this.addOrUpdateOrderDataInLocalStorage(this.orderData);
+
+        //   } else this.showErrorLog(res.data.error.error_details);
+        //   if (this.check_order_place_status === '1_ORDER_PLACED')
+        //   {
+        //     this.getUpdatedPriceDetails(this.orderData.id);
+        //   }
+        // })
+        // .catch((err) => {
+        //   this.showActionMessage("error", err.response.statusText);
+        //   this.checkError(err);
+        // });
+
+        // TODO Offline Test
+        this.updateCartItemOffline(body, item);
+      } else {
+        // TODO Offline
+        this.updateCartItemOffline(body, item);
+      }
     },
 
     increaseItem(item) {
-      console.log("Ordered items list for default quantity show",this.orderData.ordered_items);
+      // console.log("Ordered items list for default quantity show",this.orderData.ordered_items);
       let theItem = this.orderData.ordered_items.find(
         (arr) => arr.food_option.food === item.id
       );
-      if(theItem != null)
-      {
+      if (theItem != null) {
         theItem.quantity += 1;
         this.updateCartItem(theItem);
-      }
-      else
-      {
+      } else {
         item.quantity += 1;
         this.updateCartItem(item);
       }
-
     },
 
     decraseItem(item) {
-
       let theItem = this.orderData.ordered_items.find(
         (arr) => arr.food_option.food === item.id
       );
-        if(theItem != null)
-        {
-          if (theItem.quantity == 1) {
-
-            // let index = this.itemsCarts.indexOf(theItem);
-            // console.log("the indexxxxxxxxxxxxxxxxxxxxxxxxx",index);
-            // if (index > -1) {
-            //   this.itemsCarts.splice(index, 1);
-            // }
-          } else {
-            theItem.quantity--;
-          }
-
-          this.updateCartItem(theItem);
-        }
-        else
-        {
-         if(item.quantity == 1)
-         {
-
-         }
-         else
-         {
-           item.quantity--;
-
-         }
-          this.updateCartItem(item);
-
+      if (theItem != null) {
+        if (theItem.quantity == 1) {
+          // let index = this.itemsCarts.indexOf(theItem);
+          // console.log("the indexxxxxxxxxxxxxxxxxxxxxxxxx",index);
+          // if (index > -1) {
+          //   this.itemsCarts.splice(index, 1);
+          // }
+        } else {
+          theItem.quantity--;
         }
 
+        this.updateCartItem(theItem);
+      } else {
+        if (item.quantity == 1) {
+        } else {
+          item.quantity--;
+        }
+        this.updateCartItem(item);
+      }
     },
 
     checkIfCart(item) {
@@ -1453,47 +1507,58 @@ export default {
     // },
 
     cancelOrderItemOffline(body, itemId) {
-      console.log("****************** cancelOrderItemOffline() Start ******************")
+      console.log(
+        "****************** cancelOrderItemOffline() Start ******************"
+      );
 
-      let filteredOrderData = []
-      this.orderData.ordered_items.map(order => {
-        if(order.id !== itemId){
-          filteredOrderData.push(order)
+      let filteredOrderData = [];
+      this.orderData.ordered_items.map((order) => {
+        if (order.id !== itemId) {
+          filteredOrderData.push(order);
         }
-      })
+      });
 
       this.orderData.ordered_items = filteredOrderData;
 
       // add offline state in request body
-      body.isOffline = true
-      let offlineIdentifier = this.makeid()
-      body.offlineIdentifier = offlineIdentifier
+      body.isOffline = true;
+      let offlineIdentifier = this.makeid();
+      body.offlineIdentifier = offlineIdentifier;
 
       let targetStoreObject = {
         endpoint: "/restaurant_management/dashboard/order/cart/cancel_items/",
         method: "post",
         requestBody: body,
-        timestamp: new Date()
-      }
+        timestamp: new Date(),
+      };
 
-      let ihostOfflineCancelOrderItem = JSON.parse(localStorage.getItem("ihostOfflineCancelOrderItem"))
-      if (ihostOfflineCancelOrderItem){
-        ihostOfflineCancelOrderItem.push(targetStoreObject)
-        localStorage.setItem('ihostOfflineCancelOrderItem', JSON.stringify(ihostOfflineCancelOrderItem))
+      let ihostOfflineCancelOrderItem = JSON.parse(
+        localStorage.getItem("ihostOfflineCancelOrderItem")
+      );
+      if (ihostOfflineCancelOrderItem) {
+        ihostOfflineCancelOrderItem.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineCancelOrderItem",
+          JSON.stringify(ihostOfflineCancelOrderItem)
+        );
       } else {
-        let offlineCancelItems = []
-        offlineCancelItems.push(targetStoreObject)
-        localStorage.setItem('ihostOfflineCancelOrderItem', JSON.stringify(offlineCancelItems))
+        let offlineCancelItems = [];
+        offlineCancelItems.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineCancelOrderItem",
+          JSON.stringify(offlineCancelItems)
+        );
       }
-      console.log("****************** cancelOrderItemOffline() Ends ******************")
+      console.log(
+        "****************** cancelOrderItemOffline() Ends ******************"
+      );
     },
 
     cancelOrderItem(itemId) {
-
       let body = {
         order_id: this.orderData.id,
         food_items: [itemId],
-      }
+      };
 
       if (navigator.onLine == true) {
         // axios
@@ -1524,11 +1589,10 @@ export default {
         // });
 
         // TODO Offline Tester
-        this.cancelOrderItemOffline(body, itemId)
-
+        this.cancelOrderItemOffline(body, itemId);
       } else {
         // TODO Offline
-        this.cancelOrderItemOffline(body, itemId)
+        this.cancelOrderItemOffline(body, itemId);
       }
     },
 
@@ -1566,7 +1630,7 @@ export default {
             // is dine in selected
             if (this.isDinein && this.dinein_selected_table_id !== null) {
               this.isBtnLoading = false;
-              this.orderData = {id: null, ordered_items: [], price: null};
+              this.orderData = { id: null, ordered_items: [], price: null };
               // localStorage.setItem("orderData", this.orderData);
               this.showActionMessage(
                 "success",
@@ -1588,11 +1652,9 @@ export default {
     },
 
     confirmPaymentOrder() {
-
       this.isBtnLoading = true;
       this.newOrdersPaymentShow = true;
       this.newPaymentOrder = this.orderData;
-
 
       // this.isBtnLoading = true;
       // axios
@@ -1617,60 +1679,54 @@ export default {
 
     show_force_discount_form() {
       this.popup_active_for_force_discount = true;
-
-
     },
     createInvoice(order_id) {
-
-
       let OrderId = order_id;
       const body = {
-
         take_away_discount_amount: parseInt(this.force_discount_amount),
-        take_away_discount_amount_is_percentage: this.boolean_conversion(this.discount_amount_is_percentage)
+        take_away_discount_amount_is_percentage: this.boolean_conversion(
+          this.discount_amount_is_percentage
+        ),
       };
       axios
         .post(
           `/restaurant_management/dashboard/take_away_discount/${OrderId}`,
           body
-        ).then((res) => {
-        console.log("response of takeaway discount", res);
-        var error_message = '';
-        error_message = res.data.msg;
-        if (error_message != 'success') {
-
-          return this.showActionMessage("error", error_message);
-        } else {
-
-          this.isBtnLoading = true;
-          axios
-            .post("/restaurant_management/dashboard/order/create_invoice/", {
-              order_id,
-            })
-            .then((res) => {
-              console.log("invoice ", res.data);
-              if (res.data.status) {
-                console.log("invoice 1 ", res.data);
-                this.isInvoice = !this.isInvoice;
-                this.isConfirmPayment = true;
-                this.orderData = res.data.data;
-                this.printRecipt(res.data.data);
-                this.popup_active_for_force_discount = false;
-                this.isBtnLoading = false;
-              } else this.showErrorLog(res.data.error.error_details);
-            })
-            .catch((err) => {
-              console.log("error invoice ", err.response);
-            });
-        }
-      })
+        )
+        .then((res) => {
+          console.log("response of takeaway discount", res);
+          var error_message = "";
+          error_message = res.data.msg;
+          if (error_message != "success") {
+            return this.showActionMessage("error", error_message);
+          } else {
+            this.isBtnLoading = true;
+            axios
+              .post("/restaurant_management/dashboard/order/create_invoice/", {
+                order_id,
+              })
+              .then((res) => {
+                console.log("invoice ", res.data);
+                if (res.data.status) {
+                  console.log("invoice 1 ", res.data);
+                  this.isInvoice = !this.isInvoice;
+                  this.isConfirmPayment = true;
+                  this.orderData = res.data.data;
+                  this.printRecipt(res.data.data);
+                  this.popup_active_for_force_discount = false;
+                  this.isBtnLoading = false;
+                } else this.showErrorLog(res.data.error.error_details);
+              })
+              .catch((err) => {
+                console.log("error invoice ", err.response);
+              });
+          }
+        })
         .catch((err) => {
           this.showActionMessage("error", err);
           this.checkError(err);
         });
-
     },
-
 
     // createInvoice(order_id) {
     //
@@ -1697,53 +1753,125 @@ export default {
     //     });
     // },
 
-    placeOrder() {
+    placeOrderOffline(body) {
 
-      this.isBtnLoading = true;
-      console.log("object ", this.orderData);
-      if (this.orderData.ordered_items.length > 0) {
-        axios
-          .post("/restaurant_management/dashboard/order/placed_status/", {
-            order_id: this.orderData.id,
-          })
-          .then((res) => {
-            console.log("place order ", res);
-            if (res.data.status) {
-              this.orderData = res.data.data;
-              const foodItems = res.data.data.ordered_items
-                .filter((item) => item.status === "1_ORDER_PLACED")
-                .map((item) => item.id);
-              console.log("place order status",res.data.data.status);
-              this.check_order_place_status = res.data.data.status;
-              this.confirmOrder(this.orderData.id, foodItems);
-              this.showActionMessage("success", "Order Place Successfully!");
-            } else this.showErrorLog(res.data.error.error_details);
-          })
-          .catch((err) => console.log("po error ", err.response));
-      } else this.showActionMessage("error", "Please Select Order First!!");
+      console.log(
+        "****************** placeOrderOffline() Start ******************"
+      )
+
+      console.log(this.orderData, "***** this.orderData *****")
+
+      let filteredOrderedItems = []
+      this.orderData.ordered_items.forEach(function (orderedItem) {
+        if (orderedItem.status === "0_ORDER_INITIALIZED") {
+          orderedItem.status = "1_ORDER_PLACED"
+        }
+        filteredOrderedItems.push(orderedItem)
+      });
+      // this.orderData = res.data.data;
+      const foodItems = filteredOrderedItems
+        .filter((item) => item.status === "1_ORDER_PLACED")
+        .map((item) => item.id);
+      console.log(foodItems, "***** foodItems *****")
+      this.orderData.status = "1_ORDER_PLACED"
+      console.log("place order status", this.orderData.status);
+      this.check_order_place_status = this.orderData.status;
+      this.confirmOrder(this.orderData.id, foodItems);
+      this.showActionMessage("success", "Order Place Successfully!");
+
+      // add offline state in request body
+      body.isOffline = true;
+      let offlineIdentifier = this.makeid();
+      body.offlineIdentifier = offlineIdentifier;
+
+      let targetStoreObject = {
+        endpoint:
+          "/restaurant_management/dashboard/order/placed_status/",
+        method: "post",
+        requestBody: body,
+        timestamp: new Date(),
+      };
+      let ihostOfflineOrderPlacedStatusData = JSON.parse(
+        localStorage.getItem("ihostOfflineOrderPlacedStatusData")
+      );
+
+      if (ihostOfflineOrderPlacedStatusData) {
+        ihostOfflineOrderPlacedStatusData.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineOrderPlacedStatusData",
+          JSON.stringify(ihostOfflineOrderPlacedStatusData)
+        );
+      } else {
+        let OrderPlacedStatusData = [];
+        OrderPlacedStatusData.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineOrderPlacedStatusData",
+          JSON.stringify(OrderPlacedStatusData)
+        );
+      }
+
+      console.log(
+        "****************** placeOrderOffline() End ******************"
+      )
     },
 
+    placeOrder() {
+      let body = { order_id: this.orderData.id }
 
+      this.isBtnLoading = true;
+      // console.log("object ", this.orderData);
+      if (this.orderData.ordered_items.length > 0) {
+
+        if (navigator.onLine == true) {
+          // axios
+          // .post("/restaurant_management/dashboard/order/placed_status/", body)
+          // .then((res) => {
+          //   console.log("place order ", res);
+          //   if (res.data.status) {
+          //     this.orderData = res.data.data;
+          //     const foodItems = res.data.data.ordered_items
+          //       .filter((item) => item.status === "1_ORDER_PLACED")
+          //       .map((item) => item.id);
+          //     console.log(foodItems, "***** Online FoodItems *****")
+          //     console.log("place order status", res.data.data.status);
+          //     this.check_order_place_status = res.data.data.status;
+          //     this.confirmOrder(this.orderData.id, foodItems);
+          //     this.showActionMessage("success", "Order Place Successfully!");
+          //   } else this.showErrorLog(res.data.error.error_details);
+          // })
+          // .catch((err) => console.log("po error ", err.response));
+
+          // TODO Offline tester
+          this.placeOrderOffline(body);
+        }
+        else {
+          // TODO Offline
+          this.placeOrderOffline(body);
+        }
+        
+      } else this.showActionMessage("error", "Please Select Order First!!");
+    },
 
     getFood() {
       if (navigator.onLine == true) {
         axios
-        .get(
-          `restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
-        )
-        .then((res) => {
-          console.log("get food ", res);
-          this.foods = res.data.data;
-        })
-        .catch((err) => {
-          console.log("get food error ", err.response);
-          this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
-        });
+          .get(
+            `restaurant_management/dashboard/restaurant/${this.resturent_id}/foods/`
+          )
+          .then((res) => {
+            console.log("get food ", res);
+            this.foods = res.data.data;
+          })
+          .catch((err) => {
+            console.log("get food error ", err.response);
+            this.showActionMessage("error", err.response.statusText);
+            this.checkError(err);
+          });
       }
       // foods data for *pwa*
       else {
-        console.log("******* Getting foods data for offline state! *******")
+        // TODO Offline
+        console.log("******* Getting foods data for offline state! *******");
         let ihostState = JSON.parse(localStorage.getItem("ihostState"));
         this.foods = ihostState.foodsData;
       }
@@ -1752,27 +1880,29 @@ export default {
     getCategorys() {
       if (navigator.onLine == true) {
         axios
-        .get(
-          `/restaurant_management/dashboard/category_list/${this.resturent_id}`
-        )
-        .then((res) => {
-          if (res.data.status) this.categories = res.data.data;
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err.response.statusText);
-          this.checkError(err);
-        });
+          .get(
+            `/restaurant_management/dashboard/category_list/${this.resturent_id}`
+          )
+          .then((res) => {
+            if (res.data.status) this.categories = res.data.data;
+          })
+          .catch((err) => {
+            this.showActionMessage("error", err.response.statusText);
+            this.checkError(err);
+          });
       }
       // foodCategories data for *pwa*
       else {
-        console.log("******* Getting food categories data for offline state! *******")
+        // TODO Offline
+        console.log(
+          "******* Getting food categories data for offline state! *******"
+        );
         let ihostState = JSON.parse(localStorage.getItem("ihostState"));
         this.categories = ihostState.foodCategoriesData;
       }
     },
 
-    fresh_previous_selected_data()
-    {
+    fresh_previous_selected_data() {
       this.orderData = { id: null, ordered_items: [], price: null };
       localStorage.setItem("orderData", null);
     },
@@ -1798,7 +1928,8 @@ export default {
       }
       // tables data for *pwa*
       else {
-        console.log("******* Getting tables data for offline state! *******")
+        // TODO Offline
+        console.log("******* Getting tables data for offline state! *******");
         let ihostState = JSON.parse(localStorage.getItem("ihostState"));
         this.tables = ihostState.tablesData;
       }
@@ -2126,14 +2257,10 @@ export default {
 
 
 <style lang="scss">
-
-
-.netTotal
-{
-  padding-left:30px;
+.netTotal {
+  padding-left: 30px;
 }
-.netTotalRow
-{
+.netTotalRow {
 }
 .order-item-list-table {
   max-height: 50%;
@@ -2335,11 +2462,11 @@ th .vs-table-text {
 
 //To add scroll bar in the price details section
 .add_scroll_bar {
-  height:150px;
+  height: 150px;
   overflow-y: scroll;
 }
 .add_scroll_bar_for_dinein {
-  height:550px;
+  height: 550px;
   overflow-y: scroll;
 }
 
