@@ -868,6 +868,7 @@ export default {
     netTotalView: false,
     netTotal: 0,
     check_order_place_status: null,
+    takeaway_type_data: null,
   }),
 
   methods: {
@@ -1815,6 +1816,175 @@ export default {
     show_force_discount_form() {
       this.popup_active_for_force_discount = true;
     },
+
+    createInvoiceOffline(body, order_id) {
+      console.log(
+        "****************** createInvoiceOffline() Start ******************"
+      );
+
+      let ihostState = JSON.parse(localStorage.getItem("ihostState"));
+      let takeawayTypesData = ihostState.takewayTypesData;
+
+      let selectedTakeawayId = this.takeaway_order_type_id
+      let targetTakeawayObject = null
+
+      takeawayTypesData.every(function (takeaway) {
+        if (takeaway.id == selectedTakeawayId) {
+          targetTakeawayObject = takeaway
+          return false
+        }
+        return true
+      })
+
+      // assign take_away_type_method
+      this.orderData.take_away_type_method = targetTakeawayObject
+
+      this.orderData.status = "4_CREATE_INVOICE"
+
+      this.isBtnLoading = true;
+
+      this.isInvoice = !this.isInvoice;
+      this.isConfirmPayment = true;
+
+      // Calculate initial total price
+      let totalPrice = this.calculate_total()
+
+      let finalPrice = null
+
+      let take_away_discount_amount = body.take_away_discount_amount
+      let take_away_discount_amount_is_percentage = body.take_away_discount_amount_is_percentage
+
+      let restaurantData = JSON.parse(localStorage.getItem("resturent"));
+
+      let is_service_charge_apply_in_original_food_price = restaurantData.is_service_charge_apply_in_original_food_price
+      let is_vat_charge_apply_in_original_food_price = restaurantData.is_vat_charge_apply_in_original_food_price
+      let service_charge_base = restaurantData.service_charge
+      let service_charge_is_percentage = restaurantData.service_charge_is_percentage
+      let tax_percentage = restaurantData.tax_percentage
+
+      let calculatedDiscountAmount = null
+      if (take_away_discount_amount_is_percentage == true) {
+        calculatedDiscountAmount = totalPrice * (take_away_discount_amount / 100)
+      } else {
+        calculatedDiscountAmount = take_away_discount_amount
+      }
+
+      let discountedFoodTotalPrice = null
+      discountedFoodTotalPrice = totalPrice - calculatedDiscountAmount
+
+      let calculatedServiceCharge = null
+      if (is_service_charge_apply_in_original_food_price == true && is_vat_charge_apply_in_original_food_price == true) {
+        if (service_charge_is_percentage == true) {
+          calculatedServiceCharge = totalPrice * (service_charge_base / 100)
+        } else {
+          calculatedServiceCharge = service_charge_base
+        }
+      } else {
+        if (service_charge_is_percentage == true) {
+          calculatedServiceCharge = (totalPrice - calculatedDiscountAmount) * (service_charge_base / 100)
+        } else {
+          calculatedServiceCharge = service_charge_base
+        }
+      }
+
+      let calculatedVatCharge = null
+      if (is_service_charge_apply_in_original_food_price == true && is_vat_charge_apply_in_original_food_price == true) {
+        calculatedVatCharge = totalPrice * (tax_percentage / 100)
+      } else {
+        calculatedVatCharge = ((totalPrice - calculatedDiscountAmount) + calculatedServiceCharge) * (tax_percentage / 100)
+      }
+
+      // calculate grand total
+      let calculatedGrandTotalPrice = null
+      calculatedGrandTotalPrice = totalPrice + calculatedServiceCharge + calculatedVatCharge
+
+      // TODO Calculate Price and Assign to this.orderData
+      this.orderData.price = {
+          grand_total_price: parseFloat(calculatedGrandTotalPrice).toFixed(2),
+          discount_amount: parseFloat(calculatedDiscountAmount).toFixed(2),
+          payable_amount: parseFloat(calculatedGrandTotalPrice - calculatedDiscountAmount).toFixed(2),
+          tax_amount: parseFloat(calculatedVatCharge).toFixed(2),
+          tax_percentage: parseFloat(tax_percentage).toFixed(2),
+          service_charge: parseFloat(calculatedServiceCharge).toFixed(2),
+          service_charge_is_percentage: parseFloat(service_charge_is_percentage).toFixed(2),
+          service_charge_base_amount: parseFloat(service_charge_base).toFixed(2),
+          total_price: parseFloat(totalPrice).toFixed(2),
+          cash_received: 0,
+          change_amount: 0
+      }
+
+      this.printRecipt(this.orderData);
+      this.popup_active_for_force_discount = false;
+      this.isBtnLoading = false;
+
+
+      // add offline state in request body
+      body.isOffline = true;
+      let offlineIdentifier = this.makeid();
+      body.offlineIdentifier = offlineIdentifier;
+
+      let targetStoreObject = {
+        endpoint: `/restaurant_management/dashboard/take_away_discount/${order_id}`,
+        method: "post",
+        requestBody: body,
+        timestamp: new Date(),
+      };
+
+      let ihostOfflineTakewayDiscount = JSON.parse(
+        localStorage.getItem("ihostOfflineTakewayDiscount")
+      );
+      if (ihostOfflineTakewayDiscount) {
+        ihostOfflineTakewayDiscount.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineTakewayDiscount",
+          JSON.stringify(ihostOfflineTakewayDiscount)
+        );
+      } else {
+        let offlineTakewayDiscounts = [];
+        offlineTakewayDiscounts.push(targetStoreObject);
+        localStorage.setItem(
+          "ihostOfflineTakewayDiscount",
+          JSON.stringify(offlineTakewayDiscounts)
+        );
+      }
+
+      let body2 = {
+        order_id: order_id
+      }
+      body2.isOffline = true;
+      let offlineIdentifier2 = this.makeid();
+      body2.offlineIdentifier = offlineIdentifier2;
+
+      let targetStoreObject2 = {
+        endpoint: "/restaurant_management/dashboard/order/create_invoice/",
+        method: "post",
+        requestBody: body2,
+        timestamp: new Date(),
+      };
+
+      let ihostOfflineCreateInvoice = JSON.parse(
+        localStorage.getItem("ihostOfflineCreateInvoice")
+      );
+      if (ihostOfflineCreateInvoice) {
+        ihostOfflineCreateInvoice.push(targetStoreObject2);
+        localStorage.setItem(
+          "ihostOfflineCreateInvoice",
+          JSON.stringify(ihostOfflineCreateInvoice)
+        );
+      } else {
+        let offlineInvoices = [];
+        offlineInvoices.push(targetStoreObject2);
+        localStorage.setItem(
+          "ihostOfflineCreateInvoice",
+          JSON.stringify(offlineInvoices)
+        );
+      }
+
+      console.log(
+        "****************** createInvoiceOffline() Start ******************"
+      );
+    },
+
     createInvoice(order_id) {
       let OrderId = order_id;
       const body = {
@@ -1823,44 +1993,54 @@ export default {
           this.discount_amount_is_percentage
         ),
       };
-      axios
-        .post(
-          `/restaurant_management/dashboard/take_away_discount/${OrderId}`,
-          body
-        )
-        .then((res) => {
-          console.log("response of takeaway discount", res);
-          var error_message = "";
-          error_message = res.data.msg;
-          if (error_message != "success") {
-            return this.showActionMessage("error", error_message);
-          } else {
-            this.isBtnLoading = true;
-            axios
-              .post("/restaurant_management/dashboard/order/create_invoice/", {
-                order_id,
-              })
-              .then((res) => {
-                console.log("invoice ", res.data);
-                if (res.data.status) {
-                  console.log("invoice 1 ", res.data);
-                  this.isInvoice = !this.isInvoice;
-                  this.isConfirmPayment = true;
-                  this.orderData = res.data.data;
-                  this.printRecipt(res.data.data);
-                  this.popup_active_for_force_discount = false;
-                  this.isBtnLoading = false;
-                } else this.showErrorLog(res.data.error.error_details);
-              })
-              .catch((err) => {
-                console.log("error invoice ", err.response);
-              });
-          }
-        })
-        .catch((err) => {
-          this.showActionMessage("error", err);
-          this.checkError(err);
-        });
+
+      if (navigator.onLine == true) {
+
+        // axios
+        // .post(
+        //   `/restaurant_management/dashboard/take_away_discount/${OrderId}`,
+        //   body
+        // )
+        // .then((res) => {
+        //   console.log("response of takeaway discount", res);
+        //   var error_message = "";
+        //   error_message = res.data.msg;
+        //   if (error_message != "success") {
+        //     return this.showActionMessage("error", error_message);
+        //   } else {
+        //     this.isBtnLoading = true;
+        //     axios
+        //       .post("/restaurant_management/dashboard/order/create_invoice/", {
+        //         order_id,
+        //       })
+        //       .then((res) => {
+        //         console.log("invoice ", res.data);
+        //         if (res.data.status) {
+        //           console.log("invoice 1 ", res.data);
+        //           this.isInvoice = !this.isInvoice;
+        //           this.isConfirmPayment = true;
+        //           this.orderData = res.data.data;
+        //           this.printRecipt(res.data.data);
+        //           this.popup_active_for_force_discount = false;
+        //           this.isBtnLoading = false;
+        //         } else this.showErrorLog(res.data.error.error_details);
+        //       })
+        //       .catch((err) => {
+        //         console.log("error invoice ", err.response);
+        //       });
+        //   }
+        // })
+        // .catch((err) => {
+        //   this.showActionMessage("error", err);
+        //   this.checkError(err);
+        // });
+
+        // TODO Offline Tester
+        this.createInvoiceOffline(body, order_id);
+      } else {
+        // TODO Offline
+        this.createInvoiceOffline(body, order_id);
+      }
     },
 
     // createInvoice(order_id) {
@@ -1894,7 +2074,8 @@ export default {
         "****************** placeOrderOffline() Start ******************"
       )
 
-      console.log(this.orderData, "***** this.orderData *****")
+      console.log("******* Getting restaurant data for offline state! *******");
+      let restaurantData = JSON.parse(localStorage.getItem("resturent"));
 
       let filteredOrderedItems = []
       this.orderData.ordered_items.forEach(function (orderedItem) {
@@ -1904,8 +2085,49 @@ export default {
         filteredOrderedItems.push(orderedItem)
       });
       // this.orderData = res.data.data;
+      // Calculate initial total price
+      let totalPrice = this.calculate_total()
+
+      let is_service_charge_apply_in_original_food_price = restaurantData.is_service_charge_apply_in_original_food_price
+      let is_vat_charge_apply_in_original_food_price = restaurantData.is_vat_charge_apply_in_original_food_price
+      let service_charge_base = restaurantData.service_charge
+      let service_charge_is_percentage = restaurantData.service_charge_is_percentage
+      let tax_percentage = restaurantData.tax_percentage
+
+      let calculatedServiceCharge = null
+      // if (is_service_charge_apply_in_original_food_price == true && is_vat_charge_apply_in_original_food_price == true) {
+      if (service_charge_is_percentage == true) {
+        calculatedServiceCharge = totalPrice * (service_charge_base / 100)
+      } else {
+        calculatedServiceCharge = service_charge_base
+      }
+      // }
+
+      let calculatedVatCharge = null
+      if (is_service_charge_apply_in_original_food_price == true && is_vat_charge_apply_in_original_food_price == true) {
+        calculatedVatCharge = totalPrice * (tax_percentage / 100)
+      } else {
+        calculatedVatCharge = totalPrice + calculatedServiceCharge * (tax_percentage / 100)
+      }
+
+      // calculate grand total
+      let calculatedGrandTotalPrice = null
+      calculatedGrandTotalPrice = totalPrice + calculatedServiceCharge + calculatedVatCharge
 
       // TODO Calculate Price and Assign to this.orderData
+      this.orderData.price = {
+          grand_total_price: parseFloat(calculatedGrandTotalPrice).toFixed(2),
+          discount_amount: 0,
+          payable_amount: parseFloat(calculatedGrandTotalPrice).toFixed(2),
+          tax_amount: parseFloat(calculatedVatCharge).toFixed(2),
+          tax_percentage: parseFloat(tax_percentage).toFixed(2),
+          service_charge: parseFloat(calculatedServiceCharge).toFixed(2),
+          service_charge_is_percentage: parseFloat(service_charge_is_percentage).toFixed(2),
+          service_charge_base_amount: parseFloat(service_charge_base).toFixed(2),
+          total_price: parseFloat(totalPrice).toFixed(2),
+          cash_received: 0,
+          change_amount: 0
+      }
 
       const foodItems = filteredOrderedItems
         .filter((item) => item.status === "1_ORDER_PLACED")
